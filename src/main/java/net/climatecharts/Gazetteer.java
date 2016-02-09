@@ -18,7 +18,7 @@ import org.apache.http.client.utils.URIBuilder;
  * 
  * @author matthias
  */
-@Path("/Gazetteer/{op}")
+@Path("/gazetteer/{op}")
 public class Gazetteer {
 	
 	private static final String placenameUrl = "http://api.geonames.org/findNearbyPlaceNameJSON";
