@@ -160,7 +160,7 @@ var ui  = {
 
 			//Query NetCdf data from server.
 			function getValues(){
-				var url = "" +window.location.protocol +"//" +window.location.host +"/climatecharts/ServeData";
+				var url = "" +window.location.protocol +"//" +window.location.host +"/climatecharts/api/ServeData";
 				
 				return $.get(url, {lat: ui.lt, lng: ui.ln, t1: ui.start, t2: ui.end})
 						.fail(function(jqXHR, textStatus, errorThrown){
@@ -171,7 +171,7 @@ var ui  = {
 			//Query geonames.org gazetteer for placename .
 			function getName (){
 				if ($("#name1").is(':checked') === true){
-					return $.get("http://api.geonames.org/findNearbyPlaceNameJSON", 
+					return $.get("/climatecharts/api/gazetteer/findNearbyPlaceNameJSON", 
 							{lat: ui.lt, lng: ui.ln, username: "climatediagrams"})
 							.fail(function(jqXHR, textStatus, errorThrown){
 								console.log("Error occured: " +errorThrown)
@@ -181,7 +181,7 @@ var ui  = {
 
 			//Query geonames.org gazetteer for srtm elevation.
 			function getHeight (){
-				return $.get("http://api.geonames.org/srtm3JSON", 
+				return $.get("/climatecharts/api/gazetteer/srtm3JSON", 
 						{lat: ui.lt, lng: ui.ln, username: "climatediagrams"}
 					)
 					.fail(function(jqXHR, textStatus, errorThrown){
