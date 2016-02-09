@@ -1,0 +1,206 @@
+
+<!-- ClimateCharts (--final URL--) (04.02.2016)
+	 Author: Felix Wiemann
+ -->
+
+<!DOCTYPE html>
+<head>
+	<meta charset=utf-8 />
+	<title>ClimateCharts</title>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+	<link rel="stylesheet" href="css/layout.css"/>
+	<link rel="stylesheet" href="css/leaflet.css"/>
+	<link rel="stylesheet" href="css/waitMe.min.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+	<script src="https://d3js.org/d3.v3.min.js"></script>
+	<script src="https://gabelerner.github.io/canvg/rgbcolor.js"></script>
+	<script src="https://gabelerner.github.io/canvg/StackBlur.js"></script>
+	<script src="https://gabelerner.github.io/canvg/canvg.js"></script>
+	<script src="js/leaflet/leaflet.js"></script>
+	<script src="js/FileSaver/Blob.js"></script>
+	<script src="js/FileSaver/FileSaver.min.js"></script>
+	<script src="js/panzoom/panzoom.js"></script>
+	<script src="js/panzoom/pointertouch.js"></script>
+	<script src="js/waitMe.min.js"></script>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-lg-1"></div>
+			<div class="col-lg-10">
+				<div class="container-fluid frame">
+					<div class="tabs">
+						<div class="jumbotron">
+							<div class="row">
+								<div class="col-lg-12">
+									<div class="headline">
+										<h2>ClimateCharts</h2>
+										<p class="secHeadline">An application to
+										create meteorological charts for places worldwide</p>
+									</div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-lg-12">
+									<ul class="tab-links nav nav-pills">
+										<li class="active"><a href="#home">Home</a></li>
+										<li><a href="#about">About</a></li>
+									</ul>
+								</div>
+							</div>
+						</div>
+
+						<div class="tab-content">
+							<div id="home" class="tab active">
+								<div class="row">
+									<div class="col-lg-9">
+										<div id="map"></div>
+									</div>
+									<div class="col-lg-3 top-buffer">
+										<div class="form">
+											<div class="form-group">
+												<label for=lt>Latitude</label> <input id="lt"
+													class="form-control coordinates" type="text"> <label
+													for=ln>Longitude</label> <input id="ln"
+													class="form-control coordinates" type="text"> <br>
+												<label for=end>From Year</label> 
+													<select id="end" name="end"></select> <br>
+												<label for=start>back to Year</label> 
+													<select id="start" name="start" disabled></select> <br> 
+												<div class="checkboxp">
+													<label><input id="checkbox" class="normalText"
+														type="checkbox"> Choose individual period-length
+														(Default: 30 Years)</label>
+												</div>
+											</div>
+											<div class="form-group">
+												<div class="radio">
+													<label><input id="name1" class="name" type="radio"
+														name="optradio" checked> Use title from gazetteer</label>
+												</div>
+												<div class="radio">
+													<label><input id="name2" type="radio" class="name" name="optradio"> 
+													<input id="userName" type="text" class="form-control"
+													placeholder="Enter title" disabled></label>
+												</div>
+											</div>
+											<button id="createChart" class="btn btn-primary btn-block" disabled>
+												Create Chart</button>
+										</div>
+									</div>
+								</div>
+								<div class="row border-top">
+									<div class="col-lg-9 top-buffer">
+										<div id="wrapper">
+											<p id="info">
+												In this application you can dynamically create a climate chart 
+												for a specific location and time frame.
+												Click on the map or type in coordinates into the fields for 
+												Latitude/Longitude to choose a point of interest, select a time 
+												frame in the dropdown menu on the right and then click on "Create Chart".
+											</p>
+										</div>
+									</div>
+									<div id="save" class="col-lg-3 top-buffer">
+										<p>Save as:</p>
+										<button id="saveSvg" class="btn btn-primary">SVG</button>
+										<button id="savePng" class="btn btn-success">PNG</button>
+									</div>
+								</div>
+							</div>
+
+							<div id="about" class="tab">
+								<div class="row">
+									<div class="col-lg-8">
+										<div class="well">
+											<div class="padding">
+												<h3>The Walter-Lieth Chart</h3>
+												<p class="block">
+													The charts on this site are drawn following the Walter-Lieth standard.
+													The most characteristic feature of this type of climate diagram
+													is that it graphically emphasizes in a simplified form if the climate 
+													conditions at a place are <span class="humid">humid</span>, 
+													<span class="veryhumid">very humid</span>,
+													<span class="arid">arid</span> or seasonally changing. 
+												</p>
+												<img class="img img-responsive" src="img/example.png">
+											</div>
+										</div>
+										<div class="well">
+											<div class="padding">
+												<h3>Data Sources</h3>
+												<p>
+													Temperature and precipitation data is derived from the UCAR
+													CRU Time Series 3.23 Dataset:
+												</p>
+												<p class ="block">
+													University of East Anglia 
+													Climatic Research Unit; Harris, I.(.; Jones, P.D. (2015): 
+													CRU TS3.23: Climatic Research Unit (CRU) Time-Series (TS) 
+													Version 3.23 of High Resolution Gridded Data of Month-by-month 
+													Variation in Climate (Jan. 1901- Dec. 2014). Centre for 
+													Environmental Data Analysis, 09 November 2015. 
+													doi:10.5285/4c7fdfa6-f176-4c58-acee-683d5e9d2ed5
+												</p>
+												 <ul>
+												  <li>Temporal coverage: Monthly values for 1901 - 2014</li>
+												  <li>Spatial coverage: 0.5° x 0.5° Cellsize, 90°N - 60°S, 180°W -
+													180°E</li>
+												</ul> 
+												<p class="block">Please note that the temperature and
+													precipitation values shown in the diagram are not directly
+													measured, but interpolated between neighbouring stations in
+													the area around the specified position and then represented
+													in a grid with fixed cellsize. This interpolation process
+													and the limited resolution may lead to differences between
+													values of this dataset and real conditions, especially in
+													areas with big elevation differences.</p>
+												<p>
+													For the title and elevation value "Geonames"
+													gazetteer is used: <br> http://www.geonames.org/,
+													Creative Commons Attribution 3.0 License
+												</p>
+												<p class="block">
+													Elevation is based on SRTM data and only available between 60° 
+													northern and 58° southern latitude. The climate class is calculated from 
+													the temperature and precipitation data according to the 
+													<a target="_blank" 
+													href="https://en.wikipedia.org/wiki/K%C3%B6ppen_climate_classification">
+													Köppen-Geiger climate classification scheme</a>.
+												</p>
+											</div>
+										</div>
+									</div>
+									<div class="col-lg-4">
+										<div class="well">
+											<div class="padding">
+												<img id="logo" class="img img-responsive" src="img/logo_blau.svg"> <br> <br>
+												<p>
+													The <a target="_blank" href="http://tu-dresden.de/impressum">
+													imprint of the Technical University Dresden</a>	is applied
+													with the following constraint:<br> 
+													<br> 
+													Contact: <br>
+													Prof. Dr. Lars Bernard<br>
+													Mail: Lars.Bernard@tu-dresden.de<br> 
+													Phone: +49 (0)351 463-35880<br>
+												</p>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-lg-1"></div>
+		</div>
+	</div>
+	<script src="js/ui.js"></script>
+	<script src="js/drawChart.js"></script>
+	<script src="js/app.js"></script>
+</body>
+</html>
