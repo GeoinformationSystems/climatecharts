@@ -4,7 +4,7 @@ A web service that generates climate charts.
 ## Structure
 * /src/main/webapp/ - HTML and JavaScript contents
 * /src/main/java/ - Server classes (JAVA)
-* src/main/resources/config.ini - Configuration file for server's data store
+* /src/main/resources/config.ini - Configuration file for server's data store
 
 ## How to build
 Climatecharts is a Maven project.
@@ -16,16 +16,12 @@ Climatecharts is a Maven project.
 ## How to deploy
 The build process generates a WAR archive which can be deployed on an application server such as Tomcat 8. Lower versions might not work properly since the Appplication uses the Servlet specification 3.1.
 
-Simply copy ```./climatecharts/target/climatecharts.war``` to your Tomcat webapps folder and restart your Tomcat.
+1. Copy ```./climatecharts/target/climatecharts.war``` to your webapps folder and restart your Application Server.
+2. Update the data source configuration in ```webapps/climatecharts/config.ini``` and restart your Application Server again.
+3. Open your browser and test the application (http://localhost:8080/climatecharts).
 
-Test with http://localhost:8080/climatecharts.
-
-## Licenses
+## License
 Climatecharts is licensed under the Apache Software License, Version 2.0.
 
-The project uses a few 3rd party libraries and most of them are also licensed under the Apache Software License, Version 2.0. 
-
-In addition, the following licenses apply:
-
-* NetCDF license (http://www.unidata.ucar.edu/software/netcdf/copyright.html) - an MIT style license
+The project uses a few 3rd party libraries and most of them are also licensed under the Apache Software License, Version 2.0. The linked NetCDF library is licensed under the NetCDF license (http://www.unidata.ucar.edu/software/netcdf/copyright.html), an MIT style license.
 
