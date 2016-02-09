@@ -5,7 +5,7 @@
 	<artifactId>climatecharts-webapp</artifactId>
 	<packaging>war</packaging>
 	<version>0.1.0-SNAPSHOT</version>
-	<name>climatecharts-webapp Maven Webapp</name>
+	<name>Climatecharts web application</name>
 	<url>http://maven.apache.org</url>
 	<dependencies>
 
@@ -69,6 +69,17 @@
 	</dependencies>
 	<build>
 		<finalName>climatecharts</finalName>
+		
+		<!-- exclude config.ini from WEB-INF/classes -->
+		<resources>
+			<resource>
+				<directory>/src/main/resources</directory>
+				<excludes>
+					<exclude>*</exclude>
+				</excludes>
+			</resource>
+		</resources>
+
 		<plugins>
 
 			<plugin>
@@ -92,14 +103,17 @@
 							<filtering>true</filtering>
 							<targetPath>WEB-INF</targetPath>
 						</resource>
+						
+						<!-- put config.ini in WEB-INF/classes -->
 						<resource>
 							<directory>src/main/resources/</directory>
 							<includes>
 								<include>config.ini</include>
 							</includes>
 							<filtering>true</filtering>
-							<targetPath>/</targetPath>
+							<targetPath>/WEB-INF</targetPath>
 						</resource>
+						
 					</webResources>
 				</configuration>
 			</plugin>
