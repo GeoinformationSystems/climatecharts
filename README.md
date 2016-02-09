@@ -17,7 +17,7 @@ Climatecharts is a Maven project.
 The build process generates a WAR archive which can be deployed on an application server such as Tomcat 8. Lower versions might not work properly since the Appplication uses the Servlet specification 3.1.
 
 1. Copy ```./climatecharts/target/climatecharts.war``` to your webapps folder and restart your Application Server.
-2. Update the data source configuration in ```webapps/climatecharts/config.ini``` and restart your Application Server again.
+2. Update the data source configuration in ```webapps/climatecharts/WEB-INF/config.ini``` and restart your Application Server again.
 3. Open your browser and test the application (http://localhost:8080/climatecharts).
 
 ## License
