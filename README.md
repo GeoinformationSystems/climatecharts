@@ -21,7 +21,11 @@ The build process generates a WAR archive which can be deployed on an applicatio
 3. Open your browser and test the application (http://localhost:8080/climatecharts).
 
 ## License
-Climatecharts is licensed under the Apache Software License, Version 2.0.
+Climatecharts is licensed under the [Apache Software License, Version 2.0](https://opensource.org/licenses/Apache-2.0).
 
-The project uses a few 3rd party libraries and most of them are also licensed under the Apache Software License, Version 2.0. The linked NetCDF library is licensed under the NetCDF license (http://www.unidata.ucar.edu/software/netcdf/copyright.html), an MIT style license.
+The project uses a few 3rd party libraries and most of them are also licensed under the [Apache Software License, Version 2.0](https://opensource.org/licenses/Apache-2.0) or [MIT License](https://opensource.org/licenses/MIT). Exceptions are listed below.
+
+* The linked **NetCDF library** is licensed under the NetCDF license (http://www.unidata.ucar.edu/software/netcdf/copyright.html), an MIT style license.
+* **Highcharts JS** is a JavaScript chart library developed by [HighSoft](http://www.highcharts.com). It is licensed under the [Creative Commons Attribution-NonCommercial 3.0 License](http://creativecommons.org/licenses/by-nc/3.0/). For commercial purposes, a [license](http://shop.highsoft.com/highcharts) is required.
+* **Leaflet** is licensed under a [BSD 2 clause license](https://opensource.org/licenses/BSD-2-Clause)
 

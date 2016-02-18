@@ -15,6 +15,8 @@ import org.apache.commons.io.IOUtils;
 import org.apache.http.client.utils.URIBuilder;
 
 /**
+ * Gazetter proxy for ClimateCharts server.
+ * Wraps calls to Geonames and permits requests via HTTP / HTTPS.
  * 
  * @author matthias
  */

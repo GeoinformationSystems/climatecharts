@@ -13,6 +13,10 @@ package net.climatecharts;
    Full documentation of the netCDF Java API can be found at:
    http://www.unidata.ucar.edu/software/netcdf-java/
 */
+/**
+ * TODO: document author / source.
+ * Is this really a copy of some class in netcdf-java?
+ */
 import ucar.nc2.NetcdfFile;
 import ucar.nc2.Variable;
 import ucar.ma2.*;
