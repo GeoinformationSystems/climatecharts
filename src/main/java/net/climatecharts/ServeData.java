@@ -1,8 +1,3 @@
-/**
- * This servlet handles an HTTP GET request by creating an instance of the NetcdfHandler class and read the specified files with the 
- * received parameters latitude, longitude and first + last year of the chosen time range. 
- */
-
 package net.climatecharts;
 
 import java.io.IOException;
@@ -21,6 +16,14 @@ import org.json.JSONObject;
 
 import ucar.ma2.InvalidRangeException;
 
+/**
+ * Data access endpoint for ClimateCharts server.
+ * 
+ * This servlet handles an HTTP GET request by creating an instance of the NetcdfHandler class and read the specified files with the 
+ * received parameters latitude, longitude and first + last year of the chosen time range. 
+ * 
+ * @author felix, matthias
+ */
 @Path("/ServeData")
 public class ServeData {
 

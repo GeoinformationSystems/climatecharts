@@ -6,6 +6,11 @@ import java.util.Set;
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
 
+/**
+ * Application endpoint for ClimateCharts server
+ * 
+ * @author matthias
+ */
 @ApplicationPath("/api")
 public class ClimateChartsApplication extends Application{
 	
