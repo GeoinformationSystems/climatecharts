@@ -21,7 +21,7 @@ The build process generates a WAR archive which can be deployed on an applicatio
 3. Open your browser and test the application (http://localhost:8080/climatecharts).
 
 ## License
-Climatecharts is licensed under the [Apache Software License, Version 2.0](https://opensource.org/licenses/Apache-2.0).
+Climatecharts is licensed under TODO.
 
 The project uses a few 3rd party libraries and most of them are also licensed under the [Apache Software License, Version 2.0](https://opensource.org/licenses/Apache-2.0) or [MIT License](https://opensource.org/licenses/MIT). Exceptions are listed below.
 
