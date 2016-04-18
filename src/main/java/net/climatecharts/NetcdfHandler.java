@@ -1,22 +1,13 @@
+package net.climatecharts;
+
 /**
+ * @author Felix
+ * 
  * This class offers methods to read a variable in a Netcdf file for a specific position (gridcell) and time range. Currently
  * only files with a spatial resolution of 0.25, 0.5 and 1.0 degree are supported. The unit for time reference has to be 
  * specified as "days since year-month-day".
  */
 
-package net.climatecharts;
-
-/* This is part of the netCDF package.
-   Copyright 2006 University Corporation for Atmospheric Research/Unidata.
-   See COPYRIGHT file for conditions of use.
-
-   Full documentation of the netCDF Java API can be found at:
-   http://www.unidata.ucar.edu/software/netcdf-java/
-*/
-/**
- * TODO: document author / source.
- * Is this really a copy of some class in netcdf-java?
- */
 import ucar.nc2.NetcdfFile;
 import ucar.nc2.Variable;
 import ucar.ma2.*;
