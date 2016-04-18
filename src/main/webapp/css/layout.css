@@ -1,4 +1,4 @@
-@media ( max-width: 700px ) {
+@media ( max-width: 767px ) {
     .container-fluid {
       padding-right: 0;
       padding-left: 0;
@@ -12,7 +12,7 @@
     }
 }
 
-@media (max-width: 978px) {
+@media (max-width: 992px) {
     .cl-lg {
       padding:0;
       margin:0;
@@ -70,11 +70,11 @@ select {
 }
 
 .btn {
-    border-radius: 0px;
+    border-radius: 3px;
 }
 
 .btn-primary {
-    border-radius: 0px;
+    border-radius: 4px;
 	background-color: #043d7b;
 	color: white;
 }
@@ -111,8 +111,6 @@ select {
 }
 
 .img {
-	width: 100%;
-	max-width: 1200px;
     border: 1px solid gray;
     padding: 5px;
     background-color: white;
@@ -219,8 +217,13 @@ li.active a, li.active a:hover {
     border-radius: 10px;
 }
 
-#logo {
-	max-width: 200px;
+.img#logo {
+	max-width: 150px;
+	float: right;
+	margin: -20px;
+	margin-right: 0px;
+	border: none;
+	background-color: transparent;
 }
 
 #map {
