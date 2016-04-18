@@ -398,13 +398,13 @@ function getPreDry () {
 	var pre_diff = sum_summer - sum_winter;
 	
 	if (sum_summer >= 2/3*pre_sum) {
-		pre_dry = 2*(tmp_mean + 28);
+		pre_dry = 2*tmp_mean + 28;
 	}
 	else if (sum_winter >= 2/3*pre_sum){
 		pre_dry = 2*tmp_mean;
 	} 
 	else {
-		pre_dry = 2*(tmp_mean + 14);
+		pre_dry = 2*tmp_mean + 14;
 	}
 	
 	return pre_dry;
@@ -867,7 +867,7 @@ chart.append("text")
 	.attr("class", "source")
 	.attr("x", WIDTH - MARGINS.right/15)
 	.attr("y", HEIGHT - 10)
-	.text("climatecharts.geo.tu-dresden.de")
+	.text("climatecharts.net")
 	.style("text-anchor", "end");
 
 chart.append("text")

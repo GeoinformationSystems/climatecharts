@@ -20,7 +20,7 @@ public class Configuration {
 	static final String separator = "="; // separator between key and value
 	static final String comment = "#"; // character indicating a comment
 	
-	private static final HashMap<String,String> props = readProperties();
+	public static final HashMap<String,String> props = readProperties();
 	
 	public static final String getParameter(String paramName){
 		return props.get(paramName);
@@ -44,14 +44,19 @@ public class Configuration {
 			
 			br = new BufferedReader(new InputStreamReader(is));
 			while ((line = br.readLine()) != null) {
+				
+				System.out.println(line);
+				
 			    // Deal with the line
 				String[] kvp = processLine(line);
+				
 				if (kvp != null){
 					map.put(kvp[0], kvp[1]);
 				}
 			}
 			br.close();
 		} catch (Exception e){
+			e.printStackTrace();
 			// TODO: Log.
 		}
 		
@@ -83,7 +88,6 @@ public class Configuration {
 			return null;
 		}
 		
-		
 		// extract key / value and strip leading and trailing spaces
 		int sepIndex = line.indexOf(separator);
 		
@@ -92,7 +96,11 @@ public class Configuration {
 		//key = StringUtils.strip(key);
 		
 		String value = line.substring(sepIndex+1);
-		value = StringUtils.trim(value);
+//		value = StringUtils.trim(value);
+		value = StringUtils.strip(value);
+		
+		System.out.println(key);
+		System.out.println(value);
 		
 		return new String[]{key, value};
 	}

@@ -44,7 +44,6 @@ public class ServeData {
 		if (lat == null || lng == null || t1 == null || t2 == null){
 			throw new WebApplicationException(Response.Status.BAD_REQUEST);
 		}
-		
 
 		try {
 			
