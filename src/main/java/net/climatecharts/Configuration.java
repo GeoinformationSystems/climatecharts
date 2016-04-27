@@ -96,11 +96,8 @@ public class Configuration {
 		//key = StringUtils.strip(key);
 		
 		String value = line.substring(sepIndex+1);
-//		value = StringUtils.trim(value);
-		value = StringUtils.strip(value);
-		
-		System.out.println(key);
-		System.out.println(value);
+		value = StringUtils.trim(value);
+//		value = StringUtils.strip(value);
 		
 		return new String[]{key, value};
 	}

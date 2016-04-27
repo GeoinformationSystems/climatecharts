@@ -76,7 +76,7 @@ var background = "white",
 	black = "black";
 
 //DOI to the current data source
-var source = "doi:10.5285/4c7fdfa6-f176-4c58-acee-683d5e9d2ed5";
+var source = "CRU TS v3.23, doi:10.5285/4c7fdfa6-f176-4c58-acee-683d5e9d2ed5";
 
 //Placeholder for the specific ticks shown on the vertical axes.
 var ticks_y1 = [],
@@ -396,6 +396,8 @@ function getPreDry () {
 		
 	
 	var pre_diff = sum_summer - sum_winter;
+	
+	console.log("sum_summer: " +sum_summer +", sum_winter: " +sum_winter +", 2/3*pre_sum: " +2/3*pre_sum);
 	
 	if (sum_summer >= 2/3*pre_sum) {
 		pre_dry = 2*tmp_mean + 28;
@@ -867,7 +869,7 @@ chart.append("text")
 	.attr("class", "source")
 	.attr("x", WIDTH - MARGINS.right/15)
 	.attr("y", HEIGHT - 10)
-	.text("climatecharts.net")
+	.text("ClimateCharts.net")
 	.style("text-anchor", "end");
 
 chart.append("text")
