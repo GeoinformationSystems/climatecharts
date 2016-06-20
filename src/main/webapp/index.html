@@ -11,7 +11,8 @@
 	<link rel="stylesheet" href="css/layout.css"/>
 	<link rel="stylesheet" href="css/leaflet.css"/>
 	<link rel="stylesheet" href="css/waitMe.min.css">
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+	<!--script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>  -->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.js"></script>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
 	<script src="https://d3js.org/d3.v3.min.js"></script>
 	<script src="https://gabelerner.github.io/canvg/rgbcolor.js"></script>
@@ -23,6 +24,7 @@
 	<script src="js/panzoom/panzoom.js"></script>
 	<script src="js/panzoom/pointertouch.js"></script>
 	<script src="js/waitMe.min.js"></script>
+	<script src="js/x2js/xml2json.js"></script>
 	<meta name="author" content="Felix Wiemann">
 	<meta name="description" content="An application to create meteorological charts for places worldwide.">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
@@ -68,6 +70,14 @@
 									<div class="col-lg-3 top-buffer">
 										<div class="form">
 											<div class="form-group">
+												<div class="dropdown">
+												  <label for="datasets">Select dataset:</label>
+												  <select id="datasets" name="datasets" style="width:100%">
+												  </select>
+												</div>
+												<button id="info" class="btn btn-primary" href="#" data-toggle="popover" 
+													title="Metadata" data-content="">
+													Info</button><br>
 												<label for=lt>Latitude</label> <input id="lt"
 													class="form-control coordinates" type="text"> <label
 													for=ln>Longitude</label> <input id="ln"
@@ -108,6 +118,7 @@
 												Latitude/Longitude to choose a point of interest, select a time 
 												frame in the dropdown menu on the right and then click on "Create Chart".
 											</p>
+											<ul id="data"></ul>
 										</div>
 									</div>
 									<div id="save" class="col-lg-3 top-buffer">

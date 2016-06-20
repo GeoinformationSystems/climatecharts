@@ -1,5 +1,5 @@
 /* 
- * ClimateCharts (--final URL--) (04.02.2016)
+ * ClimateCharts (climatecharts.net)
  * Author: Felix Wiemann
  * 
  * This file is loaded at the end of the document and only contains the initialization of the map object and the 
@@ -8,8 +8,13 @@
 
 ui.createMap();
 ui.populateLists();
+ui.listDatasets();
 
 $('.form-group').trigger("reset");
+$("#datasets").change(ui.setDataset);
+$("#info").popover({
+	html: true
+});
 $("#lt").change(ui.changeButtonStatus);
 $("#ln").change(ui.changeButtonStatus);
 $("#end").change(ui.updateYear);
