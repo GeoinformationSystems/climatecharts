@@ -1,5 +1,5 @@
 /* 
- * ClimateCharts (--final URL--) (04.02.2016)
+ * ClimateCharts (climatecharts.net)
  * Author: Felix Wiemann
  * 
  * This file contains the user interface object for the website. The variables defined at the beginning are necessary to 
@@ -23,6 +23,12 @@ var ui  = {
 	
 	"srtm": 0,
 	
+	"dataset": "",
+	
+	"catalog": {},
+	
+	"ncML": {},
+	
 	//Initialize the leaflet map object with two baselayers and a scale.
 	"createMap": function(){
 		
@@ -32,9 +38,9 @@ var ui  = {
 		map.setView([40,10], 2);
 		map.on("click", updatePosition);
 		
-		var OpenMapSurfer_Roads = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', {
+		var ESRI = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', {
 			maxZoom: 20,
-			attribution: 'Tiles &copy; Esri &mdash; Source: Esri, DeLorme, NAVTEQ, USGS, Intermap, iPC, NRCAN, Esri Japan, METI, Esri China (Hong Kong), Esri (Thailand), TomTom, 2012'
+			attribution: 'Tiles &copy; Esri'
 			}).addTo(map);
 		
 		var OpenStreetMap_Mapnik = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -43,7 +49,7 @@ var ui  = {
 			});
 		
 		var baseMaps = {
-				"OpenMapSurfer": OpenMapSurfer_Roads,
+				"ESRI World Map": ESRI,
 				"OpenStreetMap": OpenStreetMap_Mapnik
 		}
 		
@@ -86,7 +92,7 @@ var ui  = {
 			$("#nodata").css("opacity", 0.4);
 			
 			//Draw the chart when all three ajax have calls received there answer.
-			$.when(getValues(), getName(), getHeight())
+			$.when(getData(), getName(), getHeight())
 			 	.done(function(a1, a2, a3){
 					
 					var dataArray = [],
@@ -158,11 +164,27 @@ var ui  = {
 					}
 			 });
 
-			//Query NetCdf data from server.
-			function getValues(){
-				var url = "" +window.location.protocol +"//" +window.location.host +"/climatecharts/api/ServeData";
+			//Query NetCdf data from TDS server.
+			function getData(variable){
+//				var dataset = ui.catalog.dataset;
+				var url = "";
 				
-				return $.get(url, {lat: ui.lt, lng: ui.ln, t1: ui.start, t2: ui.end})
+//				var tmpPath = ui.getDatasetPath(ui.dataset)[0]._urlPath,
+//					prePath = ui.getDatasetPath(ui.dataset)[1]._urlPath;
+				
+//				if (variable == "temperature") {
+//
+//					url += window.location.protocol +"//" +window.location.host +"/thredds/ncss/"
+//					+ui.getDatasetPath(ui.dataset)[0]._urlPath +"?";
+//				}
+//				
+//				if (variable == "precipitation") {
+//
+//					url += window.location.protocol +"//" +window.location.host +"/thredds/ncss/"
+//					+ui.getDatasetPath(ui.dataset)[1]._urlPath +"?";
+//				}
+				
+				return $.get(url)
 						.fail(function(jqXHR, textStatus, errorThrown){
 							console.log("Error occured: " +errorThrown)
 						});
@@ -212,15 +234,15 @@ var ui  = {
 	"populateLists": function (){
 		var list = new Array(114),
 			start = 1901,
-			sel1 = document.getElementsByTagName('select')[0],
-			sel2 = document.getElementsByTagName('select')[1];
+			sel1 = $('#start'),
+			sel2 = $('#end')[0];
 		
 		for (var i = 0; i < list.length; i++){
-			var opt = document.createElement('option');
-		    opt.innerHTML = start + i;
-		    opt.value = start + i;
-		    sel1.add(opt);
+			var value = start + i;
+		    sel1.append("<option></option>")
+		    	.val(value);
 		}
+		
 	    for (var i = 0; i < list.length; i++){
 			var opt = document.createElement('option');
 		    opt.innerHTML = start + i;
@@ -231,6 +253,81 @@ var ui  = {
 	    $("#start").val(ui.start);
 	    $("#end").val(ui.end);
 	},
+	
+	//List all the datasets available on the server-side.
+	"listDatasets": function () {
+		
+		var catalogUrl = "" +window.location.protocol +"//" +window.location.host 
+							+"/thredds/catalog.xml";
+		
+		$.get(catalogUrl)
+			.done(function (data) {
+				var x2js = new X2JS();
+				
+				ui.catalog = x2js.xml2json(data).catalog;
+				
+//				console.log(ui.catalog);
+				
+				for(var key in ui.catalog.dataset) {
+					$("#datasets").append("<option " 
+									+"id='" +ui.catalog.dataset[key]._ID 
+									+"' value='" +ui.catalog.dataset[key]._name +"'>" 
+									+ui.catalog.dataset[key]._name +"</option>");
+				}
+
+				ui.dataset = $("#datasets").val();
+				
+				ui.getMetadata();
+			})
+			.fail(function(jqXHR, textStatus, errorThrown){
+				console.log("Error occured: " +errorThrown)
+		});
+	},
+	
+	//If the user selects another dataset fetch the corresponding metadata from the server.
+	"setDataset": function () {
+		ui.dataset = $("#datasets").val();
+		ui.getMetadata();
+	},
+	
+	//Use ncML service from TDS to get the metadata for the currently selected dataset.
+	"getMetadata": function () {
+		
+		$.each(ui.catalog.dataset, function(i, v) {
+		    if (v._name == ui.dataset) {
+//				console.log(ui.dataset);
+//				console.log(v._ID);
+		    	var url = "" +window.location.protocol +"//" +window.location.host 
+		    	+"/thredds/ncml/" +v.dataset[0]._urlPath;
+				
+				$.get(url)
+					.done(function (data) {
+						
+						var x2js = new X2JS();
+						ui.ncML = x2js.xml2json(data).netcdf;
+						
+						var metadata = "";
+						
+						$.each(ui.ncML.group[0].attribute, function (i,v) {
+							metadata += v._name +": " +v._value +"<br>";
+						});
+						
+						$("#info").attr("data-content", metadata);
+					})
+					.fail(function(jqXHR, textStatus, errorThrown){
+						console.log("Error occured: " +errorThrown)
+				});
+		    }
+		});
+	},
+	
+//	"getDatasetPath": function (name) {
+//		$.each(ui.catalog.dataset, function(i, v) {
+//	        if (v._name == name) {
+//	            return v.dataset;
+//	        }
+//		});
+//	},
 	
 	/*Calculate the end year of time reference based on the first select input field. Values for the years 
 	 * might have to be updated, when the dataset on the server is exchanged.
