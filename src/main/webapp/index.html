@@ -8,11 +8,12 @@
 	<meta charset=utf-8 />
 	<title>ClimateCharts</title>
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
-	<link rel="stylesheet" href="css/layout.css"/>
-	<link rel="stylesheet" href="css/leaflet.css"/>
+	<link rel="stylesheet" href="css/layout.css">
+	<link rel="stylesheet" href="css/leaflet.css">
+	<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css">
 	<link rel="stylesheet" href="css/waitMe.min.css">
-	<!--script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>  -->
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
 	<script src="https://d3js.org/d3.v3.min.js"></script>
 	<script src="https://gabelerner.github.io/canvg/rgbcolor.js"></script>
@@ -82,10 +83,11 @@
 													class="form-control coordinates" type="text"> <label
 													for=ln>Longitude</label> <input id="ln"
 													class="form-control coordinates" type="text"> <br>
-												<label for=end>From Year</label> 
-													<select id="end" name="end"></select> <br>
-												<label for=start>back to Year</label> 
-													<select id="start" name="start" disabled></select> <br> 
+												<p>Period:</p> 
+												<p id="amount"></p>
+												<div id="slider"></div>
+												<div id="min"></div>
+												<div id="max"></div>
 												<div class="checkboxp">
 													<label><input id="checkbox" class="normalText"
 														type="checkbox"> Choose individual period-length

@@ -9,13 +9,13 @@
 
 var ui  = {
 	
-	"lt": 0,
+	"lt": null,
 	
-	"ln": 0,
+	"ln": null,
 	
-	"start": 1984,
+	"start": 0,
 	
-	"end": 2014,
+	"end": 0,
 	
 	"name": "",
 	
@@ -29,7 +29,7 @@ var ui  = {
 	
 	"ncML": {},
 	
-	//Initialize the leaflet map object with two baselayers and a scale.
+	// Initialize the leaflet map object with two baselayers and a scale.
 	"createMap": function(){
 		
 		var marker = new L.marker();
@@ -56,7 +56,7 @@ var ui  = {
 		L.control.layers(baseMaps).addTo(map);
 		L.control.scale().addTo(map);
 		
-		//Update coordinate variables if the user clicked on the map.
+		// Update coordinate variables if the user clicked on the map.
 		function updatePosition (e){
 				ui.lt = (Math.round(e.latlng.lat*100)/100).toString();
 				ui.ln = (Math.round(e.latlng.lng*100)/100).toString();
@@ -66,7 +66,8 @@ var ui  = {
 				$("#createChart").prop("disabled", false);
 			};
 		
-		//Update coordinate variables if the user typed in coordinate values manually.
+		// Update coordinate variables if the user typed in coordinate values
+		// manually.
 		$(".coordinates").change(function () {
 			ui.lt = $("#lt").val();
 			ui.ln = $("#ln").val();
@@ -76,11 +77,13 @@ var ui  = {
 		});
 	},
 
-	/*Query function to get the data for temperature and precipitation for the corresponding position and time and draw 
-	  the chart.*/
+	/*
+	 * Query function to get the data for temperature and precipitation for the
+	 * corresponding position and time and draw the chart.
+	 */
 	"createChart": function (){
 			
-			//Show loading animation.
+			// Show loading animation.
 			run_waitMe("progressBar");
 			
 			var id = "chart";
@@ -91,7 +94,8 @@ var ui  = {
 			$("#" +id).fadeTo("slow", 0.3);
 			$("#nodata").css("opacity", 0.4);
 			
-			//Draw the chart when all three ajax have calls received there answer.
+			// Draw the chart when all three ajax have calls received there
+			// answer.
 			$.when(getData(), getName(), getHeight())
 			 	.done(function(a1, a2, a3){
 					
@@ -101,12 +105,14 @@ var ui  = {
 						country = "",
 						name = "";
 					
-					//Only continue if there are realistic data values for this place and time, otherwise show an error message.
+					// Only continue if there are realistic data values for this
+					// place and time, otherwise show an error message.
 					if (a1[0][0].tmp < 10000) {
 						for (var i=0; i < a1[0].length; i++){
 							dataArray.push(a1[0][i]);
 						}
-						//Create the name string from gazetteer values or user input.
+						// Create the name string from gazetteer values or user
+						// input.
 						if ($("#name1").is(':checked') === true) {
 							if (a2[0].geonames[0]){
 								if (a2[0].geonames[0].name !== ""){
@@ -140,7 +146,8 @@ var ui  = {
 						
 						$("#loader").remove();
 						
-						//If the screenwidth of the chart container is smaller than a minimum width, activate panning.
+						// If the screenwidth of the chart container is smaller
+						// than a minimum width, activate panning.
 						if ($("#wrapper").width() < 728) {
 							$("#" +id).panzoom();
 							
@@ -155,7 +162,7 @@ var ui  = {
 						}
 							
 					} else {
-						//Show error message if there is no data available.
+						// Show error message if there is no data available.
 						$("#loader").css("visibility", "hidden");
 						$("#chart").empty();
 						$("#wrapper").append("<h3 id='nodata'>");
@@ -164,25 +171,25 @@ var ui  = {
 					}
 			 });
 
-			//Query NetCdf data from TDS server.
+			// Query NetCdf data from TDS server.
 			function getData(variable){
-//				var dataset = ui.catalog.dataset;
+// var dataset = ui.catalog.dataset;
 				var url = "";
 				
-//				var tmpPath = ui.getDatasetPath(ui.dataset)[0]._urlPath,
-//					prePath = ui.getDatasetPath(ui.dataset)[1]._urlPath;
+// var tmpPath = ui.getDatasetPath(ui.dataset)[0]._urlPath,
+// prePath = ui.getDatasetPath(ui.dataset)[1]._urlPath;
 				
-//				if (variable == "temperature") {
+// if (variable == "temperature") {
 //
-//					url += window.location.protocol +"//" +window.location.host +"/thredds/ncss/"
-//					+ui.getDatasetPath(ui.dataset)[0]._urlPath +"?";
-//				}
+// url += window.location.protocol +"//" +window.location.host +"/thredds/ncss/"
+// +ui.getDatasetPath(ui.dataset)[0]._urlPath +"?";
+// }
 //				
-//				if (variable == "precipitation") {
+// if (variable == "precipitation") {
 //
-//					url += window.location.protocol +"//" +window.location.host +"/thredds/ncss/"
-//					+ui.getDatasetPath(ui.dataset)[1]._urlPath +"?";
-//				}
+// url += window.location.protocol +"//" +window.location.host +"/thredds/ncss/"
+// +ui.getDatasetPath(ui.dataset)[1]._urlPath +"?";
+// }
 				
 				return $.get(url)
 						.fail(function(jqXHR, textStatus, errorThrown){
@@ -190,7 +197,7 @@ var ui  = {
 						});
 			};
 
-			//Query geonames.org gazetteer for placename .
+			// Query geonames.org gazetteer for placename .
 			function getName (){
 				if ($("#name1").is(':checked') === true){
 					return $.get("/climatecharts/api/gazetteer/findNearbyPlaceNameJSON", 
@@ -201,7 +208,7 @@ var ui  = {
 					}
 			};
 
-			//Query geonames.org gazetteer for srtm elevation.
+			// Query geonames.org gazetteer for srtm elevation.
 			function getHeight (){
 				return $.get("/climatecharts/api/gazetteer/srtm3JSON", 
 						{lat: ui.lt, lng: ui.ln, username: "climatediagrams"}
@@ -211,7 +218,7 @@ var ui  = {
 				});
 			};
 			
-			//Run loading Animation from "WaitMe" plugin.
+			// Run loading Animation from "WaitMe" plugin.
 			function run_waitMe(effect){
 				$("#wrapper").append("<div id=loader></div>");
 				
@@ -229,32 +236,93 @@ var ui  = {
 			};
 		},
 
-	// Fill select items with years. The start variable of his method might have to be updated if the 
-	// dataset is changed.
-	"populateLists": function (){
-		var list = new Array(114),
-			start = 1901,
-			sel1 = $('#start'),
-			sel2 = $('#end')[0];
+	//Initialize slider to set the time frame.
+	"setTimeFrame": function (){
 		
-		for (var i = 0; i < list.length; i++){
-			var value = start + i;
-		    sel1.append("<option></option>")
-		    	.val(value);
-		}
-		
-	    for (var i = 0; i < list.length; i++){
-			var opt = document.createElement('option');
-		    opt.innerHTML = start + i;
-		    opt.value = start + i;
-		    sel2.add(opt);
-		}
+		// get start and endpoint of time coverage from the selected dataset
+		this.start = parseInt(ui.ncML
+							.group[0]
+							.attribute[8]
+							._value
+							.split("-")[0]);
+		this.end = parseInt(ui.ncML
+							.group[0]
+							.attribute[9]
+							._value
+							.split("-")[0]);
 	    
-	    $("#start").val(ui.start);
-	    $("#end").val(ui.end);
+	    $("#slider").slider({
+	        range: true,
+	        min: this.start,
+	        max: this.end,
+	        values: [this.end - 30, this.end],
+	        slide: function(event, ui) {
+	        	
+	        	var checked = $("#checkbox").is(":checked");
+	        	
+	        	if (checked === true) {
+
+		            var delay = function() {
+		                
+		                $("#min").html($("#slider").slider("values", 0)).position({
+		                    my: 'center top',
+		                    at: 'center bottom',
+		                    of: $(".ui-slider-handle:first"),
+		                    offset: "0, 5"
+		                });
+		                
+		                $("#max").html($("#slider").slider("values", 1)).position({
+		                    my: 'center top',
+		                    at: 'center bottom',
+		                    of: $(".ui-slider-handle:last"),
+		                    offset: "0, 5"
+		                });
+		            };
+	        	} 
+	        	else {
+	        		var delay = function() {
+		                $("#slider").slider("values", 0, $("#slider").slider("values", 1) - 30);
+		                
+		                $("#min").html($("#slider").slider("values", 0))
+				                .position({
+				                    my: 'center top',
+				                    at: 'center bottom',
+				                    of: $(".ui-slider-handle:first"),
+				                    offset: "0, 5"
+		                });
+		                
+		                $("#max").html($("#slider").slider("values", 1))
+				                .position({
+				                    my: 'center top',
+				                    at: 'center bottom',
+				                    of: $(".ui-slider-handle:last"),
+				                    offset: "0, 5"
+		                });
+		            };
+	        	}
+
+	            //Wait for the ui.handle to set its position
+	            setTimeout(delay, 8);
+	        }
+	    });
+	    
+	    //Set default values on page load.
+        $('#min').html($('#slider').slider('values', 0)).position({
+            my: 'center top',
+            at: 'center bottom',
+            of: $(".ui-slider-handle:first"),
+            offset: "0, 5"
+        });
+
+        $('#max').html($('#slider').slider('values', 1)).position({
+            my: 'center top',
+            at: 'center bottom',
+            of: $(".ui-slider-handle:last"),
+            offset: "0, 5"
+        });
 	},
 	
-	//List all the datasets available on the server-side.
+	// List all the datasets available on the server-side.
 	"listDatasets": function () {
 		
 		var catalogUrl = "" +window.location.protocol +"//" +window.location.host 
@@ -266,9 +334,7 @@ var ui  = {
 				
 				ui.catalog = x2js.xml2json(data).catalog;
 				
-//				console.log(ui.catalog);
-				
-				for(var key in ui.catalog.dataset) {
+				for (var key in ui.catalog.dataset) {
 					$("#datasets").append("<option " 
 									+"id='" +ui.catalog.dataset[key]._ID 
 									+"' value='" +ui.catalog.dataset[key]._name +"'>" 
@@ -284,19 +350,20 @@ var ui  = {
 		});
 	},
 	
-	//If the user selects another dataset fetch the corresponding metadata from the server.
+	// If the user selects another dataset fetch the corresponding metadata from
+	// the server.
 	"setDataset": function () {
 		ui.dataset = $("#datasets").val();
 		ui.getMetadata();
 	},
 	
-	//Use ncML service from TDS to get the metadata for the currently selected dataset.
+	// Use ncML service from TDS to get the metadata for the currently selected
+	// dataset.
 	"getMetadata": function () {
 		
 		$.each(ui.catalog.dataset, function(i, v) {
 		    if (v._name == ui.dataset) {
-//				console.log(ui.dataset);
-//				console.log(v._ID);
+		    	
 		    	var url = "" +window.location.protocol +"//" +window.location.host 
 		    	+"/thredds/ncml/" +v.dataset[0]._urlPath;
 				
@@ -313,6 +380,8 @@ var ui  = {
 						});
 						
 						$("#info").attr("data-content", metadata);
+						
+						ui.setTimeFrame();
 					})
 					.fail(function(jqXHR, textStatus, errorThrown){
 						console.log("Error occured: " +errorThrown)
@@ -321,54 +390,58 @@ var ui  = {
 		});
 	},
 	
-//	"getDatasetPath": function (name) {
-//		$.each(ui.catalog.dataset, function(i, v) {
-//	        if (v._name == name) {
-//	            return v.dataset;
-//	        }
-//		});
+// "getDatasetPath": function (name) {
+// $.each(ui.catalog.dataset, function(i, v) {
+// if (v._name == name) {
+// return v.dataset;
+// }
+// });
+// },
+	
+	/*
+	 * Calculate the end year of time reference based on the first select input
+	 * field. Values for the years might have to be updated, when the dataset on
+	 * the server is exchanged.
+	 */
+//	"updateYear": function () {
+//		ui.end = parseInt($("#end").val());
+//		ui.start = parseInt($("#start").val());
+//		var checked = $("#checkbox").is(":checked");
+//		
+//		if (checked === false){
+//			ui.start = ui.end - 30;
+//			if (ui.start < 1901){
+//				ui.start = 1901;
+//			}
+//			$("#start").val(ui.start );
+//		} 
+//		if (checked === true){
+//			if (ui.end < ui.start){
+//				ui.start = ui.end;
+//			}
+//			if (ui.start < 1901){
+//				ui.start = 1901;
+//			}
+//			$("#start").val(ui.start );
+//		}
 //	},
 	
-	/*Calculate the end year of time reference based on the first select input field. Values for the years 
-	 * might have to be updated, when the dataset on the server is exchanged.
-	 */
-	"updateYear": function () {
-		ui.end = parseInt($("#end").val());
-		ui.start = parseInt($("#start").val());
-		var checked = $("#checkbox").is(":checked");
-		
-		if (checked === false){
-			ui.start = ui.end - 30;
-			if (ui.start < 1901){
-				ui.start = 1901;
-			}
-			$("#start").val(ui.start );
-		} 
-		if (checked === true){
-			if (ui.end < ui.start){
-				ui.start = ui.end;
-			}
-			if (ui.start < 1901){
-				ui.start = 1901;
-			}
-			$("#start").val(ui.start );
-		}
-	},
+	// Enable/disable the second time select field if the user wants to choose
+	// an individual time span or not.
+//	"changeTimeSelectStatus": function () {
+//		var checked = $("#checkbox").is(":checked");
+//		
+//		if (checked === true){
+//			$("#start").prop("disabled", false );
+//		} 
+//		else {
+//			$("#start").prop("disabled", true);
+//		}
+//	},
 	
-	//Enable/disable the second time select field if the user wants to choose an individual time span or not.
-	"changeTimeSelectStatus": function () {
-		var checked = $("#checkbox").is(":checked");
-		
-		if (checked === true){
-			$("#start").prop("disabled", false );
-		} 
-		else {
-			$("#start").prop("disabled", true);
-		}
-	},
-	
-	//Enable/disable text input field if the user wants to type in an individual title for the chart or use 
-	//a gazetteer.
+	// Enable/disable text input field if the user wants to type in an
+	// individual title for the chart or use
+	// a gazetteer.
 	"changeNameInputStatus": function () {
 		var checked = $("#name2").is(":checked");
 		
@@ -382,22 +455,23 @@ var ui  = {
 		}
 	},
 	
-	//Only enable button for creating the chart if the necessary variables are defined.
+	// Only enable button for creating the chart if the necessary variables are
+	// defined.
 	"changeButtonStatus": function () {
-		ui.lt = $("#lt").val();
-		ui.ln = $("#ln").val();
+		this.lt = $("#lt").val();
+		this.ln = $("#ln").val();
 		
-		if (ui.lt !== 0 && ui.ln !== 0){
+		if (this.lt !== null && this.ln !== null){
 			$("#createChart").prop("disabled", false);
 		}
 	},
 	
-	//Reset position of svg if it is not centered due to panning/zooming.
+	// Reset position of svg if it is not centered due to panning/zooming.
 	"resetSVG": function () {
 		$("#chart").panzoom("reset");
 	},
 	
-	//Save svg graphic to a svg file.
+	// Save svg graphic to a svg file.
 	"saveSvg": function () {
 		$("#chart").panzoom("reset");
 		
@@ -415,7 +489,8 @@ var ui  = {
 	    saveAs(blob, "climatechart.svg");
 	},
 	
-	//Clone the original svg graphic, upscale and rasterize the clone and finally save it to a png file.
+	// Clone the original svg graphic, upscale and rasterize the clone and
+	// finally save it to a png file.
 	"savePng": function() {
 		$("#chart").panzoom("reset");
 		
@@ -425,9 +500,11 @@ var ui  = {
 		
 		$("#wrapper").append("<canvas>")
 		
-		/* Set hardcoded width value for raster graphic and scale height dynamically by 
-		 * newWidth/originalWidth - factor. The chosen fixed width is twice the size of the original svg object,
-		 * insuring that it stays sharp when it is scaled up.
+		/*
+		 * Set hardcoded width value for raster graphic and scale height
+		 * dynamically by newWidth/originalWidth - factor. The chosen fixed
+		 * width is twice the size of the original svg object, insuring that it
+		 * stays sharp when it is scaled up.
 		 */
 		var clone = d3.select("#clone"),
 			width_svg = clone.attr("width"),
@@ -464,7 +541,7 @@ var ui  = {
 		saveAs(blob, 'climatechart.png'); 
 	},
 	
-	//Switch between "Home" and "About" tab.
+	// Switch between "Home" and "About" tab.
 	"selectTab": function (e) {
 	        var currentAttrValue = $(this).attr('href');
 	        
