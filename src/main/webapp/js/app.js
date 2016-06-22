@@ -7,8 +7,8 @@
  */
 
 ui.createMap();
-ui.populateLists();
 ui.listDatasets();
+//ui.setTimeRange();
 
 $('.form-group').trigger("reset");
 $("#datasets").change(ui.setDataset);
@@ -17,9 +17,6 @@ $("#info").popover({
 });
 $("#lt").change(ui.changeButtonStatus);
 $("#ln").change(ui.changeButtonStatus);
-$("#end").change(ui.updateYear);
-$("#start").change(ui.updateYear); 
-$("#checkbox").click(ui.changeTimeSelectStatus);
 $(".name").click(ui.changeNameInputStatus);
 $("#createChart").click(ui.createChart);
 $("#saveSvg").click(ui.saveSvg);

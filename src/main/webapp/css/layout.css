@@ -52,7 +52,7 @@ label {
 }
 
 select {
-	float: right;
+	display:inline-block
 }
 
 .arid {
@@ -77,9 +77,10 @@ select {
     border-radius: 4px;
 	background-color: #043d7b;
 	color: white;
+    margin-top: 5px;
 }
 
-.col-centered{
+.col-centered {
 	float: none;
 	margin: 0 auto;
 }
@@ -226,10 +227,21 @@ li.active a, li.active a:hover {
 	background-color: transparent;
 }
 
+.ui-slider {
+    margin-bottom: 20px;
+    width: 90%;
+}
+
 #map {
 	height: 400px;
 	width: 100%;
 	box-shadow: 3px 3px 6px #888888;
+}
+
+#min, #max {
+    width: 30px;
+    text-align: center;
+    margin-bottom: -20px;
 }
 
 #nodata {
