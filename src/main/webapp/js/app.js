@@ -6,19 +6,19 @@
  * select input fields, as well as button listeners for every element the user can interact with. 
  */
 
-ui.createMap();
-ui.listDatasets();
-//ui.setTimeRange();
+UI.createMap();
+UI.listDatasets();
+UI.initLoader("progressBar");
 
 $('.form-group').trigger("reset");
-$("#datasets").change(ui.setDataset);
-$("#info").popover({
+$("#datasets").change(UI.setDataset);
+$("#metadata").popover({
 	html: true
 });
-$("#lt").change(ui.changeButtonStatus);
-$("#ln").change(ui.changeButtonStatus);
-$(".name").click(ui.changeNameInputStatus);
-$("#createChart").click(ui.createChart);
-$("#saveSvg").click(ui.saveSvg);
-$('#savePng').click(ui.savePng);
-$(".tab-links a").click(ui.selectTab);
+$("#lt").change(UI.changeButtonStatus);
+$("#ln").change(UI.changeButtonStatus);
+$(".name").click(UI.changeNameInputStatus);
+$("#createChart").click(UI.createChart);
+$("#saveSvg").click(UI.saveSvg);
+$('#savePng').click(UI.savePng);
+$(".tab-links a").click(UI.selectTab);

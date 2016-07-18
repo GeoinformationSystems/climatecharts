@@ -1,5 +1,5 @@
 /*
- * ClimateCharts (--final URL--) (04.02.2016)
+ * ClimateCharts (climatecharts.net)
  * Author: Felix Wiemann
  * 
  * This file contains the function to define and draw the svg elements of the climate chart with the given arguments. In 
@@ -13,8 +13,8 @@
  *  - name: the name for the place the chart is corresponding to
  *  - elevation: the elevation above sea level in meters for the attached coordinates
  *  
- *  Please note that the styles for all elements within the graphic are not defined by CSS but by D3. Otherwise the styles 
- *  won´t be saved to file if the user wants use the "saveSVG" or "savePNG" functions from the ui object.
+ *  Please note that the styles for all elements within the graphic are not defined by external CSS but by D3. Otherwise 
+ *  the styles won´t be saved to file if the user wants use the "saveSVG" or "savePNG" functions from the UI object.
  */
 
 drawChart = function (id, data, name, elevation){
@@ -47,7 +47,7 @@ var chart = d3.select("#wrapper")
 				.attr("height", HEIGHT)
 				.attr("viewBox" , "0 0 " + WIDTH + " " + HEIGHT)
 				.style("min-width", min_width +"px")
-				.style("font-family", "Calibri")
+				.style("font-family", "Verdana, Geneva, sans-serif")
 				.style("font-style", "normal")
 				.style("font-variant", "normal")
 				.style("font-weight", "normal")
@@ -75,8 +75,9 @@ var background = "white",
 	colPreBright = d3.rgb(150,150,255),
 	black = "black";
 
-//DOI to the current data source
-var source = "CRU TS v3.23, doi:10.5285/4c7fdfa6-f176-4c58-acee-683d5e9d2ed5";
+//Data source reference.
+var source = UI.dataset,
+	url = "ClimateCharts.net";
 
 //Placeholder for the specific ticks shown on the vertical axes.
 var ticks_y1 = [],
@@ -104,7 +105,7 @@ var tmp_range = 0,
 	pre_max = d3.max(data, function(d) { return d.pre; });
 
 //Create arrays only with precipitation values for winter and summer, depending on the hemisphere.
-if (ui.lt >= 0) {   
+if (UI.lt >= 0) {   
 	 pre_summer = (function () {
 			var summer = [];
 			for (i = 3; i < 9; i++){
@@ -195,7 +196,7 @@ var count_warmMonths = (function () {
  * assuming there aren´t any negative tmp values.
  */
 var y1_stepsize = (HEIGHT - MARGINS.top - MARGINS.bottom)/5;
-	
+
 setTickValues();
 
 //Change height if precipitation is over 100mm or temperature below 0°C
@@ -264,12 +265,12 @@ function getClimateClass (){
 	var cl = "";
 	var pre_dry = getPreDry();
 	
-	console.log("tmp_max: " +tmp_max +", tmp_min: " +tmp_min +", pre_max: " +pre_max +", pre_min: " +pre_min 
-			+", pre_minS: " +pre_minS +", pre_minW: " +pre_minW +", pre_maxS: " +pre_maxS +", pre_maxW: " 
-			+pre_maxW +", pre_dry: " +pre_dry +", count_warmMonths: " +count_warmMonths);
+//	console.log("tmp_max: " +tmp_max +", tmp_min: " +tmp_min +", pre_max: " +pre_max +", pre_min: " +pre_min 
+//			+", pre_minS: " +pre_minS +", pre_minW: " +pre_minW +", pre_maxS: " +pre_maxS +", pre_maxW: " 
+//			+pre_maxW +", pre_dry: " +pre_dry +", count_warmMonths: " +count_warmMonths);
 	
-	console.log("pre_summer: " +pre_summer.toString());
-	console.log("pre_winter: " +pre_winter.toString());
+//	console.log("pre_summer: " +pre_summer.toString());
+//	console.log("pre_winter: " +pre_winter.toString());
 	
 	if (tmp_max < 10){
 		cl = "E";
@@ -397,7 +398,8 @@ function getPreDry () {
 	
 	var pre_diff = sum_summer - sum_winter;
 	
-	console.log("sum_summer: " +sum_summer +", sum_winter: " +sum_winter +", 2/3*pre_sum: " +2/3*pre_sum);
+//	console.log("sum_summer: " +sum_summer +", sum_winter: " +sum_winter +", 
+//	2/3*pre_sum: " +2/3*pre_sum);
 	
 	if (sum_summer >= 2/3*pre_sum) {
 		pre_dry = 2*tmp_mean + 28;
@@ -415,8 +417,8 @@ function getPreDry () {
 //Create the title which is shown above the graph.
 function getTitle () {
 	
-	var lt = ui.lt;
-	var ln = ui.ln;
+	var lt = UI.lt;
+	var ln = UI.ln;
 	
 	if (lt >= 0){
 		lt = lt +"N";
@@ -661,7 +663,7 @@ var areaBelowPre2 = d3.svg.area()
 					.y1(yScale2(100))
 					.interpolate('linear');
 
-//Polygons used as clipping masks to define the visible parts of the polygons above.
+//Polygons used as clipping masks to define the visible parts of the polygons defined above.
 var areaTmpTo100 = d3.svg.area()
 					.x(function(d) {return xScale(d.month);})
 					.y0(function(d) {return yScale1(d.tmp);})
@@ -832,7 +834,7 @@ chart.append("text")
 chart.append("text")
 	.attr("class", "info")
 	.attr("text-anchor", "end")
-	.attr("x", chart_width + MARGINS.left + 15)
+	.attr("x", chart_width + MARGINS.left + 20)
 	.attr("y", table_y)
 	.text("[mm]")
 	.attr('fill', colPre);
@@ -840,7 +842,7 @@ chart.append("text")
 chart.append("text")
 	.attr("class", "info")
 	.attr("x", (WIDTH - MARGINS.right)/2)
-    .attr("y", MARGINS.top/2)
+    .attr("y", MARGINS.top*1/3)
     .attr("width", MARGINS.right - MARGINS.rightS)
     .text(getTitle())
     .attr("text-anchor", "middle");
@@ -848,9 +850,9 @@ chart.append("text")
 chart.append("text")
 	.attr("class", "info")
 	.attr("x", (WIDTH - MARGINS.right)/2)
-	.attr("y", MARGINS.top*3/4)
+	.attr("y", MARGINS.top*2/3)
 	.attr("width", MARGINS.right - MARGINS.rightS)
-	.text("Climate Class: " + getClimateClass() + ", Years " + ui.start + "-" + ui.end)
+	.text("Climate Class: " + getClimateClass() + ", Years " + UI.start + "-" + UI.end)
 	.attr("text-anchor", "middle");
 
 chart.append("text")
@@ -868,14 +870,14 @@ chart.append("text")
 chart.append("text")
 	.attr("class", "source")
 	.attr("x", WIDTH - MARGINS.right/15)
-	.attr("y", HEIGHT - 10)
-	.text("ClimateCharts.net")
+	.attr("y", HEIGHT - 5)
+	.text(url)
 	.style("text-anchor", "end");
 
 chart.append("text")
 	.attr("class", "source")
 	.attr("x", MARGINS.left/2)
-	.attr("y", HEIGHT - 10)
+	.attr("y", HEIGHT - 5)
 	.text("Data Source: " + source);
 
 

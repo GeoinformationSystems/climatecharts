@@ -3,11 +3,11 @@
  * Author: Felix Wiemann
  * 
  * This file contains the user interface object for the website. The variables defined at the beginning are necessary to 
- * query the server for temperature and precipitation data and subsequently draw the chart. The ui functions are triggered,
+ * query the server for temperature and precipitation data and subsequently draw the chart. The UI functions are triggered,
  * if the corresponding html element is clicked or it´s value changes.
  */
 
-var ui  = {
+var UI  = {
 	
 	"lt": null,
 	
@@ -27,7 +27,7 @@ var ui  = {
 	
 	"catalog": {},
 	
-	"ncML": {},
+	"ncML": [],
 	
 	// Initialize the leaflet map object with two baselayers and a scale.
 	"createMap": function(){
@@ -40,7 +40,7 @@ var ui  = {
 		
 		var ESRI = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', {
 			maxZoom: 20,
-			attribution: 'Tiles &copy; Esri'
+			attribution: 'Tiles &copy; ESRI'
 			}).addTo(map);
 		
 		var OpenStreetMap_Mapnik = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -58,21 +58,21 @@ var ui  = {
 		
 		// Update coordinate variables if the user clicked on the map.
 		function updatePosition (e){
-				ui.lt = (Math.round(e.latlng.lat*100)/100).toString();
-				ui.ln = (Math.round(e.latlng.lng*100)/100).toString();
-				marker.setLatLng([ui.lt, ui.ln]).addTo(map);
-				$("#lt").val(ui.lt);
-				$("#ln").val(ui.ln);
+				UI.lt = (Math.round(e.latlng.lat*100)/100).toString();
+				UI.ln = (Math.round(e.latlng.lng*100)/100).toString();
+				marker.setLatLng([UI.lt, UI.ln]).addTo(map);
+				$("#lt").val(UI.lt);
+				$("#ln").val(UI.ln);
 				$("#createChart").prop("disabled", false);
 			};
 		
 		// Update coordinate variables if the user typed in coordinate values
 		// manually.
 		$(".coordinates").change(function () {
-			ui.lt = $("#lt").val();
-			ui.ln = $("#ln").val();
-			map.setView([ui.lt, ui.ln], 5);
-			marker.setLatLng([ui.lt, ui.ln]).addTo(map);
+			UI.lt = $("#lt").val();
+			UI.ln = $("#ln").val();
+			map.setView([UI.lt, UI.ln], 5);
+			marker.setLatLng([UI.lt, UI.ln]).addTo(map);
 			$("#createChart").prop("disabled", false);
 		});
 	},
@@ -83,46 +83,78 @@ var ui  = {
 	 */
 	"createChart": function (){
 			
-			// Show loading animation.
-			run_waitMe("progressBar");
-			
 			var id = "chart";
 
 			$("#loader").css("visibility", "visible");
-			$("#info").fadeOut();
-			$("#info").remove();
+			$("#info").fadeTo("slow", 0.0);
 			$("#" +id).fadeTo("slow", 0.3);
 			$("#nodata").css("opacity", 0.4);
 			
-			// Draw the chart when all three ajax have calls received there
-			// answer.
-			$.when(getData(), getName(), getHeight())
-			 	.done(function(a1, a2, a3){
+			// Draw the chart when all four ajax calls have received a response.
+			$.when(getData(0), getData(1), getName(), getElevation())
+			 	.done(function(a1, a2, a3, a4){
+			 		
+					UI.data = [{month: "Jan"},
+					            {month: "Feb"},
+					            {month: "Mar"},
+					            {month: "Apr"},
+					            {month: "May"},
+					            {month: "Jun"},
+					            {month: "Jul"},
+					            {month: "Aug"},
+					            {month: "Sep"},
+					            {month: "Oct"},
+					            {month: "Nov"},
+					            {month: "Dec"}];
 					
-					var dataArray = [],
-						place = "",
+					var place = "",
 						admin = "",
 						country = "",
-						name = "";
+						name = "",
+						height = "";
+					
+					//Convert xml response to JSON.
+					var x2js = new X2JS(),
+						dataTmp = calculateMeans(x2js.xml2json(a1[0]).grid),
+						dataPre = calculateMeans(x2js.xml2json(a2[0]).grid);
+
+					
+					//If temperature values are in Kelvin units, convert them to Celsius.
+					for (var key in dataTmp) {
+						if (dataTmp[key] >= 200) {
+							dataTmp[key] = dataTmp[key] - 273.15;
+						}
+					}
+					
+					//Workaround for the precipitation dataset created by University of Delaware. Values 
+					//are converted from cm to mm.
+					if (UI.dataset === "University of Delaware Air Temperature and Precipitation v4.01") {
+						for (var key in dataPre) {
+							dataPre[key] = dataPre[key]*10;
+						}
+					}
+					
+					for (var i = 0; i < UI.data.length; i++) {
+						UI.data[i].tmp = dataTmp[i];
+						UI.data[i].pre = dataPre[i];
+					}
 					
 					// Only continue if there are realistic data values for this
 					// place and time, otherwise show an error message.
-					if (a1[0][0].tmp < 10000) {
-						for (var i=0; i < a1[0].length; i++){
-							dataArray.push(a1[0][i]);
-						}
-						// Create the name string from gazetteer values or user
-						// input.
+					if (Math.max(...dataTmp) < 100 && Math.min(...dataTmp) > -100
+						&& Math.max(...dataPre) < 10000 && Math.min(...dataPre) >= 0) {
+						
+						// Create the name string from gazetteer values or user input.
 						if ($("#name1").is(':checked') === true) {
-							if (a2[0].geonames[0]){
-								if (a2[0].geonames[0].name !== ""){
-									place = a2[0].geonames[0].name +", ";
+							if (typeof a3[0].geonames[0] !== 'undefined'){
+								if (a3[0].geonames[0].name !== ""){
+									place = a3[0].geonames[0].name +", ";
 								}
-								if (a2[0].geonames[0].adminName1 !== ""){
-									admin = a2[0].geonames[0].adminName1 +", ";
+								if (a3[0].geonames[0].adminName1 !== ""){
+									admin = a3[0].geonames[0].adminName1 +", ";
 								}
-								if (a2[0].geonames[0].countryName !== ""){
-									country = a2[0].geonames[0].countryName + ", ";
+								if (a3[0].geonames[0].countryName !== ""){
+									country = a3[0].geonames[0].countryName + ", ";
 								}
 							}
 							name = place + admin + country;
@@ -131,20 +163,23 @@ var ui  = {
 							name = $("#userName").val() +", ";
 						}
 						
-			    	  	var height = a3[0].srtm3;
+						if (typeof a4 !== 'undefined') {
+				    	  	height = a4[0].srtm3;
+						}
 			    	  	
-			    	  	ui.data = dataArray.slice();
-			    	  	ui.name = name;
-			    	  	ui.srtm = height;
+			    	  	UI.name = name;
+			    	  	UI.srtm = height;
 			    	  	
 						$("#loader").css("visibility", "hidden");
 						$("#nodata").empty();
 						$("#save").css("visibility", "visible");
 						$("#" +id).remove();
 						
-						drawChart(id, dataArray, name, height);
+						// Finally draw the chart.
+						drawChart(id, UI.data, name, height);
 						
-						$("#loader").remove();
+						$("#loader").css("visibility", "hidden");
+						$("#info").remove();
 						
 						// If the screenwidth of the chart container is smaller
 						// than a minimum width, activate panning.
@@ -157,7 +192,7 @@ var ui  = {
 																.text("Reset Chart");
 								$("#save").prepend(reset);
 								$("#save").prepend("<p>Pan/zoom the chart to change viewing area.");
-								$("#reset").click(ui.resetSVG);
+								$("#reset").click(UI.resetSVG);
 							}
 						}
 							
@@ -171,91 +206,113 @@ var ui  = {
 					}
 			 });
 
-			// Query NetCdf data from TDS server.
-			function getData(variable){
-// var dataset = ui.catalog.dataset;
-				var url = "";
+			//Query NetCdf data for a single dataset from the TDS server.
+			function getData(Index){
+				var url = "".
+					variable = "";
 				
-// var tmpPath = ui.getDatasetPath(ui.dataset)[0]._urlPath,
-// prePath = ui.getDatasetPath(ui.dataset)[1]._urlPath;
 				
-// if (variable == "temperature") {
-//
-// url += window.location.protocol +"//" +window.location.host +"/thredds/ncss/"
-// +ui.getDatasetPath(ui.dataset)[0]._urlPath +"?";
-// }
-//				
-// if (variable == "precipitation") {
-//
-// url += window.location.protocol +"//" +window.location.host +"/thredds/ncss/"
-// +ui.getDatasetPath(ui.dataset)[1]._urlPath +"?";
-// }
+				for (var key in UI.catalog.dataset) {
+					
+					 if (UI.catalog.dataset[key]._name == UI.dataset) {
+						 
+						 //Detect the climate variable in the netcdf dataset by using the dimensions as an
+						 //indicator.
+						 for (var name in UI.ncML[Index].variable) {
+							 
+							 if (UI.ncML[Index].variable[name]._shape == "time lat lon") {
+								 
+								 variable = UI.ncML[Index].variable[name]._name;
+							 }
+						 }
+
+						 url += window.location.protocol +"//" +window.location.host +"/thredds/ncss/"
+						 	+UI.catalog.dataset[key].dataset[Index]._urlPath 
+						 	+"?var=" +variable
+						 	+"&latitude=" +UI.lt
+						 	+"&longitude=" +UI.ln
+						 	+"&time_start=" +UI.start +"-01-01T00:00:00Z"
+						 	+"&time_end=" +UI.end +"-12-30T00:00:00Z";
+					 }
+				}
 				
 				return $.get(url)
 						.fail(function(jqXHR, textStatus, errorThrown){
-							console.log("Error occured: " +errorThrown)
+							alert("Error occured: " +errorThrown);
 						});
 			};
 
-			// Query geonames.org gazetteer for placename .
+			// Query geonames.org gazetteer for placename.
 			function getName (){
 				if ($("#name1").is(':checked') === true){
 					return $.get("/climatecharts/api/gazetteer/findNearbyPlaceNameJSON", 
-							{lat: ui.lt, lng: ui.ln, username: "climatediagrams"})
+							{lat: UI.lt, lng: UI.ln})
 							.fail(function(jqXHR, textStatus, errorThrown){
-								console.log("Error occured: " +errorThrown)
+								$("#loader").css("visibility", "hidden");
+								$("#chart").empty();
+								$("#wrapper").append("<h3 id='nodata'>");
+								$("#nodata").text("External Service not responding: " +errorThrown);
+								$("#nodata").fadeTo("slow", 1);
 							});
 					}
 			};
 
 			// Query geonames.org gazetteer for srtm elevation.
-			function getHeight (){
+			function getElevation (){
 				return $.get("/climatecharts/api/gazetteer/srtm3JSON", 
-						{lat: ui.lt, lng: ui.ln, username: "climatediagrams"}
-					)
-					.fail(function(jqXHR, textStatus, errorThrown){
-						console.log("Error occured: " +errorThrown)
-				});
+						{lat: UI.lt, lng: UI.ln})
+						.fail(function(jqXHR, textStatus, errorThrown){
+							$("#loader").css("visibility", "hidden");
+							$("#chart").empty();
+							$("#wrapper").append("<h3 id='nodata'>");
+							$("#nodata").text("External Service not responding: " +errorThrown);
+							$("#nodata").fadeTo("slow", 1);
+						});
 			};
 			
-			// Run loading Animation from "WaitMe" plugin.
-			function run_waitMe(effect){
-				$("#wrapper").append("<div id=loader></div>");
+			//Calculate the average values for each month of the input data array.
+			function calculateMeans(dataIn) {
+
+				var avg = [];
 				
-				var loader = $('#loader').waitMe({
-					effect: effect,
-					text: 'Please Wait...',
-					bg: '',
-					color: 'gray',
-					sizeW: '',
-					sizeH: '',
-					source: '',
-					onClose: function() {
+				for (var j = 0; j < 12; j++) {
+					var sum = 0;
+
+					for (var i = 0 + j; i < dataIn.point.length; i += 12) {
+						sum += Number(dataIn.point[i].data[3].__text);
 					}
-				});
-			};
-		},
+					avg[j] = sum/(dataIn.point.length/12);
+				}
+				
+				return avg;
+			}
+	},
+	
+	 // Run loading Animation from "WaitMe" plugin.
+	"initLoader": function initLoader(effect){
+		
+		var loader = $('#loader').waitMe({
+			effect: effect,
+			text: 'Please Wait...',
+			bg: '',
+			color: 'gray',
+			sizeW: '',
+			sizeH: '',
+			source: '',
+			onClose: function() {
+			}
+		});
+	},
 
 	//Initialize slider to set the time frame.
 	"setTimeFrame": function (){
-		
-		// get start and endpoint of time coverage from the selected dataset
-		this.start = parseInt(ui.ncML
-							.group[0]
-							.attribute[8]
-							._value
-							.split("-")[0]);
-		this.end = parseInt(ui.ncML
-							.group[0]
-							.attribute[9]
-							._value
-							.split("-")[0]);
 	    
+		
 	    $("#slider").slider({
 	        range: true,
-	        min: this.start,
-	        max: this.end,
-	        values: [this.end - 30, this.end],
+	        min: UI.start,
+	        max: UI.end,
+	        values: [UI.end - 30, UI.end],
 	        slide: function(event, ui) {
 	        	
 	        	var checked = $("#checkbox").is(":checked");
@@ -277,6 +334,9 @@ var ui  = {
 		                    of: $(".ui-slider-handle:last"),
 		                    offset: "0, 5"
 		                });
+		                
+			            UI.start = $("#slider").slider("values", 0);
+			            UI.end = $("#slider").slider("values", 1);
 		            };
 	        	} 
 	        	else {
@@ -298,6 +358,9 @@ var ui  = {
 				                    of: $(".ui-slider-handle:last"),
 				                    offset: "0, 5"
 		                });
+
+			            UI.start = $("#slider").slider("values", 0);
+			            UI.end = $("#slider").slider("values", 1);
 		            };
 	        	}
 
@@ -320,6 +383,9 @@ var ui  = {
             of: $(".ui-slider-handle:last"),
             offset: "0, 5"
         });
+
+        UI.start = $("#slider").slider("values", 0);
+        UI.end = $("#slider").slider("values", 1);
 	},
 	
 	// List all the datasets available on the server-side.
@@ -332,116 +398,82 @@ var ui  = {
 			.done(function (data) {
 				var x2js = new X2JS();
 				
-				ui.catalog = x2js.xml2json(data).catalog;
+				UI.catalog = x2js.xml2json(data).catalog;
 				
-				for (var key in ui.catalog.dataset) {
+				for (var key in UI.catalog.dataset) {
 					$("#datasets").append("<option " 
-									+"id='" +ui.catalog.dataset[key]._ID 
-									+"' value='" +ui.catalog.dataset[key]._name +"'>" 
-									+ui.catalog.dataset[key]._name +"</option>");
+									+"id='" +UI.catalog.dataset[key]._ID 
+									+"' value='" +UI.catalog.dataset[key]._name +"'>" 
+									+UI.catalog.dataset[key]._name +"</option>");
 				}
-
-				ui.dataset = $("#datasets").val();
 				
-				ui.getMetadata();
+				// Set the first pair of datasets in the catalogue as default.
+				UI.dataset = $("#datasets").val();
+				
+				UI.getMetadata();
+				
+				console.log(UI.catalog);
 			})
 			.fail(function(jqXHR, textStatus, errorThrown){
-				console.log("Error occured: " +errorThrown)
+				console.log("Error occured: " +errorThrown);
 		});
 	},
 	
 	// If the user selects another dataset fetch the corresponding metadata from
 	// the server.
 	"setDataset": function () {
-		ui.dataset = $("#datasets").val();
-		ui.getMetadata();
+		UI.dataset = $("#datasets").val();
+		UI.getMetadata();
 	},
 	
 	// Use ncML service from TDS to get the metadata for the currently selected
 	// dataset.
 	"getMetadata": function () {
 		
-		$.each(ui.catalog.dataset, function(i, v) {
-		    if (v._name == ui.dataset) {
+		$.each(UI.catalog.dataset, function(i, v) {
+		    if (v._name == UI.dataset) {
 		    	
-		    	var url = "" +window.location.protocol +"//" +window.location.host 
-		    	+"/thredds/ncml/" +v.dataset[0]._urlPath;
-				
-				$.get(url)
-					.done(function (data) {
+		    	UI.start = parseInt(v.timeCoverage.start);
+		    	
+		    	UI.end = parseInt(v.timeCoverage.end);
+		    	
+		    	var urlTmp = "" +window.location.protocol +"//" +window.location.host 
+		    			+"/thredds/ncml/" +v.dataset[0]._urlPath,
+		    		urlPre = "" +window.location.protocol +"//" +window.location.host 
+		    			+"/thredds/ncml/" +v.dataset[1]._urlPath;
+		    	
+		    	$.when($.get(urlTmp), $.get(urlPre))
+				 	.done(function(a1, a2){
+				 		
+				 		var x2js = new X2JS();
+						UI.ncML[0] = x2js.xml2json(a1[0]).netcdf;
+						UI.ncML[1] = x2js.xml2json(a2[0]).netcdf;
 						
-						var x2js = new X2JS();
-						ui.ncML = x2js.xml2json(data).netcdf;
+						var metadata = "Spatial Resolution: " 
+										+ UI.ncML[0].group[0].attribute[6]._value +"° x " 
+										+ UI.ncML[0].group[0].attribute[7]._value +"°"+"<br>"
+										+ "Temporal Coverage: "
+										+ UI.start 
+										+ " - "
+										+ UI.end;
 						
-						var metadata = "";
+						$.each(UI.catalog.dataset, function (index, value) {
+							$("#source").append("<p>" +UI.catalog.dataset[index]._name +": <br>"
+													+UI.catalog.dataset[index].documentation +"</p>")
+						})
 						
-						$.each(ui.ncML.group[0].attribute, function (i,v) {
-							metadata += v._name +": " +v._value +"<br>";
-						});
+						$("#metadata").attr("data-content", metadata);
 						
-						$("#info").attr("data-content", metadata);
+						UI.setTimeFrame();
 						
-						ui.setTimeFrame();
-					})
-					.fail(function(jqXHR, textStatus, errorThrown){
-						console.log("Error occured: " +errorThrown)
-				});
+						console.log(UI.ncML);
+				 	});
 		    }
 		});
 	},
 	
-// "getDatasetPath": function (name) {
-// $.each(ui.catalog.dataset, function(i, v) {
-// if (v._name == name) {
-// return v.dataset;
-// }
-// });
-// },
-	
-	/*
-	 * Calculate the end year of time reference based on the first select input
-	 * field. Values for the years might have to be updated, when the dataset on
-	 * the server is exchanged.
-	 */
-//	"updateYear": function () {
-//		ui.end = parseInt($("#end").val());
-//		ui.start = parseInt($("#start").val());
-//		var checked = $("#checkbox").is(":checked");
-//		
-//		if (checked === false){
-//			ui.start = ui.end - 30;
-//			if (ui.start < 1901){
-//				ui.start = 1901;
-//			}
-//			$("#start").val(ui.start );
-//		} 
-//		if (checked === true){
-//			if (ui.end < ui.start){
-//				ui.start = ui.end;
-//			}
-//			if (ui.start < 1901){
-//				ui.start = 1901;
-//			}
-//			$("#start").val(ui.start );
-//		}
-//	},
-	
-	// Enable/disable the second time select field if the user wants to choose
-	// an individual time span or not.
-//	"changeTimeSelectStatus": function () {
-//		var checked = $("#checkbox").is(":checked");
-//		
-//		if (checked === true){
-//			$("#start").prop("disabled", false );
-//		} 
-//		else {
-//			$("#start").prop("disabled", true);
-//		}
-//	},
-	
 	// Enable/disable text input field if the user wants to type in an
-	// individual title for the chart or use
-	// a gazetteer.
+	// individual title for the chart or use a gazetteer.
 	"changeNameInputStatus": function () {
 		var checked = $("#name2").is(":checked");
 		
