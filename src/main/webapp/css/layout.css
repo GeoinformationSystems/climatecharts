@@ -1,14 +1,9 @@
-@media ( max-width: 767px ) {
+@media (max-width: 767px) {
     .container-fluid {
       padding-right: 0;
       padding-left: 0;
       margin-right:-10;
       margin-left: 0;
-    }
-    
-    .well {
-      padding: 0;
-      margin: 0;
     }
 }
 
@@ -28,9 +23,15 @@ a {
 }
 
 body { 
-	font-family: calibri;
+	position: absolute;
+	width: 100%;
+	font-family: Verdana, Geneva, sans-serif;
 	font-size: medium;
-	background-color: #ebebeb;
+	background: red;
+	background: -webkit-radial-gradient(circle, red, yellow, green); /* Safari */
+    background: -o-radial-gradient(circle, red, yellow, green); /* Opera 11.6 to 12.0 */
+    background: -moz-radial-gradient(circle, red, yellow, green); /* Firefox 3.6 to 15 */
+	background: radial-gradient(circle, red, yellow, green);
     overflow-y: scroll;
 }
 
@@ -52,24 +53,22 @@ label {
 }
 
 select {
-	display:inline-block
+	display: inline-block;
+    margin-bottom: 10px;
 }
 
 .arid {
-	color: #fff200;
+	color: #edd400;
 	font-weight: bold;
-}
-
-.border-top {
-	border-top: 1px #e4e4e4 solid;
-	padding-top: 10px;
 }
 
 .block { 
 	text-align: justify;
+	display: inline-block; 
 }
 
 .btn {
+	margin: 5px;
     border-radius: 3px;
 }
 
@@ -80,23 +79,32 @@ select {
     margin-top: 5px;
 }
 
-.col-centered {
-	float: none;
-	margin: 0 auto;
+.btn-small {
+	padding: 3px;
+}
+
+.box {
+	position: relative;
+	width: 100%;
+	padding: 15px;
+	margin-top: 15px;
+	margin-bottom: 30px;
+    border: 1px solid #babdb6;
+}
+
+.box:hover {
+	box-shadow: 2px 2px 6px #babdb6;
+  	transition: 0.2s;
+}
+
+.col-lg {
+	padding-bottom: 30px;
 }
 
 .container-fluid {
 	margin-top: -20px;
     margin-right: auto;
     margin-left: auto;
-}
-
-.frame {
-	border: 1px #e4e4e4 solid;
-	padding: 20px;
-	border-radius: 4px;
-	box-shadow: 0 0 15px #808080;
-	background-color: #fff;
 }
 
 .headline {
@@ -112,46 +120,60 @@ select {
 }
 
 .img {
-    border: 1px solid gray;
-    padding: 5px;
+    padding: 10px;
+    width: 100%;
     background-color: white;
-    border-radius: 3px;
+}
+
+.img#logo {
+	max-width: 150px;
+	float: right;
+	margin: -20px;
+	margin-right: 0px;
+	border: none;
+	background-color: transparent;
+}
+
+.info {
+	padding: 30px;
 }
 
 .jumbotron {
 	position: relative;
+	width: 100%;
 	color: white;
-	margin-top: -20px;
+	top: 40px;
+	margin-top: 20px;
+	margin-bottom: 50px;
 	padding-top: 20px;
 	padding-bottom: 5px;
-	padding-left: 20px;
-	background-color: #043d7b;
-	box-shadow: 2px 2px 5px #888888;
+	background: linear-gradient(to bottom right, #407CC9, #043d7b);
 }
 
-li.active a, li.active a:hover {
-    color: #798ffb;
+.jumbotron:hover {
+	box-shadow: 2px 2px 6px #888a85;
+  	transition: 0.2s;
+}
+
+.linewrapper {
+	margin: 10px;
 }
 
 .normalText {
 	font-weight: normal !important;
 }
 
+.popover {
+	width: 300px;
+}
+
 .secHeadline {
 	float: right;
 	padding-top: 10px;
 	vertical-align: bottom;
-	font-size: 18px !important;
+	font-size: 17px !important;
+	font-weight: 500 !important;
 	color: white;
-}
-
-.pad {
-    margin-bottom: 10px;
-}
-
-.padding {
-	margin: 10px;
-	padding: 10px;
 }
 
 .row { 
@@ -170,7 +192,8 @@ li.active a, li.active a:hover {
 }
 
 .tab-links a {
-	display: inline-block;        
+	display: inline-block;  
+    box-sizing: border-box;      
 	transition: all linear 0.15s;
 	color: white;
 	margin-top: -20px;
@@ -178,11 +201,17 @@ li.active a, li.active a:hover {
 
 .tab-links a:hover {
     text-decoration: none;
-    color: #798ffb;
+    background-color: none;
+    box-shadow: inset 0px 0px 0px 1px white;
 }
 
 .tab.active {
     display: block;
+}
+
+.ui-slider {
+    margin-bottom: 20px;
+    width: 90%;
 }
 
 .veryhumid {
@@ -200,17 +229,19 @@ li.active a, li.active a:hover {
 	height: 0px;
 }
 
-#info {
-	padding: 15px;
+#footer {
+	position: absolute;
+	height: 50px;	
 }
 
 #loader {
 	position: absolute;
+	top: 50%;
+	left: 50%;
 	width: 220px;
 	height: 100px;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, 0%);
+	margin-top: -50px;
+	margin-left: -110px;
 	background-color: white;
     z-index: 1000;
     visibility: hidden;
@@ -218,24 +249,16 @@ li.active a, li.active a:hover {
     border-radius: 10px;
 }
 
-.img#logo {
-	max-width: 150px;
-	float: right;
-	margin: -20px;
-	margin-right: 0px;
-	border: none;
-	background-color: transparent;
-}
-
-.ui-slider {
-    margin-bottom: 20px;
-    width: 90%;
-}
-
 #map {
 	height: 400px;
 	width: 100%;
-	box-shadow: 3px 3px 6px #888888;
+}
+
+#metadata {
+    position: absolute;
+    right: 0px;
+    top: -10px;
+    display: inline-block;
 }
 
 #min, #max {
@@ -255,5 +278,7 @@ li.active a, li.active a:hover {
 }
 
 #wrapper {
-	box-shadow: 3px 3px 6px #888888;
+	position: relative;
+	width: 100%;
+    margin-bottom: 30px;
 }

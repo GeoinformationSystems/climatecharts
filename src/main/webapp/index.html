@@ -26,6 +26,19 @@
 	<script src="js/panzoom/pointertouch.js"></script>
 	<script src="js/waitMe.min.js"></script>
 	<script src="js/x2js/xml2json.js"></script>
+	
+	<!-- Google Analytics -->
+	<script>
+		(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+		(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+		m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+		})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+		
+		ga('create', 'UA-80711064-1', 'auto');
+		ga('send', 'pageview');
+	</script>
+	<!-- End Google Analytics -->
+	
 	<meta name="author" content="Felix Wiemann">
 	<meta name="description" content="An application to create meteorological charts for places worldwide.">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
@@ -35,7 +48,7 @@
 		<div class="row">
 			<div class="col-lg-1"></div>
 			<div class="col-lg-10">
-				<div class="container-fluid frame">
+				<div class="container-fluid">
 					<div class="tabs">
 						<div class="jumbotron">
 							<div class="row">
@@ -66,19 +79,30 @@
 							<div id="home" class="tab active">
 								<div class="row">
 									<div class="col-lg-9">
-										<div id="map"></div>
+										<div id="map" class="box"></div>
+										<div id="wrapper" class="box">
+											<p id="info" class="info">
+												In this application you can dynamically create a climate chart 
+												for a specific location and time frame. 
+												Click on the map or type in coordinates into the fields for 
+												Latitude/Longitude to choose a point of interest, select a time 
+												frame in the dropdown menu on the right and then click on "Create Chart".
+											</p>
+											<div id="loader"></div>
+										</div>
 									</div>
-									<div class="col-lg-3 top-buffer">
-										<div class="form">
+									<div class="col-lg-3">
+										<div class="box">
 											<div class="form-group">
 												<div class="dropdown">
-												  <label for="datasets">Select dataset:</label>
+												<div class="linewrapper">
+												  	<p class="block">Select dataset:</p>
+													<button id="metadata" class="btn btn-primary btn-small block" href="#" data-toggle="popover" 
+													data-content="" data-placement="bottom">Metadata</button>
+												</div>
 												  <select id="datasets" name="datasets" style="width:100%">
 												  </select>
 												</div>
-												<button id="info" class="btn btn-primary" href="#" data-toggle="popover" 
-													title="Metadata" data-content="">
-													Info</button><br>
 												<label for=lt>Latitude</label> <input id="lt"
 													class="form-control coordinates" type="text"> <label
 													for=ln>Longitude</label> <input id="ln"
@@ -108,25 +132,11 @@
 											<button id="createChart" class="btn btn-primary btn-block" disabled>
 												Create Chart</button>
 										</div>
-									</div>
-								</div>
-								<div class="row border-top">
-									<div class="col-lg-9 top-buffer">
-										<div id="wrapper">
-											<p id="info">
-												In this application you can dynamically create a climate chart 
-												for a specific location and time frame.
-												Click on the map or type in coordinates into the fields for 
-												Latitude/Longitude to choose a point of interest, select a time 
-												frame in the dropdown menu on the right and then click on "Create Chart".
-											</p>
-											<ul id="data"></ul>
+										<div id="save" class="box">
+											<p>Save as:</p>
+											<button id="saveSvg" class="btn btn-primary">SVG</button>
+											<button id="savePng" class="btn btn-success">PNG</button>
 										</div>
-									</div>
-									<div id="save" class="col-lg-3 top-buffer">
-										<p>Save as:</p>
-										<button id="saveSvg" class="btn btn-primary">SVG</button>
-										<button id="savePng" class="btn btn-success">PNG</button>
 									</div>
 								</div>
 							</div>
@@ -134,49 +144,33 @@
 							<div id="about" class="tab">
 								<div class="row">
 									<div class="col-lg-8">
-										<div class="well">
-											<div class="padding">
+										<div class="box">
+											<div class="info">
 												<h3>The Walter-Lieth Chart</h3>
 												<p class="block">
 													The charts on this site are drawn following the Walter-Lieth standard.
 													The most characteristic feature of this type of climate diagram
-													is that it graphically emphasizes in a simplified form if the climate 
+													is that the ratio between temperature and precipitation scale is constantly 
+													1:2, which makes it easier to compare different places. If there are 
+													precipitation values above 100mm per month this ratio is 
+													scaled-down by factor 10, ensuring that the chart doesn't become to misshaped. 
+													Additionally, it graphically emphasizes in a simplified form if the climate 
 													conditions at a place are <span class="humid">humid</span>, 
 													<span class="veryhumid">very humid</span>,
 													<span class="arid">arid</span> or seasonally changing. 
 												</p>
-												<img class="img img-responsive" src="img/beispiel.png">
+												<img class="img img-responsive" src="img/example.png">
 											</div>
 										</div>
-										<div class="well">
-											<div class="padding">
-												<h3>Data Sources</h3>
-												<p>
-													Temperature and precipitation data is derived from the UCAR
-													CRU Time Series 3.23 Dataset:
+										<div class="box">
+											<div class="info">
+												<h3>Data Sources:</h3>
+												<p id="source" class ="block">
 												</p>
-												<p class ="block">
-													University of East Anglia 
-													Climatic Research Unit; Harris, I.(.; Jones, P.D. (2015): 
-													CRU TS3.23: Climatic Research Unit (CRU) Time-Series (TS) 
-													Version 3.23 of High Resolution Gridded Data of Month-by-month 
-													Variation in Climate (Jan. 1901- Dec. 2014). Centre for 
-													Environmental Data Analysis, 09 November 2015. 
-													doi:10.5285/4c7fdfa6-f176-4c58-acee-683d5e9d2ed5
-												</p>
-												 <ul>
-												  <li>Temporal coverage: Monthly values for 1901 - 2014</li>
-												  <li>Spatial coverage: 0.5° x 0.5° Cellsize, 90°N - 60°S, 180°W -
-													180°E</li>
-												</ul> 
 												<p class="block">Please note that the temperature and
-													precipitation values shown in the diagram are not directly
-													measured, but interpolated between neighbouring stations in
-													the area around the specified position and then represented
-													in a grid with fixed cellsize. This interpolation process
-													and the limited resolution may lead to differences between
-													values of this dataset and real conditions, especially in
-													areas with big elevation differences.</p>
+													precipitation values shown in the diagram are based on interpolated
+													data and therefore might differ significantly from real 
+													conditions.</p>
 												<p>
 													For the title and elevation value "Geonames"
 													gazetteer is used: <br> http://www.geonames.org/,
@@ -194,8 +188,8 @@
 										</div>
 									</div>
 									<div class="col-lg-4">
-										<div class="well">
-											<div class="padding">
+										<div class="box">
+											<div class="info">
 												<p>
 													The <a target="_blank" href="http://tu-dresden.de/impressum">
 													imprint of the Technical University Dresden</a>	is applied
@@ -217,6 +211,7 @@
 			</div>
 			<div class="col-lg-1"></div>
 		</div>
+		<div id="footer" class="row"></div>
 	</div>
 	<script src="js/ui.js"></script>
 	<script src="js/drawChart.js"></script>
