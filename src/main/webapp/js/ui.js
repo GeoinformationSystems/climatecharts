@@ -530,7 +530,7 @@ var UI  = {
 					.attr("id", "clone")
 					.appendTo("#wrapper");
 		
-		$("#wrapper").append("<canvas>")
+		$("#wrapper").append("<canvas>");
 		
 		/*
 		 * Set hardcoded width value for raster graphic and scale height
