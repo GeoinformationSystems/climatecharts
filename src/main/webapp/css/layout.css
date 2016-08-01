@@ -1,20 +1,12 @@
 @media (max-width: 767px) {
-    .container-fluid {
-      padding-right: 0;
-      padding-left: 0;
-      margin-right:-10;
-      margin-left: 0;
-    }
-}
-
-@media (max-width: 992px) {
-    .cl-lg {
-      padding:0;
-      margin:0;
-    }
-
-    body {
-      padding:0;
+	
+	.info {
+		padding: 0;
+	}
+    
+    .tab-links > li {
+    	padding: 5px;
+    	height: 40px;
     }
 }
 
@@ -27,16 +19,22 @@ body {
 	width: 100%;
 	font-family: Verdana, Geneva, sans-serif;
 	font-size: medium;
-	background: red;
-	background: -webkit-radial-gradient(circle, red, yellow, green); /* Safari */
-    background: -o-radial-gradient(circle, red, yellow, green); /* Opera 11.6 to 12.0 */
-    background: -moz-radial-gradient(circle, red, yellow, green); /* Firefox 3.6 to 15 */
-	background: radial-gradient(circle, red, yellow, green);
+	background-color: #ffffff;
+	background-image: url("https://www.transparenttextures.com/patterns/az-subtle.png");
     overflow-y: scroll;
 }
 
 h2 {
 	display: inline;
+}
+
+h2 > a {
+	color: white;
+}
+
+h2 > a:hover {
+	color: white;
+	text-decoration: none;
 }
 
 h4 {
@@ -46,6 +44,11 @@ h4 {
     margin-left: 10px;
     padding-top: 10px;
     padding-bottom: 10px;
+}
+
+input {
+	margin-top: 5px;
+	margin-bottom: 5px;
 }
 
 label {
@@ -87,9 +90,11 @@ select {
 	position: relative;
 	width: 100%;
 	padding: 15px;
+	background-color:white;
 	margin-top: 15px;
 	margin-bottom: 30px;
     border: 1px solid #babdb6;
+    font-size: 0.9em;
 }
 
 .box:hover {
@@ -147,14 +152,10 @@ select {
 	margin-bottom: 50px;
 	padding-top: 20px;
 	padding-bottom: 5px;
-	background: linear-gradient(to bottom right, #407CC9, #043d7b);
-}
-
-.jumbotron:hover {
+	background-image: url("https://www.transparenttextures.com/patterns/az-subtle.png"), 
+							linear-gradient(to bottom, #407CC9, #043d7b);
 	box-shadow: 2px 2px 6px #888a85;
-  	transition: 0.2s;
 }
-
 .linewrapper {
 	margin: 10px;
 }
@@ -167,6 +168,11 @@ select {
 	width: 300px;
 }
 
+.row { 
+	margin-top:20px; 
+	margin-bottom: 20px
+}
+
 .secHeadline {
 	float: right;
 	padding-top: 10px;
@@ -174,11 +180,6 @@ select {
 	font-size: 17px !important;
 	font-weight: 500 !important;
 	color: white;
-}
-
-.row { 
-	margin-top:20px; 
-	margin-bottom: 20px
 }
 
 .tab {
@@ -193,25 +194,22 @@ select {
 
 .tab-links a {
 	display: inline-block;  
-    box-sizing: border-box;      
+    box-sizing: border-box;    
+    color: white; 
 	transition: all linear 0.15s;
-	color: white;
 	margin-top: -20px;
 }
 
-.tab-links a:hover {
+.tab-links > li > a:hover {
     text-decoration: none;
-    background-color: none;
+    background-color: transparent; 
     box-shadow: inset 0px 0px 0px 1px white;
+	transition: all linear 0s;
 }
 
 .tab.active {
     display: block;
-}
-
-.ui-slider {
-    margin-bottom: 20px;
-    width: 90%;
+	transition: all linear 0.6s;
 }
 
 .veryhumid {
@@ -220,7 +218,8 @@ select {
 }
 
 .well {
-	background-color: #f2f4fd;
+	background-color: #ffffff;
+	font-size: 0.8em;
 }
 
 #clone, canvas {
@@ -229,9 +228,9 @@ select {
 	height: 0px;
 }
 
-#footer {
-	position: absolute;
-	height: 50px;	
+#datasetInfo {
+	display: none;
+	text-align: justify;
 }
 
 #loader {
@@ -274,7 +273,13 @@ select {
 }
 
 #save {
-	visibility: hidden;
+	display: none;
+}
+
+#slider {
+    margin-bottom: 20px;
+    margin-left: 5%;
+    width: 90%;
 }
 
 #wrapper {
