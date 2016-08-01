@@ -24,7 +24,7 @@ $("#" +id).empty();
 
 //Set the basic dimension variables for the SVG element.
 var WIDTH = 728,
-	HEIGHT = 330,
+	HEIGHT = 360,
 	width_new = $("#wrapper").width(),
 	height_new = Math.floor(HEIGHT*(width_new/WIDTH));
 	min_width = 728,
@@ -32,8 +32,8 @@ var WIDTH = 728,
 				topS: 30,
 				right : 220,
 				rightS : 30,
-				bottom : 80,
-				bottomS: 30,
+				bottom : 90,
+				bottomS: 40,
 				left : 40};
 
 //Append chart element to parent container and set basic styles.
@@ -76,8 +76,7 @@ var background = "white",
 	black = "black";
 
 //Data source reference.
-var source = UI.dataset,
-	url = "ClimateCharts.net";
+var url = "ClimateCharts.net";
 
 //Placeholder for the specific ticks shown on the vertical axes.
 var ticks_y1 = [],
@@ -526,6 +525,45 @@ function mouseMove(d) {
 	}
 }
 
+// Get the doi of the dataset reference used to create the chart.
+function getSource () {
+	
+	var source = "";
+	
+	$.each(UI.catalog.dataset, function(i, v) {
+		
+		if (v._name == UI.dataset) {
+	    	source = v._name +" (" +v.documentation[1].__text +")";
+	    }
+	});
+	
+	return source;
+}
+
+function wrap(text, width) {
+	  text.each(function() {
+	    var text = d3.select(this),
+	        words = text.text().split(/\s+/).reverse(),
+	        word,
+	        line = [],
+	        lineNumber = 0,
+	        lineHeight = 1.1, // ems
+	        y = text.attr("y"),
+	        tspan = text.text(null).append("tspan").attr("x", 0).attr("y", y);
+	    while (word = words.pop()) {
+	      line.push(word);
+	      tspan.text(line.join(" "));
+	      if (tspan.node().getComputedTextLength() > width) {
+	        line.pop();
+	        tspan.text(line.join(" "));
+	        line = [word];
+	        tspan = text.append("tspan").attr("x", 0).attr("y", y)
+	        			.attr("dy", ++lineNumber * lineHeight + "em").text(word);
+	      }
+	    }
+	  });
+	}
+
 //-------------------------------------------------------------------------------------------------------------
 // Define features of chart. -----------------------------------------------------------------------------------
 
@@ -869,16 +907,21 @@ chart.append("text")
 
 chart.append("text")
 	.attr("class", "source")
-	.attr("x", WIDTH - MARGINS.right/15)
-	.attr("y", HEIGHT - 5)
+	.attr("x", WIDTH - 5)
+	.attr("y", HEIGHT - 14 )
 	.text(url)
-	.style("text-anchor", "end");
+	.style("text-anchor", "end")
+	.style("dominant-baseline", "hanging");
 
 chart.append("text")
 	.attr("class", "source")
-	.attr("x", MARGINS.left/2)
-	.attr("y", HEIGHT - 5)
-	.text("Data Source: " + source);
+	.attr("id", "dataSource")
+	.attr("x", MARGINS.left + 100)
+	.attr("width", WIDTH - MARGINS.right)
+	.text("Data Source: " +getSource())
+	.call(wrap, WIDTH)
+	.attr("y", HEIGHT + 2 - $('#dataSource')[0].getBBox().height)
+	.style("dominant-baseline", "hanging");
 
 
 //TABLE ELEMENTS
@@ -1024,5 +1067,5 @@ if (width_new > 728) {
 		.attr("height", height_new)
 		.attr("viewbox", "0 0 " + width_new + " " + height_new);
 }
-	
+
 }

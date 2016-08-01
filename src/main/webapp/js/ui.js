@@ -9,6 +9,7 @@
 
 var UI  = {
 	
+	// Query parameter for the data request.
 	"lt": null,
 	
 	"ln": null,
@@ -17,14 +18,17 @@ var UI  = {
 	
 	"end": 0,
 	
+	// Properties for the current climatechart.
 	"name": "",
 	
 	"data": [],
 	
 	"srtm": 0,
 	
+	// Name of the currently selected datasets.
 	"dataset": "",
 	
+	// THREDDS catalog and ncML of the currently selected datasets in JSON format.
 	"catalog": {},
 	
 	"ncML": [],
@@ -172,7 +176,7 @@ var UI  = {
 			    	  	
 						$("#loader").css("visibility", "hidden");
 						$("#nodata").empty();
-						$("#save").css("visibility", "visible");
+						$("#save").css("display", "block");
 						$("#" +id).remove();
 						
 						// Finally draw the chart.
@@ -235,6 +239,7 @@ var UI  = {
 						 	+"&time_end=" +UI.end +"-12-30T00:00:00Z";
 					 }
 				}
+				
 				
 				return $.get(url)
 						.fail(function(jqXHR, textStatus, errorThrown){
@@ -383,9 +388,26 @@ var UI  = {
             of: $(".ui-slider-handle:last"),
             offset: "0, 5"
         });
+        
+        $(".ui-slider-horizontal").css({"height": "10px"});
+        
+        $(".ui-slider .ui-slider-handle").css({"height": "15px", 
+        										"width": "15px",
+        										"margin-top": "1px"
+        										});
 
         UI.start = $("#slider").slider("values", 0);
         UI.end = $("#slider").slider("values", 1);
+	},
+	
+	"updateSlider": function () {
+//		$("#slider").slider("option", "min", 25);
+//		$("#slider").slider("option", "max", 25);
+//		$("#slider").slider("option", "values", 25);
+//		
+//        min: UI.start,
+//        max: UI.end,
+//        values: [UI.start - 30, UI.end],
 	},
 	
 	// List all the datasets available on the server-side.
@@ -400,6 +422,7 @@ var UI  = {
 				
 				UI.catalog = x2js.xml2json(data).catalog;
 				
+				//List all datasets contained in the catalog.
 				for (var key in UI.catalog.dataset) {
 					$("#datasets").append("<option " 
 									+"id='" +UI.catalog.dataset[key]._ID 
@@ -409,6 +432,14 @@ var UI  = {
 				
 				// Set the first pair of datasets in the catalogue as default.
 				UI.dataset = $("#datasets").val();
+				
+
+				$.each(UI.catalog.dataset, function (index, value) {
+					$("#source").append("<p> <b>" +UI.catalog.dataset[index]._name +": </b> <br>"
+											+UI.catalog.dataset[index].documentation[0].__text +", <br>"
+											+UI.catalog.dataset[index].documentation[1].__text 
+											+"</p>")
+				})
 				
 				UI.getMetadata();
 				
@@ -457,12 +488,15 @@ var UI  = {
 										+ " - "
 										+ UI.end;
 						
-						$.each(UI.catalog.dataset, function (index, value) {
-							$("#source").append("<p>" +UI.catalog.dataset[index]._name +": <br>"
-													+UI.catalog.dataset[index].documentation +"</p>")
-						})
 						
-						$("#metadata").attr("data-content", metadata);
+						$("#datasetInfo").empty();
+						$("#datasetInfo").css("display", "block");
+						$("#datasetInfo").html("<b>Data reference:</b><br>" 
+												+v.documentation[0].__text +", <br> "
+												+v.documentation[1].__text  +"<br><br>"
+												+metadata);
+						
+//						UI.updateSlider();
 						
 						UI.setTimeFrame();
 						
@@ -512,10 +546,8 @@ var UI  = {
 	    } catch (e) {
 	        alert("This function is not supported by your browser!");
 	    }
-
-	    var html = d3.select("#chart")
-	        .attr("title", "ClimateCharts")
-	        .node().parentNode.innerHTML;
+	    
+	    var html = $("#chart")[0].outerHTML;
 
 	    var blob = new Blob([html], {type: "image/svg+xml"});
 	    saveAs(blob, "climatechart.svg");

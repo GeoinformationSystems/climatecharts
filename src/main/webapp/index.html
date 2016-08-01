@@ -26,22 +26,34 @@
 	<script src="js/panzoom/pointertouch.js"></script>
 	<script src="js/waitMe.min.js"></script>
 	<script src="js/x2js/xml2json.js"></script>
-	
-	<!-- Google Analytics -->
-	<script>
-		(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-		(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-		m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-		})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
-		
-		ga('create', 'UA-80711064-1', 'auto');
-		ga('send', 'pageview');
-	</script>
-	<!-- End Google Analytics -->
-	
 	<meta name="author" content="Felix Wiemann">
 	<meta name="description" content="An application to create meteorological charts for places worldwide.">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<!-- Piwik -->
+	<script type="text/javascript">
+		var _paq = _paq || [];
+		_paq.push([ 'trackPageView' ]);
+		_paq.push([ 'enableLinkTracking' ]);
+		(function() {
+			var u = "//climatecharts.net/piwik/";
+			_paq.push([ 'setTrackerUrl', u + 'piwik.php' ]);
+			_paq.push([ 'setSiteId', '1' ]);
+			var d = document, g = d.createElement('script'), s = d
+					.getElementsByTagName('script')[0];
+			g.type = 'text/javascript';
+			g.async = true;
+			g.defer = true;
+			g.src = u + 'piwik.js';
+			s.parentNode.insertBefore(g, s);
+		})();
+	</script>
+	<noscript>
+		<p>
+			<img src="//climatecharts.net/piwik/piwik.php?idsite=1"
+				style="border: 0;" alt="" />
+		</p>
+	</noscript>
+	<!-- End Piwik Code -->
 </head>
 <body>
 	<div class="container-fluid">
@@ -64,6 +76,7 @@
 								<div class="col-lg-10">
 									<ul class="tab-links nav nav-pills">
 										<li class="active"><a href="#home">Home</a></li>
+										<li><a href="#data_software">Datasets & Software</a></li>
 										<li><a href="#about">About</a></li>
 									</ul>
 								</div>
@@ -96,17 +109,14 @@
 											<div class="form-group">
 												<div class="dropdown">
 												<div class="linewrapper">
-												  	<p class="block">Select dataset:</p>
-													<button id="metadata" class="btn btn-primary btn-small block" href="#" data-toggle="popover" 
-													data-content="" data-placement="bottom">Metadata</button>
 												</div>
 												  <select id="datasets" name="datasets" style="width:100%">
 												  </select>
 												</div>
 												<label for=lt>Latitude</label> <input id="lt"
-													class="form-control coordinates" type="text"> <label
-													for=ln>Longitude</label> <input id="ln"
-													class="form-control coordinates" type="text"> <br>
+													class="form-control" type="text"> 
+												<label for=ln>Longitude</label> <input id="ln"
+													class="form-control" type="text"> <br>
 												<p>Period:</p> 
 												<p id="amount"></p>
 												<div id="slider"></div>
@@ -129,7 +139,7 @@
 													placeholder="Enter title" disabled></label>
 												</div>
 											</div>
-											<button id="createChart" class="btn btn-primary btn-block" disabled>
+											<button id="createChart" class="btn btn-primary" disabled>
 												Create Chart</button>
 										</div>
 										<div id="save" class="box">
@@ -137,40 +147,24 @@
 											<button id="saveSvg" class="btn btn-primary">SVG</button>
 											<button id="savePng" class="btn btn-success">PNG</button>
 										</div>
+										<div id="datasetInfo" class="box">
+										</div>
 									</div>
 								</div>
 							</div>
-
-							<div id="about" class="tab">
+							<div id="data_software" class="tab">
 								<div class="row">
 									<div class="col-lg-8">
 										<div class="box">
 											<div class="info">
-												<h3>The Walter-Lieth Chart</h3>
-												<p class="block">
-													The charts on this site are drawn following the Walter-Lieth standard.
-													The most characteristic feature of this type of climate diagram
-													is that the ratio between temperature and precipitation scale is constantly 
-													1:2, which makes it easier to compare different places. If there are 
-													precipitation values above 100mm per month this ratio is 
-													scaled-down by factor 10, ensuring that the chart doesn't become to misshaped. 
-													Additionally, it graphically emphasizes in a simplified form if the climate 
-													conditions at a place are <span class="humid">humid</span>, 
-													<span class="veryhumid">very humid</span>,
-													<span class="arid">arid</span> or seasonally changing. 
-												</p>
-												<img class="img img-responsive" src="img/example.png">
-											</div>
-										</div>
-										<div class="box">
-											<div class="info">
-												<h3>Data Sources:</h3>
+												<h3>Datasets</h3>
 												<p id="source" class ="block">
 												</p>
 												<p class="block">Please note that the temperature and
 													precipitation values shown in the diagram are based on interpolated
 													data and therefore might differ significantly from real 
-													conditions.</p>
+													conditions.
+												</p>
 												<p>
 													For the title and elevation value "Geonames"
 													gazetteer is used: <br> http://www.geonames.org/,
@@ -188,6 +182,53 @@
 										</div>
 									</div>
 									<div class="col-lg-4">
+										<div class="box info">
+											<h3>Software</h3>
+											<p>
+												Frontend libraries:
+											</p>
+											<ul>
+											  <li>Data Driven Documents (D3)</li>
+											  <li>Leaflet</li>
+											  <li>Bootstrap</li>
+											  <li>JQuery + JQuery-UI</li>
+											</ul> 
+											<p>
+												Servers and web services:
+											</p>
+											<ul>
+											  <li>THREDDS Data Server</li>
+											  <li>GeoNames Webservices</li>
+											</ul> 
+										</div>
+									</div>
+								</div>
+							</div>
+
+							<div id="about" class="tab">
+								<div class="row">
+									<div class="col-lg-8">
+										<div class="box">
+											<div class="info">
+												<h3>The Walter-Lieth Chart</h3>
+												<p class="block">
+													The charts on this site are drawn following the Walter-Lieth standard.
+													The most characteristic feature of this type of climate diagram
+													is that the ratio between temperature and precipitation scale is constantly 
+													1:2, which makes it easier to compare local climates. If 
+													there are precipitation values above 100mm per month, the scale above is aligned, 
+													ensuring that the chart doesn't become to missshaped. 
+													Additionally, it graphically emphasizes in a simplified form if the local conditions
+													are  <span class="humid">humid</span>, 
+													<span class="veryhumid">perhumid</span>,
+													<span class="arid">arid</span> or seasonally changing. 
+												</p>
+												<img class="img img-responsive" src="img/example.png">
+											</div>
+										</div>
+										
+									</div>
+									<div class="col-lg-4">
 										<div class="box">
 											<div class="info">
 												<p>
@@ -195,6 +236,9 @@
 													imprint of the Technical University Dresden</a>	is applied
 													with the following constraint:<br> 
 													<br> 
+													Web design and technical development: <br>
+													MSc. Felix Wiemann<br>
+													<br>
 													Contact: <br>
 													Prof. Dr. Lars Bernard<br>
 													Mail: Lars.Bernard@tu-dresden.de<br> 
