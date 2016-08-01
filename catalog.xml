@@ -7,8 +7,8 @@
            http://www.unidata.ucar.edu/schemas/thredds/InvCatalog.1.0.6.xsd">
 
   <service name="all" base="" serviceType="compound">
-    <service name="odap" serviceType="OpenDAP" base="/thredds/dodsC/" />
-    <service name="dap4" serviceType="DAP4" base="/thredds/dap4/" />
+    <!--service name="odap" serviceType="OpenDAP" base="/thredds/dodsC/" />
+    <service name="dap4" serviceType="DAP4" base="/thredds/dap4/" /-->
     <service name="http" serviceType="HTTPServer" base="/thredds/fileServer/" />
     <!--service name="wcs" serviceType="WCS" base="/thredds/wcs/" /-->
     <!--service name="wms" serviceType="WMS" base="/thredds/wms/" /-->
@@ -16,27 +16,31 @@
 
 	<!-- Metadata services /-->
 	<service name="ncml" serviceType="NCML" base="/thredds/ncml/"/>
-	<service name="uddc" serviceType="UDDC" base="/thredds/uddc/"/>
-	<service name="iso" serviceType="ISO" base="/thredds/iso/"/>
+	<!--service name="uddc" serviceType="UDDC" base="/thredds/uddc/"/>
+	<service name="iso" serviceType="ISO" base="/thredds/iso/"/-->
   </service>
 
-  <service name="dap" base="" serviceType="compound">
+  <!--service name="dap" base="" serviceType="compound">
     <service name="odap" serviceType="OpenDAP" base="/thredds/dodsC/" />
     <service name="dap4" serviceType="DAP4" base="/thredds/dap4/" />
-  </service>
+  </service-->
 
-  <datasetRoot path="data" location="/home/felix/Daten" />
+  <datasetRoot path="data" location="/data" />
 
-	<dataset name="CRU Time Series v3.23" ID="cru_v3.23">
-		<documentation>
+	<dataset name="CRU Time Series v3.23" ID="cru_v3.23" urlPath="data/CRU_ts_3.23">
+		<documentation type="summary">
 			University of East Anglia Climatic Research Unit; Harris, I.(.; Jones, P.D. (2015): CRU TS3.23: 			Climatic Research Unit (CRU) Time-Series (TS) Version 3.23 of High Resolution Gridded Data of 				Month-by-month Variation in Climate (Jan. 1901- Dec. 2014). Centre for Environmental Data Analysis, 				09 November 2015. 
-			Reference: http://dx.doi.org/10.5285/4c7fdfa6-f176-4c58-acee-683d5e9d2ed5
+		</documentation>
+
+		<documentation type="reference">
+			dx.doi.org/10.5285/4c7fdfa6-f176-4c58-acee-683d5e9d2ed5
 		</documentation>
 
 		<timeCoverage>
 			<start>1901</start>
 			<end>2014</end>
 		</timeCoverage>
+
 			
 		<dataset name="Mean Temperature" ID="cru_tmp"
 			 serviceName="all" urlPath="data/CRU_ts_3.23/cru_ts3.23.1901.2014.tmp.dat.nc" dataType="Grid"/>
@@ -46,12 +50,15 @@
 	</dataset>
 
 	<dataset name="University of Delaware Air Temperature and Precipitation v4.01" ID="terr_tmp_pre">
-		<documentation>
+		<documentation type="summary">
 			Monthly global gridded high resolution station (land) data for air temperature and precipitation 				from 1901-2014. 
 
 			UDel_AirT_Precip data provided by the NOAA/OAR/ESRL PSD, Boulder, Colorado, USA, from their Web 			site at http://www.esrl.noaa.gov/psd/
 
-			Reference: Willmott, C. J. and K. Matsuura (2001) Terrestrial Air Temperature and Precipitation: 				Monthly and Annual Time Series (1950 - 1999), 
+			Reference: Willmott, C. J. and K. Matsuura (2001) Terrestrial Air Temperature and Precipitation: 				Monthly and Annual Time Series (1950 - 1999)
+		</documentation>
+
+		<documentation type="reference">
 			http://climate.geog.udel.edu/~climate/html_pages/README.ghcn_ts2.html
 		</documentation>
 
@@ -70,15 +77,18 @@
 
 	<dataset name="GHCN CAMS and GPCC v7" ID="ghcn+gpcc">
 
-		<documentation>
+		<documentation type="summary">
 			GHCN CAMS is a high resolution (0.5x0.5) analyzed global land surface temperatures from 1948 to 			near present. GHCN Gridded V2 data provided by the NOAA/OAR/ESRL PSD, Boulder, Colorado, USA, from 				their Web site at http://www.esrl.noaa.gov/psd/ 
 
-			Reference: Fan, Y., and H. van den Dool (2008), A global monthly land surface air temperature 				analysis for 1948-present, J. Geophys. Res., 113, D01103, doi:10.1029/2007JD008470.
+			Reference: Fan, Y., and H. van den Dool (2008), A global monthly land surface air temperature 				analysis for 1948-present, J. Geophys. Res., 113, D01103.
 
 			GPCC Global Precipitation Climatology Centre monthly precipitation dataset from 1901-present is 			calculated from global station data.
 
 			Reference: Schneider, Udo; Becker, Andreas; Finger, Peter; Meyer-Christoffer, Anja; Rudolf, Bruno; 				Ziese, Markus (2011): GPCC Full Data Reanalysis Version 6.0 at 0.5°: Monthly Land-Surface 				Precipitation from Rain-Gauges built on GTS-based and Historic Data. 
-			DOI: 10.5676/DWD_GPCC/FD_M_V7_050
+		</documentation>
+
+		<documentation type="reference">
+			dx.doi.org/10.1029/2007JD008470, dx.doi.org/10.5676/DWD_GPCC/FD_M_V7_050
 		</documentation>
 
 		<timeCoverage>
@@ -92,25 +102,4 @@
 		<dataset name="GPCC v7 Precipitation Monthly" ID="gpcp"
 			       serviceName="all" urlPath="data/GPCC/precip.mon.total.v7.nc" dataType="Grid"/>
 	</dataset>
-
-	<datasetScan name="CRU Time Series v3.23 Monthly" path="cru" location="/data/CRU_ts_3.23/" >
-	    <serviceName>all</serviceName>
-	</datasetScan >
-
-<!--
-  <datasetScan name="Test all files in a directory" ID="testDatasetScan"
-               path="testAll" location="content/testdata">
-    <metadata inherited="true">
-      <serviceName>all</serviceName>
-      <dataType>Grid</dataType>
-    </metadata>
-
-    <filter>
-      <include wildcard="*eta_211.nc"/>
-      <include wildcard="testgrid*.nc"/>
-    </filter>
-  </datasetScan>
-
-  <catalogRef xlink:title="Test Enhanced Catalog" xlink:href="enhancedCatalog.xml" name=""/>
-/-->
 </catalog>
