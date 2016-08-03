@@ -17,7 +17,7 @@ public class ClimateChartsApplication extends Application{
 	@Override
 	public Set<Class<?>> getClasses() {
 		final Set<Class<?>> classes = new HashSet<>();
-		classes.add(ServeData.class);
+//		classes.add(ServeData.class);
 		classes.add(Gazetteer.class);
 		return classes;
 	}

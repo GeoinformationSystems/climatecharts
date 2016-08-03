@@ -47,7 +47,9 @@ var chart = d3.select("#wrapper")
 				.attr("height", HEIGHT)
 				.attr("viewBox" , "0 0 " + WIDTH + " " + HEIGHT)
 				.style("min-width", min_width +"px")
+				.style("font-size", "16px")
 				.style("font-family", "Verdana, Geneva, sans-serif")
+//				.style("font-family", "Palatino Linotype, Book Antiqua, Palatino, serif")
 				.style("font-style", "normal")
 				.style("font-variant", "normal")
 				.style("font-weight", "normal")
@@ -74,6 +76,13 @@ var background = "white",
 	colTmpBright = d3.rgb(255,150,150),
 	colPreBright = d3.rgb(150,150,255),
 	black = "black";
+
+//Font sizes of different text classes in the chart.
+var tick = "0.9em",
+	info = "1.0em",
+	infoL = "1.3em",
+	table = "0.9em",
+	source = "12px";
 
 //Data source reference.
 var url = "ClimateCharts.net";
@@ -430,11 +439,13 @@ function getTitle () {
 		ln = Math.abs(ln) +"W";
 	}
 	
-	var title = name + lt + ", " + ln;
+	var title = name + lt + " " + ln;
 	
 	if (elevation > -1000){
-		title = title  + ", " + elevation + "m";
+		title = title  + ", " + elevation + "m,";
 	} 
+	
+	title += " Climate Class: " + getClimateClass() + ", Years " + UI.start + "-" + UI.end;
 	
 	return title;
 }
@@ -452,7 +463,7 @@ function fillColumn (col, column, x) {
 		    		
 			    	col.append('tspan')
 				    	.attr("id", column + "_c" + i)
-				    	.attr("class", "cell tick")
+				    	.attr("class", "cell")
 				        .attr('x', x)
 				        .attr('y', table_y + (table_height/13) * (i + 1))
 				    	.style("text-align", "right")
@@ -461,7 +472,7 @@ function fillColumn (col, column, x) {
 		    	else {
 			    	col.append('tspan')
 			    	.attr("id", column + "_c" + i)
-			    	.attr("class", "cell tick")
+			    	.attr("class", "cell")
 			        .attr('x', x)
 			        .attr('y', table_y + (table_height/13) * (i + 1))
 			    	.style("text-align", "right")
@@ -499,17 +510,14 @@ function mouseMove(d) {
 	
 	rows.attr("fill", black)	
 		.attr("font-weight", "normal")
-		.style("font-size", "14px")
 		.style("text-shadow", "none");
-	month.style("font-size", "17px")
-		.style("text-shadow", "1px 1px 2px gray");
+	month.style("text-shadow", "1px 1px 2px gray")
+		.attr("font-weight", "bold");
 	tmp.attr("fill", colTmp)
 		.attr("font-weight", "bold")
-		.style("font-size", "17px")
 		.style("text-shadow", "1px 2px 2px gray");
 	pre.attr("fill", colPre)
 		.attr("font-weight", "bold")
-		.style("font-size", "17px")
 		.style("text-shadow", "2px 2px 2px gray");
 	
 	c1.attr("transform", "translate(" + tickPos[xI] + ","
@@ -525,7 +533,7 @@ function mouseMove(d) {
 	}
 }
 
-// Get the doi of the dataset reference used to create the chart.
+//Get the doi of the dataset reference used to create the chart.
 function getSource () {
 	
 	var source = "";
@@ -540,29 +548,39 @@ function getSource () {
 	return source;
 }
 
-function wrap(text, width) {
-	  text.each(function() {
-	    var text = d3.select(this),
-	        words = text.text().split(/\s+/).reverse(),
-	        word,
-	        line = [],
-	        lineNumber = 0,
-	        lineHeight = 1.1, // ems
-	        y = text.attr("y"),
-	        tspan = text.text(null).append("tspan").attr("x", 0).attr("y", y);
-	    while (word = words.pop()) {
-	      line.push(word);
-	      tspan.text(line.join(" "));
-	      if (tspan.node().getComputedTextLength() > width) {
-	        line.pop();
-	        tspan.text(line.join(" "));
-	        line = [word];
-	        tspan = text.append("tspan").attr("x", 0).attr("y", y)
-	        			.attr("dy", ++lineNumber * lineHeight + "em").text(word);
-	      }
-	    }
-	  });
-	}
+//Wrap text input string and split into multiple lines if necessary.
+function wrap(text, width, char) {
+    text.each(function () {
+        var text = d3.select(this),
+            words = text.text().split(char).reverse(),
+            word,
+            line = [],
+            lineNumber = 0,
+            lineHeight = 1.1, // ems
+            x = text.attr("x"),
+            y = text.attr("y"),
+            dy = 0, //parseFloat(text.attr("dy")),
+            tspan = text.text(null)
+                        .append("tspan")
+                        .attr("x", x)
+                        .attr("y", y)
+                        .attr("dy", dy + "em");
+        while (word = words.pop()) {
+            line.push(word);
+            tspan.text(line.join(char));
+            if (tspan.node().getComputedTextLength() > width) {
+                line.pop();
+                tspan.text(line.join(char));
+                line = [word];
+                tspan = text.append("tspan")
+                            .attr("x", x)
+                            .attr("y", y)
+                            .attr("dy", ++lineNumber * lineHeight + dy + "em")
+                            .text(word);
+            }
+        }
+    });
+}
 
 //-------------------------------------------------------------------------------------------------------------
 // Define features of chart. -----------------------------------------------------------------------------------
@@ -862,7 +880,7 @@ chart.append('svg:g')
 
 //ADDITIONAL ELEMENTS LIKE TITLE, CLIMATE CLASS, ETC...
 chart.append("text")
-	.attr("class", "info")
+	.attr("class", "tick")
 	.attr("text-anchor", "end")
 	.attr("x", MARGINS.left + 10)
 	.attr("y", table_y)
@@ -870,7 +888,7 @@ chart.append("text")
 	.attr('fill', colTmp);
 
 chart.append("text")
-	.attr("class", "info")
+	.attr("class", "tick")
 	.attr("text-anchor", "end")
 	.attr("x", chart_width + MARGINS.left + 20)
 	.attr("y", table_y)
@@ -879,23 +897,16 @@ chart.append("text")
 
 chart.append("text")
 	.attr("class", "info")
-	.attr("x", (WIDTH - MARGINS.right)/2)
-    .attr("y", MARGINS.top*1/3)
+	.attr("x", WIDTH*2/5)
+    .attr("y", MARGINS.top*1/4)
     .attr("width", MARGINS.right - MARGINS.rightS)
+    .attr("text-anchor", "middle")
     .text(getTitle())
-    .attr("text-anchor", "middle");
+    .call(wrap, WIDTH*2/3, ",");
 
 chart.append("text")
 	.attr("class", "info")
-	.attr("x", (WIDTH - MARGINS.right)/2)
-	.attr("y", MARGINS.top*2/3)
-	.attr("width", MARGINS.right - MARGINS.rightS)
-	.text("Climate Class: " + getClimateClass() + ", Years " + UI.start + "-" + UI.end)
-	.attr("text-anchor", "middle");
-
-chart.append("text")
-	.attr("class", "info")
-	.attr("x", MARGINS.left + chart_width/10)
+	.attr("x", MARGINS.left + chart_width/11)
 	.attr("y", HEIGHT - MARGINS.bottomS)
 	.text("Temperature Mean: " + tmp_mean + "°C");
 
@@ -905,24 +916,24 @@ chart.append("text")
 	.attr("y", HEIGHT - MARGINS.bottomS)
 	.text("Precipitation Sum: " + pre_sum + "mm");
 
-chart.append("text")
-	.attr("class", "source")
-	.attr("x", WIDTH - 5)
-	.attr("y", HEIGHT - 14 )
-	.text(url)
-	.style("text-anchor", "end")
-	.style("dominant-baseline", "hanging");
 
 chart.append("text")
 	.attr("class", "source")
 	.attr("id", "dataSource")
-	.attr("x", MARGINS.left + 100)
-	.attr("width", WIDTH - MARGINS.right)
-	.text("Data Source: " +getSource())
-	.call(wrap, WIDTH)
-	.attr("y", HEIGHT + 2 - $('#dataSource')[0].getBBox().height)
-	.style("dominant-baseline", "hanging");
+	.attr("width", WIDTH)
+	.attr("x", 5)
+	.text("Data Source: " + getSource())
+	.call(wrap, WIDTH - 50, " ")
+	.attr("y", HEIGHT + 17 - $('#dataSource')[0].getBBox().height);
 
+chart.append("text")
+	.attr("id", "url")
+	.attr("class", "source")
+	.style("text-anchor", "end")
+	.append("tspan")
+	.attr("x", WIDTH - 5)
+	.attr("y", HEIGHT - 5)
+	.text(url);
 
 //TABLE ELEMENTS
 chart.append("line")          
@@ -987,7 +998,7 @@ chart.append('text')
 	.attr('x', table_x + table_width*5/6)
 	.attr('y', table_y)
 	.attr('text-anchor', 'end')
-	.call(fillColumn, "pre", table_x + table_width*19/20);
+	.call(fillColumn, "pre", table_x + table_width*39/40);
 
 //SET STYLING FOR DIFFERENT GROUPS OF ELEMENTS
 chart.selectAll(".grid")
@@ -1003,14 +1014,18 @@ chart.selectAll(".axis .domain")
 	.attr("shape-rendering", "crispEdges");
 
 chart.selectAll(".tick")
-	.style("font-size", "14px");
+	.style("font-size", tick);
 
 chart.selectAll(".info")
-	.style("font-size", "16px");
+	.attr("font-weight", "normal")
+	.style("font-size", info);
+
+chart.selectAll(".cell")
+	.style("font-size", table);
 
 chart.selectAll(".source")
-	.style("font-size", "12px")
-	.style("opacity", 0.7);
+	.style("font-size", source)
+	.style("opacity", 0.6);
 
 chart.selectAll(".area")
 	.style("opacity", 0.7);
@@ -1055,7 +1070,7 @@ chart.append("rect")
 		chart.selectAll(".cell")
 			 .attr("fill", black)
 			 .attr("font-weight", "normal")
-			 .style("font-size", "14px")
+			 .style("font-size", table)
 			 .style("text-shadow", "none");
 		})
 	.on("mousemove", mouseMove);
