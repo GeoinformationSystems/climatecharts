@@ -18,7 +18,8 @@ body {
 	position: absolute;
 	width: 100%;
 	font-family: Verdana, Geneva, sans-serif;
-	font-size: medium;
+	/*font-family: Palatino Linotype, Book Antiqua, Palatino, serif;*/
+	font-size: 1.5em;
 	background-color: #ffffff;
 	background-image: url("https://www.transparenttextures.com/patterns/az-subtle.png");
     overflow-y: scroll;
@@ -26,6 +27,7 @@ body {
 
 h2 {
 	display: inline;
+	font-size: 180%;
 }
 
 h2 > a {
@@ -59,7 +61,6 @@ select {
 	display: inline-block;
     margin-bottom: 10px;
 }
-
 .arid {
 	color: #edd400;
 	font-weight: bold;
@@ -68,6 +69,8 @@ select {
 .block { 
 	text-align: justify;
 	display: inline-block; 
+	overflow-wrap: break-word;
+	word-wrap: break-word;
 }
 
 .btn {
@@ -98,7 +101,7 @@ select {
 }
 
 .box:hover {
-	box-shadow: 2px 2px 6px #babdb6;
+	box-shadow: 0px 0px 6px #babdb6;
   	transition: 0.2s;
 }
 
@@ -154,7 +157,7 @@ select {
 	padding-bottom: 5px;
 	background-image: url("https://www.transparenttextures.com/patterns/az-subtle.png"), 
 							linear-gradient(to bottom, #407CC9, #043d7b);
-	box-shadow: 2px 2px 6px #888a85;
+	box-shadow: 0px 3px 6px #888a85;
 }
 .linewrapper {
 	margin: 10px;
@@ -175,9 +178,8 @@ select {
 
 .secHeadline {
 	float: right;
-	padding-top: 10px;
-	vertical-align: bottom;
-	font-size: 17px !important;
+	padding-top: 6px;
+	font-size: 110% !important;
 	font-weight: 500 !important;
 	color: white;
 }

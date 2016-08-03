@@ -62,21 +62,21 @@ var UI  = {
 		
 		// Update coordinate variables if the user clicked on the map.
 		function updatePosition (e){
-				UI.lt = (Math.round(e.latlng.lat*100)/100).toString();
-				UI.ln = (Math.round(e.latlng.lng*100)/100).toString();
-				marker.setLatLng([UI.lt, UI.ln]).addTo(map);
-				$("#lt").val(UI.lt);
-				$("#ln").val(UI.ln);
+				var lat = (Math.round(e.latlng.lat*100)/100).toString(),
+					lon = (Math.round(e.latlng.lng*100)/100).toString();
+				
+				$("#lt").val(lat);
+				$("#ln").val(lon);
+				
+				marker.setLatLng([lat, lon]).addTo(map);
 				$("#createChart").prop("disabled", false);
 			};
 		
 		// Update coordinate variables if the user typed in coordinate values
 		// manually.
 		$(".coordinates").change(function () {
-			UI.lt = $("#lt").val();
-			UI.ln = $("#ln").val();
-			map.setView([UI.lt, UI.ln], 5);
-			marker.setLatLng([UI.lt, UI.ln]).addTo(map);
+			map.setView([$("#lt").val(), $("#ln").val()], 5);
+			marker.setLatLng([$("#lt").val(), $("#ln").val()]).addTo(map);
 			$("#createChart").prop("disabled", false);
 		});
 	},
@@ -88,6 +88,15 @@ var UI  = {
 	"createChart": function (){
 			
 			var id = "chart";
+			
+			//Pick the current values of time slider and position.
+			UI.start = $("#slider").slider("values", 0);
+			UI.end = $("#slider").slider("values", 1);
+
+			UI.lt = $("#lt").val();
+			UI.ln = $("#ln").val();
+
+			UI.dataset = $("#datasets").val();
 
 			$("#loader").css("visibility", "visible");
 			$("#info").fadeTo("slow", 0.0);
@@ -164,7 +173,11 @@ var UI  = {
 							name = place + admin + country;
 						}
 						else {
-							name = $("#userName").val() +", ";
+							name = $("#userName").val();
+							
+							if (name !== "") {
+								name += ", ";
+							}
 						}
 						
 						if (typeof a4 !== 'undefined') {
@@ -308,107 +321,6 @@ var UI  = {
 			}
 		});
 	},
-
-	//Initialize slider to set the time frame.
-	"setTimeFrame": function (){
-	    
-		
-	    $("#slider").slider({
-	        range: true,
-	        min: UI.start,
-	        max: UI.end,
-	        values: [UI.end - 30, UI.end],
-	        slide: function(event, ui) {
-	        	
-	        	var checked = $("#checkbox").is(":checked");
-	        	
-	        	if (checked === true) {
-
-		            var delay = function() {
-		                
-		                $("#min").html($("#slider").slider("values", 0)).position({
-		                    my: 'center top',
-		                    at: 'center bottom',
-		                    of: $(".ui-slider-handle:first"),
-		                    offset: "0, 5"
-		                });
-		                
-		                $("#max").html($("#slider").slider("values", 1)).position({
-		                    my: 'center top',
-		                    at: 'center bottom',
-		                    of: $(".ui-slider-handle:last"),
-		                    offset: "0, 5"
-		                });
-		                
-			            UI.start = $("#slider").slider("values", 0);
-			            UI.end = $("#slider").slider("values", 1);
-		            };
-	        	} 
-	        	else {
-	        		var delay = function() {
-		                $("#slider").slider("values", 0, $("#slider").slider("values", 1) - 30);
-		                
-		                $("#min").html($("#slider").slider("values", 0))
-				                .position({
-				                    my: 'center top',
-				                    at: 'center bottom',
-				                    of: $(".ui-slider-handle:first"),
-				                    offset: "0, 5"
-		                });
-		                
-		                $("#max").html($("#slider").slider("values", 1))
-				                .position({
-				                    my: 'center top',
-				                    at: 'center bottom',
-				                    of: $(".ui-slider-handle:last"),
-				                    offset: "0, 5"
-		                });
-
-			            UI.start = $("#slider").slider("values", 0);
-			            UI.end = $("#slider").slider("values", 1);
-		            };
-	        	}
-
-	            //Wait for the ui.handle to set its position
-	            setTimeout(delay, 8);
-	        }
-	    });
-	    
-	    //Set default values on page load.
-        $('#min').html($('#slider').slider('values', 0)).position({
-            my: 'center top',
-            at: 'center bottom',
-            of: $(".ui-slider-handle:first"),
-            offset: "0, 5"
-        });
-
-        $('#max').html($('#slider').slider('values', 1)).position({
-            my: 'center top',
-            at: 'center bottom',
-            of: $(".ui-slider-handle:last"),
-            offset: "0, 5"
-        });
-        
-        $(".ui-slider-horizontal").css({"height": "10px"});
-        
-        $(".ui-slider .ui-slider-handle").css({"height": "15px", 
-        										"width": "15px",
-        										"margin-top": "1px"
-        										});
-
-        UI.start = $("#slider").slider("values", 0);
-        UI.end = $("#slider").slider("values", 1);
-	},
-	
-	"updateSlider": function () {
-//		$("#slider").slider("option", "min", 25);
-//		$("#slider").slider("option", "max", 25);
-//		$("#slider").slider("option", "values", 25);
-//		
-//        min: UI.start,
-//        max: UI.end,
-//        values: [UI.start - 30, UI.end],
-	},
 	
 	// List all the datasets available on the server-side.
 	"listDatasets": function () {
@@ -443,17 +355,89 @@ var UI  = {
 				
 				UI.getMetadata();
 				
-				console.log(UI.catalog);
+//				console.log(UI.catalog);
 			})
 			.fail(function(jqXHR, textStatus, errorThrown){
 				console.log("Error occured: " +errorThrown);
 		});
 	},
+
+	//Initialize slider to set the time frame.
+	"setTimeFrame": function (min, max){
+	    
+		
+	    $("#slider").slider({
+	        range: true,
+	        min: min,
+	        max: max,
+	        values: [max - 30, max],
+	        slide: function(event, ui) {
+	        	
+	        	var checked = $("#checkbox").is(":checked");
+	        	
+	        	if (checked === true) {
+
+		            var delay = function() {
+
+		                UI.setSliderLabels();
+		            };
+	        	} 
+	        	else {
+	        		var delay = function() {
+		                $("#slider").slider("values", 0, $("#slider").slider("values", 1) - 30);
+
+		                UI.setSliderLabels();
+		            };
+	        	}
+
+	            //Wait for the ui.handle to set its position
+	            setTimeout(delay, 8);
+	        }
+	    });
+	    
+	    //Set default values on page load.
+        UI.setSliderLabels();
+        
+        $(window).resize(function(){
+            UI.setSliderLabels();
+        });
+        
+        $(".ui-slider-horizontal").css({"height": "10px"});
+        
+        $(".ui-slider .ui-slider-handle").css({"height": "15px", 
+        										"width": "15px",
+        										"margin-top": "1px"
+        										});
+	},
+	
+	//Display the labels for the slider under the slider handles.
+	"setSliderLabels": function () {
+
+        $('#min').html($('#slider').slider('values', 0)).position({
+            my: 'center top',
+            at: 'center bottom',
+            of: $(".ui-slider-handle:first"),
+            offset: "0, 5"
+        });
+
+        $('#max').html($('#slider').slider('values', 1)).position({
+            my: 'center top',
+            at: 'center bottom',
+            of: $(".ui-slider-handle:last"),
+            offset: "0, 5"
+        });
+	},
+	
+	"updateSlider": function (min, max) {
+		$("#slider").slider("option", "min", min);
+		$("#slider").slider("option", "max", max);
+
+        UI.setSliderLabels();
+	},
 	
 	// If the user selects another dataset fetch the corresponding metadata from
 	// the server.
 	"setDataset": function () {
-		UI.dataset = $("#datasets").val();
 		UI.getMetadata();
 	},
 	
@@ -462,11 +446,7 @@ var UI  = {
 	"getMetadata": function () {
 		
 		$.each(UI.catalog.dataset, function(i, v) {
-		    if (v._name == UI.dataset) {
-		    	
-		    	UI.start = parseInt(v.timeCoverage.start);
-		    	
-		    	UI.end = parseInt(v.timeCoverage.end);
+		    if (v._name == $("#datasets").val()) {
 		    	
 		    	var urlTmp = "" +window.location.protocol +"//" +window.location.host 
 		    			+"/thredds/ncml/" +v.dataset[0]._urlPath,
@@ -484,9 +464,9 @@ var UI  = {
 										+ UI.ncML[0].group[0].attribute[6]._value +"° x " 
 										+ UI.ncML[0].group[0].attribute[7]._value +"°"+"<br>"
 										+ "Temporal Coverage: "
-										+ UI.start 
+										+ parseInt(v.timeCoverage.start) 
 										+ " - "
-										+ UI.end;
+										+ parseInt(v.timeCoverage.end);
 						
 						
 						$("#datasetInfo").empty();
@@ -495,13 +475,23 @@ var UI  = {
 												+v.documentation[0].__text +", <br> "
 												+v.documentation[1].__text  +"<br><br>"
 												+metadata);
+
 						
-//						UI.updateSlider();
+						if ($("#slider").is(":empty")) {
+							
+							UI.setTimeFrame(parseInt(v.timeCoverage.start), 
+									parseInt(v.timeCoverage.end));
+							
+						} 
+						else {
+							
+							UI.updateSlider(parseInt(v.timeCoverage.start), 
+									parseInt(v.timeCoverage.end));
+							
+						}
 						
-						UI.setTimeFrame();
-						
-						console.log(UI.ncML);
-				 	});
+//						console.log(UI.ncML);
+				 });
 		    }
 		});
 	},
@@ -532,10 +522,23 @@ var UI  = {
 		}
 	},
 	
+	"resetSliderHandles": function () {
+		var checked = $("#name2").is(":checked");
+		
+		if (checked === false) {
+			$("#slider").slider("values", [$("#slider").slider("values", 1) - 30, 
+			                               $("#slider").slider("values", 1)]);
+
+	        UI.setSliderLabels();
+		}
+	},
+	
 	// Reset position of svg if it is not centered due to panning/zooming.
 	"resetSVG": function () {
 		$("#chart").panzoom("reset");
 	},
+	
+	
 	
 	// Save svg graphic to a svg file.
 	"saveSvg": function () {
@@ -572,12 +575,13 @@ var UI  = {
 		 */
 		var clone = d3.select("#clone"),
 			width_svg = clone.attr("width"),
-			width_png = 1456,
-			height_png = Math.floor(clone.attr("height")*(width_png/width_svg));
+			width_png = Math.floor(clone.attr("width")*2),
+			height_png = Math.floor(clone.attr("height")*2);
 		
 		clone.attr("width", width_png)
 		   .attr("height", height_png)
-		   .attr("viewbox", "0 0 " + width_png + " " + height_png);
+		   .attr("viewbox", "0 0 " + width_png + " " + height_png)
+		   .attr("preserveAspectRatio", "xMinYMin meet");
 		
 		var svg = $("#clone")[0],
 			canvas = $("canvas")[0],

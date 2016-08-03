@@ -110,23 +110,22 @@
 												<div class="dropdown">
 												<div class="linewrapper">
 												</div>
+												  <p>Dataset:</p> 
 												  <select id="datasets" name="datasets" style="width:100%">
 												  </select>
 												</div>
 												<label for=lt>Latitude</label> <input id="lt"
-													class="form-control" type="text"> 
+													class="form-control coordinates" type="text"> 
 												<label for=ln>Longitude</label> <input id="ln"
-													class="form-control" type="text"> <br>
+													class="form-control coordinates" type="text"> <br>
 												<p>Period:</p> 
 												<p id="amount"></p>
 												<div id="slider"></div>
 												<div id="min"></div>
 												<div id="max"></div>
-												<div class="checkboxp">
-													<label><input id="checkbox" class="normalText"
-														type="checkbox"> Choose individual period-length
-														(Default: 30 Years)</label>
-												</div>
+												<label><input id="checkbox" class="normalText"
+													type="checkbox"> Choose individual period-length
+													(Default: 30 Years)</label>
 											</div>
 											<div class="form-group">
 												<div class="radio">
@@ -147,7 +146,7 @@
 											<button id="saveSvg" class="btn btn-primary">SVG</button>
 											<button id="savePng" class="btn btn-success">PNG</button>
 										</div>
-										<div id="datasetInfo" class="box">
+										<div id="datasetInfo" class="box block">
 										</div>
 									</div>
 								</div>
