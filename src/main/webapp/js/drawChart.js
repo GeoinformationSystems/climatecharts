@@ -17,16 +17,16 @@
  *  the styles won´t be saved to file if the user wants use the "saveSVG" or "savePNG" functions from the UI object.
  */
 
-drawChart = function (id, data, name, elevation){
+drawChart = function (data, name, elevation){
 
 //Clear the chart container everytime this function is called.
-$("#" +id).empty();
+$("#chart").empty();
 
 //Set the basic dimension variables for the SVG element.
 var WIDTH = 728,
 	HEIGHT = 360,
 	width_new = $("#wrapper").width(),
-	height_new = Math.floor(HEIGHT*(width_new/WIDTH));
+//	height_new = Math.floor(HEIGHT*(width_new/WIDTH));
 	min_width = 728,
 	MARGINS =  {top : 70,
 				topS: 30,
@@ -38,18 +38,16 @@ var WIDTH = 728,
 
 //Append chart element to parent container and set basic styles.
 var chart = d3.select("#wrapper")
+				.classed("svg-container", true) //container class to make it responsive
 				.append("svg")
-				.attr("id", id)
+				.attr("id", "chart")
 				.attr("version", 1.1)
 				.attr("xmlns", "http://www.w3.org/2000/svg")
 				.attr("preserveAspectRatio", "xMinYMin meet")
-				.attr("width", WIDTH)
-				.attr("height", HEIGHT)
 				.attr("viewBox" , "0 0 " + WIDTH + " " + HEIGHT)
-				.style("min-width", min_width +"px")
+				.classed("svg-content-responsive", true)
 				.style("font-size", "16px")
 				.style("font-family", "Verdana, Geneva, sans-serif")
-//				.style("font-family", "Palatino Linotype, Book Antiqua, Palatino, serif")
 				.style("font-style", "normal")
 				.style("font-variant", "normal")
 				.style("font-weight", "normal")
@@ -84,7 +82,7 @@ var tick = "0.9em",
 	table = "0.9em",
 	source = "12px";
 
-//Data source reference.
+//Domain reference.
 var url = "ClimateCharts.net";
 
 //Placeholder for the specific ticks shown on the vertical axes.
@@ -212,6 +210,11 @@ if (pre_max > 100 || tmp_min < 0){
 	adjustHeight();
 }
 
+chart.attr("viewBox", "0 0 " + WIDTH + " " +HEIGHT)
+
+//Adjust height of #wrapper to fit to SVG content.
+$("#wrapper").css("padding-bottom", 100*(HEIGHT/WIDTH) +"%");
+
 /*The ticks for all y axes have to be calculated manually to make sure that they are in alignment and have the 
  * correct ratio.
  */
@@ -261,11 +264,9 @@ function adjustHeight(){
 	y3_height = ticks_y3.length * y1_stepsize;
 	
 	HEIGHT = HEIGHT + y3_height + y1_height_negative;
-	height_new = Math.floor(HEIGHT*(width_new/WIDTH));
+//	height_new = Math.floor(HEIGHT*(width_new/WIDTH));
 	
 	chart_height = chart_height + y1_height_negative + y3_height;
-	
-	chart.attr({"height": +HEIGHT});
 }
 
 //Calculate the climate class for the current position from the data array.
@@ -1074,13 +1075,5 @@ chart.append("rect")
 			 .style("text-shadow", "none");
 		})
 	.on("mousemove", mouseMove);
-
-
-//Upscale the chart for larger screens after drawing.
-if (width_new > 728) {
-	chart.attr("width", width_new)
-		.attr("height", height_new)
-		.attr("viewbox", "0 0 " + width_new + " " + height_new);
-}
 
 }
