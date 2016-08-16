@@ -210,7 +210,7 @@ if (pre_max > 100 || tmp_min < 0){
 	adjustHeight();
 }
 
-chart.attr("viewBox", "0 0 " + WIDTH + " " +HEIGHT)
+chart.attr("viewBox", "0 0 " + WIDTH + " " +HEIGHT);
 
 //Adjust height of #wrapper to fit to SVG content.
 $("#wrapper").css("padding-bottom", 100*(HEIGHT/WIDTH) +"%");
