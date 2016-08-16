@@ -154,8 +154,10 @@ var UI  = {
 					
 					// Only continue if there are realistic data values for this
 					// place and time, otherwise show an error message.
-					if (Math.max(...dataTmp) < 100 && Math.min(...dataTmp) > -100
-						&& Math.max(...dataPre) < 10000 && Math.min(...dataPre) >= 0) {
+					if (Math.max.apply(null, dataTmp) < 100 
+						&& Math.min.apply(null, dataTmp) > -100
+						&& Math.max.apply(null, dataPre) < 10000 
+						&& Math.min.apply(null, dataPre) >= 0) {
 						
 						// Create the name string from gazetteer values or user input.
 						if ($("#name1").is(':checked') === true) {
@@ -193,25 +195,13 @@ var UI  = {
 						$("#" +id).remove();
 						
 						// Finally draw the chart.
-						drawChart(id, UI.data, name, height);
+						drawChart(UI.data, name, height);
 						
 						$("#loader").css("visibility", "hidden");
 						$("#info").remove();
 						
-						// If the screenwidth of the chart container is smaller
-						// than a minimum width, activate panning.
-						if ($("#wrapper").width() < 728) {
-							$("#" +id).panzoom();
-							
-							if ($('#reset').length === 0) {
-								var reset = $("<button></button>").attr("id", "reset")
-																.attr("class", "btn btn-primary")
-																.text("Reset Chart");
-								$("#save").prepend(reset);
-								$("#save").prepend("<p>Pan/zoom the chart to change viewing area.");
-								$("#reset").click(UI.resetSVG);
-							}
-						}
+						UI.activatePanning();
+						
 							
 					} else {
 						// Show error message if there is no data available.
@@ -538,7 +528,35 @@ var UI  = {
 		$("#chart").panzoom("reset");
 	},
 	
-	
+	"activatePanning": function () {
+
+		// If the screenwidth of the chart container is smaller
+		// than a minimum width, activate panning.
+		if ($("#wrapper").width() < 500) {
+			$("#chart").panzoom();
+			
+			if ($('#reset').length === 0) {
+				var reset = $("<button></button>").attr("id", "reset")
+												.attr("class", "btn btn-primary")
+												.text("Reset Chart");
+				$("#save").prepend(reset);
+				$("#save").prepend("<p id=\"panzoomText\">Pan/zoom the chart to change viewing area.");
+				$("#reset").click(UI.resetSVG);
+			}
+		}
+		else {
+			
+			//Disable panning if screensize is large enough.
+			if ($('#reset').length && $("#panzoomText").length) {
+				
+				UI.resetSVG();
+				$("#chart").panzoom("destroy");
+				$('#reset').remove();
+				$("#panzoomText").remove();
+				
+			}
+		}
+	},
 	
 	// Save svg graphic to a svg file.
 	"saveSvg": function () {

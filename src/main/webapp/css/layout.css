@@ -184,6 +184,21 @@ select {
 	color: white;
 }
 
+.svg-container {
+    display: inline-block;
+    position: relative;
+    width: 100%;
+    vertical-align: top;
+    overflow: hidden;
+}
+.svg-content-responsive {
+    display: inline-block;
+    float: left;
+    position: absolute;
+    top: 10px;
+    left: 0;
+}
+
 .tab {
     display: none;
 }
@@ -282,10 +297,4 @@ select {
     margin-bottom: 20px;
     margin-left: 5%;
     width: 90%;
-}
-
-#wrapper {
-	position: relative;
-	width: 100%;
-    margin-bottom: 30px;
 }

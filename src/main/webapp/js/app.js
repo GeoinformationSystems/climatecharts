@@ -22,4 +22,5 @@ $('#savePng').click(UI.savePng);
 $(".tab-links a").click(UI.selectTab);
 $(window).resize(function(){
     UI.setSliderLabels();
+    UI.activatePanning();
 });
