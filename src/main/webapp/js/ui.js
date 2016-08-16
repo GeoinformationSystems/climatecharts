@@ -87,8 +87,6 @@ var UI  = {
 	 */
 	"createChart": function (){
 			
-			var id = "chart";
-			
 			//Pick the current values of time slider and position.
 			UI.start = $("#slider").slider("values", 0);
 			UI.end = $("#slider").slider("values", 1);
@@ -100,7 +98,7 @@ var UI  = {
 
 			$("#loader").css("visibility", "visible");
 			$("#info").fadeTo("slow", 0.0);
-			$("#" +id).fadeTo("slow", 0.3);
+			$("#chart").fadeTo("slow", 0.3);
 			$("#nodata").css("opacity", 0.4);
 			
 			// Draw the chart when all four ajax calls have received a response.
@@ -192,7 +190,7 @@ var UI  = {
 						$("#loader").css("visibility", "hidden");
 						$("#nodata").empty();
 						$("#save").css("display", "block");
-						$("#" +id).remove();
+						$("#chart").remove();
 						
 						// Finally draw the chart.
 						drawChart(UI.data, name, height);
@@ -569,7 +567,10 @@ var UI  = {
 	    }
 	    
 	    var html = $("#chart")[0].outerHTML;
-
+//	    var html = 4("#wrapper").first().
+	    
+	    console.log(html);
+	    
 	    var blob = new Blob([html], {type: "image/svg+xml"});
 	    saveAs(blob, "climatechart.svg");
 	},
@@ -592,9 +593,9 @@ var UI  = {
 		 * stays sharp when it is scaled up.
 		 */
 		var clone = d3.select("#clone"),
-			width_svg = clone.attr("width"),
-			width_png = Math.floor(clone.attr("width")*2),
-			height_png = Math.floor(clone.attr("height")*2);
+			width_svg = $("#chart").width(),
+			width_png = Math.floor($("#chart").width()*2),
+			height_png = Math.floor($("#chart").height()*2);
 		
 		clone.attr("width", width_png)
 		   .attr("height", height_png)
@@ -606,25 +607,26 @@ var UI  = {
 			serializer = new XMLSerializer(),
 			svgString = serializer.serializeToString(svg);
 		
-		canvas.width = svg.width;
-		canvas.height = svg.height;
+		canvas.width = width_png;
+		canvas.height = height_png;
 		
 		canvg(canvas, svgString);
 		
 		var dataURL = canvas.toDataURL('image/png'),
 			data = atob(dataURL.substring('data:image/png;base64,'.length));
 		
-		$("#clone").remove();
-		$("canvas").remove();
-		
 		asArray = new Uint8Array(data.length);
 		
 		for (var i = 0; i < data.length; ++i) {
 			asArray[i] = data.charCodeAt(i); 
-			} 
+		} 
 		
 		var blob = new Blob([asArray.buffer], {type: 'image/png'}); 
+		
 		saveAs(blob, 'climatechart.png'); 
+
+		$("#clone").remove();
+		$("canvas").remove();
 	},
 	
 	// Switch between "Home" and "About" tab.
