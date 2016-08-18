@@ -2,9 +2,10 @@
  * ClimateCharts (climatecharts.net)
  * Author: Felix Wiemann
  * 
- * This file contains the user interface object for the website. The variables defined at the beginning are necessary to 
- * query the server for temperature and precipitation data and subsequently draw the chart. The UI functions are triggered,
- * if the corresponding html element is clicked or it´s value changes.
+ * This file contains the user interface object for the website. The variables defined at 
+ * the beginning are necessary to query the server for temperature and precipitation data 
+ * and subsequently draw the chart. The UI functions are triggered, if the corresponding 
+ * html element is clicked or it´s value changes (see file app.js).
  */
 
 var UI  = {
@@ -90,7 +91,6 @@ var UI  = {
 			//Pick the current values of time slider and position.
 			UI.start = $("#slider").slider("values", 0);
 			UI.end = $("#slider").slider("values", 1);
-
 			UI.lt = $("#lt").val();
 			UI.ln = $("#ln").val();
 
@@ -248,7 +248,7 @@ var UI  = {
 						});
 			};
 
-			// Query geonames.org gazetteer for placename.
+			//Query geonames.org gazetteer for placename.
 			function getName (){
 				if ($("#name1").is(':checked') === true){
 					return $.get("/climatecharts/api/gazetteer/findNearbyPlaceNameJSON", 
@@ -263,7 +263,7 @@ var UI  = {
 					}
 			};
 
-			// Query geonames.org gazetteer for srtm elevation.
+			//Query geonames.org gazetteer for srtm elevation.
 			function getElevation (){
 				return $.get("/climatecharts/api/gazetteer/srtm3JSON", 
 						{lat: UI.lt, lng: UI.ln})
@@ -353,7 +353,6 @@ var UI  = {
 	//Initialize slider to set the time frame.
 	"setTimeFrame": function (min, max){
 	    
-		
 	    $("#slider").slider({
 	        range: true,
 	        min: min,
@@ -416,6 +415,7 @@ var UI  = {
         });
 	},
 	
+	//Set both slider handles to the min/max values.
 	"updateSlider": function (min, max) {
 		$("#slider").slider("option", "min", min);
 		$("#slider").slider("option", "max", max);
@@ -510,6 +510,7 @@ var UI  = {
 		}
 	},
 	
+	//Reset handles of time slider if a fixed time range is activated.
 	"resetSliderHandles": function () {
 		var checked = $("#name2").is(":checked");
 		
@@ -632,12 +633,12 @@ var UI  = {
 	
 	// Switch between "Home" and "About" tab.
 	"selectTab": function (e) {
-	        var currentAttrValue = $(this).attr('href');
-	        
-	        $('.tabs ' + currentAttrValue).show().siblings().hide();
-	 
-	        $(this).parent('li').addClass('active').siblings().removeClass('active');
-	 
-	        e.preventDefault();
+        var currentAttrValue = $(this).attr('href');
+        
+        $('.tabs ' + currentAttrValue).show().siblings().hide();
+ 
+        $(this).parent('li').addClass('active').siblings().removeClass('active');
+ 
+        e.preventDefault();
 	}
 }

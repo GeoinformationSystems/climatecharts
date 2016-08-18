@@ -191,6 +191,7 @@ select {
     vertical-align: top;
     overflow: hidden;
 }
+
 .svg-content-responsive {
     display: inline-block;
     float: left;
