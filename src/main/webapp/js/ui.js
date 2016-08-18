@@ -556,7 +556,7 @@ var UI  = {
 		}
 	},
 	
-	// Save svg graphic to a svg file.
+	// Save SVG inline code to a svg file.
 	"saveSvg": function () {
 		$("#chart").panzoom("reset");
 		
@@ -566,13 +566,14 @@ var UI  = {
 	        alert("This function is not supported by your browser!");
 	    }
 	    
-	    var html = $("#chart")[0].outerHTML;
-//	    var html = 4("#wrapper").first().
+	    $("#wrapper").append("<div id=\"temp\">");
 	    
-	    console.log(html);
+	    var html = $("#temp").append($("#chart").clone()).html();
 	    
 	    var blob = new Blob([html], {type: "image/svg+xml"});
 	    saveAs(blob, "climatechart.svg");
+	    
+	    $("#temp").remove();
 	},
 	
 	// Clone the original svg graphic, upscale and rasterize the clone and
