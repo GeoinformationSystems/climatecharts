@@ -2,8 +2,9 @@
  * ClimateCharts (climatecharts.net)
  * Author: Felix Wiemann
  * 
- * This file is loaded at the end of the document and only contains the initialization of the map object and the 
- * select input fields, as well as button listeners for every element the user can interact with. 
+ * This file is loaded at the end of the document and only contains the initialization of the 
+ * map object and the select input fields, as well as button listeners for every element the 
+ * user can interact with. 
  */
 
 UI.createMap();

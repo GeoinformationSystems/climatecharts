@@ -8,7 +8,6 @@
  * svg container. The main framework used for drawing the chart is D3 (Data Driven Documents), see: http://d3js.org.
  * 
  * Necessary Parameters to call the function:
- * 	- id: the id which is given to the svg container element
  * 	- data: a json array containing objects with the propertys month, tmp and pre
  *  - name: the name for the place the chart is corresponding to
  *  - elevation: the elevation above sea level in meters for the attached coordinates
@@ -25,8 +24,6 @@ $("#chart").empty();
 //Set the basic dimension variables for the SVG element.
 var WIDTH = 728,
 	HEIGHT = 360,
-	width_new = $("#wrapper").width(),
-//	height_new = Math.floor(HEIGHT*(width_new/WIDTH));
 	min_width = 728,
 	MARGINS =  {top : 70,
 				topS: 30,
@@ -264,7 +261,6 @@ function adjustHeight(){
 	y3_height = ticks_y3.length * y1_stepsize;
 	
 	HEIGHT = HEIGHT + y3_height + y1_height_negative;
-//	height_new = Math.floor(HEIGHT*(width_new/WIDTH));
 	
 	chart_height = chart_height + y1_height_negative + y3_height;
 }
