@@ -602,7 +602,8 @@ var UI  = {
 		clone.attr("width", width_png)
 		   .attr("height", height_png)
 		   .attr("viewbox", "0 0 " + width_png + " " + height_png)
-		   .attr("preserveAspectRatio", "xMinYMin meet");
+		   .attr("preserveAspectRatio", "xMinYMin meet")
+		   .style("font-size", "16px");
 		
 		var svg = $("#clone")[0],
 			canvas = $("canvas")[0],

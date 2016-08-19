@@ -44,8 +44,8 @@ var chart = d3.select("#wrapper")
 				.attr("viewBox" , "0 0 " + WIDTH + " " + HEIGHT)
 				.attr("width", "100%")
 				.classed("svg-content-responsive", true)
-				.style("font-size", "16px")
-				.style("font-family", "Verdana, Geneva, sans-serif")
+				.style("font-size", "15px")
+				.style("font-family", "Arial, sans-serif")
 				.style("font-style", "normal")
 				.style("font-variant", "normal")
 				.style("font-weight", "normal")
@@ -58,7 +58,7 @@ var chart_width = - MARGINS.left + WIDTH - MARGINS.right,
 	chart_height = HEIGHT - MARGINS.top - MARGINS.bottom,
 	table_height = 250,
 	table_width = 160,
-	table_x = WIDTH - MARGINS.right + 1.75*MARGINS.rightS,
+	table_x = WIDTH - MARGINS.right + 1.6*MARGINS.rightS,
 	table_y = MARGINS.top - 15,
 	tableframe_y = table_y - 10;
 
@@ -74,10 +74,9 @@ var background = "white",
 	black = "black";
 
 //Font sizes of different text classes in the chart.
-var tick = "0.9em",
-	info = "1.0em",
-	infoL = "1.3em",
-	table = "0.9em",
+var tick = "13px",
+	info = "15px",
+	table = "14px",
 	source = "12px";
 
 //Domain reference.
@@ -896,7 +895,7 @@ chart.append("text")
 chart.append("text")
 	.attr("class", "info")
 	.attr("x", WIDTH*2/5)
-    .attr("y", MARGINS.top*1/4)
+    .attr("y", MARGINS.top*1/3)
     .attr("width", MARGINS.right - MARGINS.rightS)
     .attr("text-anchor", "middle")
     .text(getTitle())
@@ -919,17 +918,17 @@ chart.append("text")
 	.attr("class", "source")
 	.attr("id", "dataSource")
 	.attr("width", WIDTH)
-	.attr("x", 5)
+	.attr("x", 10)
 	.text("Data Source: " + getSource())
-	.call(wrap, WIDTH - 50, " ")
-	.attr("y", HEIGHT + 17 - $('#dataSource')[0].getBBox().height);
+	.call(wrap, WIDTH - 100, " ")
+	.attr("y", HEIGHT + 14 - $('#dataSource')[0].getBBox().height);
 
 chart.append("text")
 	.attr("id", "url")
 	.attr("class", "source")
 	.style("text-anchor", "end")
 	.append("tspan")
-	.attr("x", WIDTH - 5)
+	.attr("x", WIDTH - 10)
 	.attr("y", HEIGHT - 5)
 	.text(url);
 
@@ -996,7 +995,7 @@ chart.append('text')
 	.attr('x', table_x + table_width*5/6)
 	.attr('y', table_y)
 	.attr('text-anchor', 'end')
-	.call(fillColumn, "pre", table_x + table_width*39/40);
+	.call(fillColumn, "pre", table_x + table_width*19/20);
 
 //SET STYLING FOR DIFFERENT GROUPS OF ELEMENTS
 chart.selectAll(".grid")
