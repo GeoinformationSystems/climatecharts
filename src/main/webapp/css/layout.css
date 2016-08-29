@@ -8,6 +8,11 @@
     	padding: 5px;
     	height: 40px;
     }
+    
+    .ui-slider .ui-slider-handle {
+    	height: 20px;
+        width: 20px
+    }
 }
 
 a {
@@ -228,6 +233,13 @@ select {
 .tab.active {
     display: block;
 	transition: all linear 0.6s;
+}
+.unselectable {
+	-moz-user-select: none; 
+	-webkit-user-select: none; 
+	-ms-user-select:none; 
+	user-select:none;
+	-o-user-select:none;
 }
 
 .veryhumid {

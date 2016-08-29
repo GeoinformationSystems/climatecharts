@@ -385,16 +385,14 @@ var UI  = {
 	    //Set default values on page load.
         UI.setSliderLabels();
         
-        $(window).resize(function(){
-            UI.setSliderLabels();
-        });
-        
         $(".ui-slider-horizontal").css({"height": "10px"});
         
         $(".ui-slider .ui-slider-handle").css({"height": "15px", 
         										"width": "15px",
         										"margin-top": "1px"
         										});
+        
+        
 	},
 	
 	//Display the labels for the slider under the slider handles.
@@ -413,6 +411,8 @@ var UI  = {
             of: $(".ui-slider-handle:last"),
             offset: "0, 5"
         });
+        
+        $("#min #max").addClass("unselectable");
 	},
 	
 	//Set both slider handles to the min/max values.
