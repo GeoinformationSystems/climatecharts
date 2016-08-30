@@ -13,6 +13,10 @@
     	height: 20px;
         width: 20px
     }
+    
+    body {
+    	background: none !important;;
+    }
 }
 
 a {
@@ -25,8 +29,10 @@ body {
 	font-family: Verdana, Geneva, sans-serif;
 	/*font-family: Palatino Linotype, Book Antiqua, Palatino, serif;*/
 	font-size: 1.5em;
-	background-color: #ffffff;
-	background-image: url("https://www.transparenttextures.com/patterns/az-subtle.png");
+	background: url("../img/earth.svg") no-repeat center center;
+	background-size:cover;
+    background-attachment: fixed;
+	display: inline-block;
     overflow-y: scroll;
 }
 
@@ -69,6 +75,12 @@ select {
 .arid {
 	color: #edd400;
 	font-weight: bold;
+}
+
+.background {
+	background-image: url("img/earth.svg");
+    background-repeat: no-repeat;
+    background-size: contain;
 }
 
 .block { 
