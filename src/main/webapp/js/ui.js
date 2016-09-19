@@ -387,9 +387,12 @@ var UI  = {
         
         $(".ui-slider-horizontal").css({"height": "10px"});
         
-        $(".ui-slider .ui-slider-handle").css({"height": "15px", 
-        										"width": "15px",
-        										"margin-top": "1px"
+        $(".ui-slider .ui-slider-handle").css({"height": "18px", 
+        										"width": "18px",
+        										"margin-top": "-1px",
+        										"border-radius": "10px",
+        										"background": "white",
+        										"color": "black"
         										});
         
         
@@ -398,19 +401,11 @@ var UI  = {
 	//Display the labels for the slider under the slider handles.
 	"setSliderLabels": function () {
 
-        $('#min').html($('#slider').slider('values', 0)).position({
-            my: 'center top',
-            at: 'center bottom',
-            of: $(".ui-slider-handle:first"),
-            offset: "0, 5"
-        });
+        $('#min').html($('#slider')
+        		.slider('values', 0));
 
-        $('#max').html($('#slider').slider('values', 1)).position({
-            my: 'center top',
-            at: 'center bottom',
-            of: $(".ui-slider-handle:last"),
-            offset: "0, 5"
-        });
+        $('#max').html($('#slider')
+        		.slider('values', 1));
         
         $("#min #max").addClass("unselectable");
 	},
