@@ -16,9 +16,9 @@
 	<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
 	<script src="https://d3js.org/d3.v3.min.js"></script>
-	<script src="https://gabelerner.github.io/canvg/rgbcolor.js"></script>
-	<script src="https://gabelerner.github.io/canvg/StackBlur.js"></script>
-	<script src="https://gabelerner.github.io/canvg/canvg.js"></script>
+	<script src="https://canvg.github.io/canvg/rgbcolor.js"></script> 
+	<script src="https://canvg.github.io/canvg/StackBlur.js"></script>
+	<script src="https://canvg.github.io/canvg/canvg.js"></script> 
 	<script src="js/jquery-ui-touch-punch/jquery.ui.touch-punch.min.js"></script>
 	<script src="js/leaflet/leaflet.js"></script>
 	<script src="js/FileSaver/Blob.js"></script>
@@ -115,15 +115,16 @@
 												  <select id="datasets" name="datasets" style="width:100%">
 												  </select>
 												</div>
-												<label for=lt>Latitude</label> <input id="lt"
+												<label for=lt>Latitude:</label> <input id="lt"
 													class="form-control coordinates" type="text"> 
-												<label for=ln>Longitude</label> <input id="ln"
+												<label for=ln>Longitude:</label> <input id="ln"
 													class="form-control coordinates" type="text"> <br>
-												<p>Period:</p> 
+												<p class="period">Period:</p> 
+												<div id="min"></div>
+												<p class="period">to</p>
+												<div id="max"></div>
 												<p id="amount"></p>
 												<div id="slider"></div>
-												<div id="min"></div>
-												<div id="max"></div>
 												<label><input id="checkbox" class="normalText"
 													type="checkbox"> Choose individual period-length
 													(Default: 30 Years)</label>
