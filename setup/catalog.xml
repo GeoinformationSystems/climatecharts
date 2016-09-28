@@ -25,6 +25,7 @@
     <service name="dap4" serviceType="DAP4" base="/thredds/dap4/" />
   </service-->
 
+<!-- the datasetRoot element defines where all the datasets are located. -->
   <datasetRoot path="data" location="/data" />
 
 	<dataset name="CRU Time Series v3.23" ID="cru_v3.23" urlPath="data/CRU_ts_3.23">
