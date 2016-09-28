@@ -4,24 +4,23 @@
   <!-- all options are commented out in standard install - meaning use default values -->
   <!-- see http://www.unidata.ucar.edu/software/thredds/current/tds/reference/ThreddsConfigXMLFile.html -->
   <serverInformation>
-    <name>Initial TDS Installation</name>
+    <name>ClimateCharts Server</name>
     <logoUrl>/thredds/threddsIcon.gif</logoUrl>
     <logoAltText>Initial TDS Installation</logoAltText>
 
     <abstract>Scientific Data</abstract>
-    <keywords>meteorology, atmosphere, climate, ocean, earth science</keywords>
+    <keywords>meteorology, atmosphere, climate, earth science</keywords>
     
     <contact>
-      <name>Support</name>
-      <organization>My Group</organization>
-      <email>support@my.group</email>
-      <!--phone></phone-->
+      <name>Prof. Dr. Lars Bernard</name>
+      <organization>Technical University Dresden</organization>
+      <email>Lars.Bernard@tu-dresden.de</email>
     </contact>
     <hostInstitution>
-      <name>My Group</name>
-      <webSite>http://www.my.site/</webSite>
+      <name>Chair of Geoinformatics</name>
+      <webSite>https://tu-dresden.de/bu/umwelt/geo/geoinformatik</webSite>
       <logoUrl>myGroup.gif</logoUrl>
-      <logoAltText>My Group</logoAltText>
+      <logoAltText>TU Dresden</logoAltText>
     </hostInstitution>
   </serverInformation>
 
