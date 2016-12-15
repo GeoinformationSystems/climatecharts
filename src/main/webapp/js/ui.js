@@ -105,6 +105,9 @@ var UI  = {
 			$.when(getData(0), getData(1), getName(), getElevation())
 			 	.done(function(a1, a2, a3, a4){
 			 		
+			 		// Get actual grid cell (from a1)
+			 		// document: a1[0]
+			 		
 					UI.data = [{month: "Jan"},
 					            {month: "Feb"},
 					            {month: "Mar"},
@@ -126,8 +129,33 @@ var UI  = {
 					
 					//Convert xml response to JSON.
 					var x2js = new X2JS(),
-						dataTmp = calculateMeans(x2js.xml2json(a1[0]).grid),
-						dataPre = calculateMeans(x2js.xml2json(a2[0]).grid);
+						rawDataA1 = x2js.xml2json(a1[0]).grid,
+						rawDataA2 = x2js.xml2json(a2[0]).grid;
+					var dataTmp = calculateMeans(rawDataA1),
+						dataPre = calculateMeans(rawDataA2);
+					
+					// create test box plot
+					var y0 = new Array(),
+						y1 = new Array();
+					
+					for (var i = 0; i < 50; i ++) {
+						y0[i] = Math.random();
+						y1[i] = Math.random() + 1;
+					}
+
+					var trace1 = {
+					  y: y0,
+					  type: 'box'
+					};
+
+					var trace2 = {
+					  y: y1,
+					  type: 'box'
+					};
+
+					var data = [trace1, trace2];
+
+					Plotly.newPlot('plot-test', data);
 
 					
 					//If temperature values are in Kelvin units, convert them to Celsius.
