@@ -12,18 +12,13 @@ var UI  = {
 	
 	// Query parameter for the data request.
 	"lt": null,
-	
 	"ln": null,
-	
 	"start": 0,
-	
 	"end": 0,
 	
 	// Properties for the current climatechart.
 	"name": "",
-	
 	"data": [],
-	
 	"srtm": 0,
 	
 	// Name of the currently selected datasets.
@@ -31,7 +26,6 @@ var UI  = {
 	
 	// THREDDS catalog and ncML of the currently selected datasets in JSON format.
 	"catalog": {},
-	
 	"ncML": [],
 	
 	// Initialize the leaflet map object with two baselayers and a scale.
@@ -71,6 +65,9 @@ var UI  = {
 				
 				marker.setLatLng([lat, lon]).addTo(map);
 				$("#createChart").prop("disabled", false);
+				
+				// create chart immediately
+				UI.createChart();
 			};
 		
 		// Update coordinate variables if the user typed in coordinate values
@@ -79,6 +76,9 @@ var UI  = {
 			map.setView([$("#lt").val(), $("#ln").val()], 5);
 			marker.setLatLng([$("#lt").val(), $("#ln").val()]).addTo(map);
 			$("#createChart").prop("disabled", false);
+			
+			// create chart immediately
+			UI.createChart();
 		});
 	},
 
@@ -108,7 +108,7 @@ var UI  = {
 			 		// Get actual grid cell (from a1)
 			 		// document: a1[0]
 			 		
-					UI.data = [{month: "Jan"},
+					UI.data = [ {month: "Jan"},
 					            {month: "Feb"},
 					            {month: "Mar"},
 					            {month: "Apr"},
@@ -133,30 +133,6 @@ var UI  = {
 						rawDataA2 = x2js.xml2json(a2[0]).grid;
 					var dataTmp = calculateMeans(rawDataA1),
 						dataPre = calculateMeans(rawDataA2);
-					
-					// create test box plot
-					var y0 = new Array(),
-						y1 = new Array();
-					
-					for (var i = 0; i < 50; i ++) {
-						y0[i] = Math.random();
-						y1[i] = Math.random() + 1;
-					}
-
-					var trace1 = {
-					  y: y0,
-					  type: 'box'
-					};
-
-					var trace2 = {
-					  y: y1,
-					  type: 'box'
-					};
-
-					var data = [trace1, trace2];
-
-					Plotly.newPlot('plot-test', data);
-
 					
 					//If temperature values are in Kelvin units, convert them to Celsius.
 					for (var key in dataTmp) {
@@ -211,6 +187,13 @@ var UI  = {
 						if (typeof a4 !== 'undefined') {
 				    	  	height = a4[0].srtm3;
 						}
+						
+						// truncate the last ", "
+						if (name.substring(name.length-2, name.length) == ', ')
+						{
+							name = name.substring(0, name.length-2);
+						}
+						
 			    	  	
 			    	  	UI.name = name;
 			    	  	UI.srtm = height;
@@ -219,6 +202,7 @@ var UI  = {
 						$("#nodata").empty();
 						$("#save").css("display", "block");
 						$("#chart").remove();
+						$("#plot-wrapper").remove();
 						
 						// Finally draw the chart.
 						drawChart(UI.data, name, height);
@@ -228,17 +212,123 @@ var UI  = {
 						
 						UI.activatePanning();
 						
+						
+						// CREATE BOXPLOT 
+						// --------------
+						
+						// create elements
+						var ccWrapper = document.getElementById('climate-chart-wrapper').parentNode;
+						var plotWrapper = document.createElement('div');
+						plotWrapper.id = 'plot-wrapper';
+						plotWrapper.className += 'box ';
+						ccWrapper.appendChild(plotWrapper);
+						var plotOptions = document.createElement('div');
+						plotOptions.id = 'plot-options';
+						plotWrapper.appendChild(plotOptions);
+						var plotLeft = document.createElement('div');
+						plotLeft.id = 'plot-tmp';
+						plotWrapper.appendChild(plotLeft);	
+						var plotRight = document.createElement('div');
+						plotRight.id = 'plot-pre';
+						plotWrapper.appendChild(plotRight);
+						
+						// create title in options
+						var plotTitle = document.createElement('div');
+						plotTitle.id = 'plot-title';
+						plotOptions.appendChild(plotTitle);
+												
+						// create switch for options
+						var switchLabel = document.createElement('label');
+							switchLabel.className += 'switch ';
+						plotOptions.appendChild(switchLabel);
+						switchLabel.innerHTML += '<input id="plot-scale-switch" class="switch-input" type="checkbox" />';
+						switchLabel.innerHTML += '<span id="plot-scale-label" class="switch-label"></span>';
+						switchLabel.innerHTML += '<span class="switch-handle"></span>';
+						
+						// create source info
+						var plotSource = document.createElement('div');
+						plotSource.id = 'plot-source';
+						plotWrapper.appendChild(plotSource);
+						
+						// create climatecharts disclaimer
+						var plotDisclaimer = document.createElement('div');
+						plotDisclaimer.id = 'plot-disclaimer';
+						plotWrapper.appendChild(plotDisclaimer);
+						
+						// create data structure for temperature / precipitation: [[Jan],[Feb],...,[Dec]]
+						var climateData = {
+							temperature: 	new Array(),
+							precipitation: 	new Array()
+						}
+						
+						for (var i = 0; i < 12; i++)
+						{
+							climateData.temperature[i] = 	new Array();
+							climateData.precipitation[i] = 	new Array();
+						}
+												
+						// sort temperature and precipitation data by month
+						// -> all data for one Month in one Array
+						var numElems = rawDataA1.point.length;
+						for (var i = 0; i < numElems; i++)
+						{	
+							// 1) Temperature
 							
+							// get actual data object (safe, instead of for .. in loop)
+							dataObj = rawDataA1.point[i].data;
+							
+							// get month time stamp of the current data object
+							date = new Date(dataObj[0].__text);
+							month = date.getMonth();
+							
+							// get actual temperature value
+							// TODO: handle Kelvin
+							tmp = parseFloat(dataObj[3].__text);
+							
+							// put temperature data point in the correct Array 
+							// month in JS Date object: month number - 1 (Jan = 0, Feb = 1, ... , Dec = 11)
+							// => getMonth() value can be used directly as Array index
+							climateData.temperature[month].push(tmp);
+							
+							
+							// 2) Precipitation
+							// ... repeat from above
+							// TODO: make nicer ;)
+							
+							dataObj = rawDataA2.point[i].data;
+							date = new Date(dataObj[0].__text);
+							month = date.getMonth();
+							// TODO: convert from cm in case...
+							pre = parseFloat(dataObj[3].__text);
+							climateData.precipitation[month].push(pre);
+						}
+						
+						drawPlots(climateData, name, height);
+						
+						// disable all interactions except for hover
+						var disableClickForChildren = function (root)
+						{
+							for (var i=0; i<root.children.length; i++)
+							{
+								child = root.children[i];
+								$(child).css('cursor', 'default');								
+								disableClickForChildren(child);	// recursion
+							}									
+						};
+						// actual function calls
+						disableClickForChildren(plotLeft);
+						disableClickForChildren(plotRight);
+						
 					} else {
 						// Show error message if there is no data available.
 						$("#loader").css("visibility", "hidden");
 						$("#chart").empty();
-						$("#wrapper").append("<h3 id='nodata'>");
+						$("#climate-chart-wrapper").append("<h3 id='nodata'>");
 						$("#nodata").text("No data available for this area!");
 						$("#nodata").fadeTo("slow", 1);
 					}
 			 });
-
+		
 			//Query NetCdf data for a single dataset from the TDS server.
 			function getData(Index){
 				var url = "".
@@ -284,7 +374,7 @@ var UI  = {
 							.fail(function(jqXHR, textStatus, errorThrown){
 								$("#loader").css("visibility", "hidden");
 								$("#chart").empty();
-								$("#wrapper").append("<h3 id='nodata'>");
+								$("#climate-chart-wrapper").append("<h3 id='nodata'>");
 								$("#nodata").text("External Service not responding: " +errorThrown);
 								$("#nodata").fadeTo("slow", 1);
 							});
@@ -298,7 +388,7 @@ var UI  = {
 						.fail(function(jqXHR, textStatus, errorThrown){
 							$("#loader").css("visibility", "hidden");
 							$("#chart").empty();
-							$("#wrapper").append("<h3 id='nodata'>");
+							$("#climate-chart-wrapper").append("<h3 id='nodata'>");
 							$("#nodata").text("External Service not responding: " +errorThrown);
 							$("#nodata").fadeTo("slow", 1);
 						});
@@ -554,7 +644,7 @@ var UI  = {
 
 		// If the screenwidth of the chart container is smaller
 		// than a minimum width, activate panning.
-		if ($("#wrapper").width() < 500) {
+		if ($("#climate-chart-wrapper").width() < 500) {
 			$("#chart").panzoom();
 			
 			if ($('#reset').length === 0) {
@@ -590,7 +680,7 @@ var UI  = {
 	        alert("This function is not supported by your browser!");
 	    }
 	    
-	    $("#wrapper").append("<div id=\"temp\">");
+	    $("#climate-chart-wrapper").append("<div id=\"temp\">");
 	    
 	    var html = $("#temp").append($("#chart").clone()).html();
 	    
@@ -607,9 +697,9 @@ var UI  = {
 		
 		$("#chart").clone()
 					.attr("id", "clone")
-					.appendTo("#wrapper");
+					.appendTo("#climate-chart-wrapper");
 		
-		$("#wrapper").append("<canvas>");
+		$("#climate-chart-wrapper").append("<canvas>");
 		
 		/*
 		 * Set hardcoded width value for raster graphic and scale height
@@ -664,5 +754,11 @@ var UI  = {
         $(this).parent('li').addClass('active').siblings().removeClass('active');
  
         e.preventDefault();
+	},
+
+	// Resize the plots so they always use 100 percent of their parent width
+	"resizePlots": function () {
+		console.log("Resized!");
+		
 	}
 }

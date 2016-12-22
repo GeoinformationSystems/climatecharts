@@ -34,24 +34,26 @@ var WIDTH = 728,
 				left : 40};
 
 //Append chart element to parent container and set basic styles.
-var chart = d3.select("#wrapper")
-				.classed("svg-container", true) //container class to make it responsive
-				.append("svg")
-				.attr("id", "chart")
-				.attr("version", 1.1)
-				.attr("xmlns", "http://www.w3.org/2000/svg")
-				.attr("preserveAspectRatio", "xMinYMin meet")
-				.attr("viewBox" , "0 0 " + WIDTH + " " + HEIGHT)
-				.attr("width", "100%")
-				.classed("svg-content-responsive", true)
-				.style("font-size", "15px")
-				.style("font-family", "Arial, sans-serif")
-				.style("font-style", "normal")
-				.style("font-variant", "normal")
-				.style("font-weight", "normal")
-				.style("text-rendering", "optimizeLegibility")
-				.style("shape-rendering", "default")
-				.style("background-color", background);
+
+// check if chart already exists, otherwise create it
+var chart = d3.select("#climate-chart-wrapper")
+			.classed("svg-container", true) //container class to make it responsive
+			.append("svg")
+			.attr("id", "chart")
+			.attr("version", 1.1)
+			.attr("xmlns", "http://www.w3.org/2000/svg")
+			.attr("preserveAspectRatio", "xMinYMin meet")
+			.attr("viewBox" , "0 0 " + WIDTH + " " + HEIGHT)
+			.attr("width", "100%")
+			.classed("svg-content-responsive", true)
+			.style("font-size", "15px")
+			.style("font-family", "Arial, sans-serif")
+			.style("font-style", "normal")
+			.style("font-variant", "normal")
+			.style("font-weight", "normal")
+			.style("text-rendering", "optimizeLegibility")
+			.style("shape-rendering", "default")
+			.style("background-color", background);
 
 //Set size and position for the chart drawing area and the table.
 var chart_width = - MARGINS.left + WIDTH - MARGINS.right,
@@ -210,7 +212,7 @@ if (pre_max > 100 || tmp_min < 0){
 chart.attr("viewBox", "0 0 " + WIDTH + " " +HEIGHT);
 
 //Adjust height of #wrapper to fit to SVG content.
-$("#wrapper").css("padding-bottom", 100*(HEIGHT/WIDTH) +"%");
+$("#climate-chart-wrapper").css("padding-bottom", 100*(HEIGHT/WIDTH) +"%");
 
 /*The ticks for all y axes have to be calculated manually to make sure that they are in alignment and have the 
  * correct ratio.
@@ -436,7 +438,7 @@ function getTitle () {
 		ln = Math.abs(ln) +"W";
 	}
 	
-	var title = name + lt + " " + ln;
+	var title = name + " | " + lt + " " + ln;
 	
 	if (elevation > -1000){
 		title = title  + ", " + elevation + "m,";

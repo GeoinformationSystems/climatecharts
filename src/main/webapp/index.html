@@ -16,9 +16,9 @@
 	<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
 	<script src="https://d3js.org/d3.v3.min.js"></script>
-	<script src="https://canvg.github.io/canvg/rgbcolor.js"></script> 
+	<script src="https://canvg.github.io/canvg/rgbcolor.js"></script>
 	<script src="https://canvg.github.io/canvg/StackBlur.js"></script>
-	<script src="https://canvg.github.io/canvg/canvg.js"></script> 
+	<script src="https://canvg.github.io/canvg/canvg.js"></script>
 	<script src="https://cdn.plot.ly/plotly-latest.min.js"></script> <!-- plotly.js for boxplots -->
 	<script src="js/jquery-ui-touch-punch/jquery.ui.touch-punch.min.js"></script>
 	<script src="js/leaflet/leaflet.js"></script>
@@ -81,7 +81,7 @@
 								<div class="col-lg-2">
 									<a target="_blank" href="https://tu-dresden.de/die_tu_dresden/fakultaeten/
 									fakultaet_forst_geo_und_hydrowissenschaften/fachrichtung_geowissenschaften/gis">
-									<img class="img img-responsive" id="logo" src="img/logo_weiss.svg"> </a> 
+									<img class="img img-responsive" id="logo" src="img/logo_weiss.svg"> </a>
 								</div>
 							</div>
 						</div>
@@ -91,16 +91,12 @@
 								<div class="row">
 									<div class="col-lg-9">
 										<div id="map" class="box"></div>
-										<div id="plots">
-											<div id="plot-tmp"></div>
-											<div id="plot-pre"></div>
-										</div>
-										<div id="wrapper" class="box">
+										<div id="climate-chart-wrapper" class="box">
 											<p id="info" class="info">
-												In this application you can dynamically create a climate chart 
-												for a specific location and time frame. 
-												Click on the map or type in coordinates into the fields for 
-												Latitude/Longitude to choose a point of interest, select a time 
+												In this application you can dynamically create a climate chart
+												for a specific location and time frame.
+												Click on the map or type in coordinates into the fields for
+												Latitude/Longitude to choose a point of interest, select a time
 												frame in the dropdown menu on the right and then click on "Create Chart".
 											</p>
 											<div id="loader"></div>
@@ -112,15 +108,15 @@
 												<div class="dropdown">
 												<div class="linewrapper">
 												</div>
-												  <p>Dataset:</p> 
+												  <p>Dataset:</p>
 												  <select id="datasets" name="datasets" style="width:100%">
 												  </select>
 												</div>
 												<label for=lt>Latitude:</label> <input id="lt"
-													class="form-control coordinates" type="text"> 
+													class="form-control coordinates" type="text">
 												<label for=ln>Longitude:</label> <input id="ln"
 													class="form-control coordinates" type="text"> <br>
-												<p class="period">Period:</p> 
+												<p class="period">Period:</p>
 												<div id="min"></div>
 												<p class="period">to</p>
 												<div id="max"></div>
@@ -136,7 +132,7 @@
 														name="optradio" checked> Use title from gazetteer</label>
 												</div>
 												<div class="radio">
-													<label><input id="name2" type="radio" class="name" name="optradio"> 
+													<label><input id="name2" type="radio" class="name" name="optradio">
 													<input id="userName" type="text" class="form-control"
 													placeholder="Enter title" disabled></label>
 												</div>
@@ -164,7 +160,7 @@
 												</p>
 												<p class="block">Please note that the temperature and
 													precipitation values shown in the diagram are based on interpolated
-													data and therefore might differ significantly from real 
+													data and therefore might differ significantly from real
 													conditions.
 												</p>
 												<p>
@@ -173,10 +169,10 @@
 													Creative Commons Attribution 3.0 License
 												</p>
 												<p class="block">
-													Elevation is based on SRTM data and only available between 60° 
-													northern and 58° southern latitude. The climate class is calculated from 
-													the temperature and precipitation data according to the 
-													<a target="_blank" 
+													Elevation is based on SRTM data and only available between 60°
+													northern and 58° southern latitude. The climate class is calculated from
+													the temperature and precipitation data according to the
+													<a target="_blank"
 													href="https://en.wikipedia.org/wiki/K%C3%B6ppen_climate_classification">
 													Köppen-Geiger climate classification scheme</a>.
 												</p>
@@ -194,16 +190,16 @@
 											  <li>Leaflet</li>
 											  <li>Bootstrap</li>
 											  <li>JQuery + JQuery-UI</li>
-											</ul> 
+											</ul>
 											<p>
 												Servers and web services:
 											</p>
 											<ul>
 											  <li>THREDDS Data Server</li>
 											  <li>GeoNames Webservices</li>
-											</ul> 
-											<p> Optimized for Firefox and Chrome. This website uses 
-												the Piwik Analytics Platform to obtain user data. 
+											</ul>
+											<p> Optimized for Firefox and Chrome. This website uses
+												the Piwik Analytics Platform to obtain user data.
 											</p>
 										</div>
 									</div>
@@ -219,19 +215,19 @@
 												<p class="block">
 													The charts on this site are drawn following the Walter-Lieth standard.
 													The most characteristic feature of this type of climate diagram
-													is that the ratio between temperature and precipitation scale is constantly 
-													1:2, which makes it easier to compare local climates. If 
-													there are precipitation values above 100mm per month, the scale above is aligned, 
-													ensuring that the chart doesn't become to missshaped. 
+													is that the ratio between temperature and precipitation scale is constantly
+													1:2, which makes it easier to compare local climates. If
+													there are precipitation values above 100mm per month, the scale above is aligned,
+													ensuring that the chart doesn't become to missshaped.
 													Additionally, it graphically emphasizes in a simplified form if the local conditions
-													are  <span class="humid">humid</span>, 
+													are  <span class="humid">humid</span>,
 													<span class="veryhumid">perhumid</span>,
-													<span class="arid">arid</span> or seasonally changing. 
+													<span class="arid">arid</span> or seasonally changing.
 												</p>
 												<img class="img img-responsive" src="img/example.png">
 											</div>
 										</div>
-										
+
 									</div>
 									<div class="col-lg-4">
 										<div class="box">
@@ -239,19 +235,19 @@
 												<p>
 													The <a target="_blank" href="http://tu-dresden.de/impressum">
 													imprint of the Technical University Dresden</a>	is applied
-													with the following constraint:<br> 
-													<br> 
+													with the following constraint:<br>
+													<br>
 													Web design and technical development: <br>
 													M.Sc. Felix Wiemann<br>
 													<br>
 													Contact: <br>
 													Prof. Dr. Lars Bernard<br>
-													Mail: Lars.Bernard@tu-dresden.de<br> 
+													Mail: Lars.Bernard@tu-dresden.de<br>
 													Phone: +49 (0)351 463-35880<br>
 												</p>
 											</div>
 										</div>
-										<iframe id="piwik-tracking" style="border: 0; height: 200px; width: 600px;" src="https://mars.geo.tu-dresden.de/index.php?module=CoreAdminHome&action=optOut&idsite=4&language=de"></iframe> 
+										<iframe id="piwik-tracking" style="border: 0; height: 200px; width: 600px;" src="https://mars.geo.tu-dresden.de/index.php?module=CoreAdminHome&action=optOut&idsite=4&language=de"></iframe>
 									</div>
 								</div>
 							</div>
@@ -264,6 +260,7 @@
 	</div>
 	<script src="js/ui.js"></script>
 	<script src="js/drawChart.js"></script>
+	<script src="js/drawPlots.js"></script>
 	<script src="js/app.js"></script>
 </body>
 </html>

@@ -1,19 +1,19 @@
 @media (max-width: 767px) {
-	
+
 	.info {
 		padding: 0;
 	}
-    
+
     .tab-links > li {
     	padding: 5px;
     	height: 40px;
     }
-    
+
     .ui-slider .ui-slider-handle {
     	height: 50px;
         width: 20px
     }
-    
+
     body {
     	background: none !important;;
     }
@@ -23,7 +23,7 @@ a {
 	word-wrap: break-word;
 }
 
-body { 
+body {
 	position: absolute;
 	width: 100%;
 	font-family: Verdana, Geneva, sans-serif;
@@ -83,9 +83,9 @@ select {
     background-size: contain;
 }
 
-.block { 
+.block {
 	text-align: justify;
-	display: inline-block; 
+	display: inline-block;
 	overflow-wrap: break-word;
 	word-wrap: break-word;
 }
@@ -172,7 +172,7 @@ select {
 	margin-bottom: 50px;
 	padding-top: 20px;
 	padding-bottom: 5px;
-	background-image: url("https://www.transparenttextures.com/patterns/az-subtle.png"), 
+	background-image: url("https://www.transparenttextures.com/patterns/az-subtle.png"),
 							linear-gradient(to bottom, #407CC9, #043d7b);
 	box-shadow: 0px 3px 6px #888a85;
 }
@@ -188,8 +188,8 @@ select {
 	width: 300px;
 }
 
-.row { 
-	margin-top:20px; 
+.row {
+	margin-top:20px;
 	margin-bottom: 20px
 }
 
@@ -202,11 +202,17 @@ select {
 }
 
 .svg-container {
-    display: inline-block;
-    position: relative;
+/*     display: inline-block; */
+/*     position: relative; */
     width: 100%;
     vertical-align: top;
-    overflow: hidden;
+/*     overflow: hidden; */
+}
+
+#chart {
+	margin-bottom: 25px;
+	position: relative;
+	overflow: auto;
 }
 
 .svg-content-responsive {
@@ -220,7 +226,7 @@ select {
 .tab {
     display: none;
 }
- 
+
 .tab-links:after {
     display: block;
     clear: both;
@@ -228,16 +234,16 @@ select {
 }
 
 .tab-links a {
-	display: inline-block;  
-    box-sizing: border-box;    
-    color: white; 
+	display: inline-block;
+    box-sizing: border-box;
+    color: white;
 	transition: all linear 0.15s;
 	margin-top: -20px;
 }
 
 .tab-links > li > a:hover {
     text-decoration: none;
-    background-color: transparent; 
+    background-color: transparent;
     box-shadow: inset 0px 0px 0px 1px white;
 	transition: all linear 0s;
 }
@@ -247,9 +253,9 @@ select {
 	transition: all linear 0.6s;
 }
 .unselectable {
-	-moz-user-select: none; 
-	-webkit-user-select: none; 
-	-ms-user-select:none; 
+	-moz-user-select: none;
+	-webkit-user-select: none;
+	-ms-user-select:none;
 	user-select:none;
 	-o-user-select:none;
 }
@@ -322,20 +328,156 @@ select {
     width: 90%;
 }
 
-#plots {
-	overflow: hidden;
-	width: 900px;
-	height: 500px;	
+
+/* PLOTS */
+
+#plot-wrapper {
+	position: relative;
+	width: 100%;
+	overflow: auto;
 }
 
-#plot-tmp {
+#plot-options
+{
+	float: left;
+	width: 100%;
+	height: 45px;
+	background-color: white;
+}
+
+#plot-tmp, #plot-pre {
  	float: left;
-	width: 400px;
+ 	padding: 3px;
+	width: 50%;
 	height: 500px;
 }
 
-#plot-pre {
-	float: right;
-	width: 400px;
-	height: 500px;
+/* Title */
+#plot-title
+{
+	width: 100%;
+	height: 100%;
+	text-align: center;
+	font-size: 1.3em;
+}
+
+/* Source and Disclaimer */
+#plot-source
+{
+	position: absolute;
+    bottom: 10px;
+    left: 20px;
+    width: 75%; /* really bad code.. but kinda works */
+	font-size: 0.9em;
+	color: rgb(128, 128, 128);
+}
+
+#plot-disclaimer
+{
+	position: absolute;
+    bottom: 10px;
+    right: 20px;
+	font-size: 0.9em;
+	color: rgb(128, 128, 128);
+}
+
+
+/* HTML Toggle Switch */
+/* Credits: HTMLlion
+   https://www.htmllion.com/css3-toggle-switch-button.html
+ */
+
+.switch {
+	position: absolute;
+	top: 24px;
+	right: 10px;
+	display: block;
+	vertical-align: top;
+	width: 130px;
+	height: 30px;
+	margin: 0 10px 10px 0;
+	background: linear-gradient(to bottom, #eeeeee, #FFFFFF 25px);
+	background-image: -webkit-linear-gradient(top, #eeeeee, #FFFFFF 25px);
+	border-radius: 18px;
+	cursor: pointer;
+}
+.switch-input {
+	position: absolute;
+	top: 0;
+	left: 0;
+	opacity: 0;
+}
+.switch-label {
+	position: relative;
+	display: block;
+	height: inherit;
+	font-size: 10px;
+	text-transform: uppercase;
+	background: #eceeef;
+	border-radius: inherit;
+  border: 1px solid darkgrey;
+}
+.switch-label:before, .switch-label:after {
+	position: absolute;
+	top: 50%;
+	margin-top: -.5em;
+	line-height: 1;
+	-webkit-transition: inherit;
+	-moz-transition: inherit;
+	-o-transition: inherit;
+	transition: inherit;
+}
+.switch-label:before { /* OFF STATUS (fixed) */
+	content: attr(data-off);
+	right: 18px;
+	color: #aaaaaa;
+	text-shadow: 0 1px rgba(255, 255, 255, 0.5);
+}
+.switch-label:after {   /* ON STATUS (optimal) */
+	content: attr(data-on);
+	left: 11px;
+	color: #FFFFFF;
+	text-shadow: 0 1px rgba(0, 0, 0, 0.2);
+	opacity: 0;
+}
+.switch-input:checked ~ .switch-label {
+	background: #505050;
+}
+.switch-input:checked ~ .switch-label:before {
+	opacity: 0;
+}
+.switch-input:checked ~ .switch-label:after {
+	opacity: 1;
+}
+.switch-handle {
+  position: absolute;
+  top: 1px;
+  left: 2px;
+  width: 28px;
+  height: 28px;
+  background: darkgrey;
+  border-radius: 100%;
+}
+.switch-handle:before {
+	content: "";
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	margin: -6px 0 0 -6px;
+	width: 12px;
+	height: 12px;
+	background: linear-gradient(to bottom, #eeeeee, #FFFFFF);
+	background-image: -webkit-linear-gradient(top, #eeeeee, #FFFFFF);
+	border-radius: 6px;
+}
+.switch-input:checked ~ .switch-handle {
+	left: 100px;  /* distance how far the switch goes to the right: width of switch - 30px */
+}
+
+/* Transition */
+.switch-label, .switch-handle {
+	transition: All 0.5s ease;
+	-webkit-transition: All 0.5s ease;
+	-moz-transition: All 0.5s ease;
+	-o-transition: All 0.5s ease;
 }
