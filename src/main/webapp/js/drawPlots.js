@@ -40,13 +40,14 @@ drawPlots = function(data, name, elevation) {
 	// ugly hack, because I don't understand the margin options towards the axes
 	// should actually be: [0,11] ) [Jan, ... , Dec]
 	PLOT_MARGIN = 40
+	PLOT_HEIGHT = 500
 
 	// important elements
-	TITLE_CONTAINER = $('#plot-title')[0];
-	SOURCE_CONTAINER = $('#plot-source')[0];
-	DISCLAIMER_CONTAINER = $('#plot-disclaimer')[0];
-	SCALE_SWITCH = $("#plot-scale-switch")[0];
-	SCALE_LABEL = $("#plot-scale-label")[0];
+	TITLE_CONTAINER = 		$('#plot-title')[0];
+	SOURCE_CONTAINER = 		$('#plot-source')[0];
+	REFERENCE_CONTAINER = 	$('#plot-reference')[0];
+	SCALE_SWITCH = 			$("#plot-scale-switch")[0];
+	SCALE_LABEL = 			$("#plot-scale-label")[0];
 
 	// Plotly layout options and internally used attributes
 	SCALE_STATI = [ { // default
@@ -116,11 +117,10 @@ drawPlots = function(data, name, elevation) {
 		      range:      XAXIS_RANGE,
 		      fixedrange: true,
 		      showgrid:   true,
-		      showline:   PLOTS[i].max_range[0] == 0 ? true : false
-		                  // little hack, because "showline: true" on the y-axis
-		                  // disables the zeroline in the plot that starts at 0 on
-		                  // the y-axis => "showline: true" on the x-axis is essentially
-		                  // the zeroline
+		      showline:   true,
+		      mirror:     'ticks',
+		      linecolor:  '#636363',
+		      linewidth:  1
 		    },
 		    yaxis:
 		    {
@@ -164,18 +164,49 @@ drawPlots = function(data, name, elevation) {
 
 
 	// layout the graphs
-	function layoutPlots() {
-		for (i = 0; i < PLOTS.length; i++) {
-			Plotly.relayout(PLOTS[i].container, layouts[i][SCALE_STATE]);
-		}
+	function layoutPlots()
+	{
+	  for (i=0; i<PLOTS.length; i++)
+	  {
+	    Plotly.relayout(PLOTS[i].container, layouts[i][SCALE_STATE]);
+	  }
 	}
 
 	// change layout onClick on scale button
-	SCALE_SWITCH.onchange = function() {
-		// toggle status (if 0 -> 1, else 1 -> 0)
-		SCALE_STATE = (SCALE_STATE == 0 ? 1 : 0);
-		layoutPlots();
+	SCALE_SWITCH.onchange = function()
+	{
+	  // toggle status  (if 0 -> 1, else 1 -> 0)
+	  SCALE_STATE = (SCALE_STATE == 0 ? 1 : 0);
+	  layoutPlots();
 	}
+
+	// resize graph on window resize
+	$(window).resize(function(e)
+	{
+	  for (i=0; i<PLOTS.length; i++)
+	  {
+	    Plotly.Plots.resize(PLOTS[i].graphD3);
+	  }
+	});
+
+	// finally plot graphs
+	var d3 = Plotly.d3;
+	for (i=0; i<PLOTS.length; i++)
+	{
+	  var container = document.getElementById(PLOTS[i].container);
+	  var graphD3 = d3.select(container)
+	                  .style(
+	                    {
+	                        width: 100/PLOTS.length + '%',
+	                        height: PLOT_HEIGHT + "px",
+	                        'margin-top': "15px"
+	                    }
+	                  );
+	  PLOTS[i].graphD3 = graphD3.node();
+	  Plotly.plot(PLOTS[i].graphD3, traces[i], {}, configOptions);
+	  // Plotly.newPlot(PLOTS[i].container, traces[i], {}, configOptions);
+	}
+	layoutPlots();
 	
 	// set title
 	var title = name,
@@ -198,10 +229,12 @@ drawPlots = function(data, name, elevation) {
 	var subtitle = lt + " " + ln;
 	
 	if (elevation > -1000){
-		subtitle += ", " + elevation + "m";
-	} 
+		subtitle += " | " + elevation + "m";
+	}
 	
-	TITLE_CONTAINER.innerHTML = '<p>' + title + '<br />' + subtitle + '</p>';
+	subtitle += " | Years " + UI.start + "-" + UI.end;
+	
+	TITLE_CONTAINER.innerHTML = '<p>' + title + '</p><p>' + subtitle + '</p>';
 
 	// set source
 	
@@ -215,15 +248,7 @@ drawPlots = function(data, name, elevation) {
 	
 	SOURCE_CONTAINER.innerHTML = "Data Source: " + source;
 	
-	DISCLAIMER_CONTAINER.innerHTML = "ClimateCharts.net";
+	// set reference
 	
-	// EXECUTION //
-
-	// finally plot graphs
-	for (i = 0; i < PLOTS.length; i++) {
-		Plotly.newPlot(PLOTS[i].container, traces[i], {}, configOptions);
-	}
-	// initial layout
-	layoutPlots();
-
+	REFERENCE_CONTAINER.innerHTML = "ClimateCharts.net";
 }
