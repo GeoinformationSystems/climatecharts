@@ -100,7 +100,7 @@ select {
     border-radius: 4px;
 	color: white;
 	background-color: rgb(128,128,128);
-	border-color: rgb(128,128,128);	
+	border-color: rgb(128,128,128);
 }
 
 .btn-small {
@@ -330,7 +330,7 @@ select {
 {
 	position: absolute;
 	top: 10px;
-	right: 27px;
+	right: 20px;
 	padding: 4px;
 }
 
@@ -338,92 +338,41 @@ select {
 /* PLOTS *
  *
  * plot-wrapper
- * |-- plot-main			// will be printed			
- * |   |-- plot-title		// location -- coordinates | elevation | time
- * |   |-- plot-tmp			// left plot: temperature distribution
- * |   |-- plot-pre			// right plot: precipitation distribution
- * |   |-- plot-footer		// source and reference
- * |   	   |-- plot-source
- * |   	   |-- plot-reference
- * |						// will not be printed 
- * |-- plot-switch			// optimal <-> fixed scale
- * |-- plot-save-buttons
+  * |-- plots-container   // main svg canvas, contains plots, will be printed
+  * |-- plot-options			 // buttons for changing / saving plots, will not be printed
+  *     |-- plot-scale-switch   // optimal <-> fixed scale
+  *     |-- plot-save-buttons   // save as svg and png
+  *
  */
 
 /* level 0 */
 #plot-wrapper
 {
-	position: relative;
-	width: 100%;
-	overflow: auto;
+  width: 100%;
+  height: 520px;
 }
 
-/* level 1 */
-
-#plot-main
+/* plot options = scale switch and save buttons */
+#plot-options
 {
-	position: relative;
-	width: 100%;
-	overflow: auto;	
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 50px;
 }
 
-/* level 2 - main */
-#plot-title
+#plot-scale-switch
 {
-	position: relative;
-	float: left;
-	width: 100%;
-	height: 45px;	
-	text-align: center;
-	font-size: 1.3em;
-}
-#plot-title p
-{
-	margin-bottom: -2px;
+  float: left;
+  margin-left: 10px;
+  margin-top: 15px;
 }
 
-#plot-tmp, #plot-pre
+#save-button-area
 {
-	position: relative;
- 	float: left;
-	width: 50%;
-}
-
-#plot-footer
-{
-	position: relative;
-	float: left;
-	width: 100%;
-	height: 30px;
-	
-/*     position: absolute; */
-/*     bottom: 2px; */
-/*     left: 	0; */
-/*     width: 100%;	 */
-}
-
-/* level 3 - footer */
-#plot-source
-{
-	position: relative;
-	float: left;
-    width: 75%;
-    height: 100%;
-	font-size: 0.9em;
-	color: rgb(128, 128, 128);
-	text-align: left;
-}
-
-#plot-reference
-{
-	position: relative;
-	float: left;
-	width: 25%;
-	padding-right: 4px;
-	height: 100%;
-	font-size: 0.9em;
-	color: rgb(128, 128, 128);
-	text-align: right;
+  float: right;
+  margin-right: 10px;
 }
 
 /* Save Buttons for ClimateChart and plots */
@@ -435,9 +384,7 @@ select {
  */
 
 .switch {
-	position: absolute;
-	top: 24px;
-	left: 13px;
+  position: relative;
 	display: block;
 	vertical-align: top;
 	width: 130px;
