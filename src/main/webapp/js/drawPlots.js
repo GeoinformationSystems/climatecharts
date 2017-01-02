@@ -1,13 +1,12 @@
 /*
  * ClimateCharts (climatecharts.net)
- * Author: Felix Wiemann
- * 
+ * Author: Flix Wiemann and Marcus Kossatz
+ *
  * This file contains the function to define and draw the svg elements of the plots showing the distribution of
  * temperature and precipitation data underneath the climate charts
- * 
+ *
  * Necessary Parameters to call the function:
  * 	- data: a json array containing objects with the properties month, tmp and pre
-
  */
 
 drawPlots = function(data, name, elevation) {
@@ -16,239 +15,246 @@ drawPlots = function(data, name, elevation) {
 	// GLOBAL CONSTANTS
 	// =============================================================================
 
-	MONTHS_IN_YEAR = [
+  MONTHS_IN_YEAR = [
 	        "Jan", "Feb", "Mar", "Apr", "May", "Jun",
 	        "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" ];
 
 	// Plots
-	PLOTS = [ { // temperature
-		data : data.temperature,
-		container : 'plot-tmp',
-		title : "Distribution of Temperature [&deg;C]",
-		color : 'rgb(230, 20, 20)',
-		max_range : [ -40, +40 ],
-	}, { // precipitation
-		data : data.precipitation,
-		container : 'plot-pre',
-		title : "Distribution of Precipitation [mm]",
-		color : 'rgb(4, 61, 186)',
-		max_range : [ 0, +1000 ],
-	}, ]
+  // Plots
+  PLOT =
+    {
+      title:      name,
+      subtitle:   null,
+      data_source:null,
+      reference:  "ClimateCharts.net",
+      container:  document.getElementById('plots-container'),
+      graphD3:    null,
+      subplots:
+      [
+        {             // temperature
+          data:       data.temperature,
+          title:      "Distribution of Temperature [&deg;C]",
+          color:      'rgb(230, 20, 20)',
+          max_range:  [-40, +40],
+        },
+        {             // precipitation
+          data:       data.precipitation,
+          title:      "Distribution of Precipitation [mm]",
+          color:      'rgb(4, 61, 186)',
+          max_range:  [0, +1000],
+        }
+      ],
+      scale_states:
+      [
+        "Fixed Scale",
+        "Optimal Scale"
+      ]
+    }
 
-	// styling options
-	XAXIS_RANGE = [ -1, 12 ]
-	// ugly hack, because I don't understand the margin options towards the axes
-	// should actually be: [0,11] ) [Jan, ... , Dec]
-	PLOT_MARGIN = 40
-	PLOT_HEIGHT = 500
+  // styling options
+  PLOT_HEIGHT =      500     // px
+  SUBPLOT_DISTANCE = 7  // distance between temperature and precipitation plot [%]
+  LINE_COLOR =       'grey'
 
-	// important elements
-	TITLE_CONTAINER = 		$('#plot-title')[0];
-	SOURCE_CONTAINER = 		$('#plot-source')[0];
-	REFERENCE_CONTAINER = 	$('#plot-reference')[0];
-	SCALE_SWITCH = 			$("#plot-scale-switch")[0];
-	SCALE_LABEL = 			$("#plot-scale-label")[0];
+  // important div containers
+  SCALE_SWITCH =  document.getElementById("plot-scale-switch");
+  SCALE_INPUT =   document.getElementById("plot-scale-input");
+  SCALE_LABEL =   document.getElementById("plot-scale-label");
 
-	// Plotly layout options and internally used attributes
-	SCALE_STATI = [ { // default
-		id : 'fixed',
-		name : "Fixed Scale",
-	}, {
-		id : 'optimal',
-		name : "Optimal Scale"
-	} ]
-	// can be further advanced to follow MVC pattern
+  SCALE_STATE = 0   // initial scale state must be 0!
 
-	SCALE_STATE = 0 // initial scale state must be 0!
-
-
-	// =============================================================================
-	// HELPER FUNCTIONS
-	// =============================================================================
-
-	function getMonthName(monthNum) {
-		return MONTHS_IN_YEAR[monthNum];
-	}
-
-	// =============================================================================
+	// ===========================================================================
 	// MAIN FUNCTION
-	// =============================================================================
+	// ===========================================================================
 
-	/* LABEL THE SWITCH STATES */
-	SCALE_LABEL.setAttribute('data-off', SCALE_STATI[0].name)
-	SCALE_LABEL.setAttribute('data-on', SCALE_STATI[1].name)
+  /* D3 preparation */
+  var d3 = Plotly.d3;
+  var graphD3 = d3.select(PLOT.container)
+  .style(
+    {
+      width: 100 + '%',
+      height: PLOT_HEIGHT + 'px',
+    }
+  );
+  PLOT.graphD3 = graphD3.node();
 
-	/* GET DATA */
-
-	var traces = new Array();
-
-	// for each plot
-	for (i = 0; i < PLOTS.length; i++) {
-		// create array for each trace
-		traces[i] = new Array();
-
-		// fill with values for each month
-		for (j = 0; j < 12; j++) {
-			traces[i].push({
-				y : PLOTS[i].data[j],
-				type : 'box',
-				name : getMonthName(j),
-				marker : {
-					color : PLOTS[i].color
-				}
-			});
-		}
-	}
-
-	/* SET LAYOUT */
-
-	// [[]] -> outer array: data [tmp, pre], inner array: layout [fixed,
-	// optimal]
-	var layouts = new Array();
-
-	// for each plot
-	for (i = 0; i < PLOTS.length; i++) {
-		
-		  // layout for fixed scale
-		  fixScaleLayout = {
-		    title:        PLOTS[i].title,
-		    xaxis:
-		    {
-		      range:      XAXIS_RANGE,
-		      fixedrange: true,
-		      showgrid:   true,
-		      showline:   true,
-		      mirror:     'ticks',
-		      linecolor:  '#636363',
-		      linewidth:  1
-		    },
-		    yaxis:
-		    {
-		      range:      PLOTS[i].max_range,
-		      fixedrange: true,
-		      autorange:  false,
-		      rangemode:  'normal',
-		      showline:   true,
-		      mirror:     'ticks',
-		      linecolor:  '#636363',
-		      linewidth:  1
-		    },
-		    margin:
-		    {
-		      l:          PLOT_MARGIN,
-		      r:          PLOT_MARGIN
-		    },
-		    showlegend:   false
-		  };
-
-		  // layout for optimal y-scale
-		  optScaleLayout = JSON.parse(JSON.stringify(fixScaleLayout)); // deep copy
-		  optScaleLayout.yaxis = {
-		    range:        PLOTS[i].max_range,
-		    fixedrange:   true,
-		    autorange:    true,
-		    rangemode:    PLOTS[i].max_range[0] < 0 ? 'normal' : 'nonnegative',
-		    showline:     true,
-		    mirror:       'ticks',
-		    linecolor:    '#636363',
-		    linewidth:    1
-		  }
-
-		// set layouts
-		layouts[i] = [ fixScaleLayout, optScaleLayout ]
-	}
-
-	var configOptions = {
-		displayModeBar : false
-	}
+  /* LABEL THE SWITCH STATES */
+  SCALE_LABEL.setAttribute('data-off', PLOT.scale_states[0])
+  SCALE_LABEL.setAttribute('data-on',  PLOT.scale_states[1])
 
 
-	// layout the graphs
-	function layoutPlots()
-	{
-	  for (i=0; i<PLOTS.length; i++)
-	  {
-	    Plotly.relayout(PLOTS[i].container, layouts[i][SCALE_STATE]);
-	  }
-	}
+  // =========================================================================
+  /* GET DATA */
 
-	// change layout onClick on scale button
-	SCALE_SWITCH.onchange = function()
-	{
-	  // toggle status  (if 0 -> 1, else 1 -> 0)
-	  SCALE_STATE = (SCALE_STATE == 0 ? 1 : 0);
-	  layoutPlots();
-	}
+  // data structure: array of objects, each object for one data field per month
+  // -> temperature Jan, temperature Feb, ... , precipitation Dec => 24 objects
+  var data = [];
 
-	// resize graph on window resize
-	$(window).resize(function(e)
-	{
-	  for (i=0; i<PLOTS.length; i++)
-	  {
-	    Plotly.Plots.resize(PLOTS[i].graphD3);
-	  }
-	});
+  // for each plot
+  for (i=0; i<PLOT.subplots.length; i++)
+  {
+    // for each month
+    for (j=0; j<12; j++)
+    {
+      data.push(
+        {
+          xaxis: 'x'+(i+1),
+          yaxis: 'y'+(i+1),
+          y:    PLOT.subplots[i].data[j],
+          type: 'box',
+          name:	MONTHS_IN_YEAR[j],
+          marker:
+          {
+            color: PLOT.subplots[i].color
+          }
+        }
+      );
+    }
+  }
+  
+  // get subtitle and data reference
+  PLOT.subtitle = null;
+  PLOT.data_reference = null;
 
-	// finally plot graphs
-	var d3 = Plotly.d3;
-	for (i=0; i<PLOTS.length; i++)
-	{
-	  var container = document.getElementById(PLOTS[i].container);
-	  var graphD3 = d3.select(container)
-	                  .style(
-	                    {
-	                        width: 100/PLOTS.length + '%',
-	                        height: PLOT_HEIGHT + "px",
-	                        'margin-top': "15px"
-	                    }
-	                  );
-	  PLOTS[i].graphD3 = graphD3.node();
-	  Plotly.plot(PLOTS[i].graphD3, traces[i], {}, configOptions);
-	  // Plotly.newPlot(PLOTS[i].container, traces[i], {}, configOptions);
-	}
-	layoutPlots();
-	
-	// set title
-	var title = name,
-		subtitle = '';
-	
-	var lt = UI.lt,
-		ln = UI.ln;
-	
-	if (lt >= 0){
-		lt = lt +"N";
-	} else {
-		lt = Math.abs(lt) +"S";
-	}
-	if (ln >= 0){
-		ln = ln +"E";
-	} else {
-		ln = Math.abs(ln) +"W";
-	}
-	
-	var subtitle = lt + " " + ln;
-	
-	if (elevation > -1000){
-		subtitle += " | " + elevation + "m";
-	}
-	
-	subtitle += " | Years " + UI.start + "-" + UI.end;
-	
-	TITLE_CONTAINER.innerHTML = '<p>' + title + '</p><p>' + subtitle + '</p>';
+  // ===========================================================================
+  /* SET LAYOUTS AND CONFIG OPTIONS */
 
-	// set source
-	
-	var source = "";
-	
-	$.each(UI.catalog.dataset, function(i, v) {
-		if (v._name == UI.dataset) {
-	    	source = v._name +" (" +v.documentation[1].__text +")";
-	    }
-	});
-	
-	SOURCE_CONTAINER.innerHTML = "Data Source: " + source;
-	
-	// set reference
-	
-	REFERENCE_CONTAINER.innerHTML = "ClimateCharts.net";
+  var layouts = [];
+  layouts[0] =  // fixed scale layout
+  {
+    title:      PLOT.title,
+    showlegend: false,
+    xaxis:      {},
+    yaxis:      {},
+    xaxis2:     {},
+    yaxis2:     {},
+  };
+
+  var axes =
+  [
+    layouts[0].xaxis,  layouts[0].yaxis,    // temperature
+    layouts[0].xaxis2, layouts[0].yaxis2    // precipitation
+  ]
+  var numAxes = axes.length;
+
+  // default style for all axes
+  for (var i=0; i<numAxes; i++)
+  {
+    axes[i].rangemode =   'normal';
+    axes[i].fixedrange =  true;
+    axes[i].showgrid =    true;
+    axes[i].showline =    true;
+    axes[i].mirror =      'ticks';
+    axes[i].linecolor =   LINE_COLOR;
+    axes[i].linewidth =   1;
+  }
+
+  // special style / content for axes
+  axes[0].title =     PLOT.subplots[0].title;
+  axes[0].domain =    [0, 0.5-SUBPLOT_DISTANCE/100/2],  // left part of the plot
+  axes[1].anchor =    'x1';
+  axes[1].range =     PLOT.subplots[0].max_range;
+  axes[1].autorange = false;
+
+  axes[2].title =     PLOT.subplots[1].title;
+  axes[2].domain =    [0.5+SUBPLOT_DISTANCE/100/2, 1],  // right part of the plot
+  axes[3].anchor =    'x2';
+  axes[3].range =     PLOT.subplots[1].max_range;
+  axes[3].autorange = false;
+
+  // optimal layout: same as fixed layout, just with different range on y-axis
+  layouts[1] = JSON.parse(JSON.stringify(layouts[0])); // deep copy
+  layouts[1].yaxis.autorange =  true;
+  layouts[1].yaxis2.autorange = true;
+  layouts[1].yaxis.rangemode =  PLOT.subplots[0].max_range[0] < 0 ? 'normal' : 'nonnegative';
+  layouts[1].yaxis2.rangemode = PLOT.subplots[1].max_range[0] < 0 ? 'normal' : 'nonnegative';
+
+  // configuration options for plotly
+  var configOptions = {
+    displayModeBar : false
+  }
+
+  // ===========================================================================
+  /* PLOT OPERATIONS */
+
+  // layout the graphs
+  function layoutPlots()
+  {
+    // clean the graph
+    Plotly.purge(PLOT.graphD3);
+
+    // replot it
+    Plotly.plot(PLOT.graphD3, data, layouts[SCALE_STATE], configOptions);
+
+    // this is the brute force method
+    // it would be nicer to plot it only once and then to relayout it:
+    // Plotly.relayout(PLOT.graphD3, layouts[SCALE_STATE]);
+    // but that did not work since I used subplots.
+
+    // get title wrapper
+    var titleWrapper = $('.g-gtitle')
+
+    // add subtitle
+    var titleDiv = $(titleWrapper.children()[0]);
+    titleDiv.clone().appendTo(titleWrapper);
+
+    var subtitleDiv = $(titleWrapper.children()[1]);
+    subtitleDiv.text(PLOT.subtitle);
+
+    // move title and subtitle
+    titleDiv.attr('y', 20);
+    subtitleDiv.attr('y', 45);
+
+    // move xaxis title on top of the plots
+    $('.xtitle').attr('y', 85);
+    $('.x2title').attr('y', 85);
+
+    // add data source and reference
+    var footerWrapper = titleWrapper.clone();
+    footerWrapper.removeClass('g-gtitle');
+    footerWrapper.addClass('g-gfooter');
+    footerWrapper.appendTo(titleWrapper.parent());
+
+    var dataSourceDiv = $(footerWrapper.children()[0]);
+    dataSourceDiv.text("Data Source: " + PLOT.data_source);
+    dataSourceDiv.css('font-size', 12);
+    dataSourceDiv.css('fill', 'grey');
+    dataSourceDiv.attr('text-anchor', 'left');
+    dataSourceDiv.attr('x', 55);
+    dataSourceDiv.attr('y', PLOT_HEIGHT-20);
+
+    var referenceDiv = $(footerWrapper.children()[1]);
+    referenceDiv.text(PLOT.reference);
+    referenceDiv.css('font-size', 12);
+    referenceDiv.css('fill', 'grey');
+    referenceDiv.attr('text-anchor', 'right');
+    referenceDiv.attr('x', $('.main-svg').width()-190);
+    referenceDiv.attr('y', PLOT_HEIGHT-20);
+  }
+
+  // change layout onClick on scale button
+  SCALE_SWITCH.onchange = function(evt)
+  {
+    // toggle status  (if 0 -> 1, else 1 -> 0)
+    SCALE_STATE = (SCALE_STATE == 0 ? 1 : 0);
+    layoutPlots();
+  }
+
+  // resize graph on window resize
+  $(window).resize(function(evt)
+  {
+    layoutPlots();
+    // this is the brute force method
+    // it would be nicer to plot it only once and then to resize it:
+    // Plotly.Plots.resize(PLOT.graphD3);
+    // but that did not work since I used subplots.
+  });
+
+
+
+  // =============================================================================
+  /* MAIN */
+
+  // initially drawing the chart
+  layoutPlots();
 }
