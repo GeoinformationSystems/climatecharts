@@ -81,7 +81,107 @@ var UI  = {
 			UI.createChart();
 		});
 	},
+	
+	// Save SVG inline code to a svg file.
+	"saveToSvg": function (rootDivId, filename) {
+		var rootDiv = $('#'+rootDivId);
+		var tempDiv = $('#climate-chart-wrapper');
+		
+		rootDiv.panzoom("reset");
+		
+	    try {
+	        var isFileSaverSupported = !!new Blob();
+	    } catch (e) {
+	        alert("This function is not supported by your browser!");
+	    }
+	    
+	    // create new temporary div where the to print is copied in
+	    // -> use like a workbench
+	    tempDiv.append("<div id=\"temp\">");
+	    var workbench = $('#temp');
+	    workbench.append(rootDiv.clone());
+	    
+	    var html = workbench.html();
+	    
+	    var blob = new Blob([html], {type: "image/svg+xml"});
+	    saveAs(blob, filename+".svg");
+	    
+	    workbench.remove()
 
+	    
+	    /* test case: convert html to canvas */
+//	    html2canvas(rootDiv, {logging: true}).then(function(canvas)
+//    		{
+//		    	canvas.id = "copy-canvas";
+//		    	document.body.appendChild(canvas);
+		    	
+// 	    	    var blob = new Blob([canvas], {type: "image/svg+xml"});
+// 	    	    saveAs(blob, filename+".svg");
+	    	
+// 	    	    clean up after your dog!
+//	    		canvas.remove();
+//    		}
+//		);	    
+	},
+	
+	// Clone the original svg graphic, upscale and rasterize the clone and
+	// finally save it to a png file.
+	"saveToPng": function(rootDivId, filename) {
+		var rootDiv = $('#'+rootDivId);
+		var parentDiv = rootDiv.parent();
+		
+		rootDiv.panzoom("reset");
+		
+		rootDiv.clone()
+			   .attr("id", "clone")
+			   .appendTo(parentDiv);
+		
+		parentDiv.append("<canvas>");
+		
+		/*
+		 * Set hardcoded width value for raster graphic and scale height
+		 * dynamically by newWidth/originalWidth - factor. The chosen fixed
+		 * width is twice the size of the original svg object, insuring that it
+		 * stays sharp when it is scaled up.
+		 */
+		var clone = d3.select("#clone"),
+			width_svg = $(rootDiv).width(),
+			width_png = Math.floor($(rootDiv).width()*2),
+			height_png = Math.floor($(rootDiv).height()*2);
+		
+		clone.attr("width", width_png)
+		   .attr("height", height_png)
+		   .attr("viewbox", "0 0 " + width_png + " " + height_png)
+		   .attr("preserveAspectRatio", "xMinYMin meet")
+		   .style("font-size", "16px");
+		
+		var svg = $("#clone")[0],
+			canvas = $("canvas")[0],
+			serializer = new XMLSerializer(),
+			svgString = serializer.serializeToString(svg);
+		
+		canvas.width = width_png;
+		canvas.height = height_png;
+		
+		canvg(canvas, svgString);
+		
+		var dataURL = canvas.toDataURL('image/png'),
+			data = atob(dataURL.substring('data:image/png;base64,'.length));
+		
+		asArray = new Uint8Array(data.length);
+		
+		for (var i = 0; i < data.length; ++i) {
+			asArray[i] = data.charCodeAt(i); 
+		} 
+		
+		var blob = new Blob([asArray.buffer], {type: 'image/png'}); 
+		
+		saveAs(blob, filename+".png"); 
+
+		$("#clone").remove();
+		$("canvas").remove();
+	},
+		
 	/*
 	 * Query function to get the data for temperature and precipitation for the
 	 * corresponding position and time and draw the chart.
@@ -98,7 +198,7 @@ var UI  = {
 
 			$("#loader").css("visibility", "visible");
 			$("#info").fadeTo("slow", 0.0);
-			$("#chart").fadeTo("slow", 0.3);
+			$("#climate-chart").fadeTo("slow", 0.3);
 			$("#nodata").css("opacity", 0.4);
 			
 			// Draw the chart when all four ajax calls have received a response.
@@ -200,8 +300,7 @@ var UI  = {
 			    	  	
 						$("#loader").css("visibility", "hidden");
 						$("#nodata").empty();
-						$("#save").css("display", "block");
-						$("#chart").remove();
+						$("#climate-chart").remove();
 						$("#plot-wrapper").remove();
 						
 						// Finally draw the chart.
@@ -212,49 +311,108 @@ var UI  = {
 						
 						UI.activatePanning();
 						
+						// add the save buttons
+						var saveButtonArea = document.createElement('div');
+					 	saveButtonArea.className += "save-button-area ";
+					 	saveButtonArea.innerHTML = "" +
+					 			"<button id='save-chart-to-svg' class='btn btn-primary save-button'>SVG</button>" +
+					 			"<button id='save-chart-to-png' class='btn btn-primary save-button'>PNG</button>";
+					 	document.getElementById('climate-chart-wrapper').appendChild(saveButtonArea);
+					 	
+					 	// bind save functionality to button
+					 	$('#save-chart-to-svg').click(function()
+					 			{
+					 				UI.saveToSvg('climate-chart', 'climate-chart');
+				 				});
+					 	$('#save-chart-to-png').click(function()
+					 			{
+					 				UI.saveToPng('climate-chart', 'climate-chart');
+				 				});
 						
 						// CREATE BOXPLOT 
 						// --------------
 						
-						// create elements
-						var ccWrapper = document.getElementById('climate-chart-wrapper').parentNode;
+						// create structure
+					 	/* plot-wrapper
+					 	 * |-- plot-main			// will be printed			
+					 	 * |   |-- plot-title		// location -- coordinates | elevation | time
+					 	 * |   |-- plot-tmp			// left plot: temperature distribution
+					 	 * |   |-- plot-pre			// right plot: precipitation distribution
+					 	 * |   |-- plot-footer		// source and reference
+					 	 * |   	   |-- plot-source
+					 	 * |   	   |-- plot-reference
+					 	 * |						// will not be printed 
+					 	 * |-- plot-switch			// optimal <-> fixed scale
+					 	 * |-- plot-save-buttons
+					 	 */
+					 	
+					 	// level 0
+						var parentWrapper = document.getElementById('climate-chart-wrapper').parentNode;
 						var plotWrapper = document.createElement('div');
 						plotWrapper.id = 'plot-wrapper';
 						plotWrapper.className += 'box ';
-						ccWrapper.appendChild(plotWrapper);
-						var plotOptions = document.createElement('div');
-						plotOptions.id = 'plot-options';
-						plotWrapper.appendChild(plotOptions);
-						var plotLeft = document.createElement('div');
-						plotLeft.id = 'plot-tmp';
-						plotWrapper.appendChild(plotLeft);	
-						var plotRight = document.createElement('div');
-						plotRight.id = 'plot-pre';
-						plotWrapper.appendChild(plotRight);
+						parentWrapper.appendChild(plotWrapper);
 						
-						// create title in options
+						// level 1
+						var plotMain = document.createElement('div');
+						plotMain.id = 'plot-main';
+						plotWrapper.appendChild(plotMain);
+						
+						// level 2 - main
 						var plotTitle = document.createElement('div');
 						plotTitle.id = 'plot-title';
-						plotOptions.appendChild(plotTitle);
-												
-						// create switch for options
-						var switchLabel = document.createElement('label');
-							switchLabel.className += 'switch ';
-						plotOptions.appendChild(switchLabel);
-						switchLabel.innerHTML += '<input id="plot-scale-switch" class="switch-input" type="checkbox" />';
-						switchLabel.innerHTML += '<span id="plot-scale-label" class="switch-label"></span>';
-						switchLabel.innerHTML += '<span class="switch-handle"></span>';
+						plotMain.appendChild(plotTitle);
 						
-						// create source info
+						var plotLeft = document.createElement('div');
+						plotLeft.id = 'plot-tmp';
+						plotMain.appendChild(plotLeft);	
+						
+						var plotRight = document.createElement('div');
+						plotRight.id = 'plot-pre';
+						plotMain.appendChild(plotRight);
+						
+						var plotFooter = document.createElement('div');
+						plotFooter.id = 'plot-footer';
+						plotMain.appendChild(plotFooter);
+												
+						// level 3 - footer
 						var plotSource = document.createElement('div');
 						plotSource.id = 'plot-source';
-						plotWrapper.appendChild(plotSource);
+						plotFooter.appendChild(plotSource);
 						
 						// create climatecharts disclaimer
-						var plotDisclaimer = document.createElement('div');
-						plotDisclaimer.id = 'plot-disclaimer';
-						plotWrapper.appendChild(plotDisclaimer);
+						var plotReference = document.createElement('div');
+						plotReference.id = 'plot-reference';
+						plotFooter.appendChild(plotReference);
 						
+						// level 2 - options
+						var plotSwitch = document.createElement('label');
+						plotSwitch.id = 'plot-switch'
+						plotSwitch.className += 'switch ';
+						plotWrapper.appendChild(plotSwitch);
+						plotSwitch.innerHTML += '<input id="plot-scale-switch" class="switch-input" type="checkbox" />';
+						plotSwitch.innerHTML += '<span id="plot-scale-label" class="switch-label"></span>';
+						plotSwitch.innerHTML += '<span class="switch-handle"></span>';
+						
+						var saveButtonArea = document.createElement('div');
+					 	saveButtonArea.className += "save-button-area ";
+					 	saveButtonArea.innerHTML = "" +
+				 			"<button id='save-plots-to-svg' class='btn btn-primary save-button'>SVG</button>" +
+				 			"<button id='save-plots-to-png' class='btn btn-primary save-button'>PNG</button>";
+					 	plotWrapper.appendChild(saveButtonArea);
+						
+						/* functionality */
+					 	$('#save-plots-to-svg').click(function()
+					 			{
+					 				var tmpPlot = $('#plot-tmp').children().children().children()[0];
+					 				tmpPlot.id = 'tmp-plot-svg';
+					 				UI.saveToSvg('tmp-plot-svg', 'climate-plots');
+				 				});
+					 	$('#save-plots-to-png').click(function()
+					 			{
+					 				UI.saveToPng('plot-main', 'climate-plots');
+				 				});
+					 	
 						// create data structure for temperature / precipitation: [[Jan],[Feb],...,[Dec]]
 						var climateData = {
 							temperature: 	new Array(),
@@ -322,7 +480,7 @@ var UI  = {
 					} else {
 						// Show error message if there is no data available.
 						$("#loader").css("visibility", "hidden");
-						$("#chart").empty();
+						$("#climate-chart").empty();
 						$("#climate-chart-wrapper").append("<h3 id='nodata'>");
 						$("#nodata").text("No data available for this area!");
 						$("#nodata").fadeTo("slow", 1);
@@ -333,7 +491,6 @@ var UI  = {
 			function getData(Index){
 				var url = "".
 					variable = "";
-				
 				
 				for (var key in UI.catalog.dataset) {
 					
@@ -373,7 +530,7 @@ var UI  = {
 							{lat: UI.lt, lng: UI.ln})
 							.fail(function(jqXHR, textStatus, errorThrown){
 								$("#loader").css("visibility", "hidden");
-								$("#chart").empty();
+								$("#climate-chart").empty();
 								$("#climate-chart-wrapper").append("<h3 id='nodata'>");
 								$("#nodata").text("External Service not responding: " +errorThrown);
 								$("#nodata").fadeTo("slow", 1);
@@ -387,7 +544,7 @@ var UI  = {
 						{lat: UI.lt, lng: UI.ln})
 						.fail(function(jqXHR, textStatus, errorThrown){
 							$("#loader").css("visibility", "hidden");
-							$("#chart").empty();
+							$("#climate-chart").empty();
 							$("#climate-chart-wrapper").append("<h3 id='nodata'>");
 							$("#nodata").text("External Service not responding: " +errorThrown);
 							$("#nodata").fadeTo("slow", 1);
@@ -637,7 +794,7 @@ var UI  = {
 	
 	// Reset position of svg if it is not centered due to panning/zooming.
 	"resetSVG": function () {
-		$("#chart").panzoom("reset");
+		$("#climate-chart").panzoom("reset");
 	},
 	
 	"activatePanning": function () {
@@ -645,7 +802,7 @@ var UI  = {
 		// If the screenwidth of the chart container is smaller
 		// than a minimum width, activate panning.
 		if ($("#climate-chart-wrapper").width() < 500) {
-			$("#chart").panzoom();
+			$("#climate-chart").panzoom();
 			
 			if ($('#reset').length === 0) {
 				var reset = $("<button></button>").attr("id", "reset")
@@ -662,87 +819,12 @@ var UI  = {
 			if ($('#reset').length && $("#panzoomText").length) {
 				
 				UI.resetSVG();
-				$("#chart").panzoom("destroy");
+				$("#climate-chart").panzoom("destroy");
 				$('#reset').remove();
 				$("#panzoomText").remove();
 				
 			}
 		}
-	},
-	
-	// Save SVG inline code to a svg file.
-	"saveSvg": function () {
-		$("#chart").panzoom("reset");
-		
-	    try {
-	        var isFileSaverSupported = !!new Blob();
-	    } catch (e) {
-	        alert("This function is not supported by your browser!");
-	    }
-	    
-	    $("#climate-chart-wrapper").append("<div id=\"temp\">");
-	    
-	    var html = $("#temp").append($("#chart").clone()).html();
-	    
-	    var blob = new Blob([html], {type: "image/svg+xml"});
-	    saveAs(blob, "climatechart.svg");
-	    
-	    $("#temp").remove();
-	},
-	
-	// Clone the original svg graphic, upscale and rasterize the clone and
-	// finally save it to a png file.
-	"savePng": function() {
-		$("#chart").panzoom("reset");
-		
-		$("#chart").clone()
-					.attr("id", "clone")
-					.appendTo("#climate-chart-wrapper");
-		
-		$("#climate-chart-wrapper").append("<canvas>");
-		
-		/*
-		 * Set hardcoded width value for raster graphic and scale height
-		 * dynamically by newWidth/originalWidth - factor. The chosen fixed
-		 * width is twice the size of the original svg object, insuring that it
-		 * stays sharp when it is scaled up.
-		 */
-		var clone = d3.select("#clone"),
-			width_svg = $("#chart").width(),
-			width_png = Math.floor($("#chart").width()*2),
-			height_png = Math.floor($("#chart").height()*2);
-		
-		clone.attr("width", width_png)
-		   .attr("height", height_png)
-		   .attr("viewbox", "0 0 " + width_png + " " + height_png)
-		   .attr("preserveAspectRatio", "xMinYMin meet")
-		   .style("font-size", "16px");
-		
-		var svg = $("#clone")[0],
-			canvas = $("canvas")[0],
-			serializer = new XMLSerializer(),
-			svgString = serializer.serializeToString(svg);
-		
-		canvas.width = width_png;
-		canvas.height = height_png;
-		
-		canvg(canvas, svgString);
-		
-		var dataURL = canvas.toDataURL('image/png'),
-			data = atob(dataURL.substring('data:image/png;base64,'.length));
-		
-		asArray = new Uint8Array(data.length);
-		
-		for (var i = 0; i < data.length; ++i) {
-			asArray[i] = data.charCodeAt(i); 
-		} 
-		
-		var blob = new Blob([asArray.buffer], {type: 'image/png'}); 
-		
-		saveAs(blob, 'climatechart.png'); 
-
-		$("#clone").remove();
-		$("canvas").remove();
 	},
 	
 	// Switch between "Home" and "About" tab.
@@ -754,11 +836,5 @@ var UI  = {
         $(this).parent('li').addClass('active').siblings().removeClass('active');
  
         e.preventDefault();
-	},
-
-	// Resize the plots so they always use 100 percent of their parent width
-	"resizePlots": function () {
-		console.log("Resized!");
-		
 	}
 }

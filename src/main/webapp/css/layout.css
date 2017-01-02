@@ -28,7 +28,7 @@ body {
 	width: 100%;
 	font-family: Verdana, Geneva, sans-serif;
 	/*font-family: Palatino Linotype, Book Antiqua, Palatino, serif;*/
-	font-size: 1.5em;
+	font-size: 1.0em;
 	background: url("../img/earth.svg") no-repeat center center;
 	background-size:cover;
     background-attachment: fixed;
@@ -93,13 +93,14 @@ select {
 .btn {
 	margin: 5px;
     border-radius: 3px;
+    font-size: 0.8em;
 }
 
 .btn-primary {
     border-radius: 4px;
-	background-color: #043d7b;
 	color: white;
-    margin-top: 5px;
+	background-color: rgb(128,128,128);
+	border-color: rgb(128,128,128);	
 }
 
 .btn-small {
@@ -114,7 +115,7 @@ select {
 	margin-top: 15px;
 	margin-bottom: 30px;
     border: 1px solid #babdb6;
-    font-size: 0.9em;
+    font-size: 1.2em;
 }
 
 .box:hover {
@@ -168,9 +169,9 @@ select {
 	width: 100%;
 	color: white;
 	top: 40px;
-	margin-top: 20px;
-	margin-bottom: 50px;
-	padding-top: 20px;
+/* 	margin-top: 20px; */
+	margin-bottom: 44px;
+	padding-top: 1px;
 	padding-bottom: 5px;
 	background-image: url("https://www.transparenttextures.com/patterns/az-subtle.png"),
 							linear-gradient(to bottom, #407CC9, #043d7b);
@@ -209,7 +210,7 @@ select {
 /*     overflow: hidden; */
 }
 
-#chart {
+#climate-chart {
 	margin-bottom: 25px;
 	position: relative;
 	overflow: auto;
@@ -318,68 +319,114 @@ select {
 	left: 30%;
 }
 
-#save {
-	display: none;
-}
-
 #slider {
     margin-bottom: 20px;
     margin-left: 5%;
     width: 90%;
 }
 
+/* save buttons for chart and plots */
+.save-button-area
+{
+	position: absolute;
+	top: 10px;
+	right: 27px;
+	padding: 4px;
+}
 
-/* PLOTS */
 
-#plot-wrapper {
+/* PLOTS *
+ *
+ * plot-wrapper
+ * |-- plot-main			// will be printed			
+ * |   |-- plot-title		// location -- coordinates | elevation | time
+ * |   |-- plot-tmp			// left plot: temperature distribution
+ * |   |-- plot-pre			// right plot: precipitation distribution
+ * |   |-- plot-footer		// source and reference
+ * |   	   |-- plot-source
+ * |   	   |-- plot-reference
+ * |						// will not be printed 
+ * |-- plot-switch			// optimal <-> fixed scale
+ * |-- plot-save-buttons
+ */
+
+/* level 0 */
+#plot-wrapper
+{
 	position: relative;
 	width: 100%;
 	overflow: auto;
 }
 
-#plot-options
+/* level 1 */
+
+#plot-main
 {
-	float: left;
+	position: relative;
 	width: 100%;
-	height: 45px;
-	background-color: white;
+	overflow: auto;	
 }
 
-#plot-tmp, #plot-pre {
- 	float: left;
- 	padding: 3px;
-	width: 50%;
-	height: 500px;
-}
-
-/* Title */
+/* level 2 - main */
 #plot-title
 {
+	position: relative;
+	float: left;
 	width: 100%;
-	height: 100%;
+	height: 45px;	
 	text-align: center;
 	font-size: 1.3em;
 }
+#plot-title p
+{
+	margin-bottom: -2px;
+}
 
-/* Source and Disclaimer */
+#plot-tmp, #plot-pre
+{
+	position: relative;
+ 	float: left;
+	width: 50%;
+}
+
+#plot-footer
+{
+	position: relative;
+	float: left;
+	width: 100%;
+	height: 30px;
+	
+/*     position: absolute; */
+/*     bottom: 2px; */
+/*     left: 	0; */
+/*     width: 100%;	 */
+}
+
+/* level 3 - footer */
 #plot-source
 {
-	position: absolute;
-    bottom: 10px;
-    left: 20px;
-    width: 75%; /* really bad code.. but kinda works */
+	position: relative;
+	float: left;
+    width: 75%;
+    height: 100%;
 	font-size: 0.9em;
 	color: rgb(128, 128, 128);
+	text-align: left;
 }
 
-#plot-disclaimer
+#plot-reference
 {
-	position: absolute;
-    bottom: 10px;
-    right: 20px;
+	position: relative;
+	float: left;
+	width: 25%;
+	padding-right: 4px;
+	height: 100%;
 	font-size: 0.9em;
 	color: rgb(128, 128, 128);
+	text-align: right;
 }
+
+/* Save Buttons for ClimateChart and plots */
 
 
 /* HTML Toggle Switch */
@@ -390,7 +437,7 @@ select {
 .switch {
 	position: absolute;
 	top: 24px;
-	right: 10px;
+	left: 13px;
 	display: block;
 	vertical-align: top;
 	width: 130px;

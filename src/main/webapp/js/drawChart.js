@@ -19,7 +19,7 @@
 drawChart = function (data, name, elevation){
 
 //Clear the chart container everytime this function is called.
-$("#chart").empty();
+$("#climate-chart").empty();
 
 //Set the basic dimension variables for the SVG element.
 var WIDTH = 728,
@@ -39,7 +39,7 @@ var WIDTH = 728,
 var chart = d3.select("#climate-chart-wrapper")
 			.classed("svg-container", true) //container class to make it responsive
 			.append("svg")
-			.attr("id", "chart")
+			.attr("id", "climate-chart")
 			.attr("version", 1.1)
 			.attr("xmlns", "http://www.w3.org/2000/svg")
 			.attr("preserveAspectRatio", "xMinYMin meet")
@@ -61,7 +61,7 @@ var chart_width = - MARGINS.left + WIDTH - MARGINS.right,
 	table_height = 250,
 	table_width = 160,
 	table_x = WIDTH - MARGINS.right + 1.6*MARGINS.rightS,
-	table_y = MARGINS.top - 15,
+	table_y = MARGINS.top
 	tableframe_y = table_y - 10;
 
 //Colors
@@ -422,7 +422,7 @@ function getPreDry () {
 }
 
 //Create the title which is shown above the graph.
-function getTitle () {
+function getTitle() {
 	
 	var lt = UI.lt;
 	var ln = UI.ln;
@@ -438,15 +438,16 @@ function getTitle () {
 		ln = Math.abs(ln) +"W";
 	}
 	
-	var title = name + " | " + lt + " " + ln;
+	var title = name;
+	var subtitle = lt + " " + ln;
 	
 	if (elevation > -1000){
-		title = title  + ", " + elevation + "m,";
+		subtitle += " | " + elevation + "m";
 	} 
 	
-	title += " Climate Class: " + getClimateClass() + ", Years " + UI.start + "-" + UI.end;
+	subtitle += " | Climate Class: " + getClimateClass() + " | Years: " + UI.start + "-" + UI.end;
 	
-	return title;
+	return [title, subtitle];
 }
 
 //Fill table column with values of the variable given as an argument.
@@ -882,26 +883,35 @@ chart.append("text")
 	.attr("class", "tick")
 	.attr("text-anchor", "end")
 	.attr("x", MARGINS.left + 10)
-	.attr("y", table_y)
-	.text("[C°]")
+	.attr("y", table_y-10)
+	.text("[°C]")
 	.attr('fill', colTmp);
 
 chart.append("text")
 	.attr("class", "tick")
 	.attr("text-anchor", "end")
 	.attr("x", chart_width + MARGINS.left + 20)
-	.attr("y", table_y)
+	.attr("y", table_y-10)
 	.text("[mm]")
 	.attr('fill', colPre);
 
 chart.append("text")
 	.attr("class", "info")
 	.attr("x", WIDTH*2/5)
-    .attr("y", MARGINS.top*1/3)
+    .attr("y", MARGINS.top*1/3-5)
     .attr("width", MARGINS.right - MARGINS.rightS)
     .attr("text-anchor", "middle")
-    .text(getTitle())
-    .call(wrap, WIDTH*2/3, ",");
+    .text(getTitle()[0])
+    .call(wrap, WIDTH*2/3);
+
+chart.append("text")
+	.attr("class", "info")
+	.attr("x", WIDTH*2/5)
+    .attr("y", MARGINS.top*1/3+12)
+    .attr("width", MARGINS.right - MARGINS.rightS)
+    .attr("text-anchor", "middle")
+    .text(getTitle()[1])
+    .call(wrap, WIDTH*2/3);
 
 chart.append("text")
 	.attr("class", "info")
