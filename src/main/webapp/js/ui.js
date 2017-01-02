@@ -85,7 +85,7 @@ var UI  = {
 	// Save SVG inline code to a svg file.
 	"saveToSvg": function (rootDivId, filename) {
 		var rootDiv = $('#'+rootDivId);
-		var tempDiv = $('#climate-chart-wrapper');
+		var body = $('body');
 
 		rootDiv.panzoom("reset");
 
@@ -97,7 +97,7 @@ var UI  = {
 
 	    // create new temporary div where the to print is copied in
 	    // -> use like a workbench
-	    tempDiv.append("<div id=\"temp\">");
+	    body.append("<div id=\"temp\">");
 	    var workbench = $('#temp');
 	    workbench.append(rootDiv.clone());
 
@@ -106,22 +106,7 @@ var UI  = {
 	    var blob = new Blob([html], {type: "image/svg+xml"});
 	    saveAs(blob, filename+".svg");
 
-	    workbench.remove()
-
-
-	    /* test case: convert html to canvas */
-//	    html2canvas(rootDiv, {logging: true}).then(function(canvas)
-//    		{
-//		    	canvas.id = "copy-canvas";
-//		    	document.body.appendChild(canvas);
-
-// 	    	    var blob = new Blob([canvas], {type: "image/svg+xml"});
-// 	    	    saveAs(blob, filename+".svg");
-
-// 	    	    clean up after your dog!
-//	    		canvas.remove();
-//    		}
-//		);
+	    workbench.remove();
 	},
 
 	// Clone the original svg graphic, upscale and rasterize the clone and
@@ -353,22 +338,22 @@ var UI  = {
 						plotWrapper.appendChild(plotsContainer);
 
 						// level 1 - options
-            var plotOptions = document.createElement('div');
-            plotOptions.id = 'plot-options';
-            plotWrapper.appendChild(plotOptions);
+			            var plotOptions = document.createElement('div');
+			            plotOptions.id = 'plot-options';
+			            plotWrapper.appendChild(plotOptions);
 
-            // level 2 - switch
-            var plotSwitch = document.createElement('label');
+			            // level 2 - switch
+			            var plotSwitch = document.createElement('label');
 						plotSwitch.id = 'plot-scale-switch'
 						plotSwitch.className += 'switch ';
 						plotOptions.appendChild(plotSwitch);
 
-            // level 3 - inside the switch (ugly, but works)
+						// level 3 - inside the switch (ugly, but works)
 						plotSwitch.innerHTML += '<input id="plot-scale-input" class="switch-input" type="checkbox" />';
 						plotSwitch.innerHTML += '<span id="plot-scale-label" class="switch-label"></span>';
 						plotSwitch.innerHTML += '<span class="switch-handle"></span>';
 
-            // level 2 - save buttons
+						// level 2 - save buttons
 						var saveButtonArea = document.createElement('div');
 					 	saveButtonArea.className += "save-button-area ";
 					 	saveButtonArea.innerHTML = "" +
@@ -378,24 +363,25 @@ var UI  = {
 
 						/* functionality */
 					 	$('#save-plots-to-svg').click(function()
-					 			{
-                  UI.saveToSvg('plots-container', 'climate-chart');
-				 				});
+			 			{
+				 			UI.saveToSvg('plots-svg-container', 'climate-plots');
+		 				});
 					 	$('#save-plots-to-png').click(function()
-					 			{
-					 				UI.saveToPng('plots-container', 'climate-plots');
-				 				});
+			 			{
+			 				UI.saveToPng('plots-svg-container', 'climate-plots');
+		 				});
 
 						// create data structure for temperature / precipitation: [[Jan],[Feb],...,[Dec]]
-						var climateData = {
-							temperature: 	 [],
-							precipitation: []
+						var climateData =
+						{
+							temperature: 	[],
+							precipitation:	[]
 						}
 
 						for (var i = 0; i < 12; i++)
 						{
-							climateData.temperature[i] = 	 [];
-							climateData.precipitation[i] = [];
+							climateData.temperature[i] = 	[];
+							climateData.precipitation[i] = 	[];
 						}
 
 						// sort temperature and precipitation data by month

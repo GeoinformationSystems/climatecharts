@@ -19,7 +19,6 @@ drawPlots = function(data, name, elevation) {
 	        "Jan", "Feb", "Mar", "Apr", "May", "Jun",
 	        "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" ];
 
-	// Plots
   // Plots
   PLOT =
     {
@@ -52,9 +51,12 @@ drawPlots = function(data, name, elevation) {
     }
 
   // styling options
-  PLOT_HEIGHT =      500     // px
-  SUBPLOT_DISTANCE = 7  // distance between temperature and precipitation plot [%]
-  LINE_COLOR =       'grey'
+  PLOT_HEIGHT =             500; // px
+  PLOT_MARGIN_HORIZONTAL =  30;  // px
+  PLOT_MARGIN_VERTICAL =    80;  // px
+  PLOT_PADDING =            5;   // px
+  SUBPLOT_DISTANCE =        10;  // distance between temperature and precipitation plot [px]
+  LINE_COLOR =              'grey';
 
   // important div containers
   SCALE_SWITCH =  document.getElementById("plot-scale-switch");
@@ -111,9 +113,36 @@ drawPlots = function(data, name, elevation) {
       );
     }
   }
-  
-  // get subtitle and data reference
-  PLOT.subtitle = null;
+
+  // get subtitle
+  var lt = UI.lt,
+  	  ln = UI.ln;
+
+  if (lt >= 0){
+	lt = lt +"N";
+  } else {
+	lt = Math.abs(lt) +"S";
+  }
+  if (ln >= 0){
+	ln = ln +"E";
+  } else {
+	ln = Math.abs(ln) +"W";
+  }
+
+  PLOT.subtitle = lt + " " + ln;
+
+  if (elevation > -1000){
+    PLOT.subtitle += " | " + elevation + "m";
+  }
+
+  PLOT.subtitle += " | Years " + UI.start + "-" + UI.end;
+
+  // get data source
+  $.each(UI.catalog.dataset, function(i, v) {
+	  if (v._name == UI.dataset) {
+	    PLOT.data_source = v._name +" (" +v.documentation[1].__text +")";
+	  }
+	});
   PLOT.data_reference = null;
 
   // ===========================================================================
@@ -124,6 +153,14 @@ drawPlots = function(data, name, elevation) {
   {
     title:      PLOT.title,
     showlegend: false,
+    margin:
+    {
+      l:        PLOT_MARGIN_HORIZONTAL,
+      r:        PLOT_MARGIN_HORIZONTAL,
+      b:        PLOT_MARGIN_VERTICAL,
+      t:        PLOT_MARGIN_VERTICAL+20,
+      pad:      PLOT_PADDING
+    },
     xaxis:      {},
     yaxis:      {},
     xaxis2:     {},
@@ -220,7 +257,7 @@ drawPlots = function(data, name, elevation) {
     dataSourceDiv.css('font-size', 12);
     dataSourceDiv.css('fill', 'grey');
     dataSourceDiv.attr('text-anchor', 'left');
-    dataSourceDiv.attr('x', 55);
+    dataSourceDiv.attr('x', 0);
     dataSourceDiv.attr('y', PLOT_HEIGHT-20);
 
     var referenceDiv = $(footerWrapper.children()[1]);
@@ -228,8 +265,18 @@ drawPlots = function(data, name, elevation) {
     referenceDiv.css('font-size', 12);
     referenceDiv.css('fill', 'grey');
     referenceDiv.attr('text-anchor', 'right');
-    referenceDiv.attr('x', $('.main-svg').width()-190);
+    referenceDiv.attr('x', $('.main-svg').width()-130); // why 130
     referenceDiv.attr('y', PLOT_HEIGHT-20);
+    
+ 	/* add id to actual svg container */
+ 	var plotsSVG = $('#plots-container').children().children()[0];
+ 	plotsSVG.id = 'plots-svg-container';
+ 	
+ 	/* hack: move info layer from meta svg to main svg in order to create one svg with all data in it */
+ 	var infoLayer = $('.infolayer').first();
+ 	infoLayer.detach();
+ 	var mainSvg = $('.main-svg').first();
+ 	mainSvg.append(infoLayer);
   }
 
   // change layout onClick on scale button
