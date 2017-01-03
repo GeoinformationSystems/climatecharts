@@ -81,7 +81,7 @@ var UI  = {
 			UI.createChart();
 		});
 	},
-
+	
 	// Save SVG inline code to a svg file.
 	"saveToSvg": function (rootDivId, filename) {
 		var rootDiv = $('#'+rootDivId);
@@ -112,6 +112,8 @@ var UI  = {
 	// Clone the original svg graphic, upscale and rasterize the clone and
 	// finally save it to a png file.
 	"saveToPng": function(rootDivId, filename) {
+	
+		// get root element
 		var rootDiv = $('#'+rootDivId);
 		var body = $('body');
 
@@ -132,18 +134,14 @@ var UI  = {
 		var scaleFactor = 2;
 		
 		var clone = d3.select("#clone"),
-			width_svg = $(rootDiv).width(),
 			width_png = Math.floor($(rootDiv).width()*scaleFactor),
 			height_png = Math.floor($(rootDiv).height()*scaleFactor);
 
 		clone.attr("width", width_png)
 		   .attr("height", height_png)
 		   .attr("viewbox", "0 0 " + width_png + " " + height_png)
-		   .attr("preserveAspectRatio", "xMinYMin meet")
-		   .style("font-size", "16px")
-		   .style("background-color", "white");
+		   .attr("preserveAspectRatio", "xMinYMin meet");
 			
-
 		var svg = $("#clone")[0],
 			canvas = $("canvas")[0],
 			serializer = new XMLSerializer(),
@@ -366,13 +364,19 @@ var UI  = {
 					 	plotOptions.appendChild(saveButtonArea);
 
 						/* functionality */
+					 	// problem: draglayer causes artifacts in the svg
+					 	// solution: disable before saving
 					 	$('#save-plots-to-svg').click(function()
 			 			{
+					 		$('.draglayer').hide();
 				 			UI.saveToSvg('plots-svg-container', 'climate-plots');
+				 			$('.draglayer').show();
 		 				});
 					 	$('#save-plots-to-png').click(function()
 			 			{
+					 		$('.draglayer').hide();
 			 				UI.saveToPng('plots-svg-container', 'climate-plots');
+			 				$('.draglayer').show();
 		 				});
 
 						// create data structure for temperature / precipitation: [[Jan],[Feb],...,[Dec]]
@@ -387,7 +391,7 @@ var UI  = {
 							climateData.temperature[i] = 	[];
 							climateData.precipitation[i] = 	[];
 						}
-
+						
 						// sort temperature and precipitation data by month
 						// -> all data for one Month in one Array
 						var numElems = rawDataA1.point.length;
@@ -403,8 +407,12 @@ var UI  = {
 							month = date.getMonth();
 
 							// get actual temperature value
-							// TODO: handle Kelvin
 							tmp = parseFloat(dataObj[3].__text);
+							
+							// if temperature values are in Kelvin, convert them to Celsius.
+							if (tmp >= 200) {
+								tmp -= 273.15;
+							}
 
 							// put temperature data point in the correct Array
 							// month in JS Date object: month number - 1 (Jan = 0, Feb = 1, ... , Dec = 11)
@@ -413,14 +421,19 @@ var UI  = {
 
 
 							// 2) Precipitation
-							// ... repeat from above
 							// TODO: make nicer ;)
 
 							dataObj = rawDataA2.point[i].data;
 							date = new Date(dataObj[0].__text);
 							month = date.getMonth();
-							// TODO: convert from cm in case...
 							pre = parseFloat(dataObj[3].__text);
+							
+							// workaround for the precipitation dataset created by University of Delaware
+							// -> Values are converted from cm to mm.
+							if (UI.dataset === "University of Delaware Air Temperature and Precipitation v4.01") {
+								pre *= 10;
+							}
+						
 							climateData.precipitation[month].push(pre);
 						}
 

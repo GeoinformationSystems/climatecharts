@@ -18,8 +18,6 @@ $("#ln").change(UI.changeButtonStatus);
 $("#checkbox").change(UI.resetSliderHandles);
 $(".name").click(UI.changeNameInputStatus);
 $("#createChart").click(UI.createChart);
-$("#saveSvg").click(UI.saveSvg);
-$('#savePng').click(UI.savePng);
 $(".tab-links a").click(UI.selectTab);
 $(window).resize(function(){
     UI.setSliderLabels();
