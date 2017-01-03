@@ -65,7 +65,7 @@ var chart_width = - MARGINS.left + WIDTH - MARGINS.right,
 	tableframe_y = table_y - 10;
 
 //Colors
-var background = "white",
+var background = "transparent",
 	areaTmp = d3.rgb(255, 233, 15),
 	areaPre = d3.rgb(89,131,213),
 	colPre = d3.rgb(4,61,183),

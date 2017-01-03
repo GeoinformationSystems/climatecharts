@@ -18,6 +18,12 @@ drawPlots = function(data, name, elevation) {
   MONTHS_IN_YEAR = [
 	        "Jan", "Feb", "Mar", "Apr", "May", "Jun",
 	        "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" ];
+  
+  // error handling: if no name, make empty string
+  if (name == null)
+  {
+  	name = '';
+  }
 
   // Plots
   PLOT =
@@ -228,6 +234,14 @@ drawPlots = function(data, name, elevation) {
     // Plotly.relayout(PLOT.graphD3, layouts[SCALE_STATE]);
     // but that did not work since I used subplots.
 
+    // get main svg container and attach id
+    var mainSvg = $('.main-svg').first();
+    mainSvg.attr('id', 'plots-svg-container');
+    
+    // get width and height from parent div
+    var width = mainSvg.parent().width();
+    var height = mainSvg.parent().height();
+    
     // get title wrapper
     var titleWrapper = $('.g-gtitle')
 
@@ -248,38 +262,57 @@ drawPlots = function(data, name, elevation) {
 
     // add data source and reference
     var footerWrapper = titleWrapper.clone();
+    footerWrapper.attr('id','plots-footer-wrapper');
     footerWrapper.removeClass('g-gtitle');
     footerWrapper.addClass('g-gfooter');
     footerWrapper.appendTo(titleWrapper.parent());
 
     var dataSourceDiv = $(footerWrapper.children()[0]);
     dataSourceDiv.text("Data Source: " + PLOT.data_source);
+    dataSourceDiv.attr('data-unformatted', "Data Source: " + PLOT.data_source);
     dataSourceDiv.css('font-size', 12);
     dataSourceDiv.css('fill', 'grey');
-    dataSourceDiv.attr('text-anchor', 'left');
-    dataSourceDiv.attr('x', 0);
     dataSourceDiv.attr('y', PLOT_HEIGHT-20);
+    
+    // problem: 'text-anchor: begin' does not work when transforming to png
+    // hacky solution: determine the width of the text element and resetting its x-position to half
+    dataSourceDiv.attr('x', dataSourceDiv.width()/2);
 
     var referenceDiv = $(footerWrapper.children()[1]);
     referenceDiv.text(PLOT.reference);
+    referenceDiv.attr('data-unformatted', PLOT.reference);
     referenceDiv.css('font-size', 12);
     referenceDiv.css('fill', 'grey');
-    referenceDiv.attr('text-anchor', 'right');
-    referenceDiv.attr('x', $('.main-svg').width()-130); // why 130
+    referenceDiv.attr('x', mainSvg.width()-80); // why this random number?
     referenceDiv.attr('y', PLOT_HEIGHT-20);
     
- 	/* add id to actual svg container */
- 	var plotsSVG = $('.main-svg').first();
- 	plotsSVG.attr('id', 'plots-svg-container');
- 	
  	/* hack: move info layer from meta svg to main svg in order to create one svg with all data in it */
  	var infoLayer = $('.infolayer').first();
  	infoLayer.detach();
  	var mainSvg = $('.main-svg').first();
  	mainSvg.append(infoLayer);
  	
- 	/* hack: delete draglayer, because it causes artifacts in the svg */
- 	$('.draglayer').remove();
+ 	/* add id and important attributes to actual svg container */
+    var chart = d3.select("#plots-svg-container")
+				.classed("svg-container", true) //container class to make it responsive
+				.attr("id", "climate-chart")
+				.attr("version", 1.1)
+				.attr("xmlns", "http://www.w3.org/2000/svg")
+				.attr("preserveAspectRatio", "xMinYMin meet")
+				.attr("viewBox" , "0 0 " + width + " " + height)
+				.attr("width", "100%")
+				.classed("svg-content-responsive", true)
+				.style("font-size", "15px")
+				.style("font-family", "Arial, sans-serif")
+				.style("font-style", "normal")
+				.style("font-variant", "normal")
+				.style("font-weight", "normal")
+				.style("text-rendering", "optimizeLegibility")
+				.style("shape-rendering", "default")
+				.style("background-color", "transparent");
+    
+    // for some reason the id gets lost in the d3 function call...
+    mainSvg.attr('id', 'plots-svg-container');
   }
 
   // change layout onClick on scale button
