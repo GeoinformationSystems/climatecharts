@@ -19,10 +19,10 @@ drawPlots = function(data, name, elevation) {
 	        "Jan", "Feb", "Mar", "Apr", "May", "Jun",
 	        "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" ];
   
-  // error handling: if no name, make empty string
-  if (name == null)
+  // error handling: if no name, make XXX string that will be removed later
+  if (name == "")
   {
-  	name = '';
+  	name = 'XXX';
   }
 
   // Plots
@@ -291,6 +291,12 @@ drawPlots = function(data, name, elevation) {
  	infoLayer.detach();
  	var mainSvg = $('.main-svg').first();
  	mainSvg.append(infoLayer);
+ 	
+    // remove title if "XXX"
+    if (titleDiv.text().startsWith('XXX'))
+	{
+    	titleDiv.text("");
+	}
  	
  	/* add id and important attributes to actual svg container */
     var chart = d3.select("#plots-svg-container")
