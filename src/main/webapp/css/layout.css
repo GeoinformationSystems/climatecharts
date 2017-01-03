@@ -365,8 +365,8 @@ select {
 #plot-scale-switch
 {
   float: left;
-  margin-left: 10px;
-  margin-top: 15px;
+  margin-left: 16px;
+  margin-top: 20px;
 }
 
 #save-button-area
@@ -375,7 +375,11 @@ select {
   margin-right: 10px;
 }
 
-/* Save Buttons for ClimateChart and plots */
+#plots-svg-container
+{
+	background: #ffffff;
+	fill: #ffffff;
+}
 
 
 /* HTML Toggle Switch */

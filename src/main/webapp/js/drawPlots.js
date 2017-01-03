@@ -54,7 +54,7 @@ drawPlots = function(data, name, elevation) {
   PLOT_HEIGHT =             500; // px
   PLOT_MARGIN_HORIZONTAL =  30;  // px
   PLOT_MARGIN_VERTICAL =    80;  // px
-  PLOT_PADDING =            5;   // px
+  PLOT_PADDING =            0;   // px
   SUBPLOT_DISTANCE =        10;  // distance between temperature and precipitation plot [px]
   LINE_COLOR =              'grey';
 
@@ -269,14 +269,17 @@ drawPlots = function(data, name, elevation) {
     referenceDiv.attr('y', PLOT_HEIGHT-20);
     
  	/* add id to actual svg container */
- 	var plotsSVG = $('#plots-container').children().children()[0];
- 	plotsSVG.id = 'plots-svg-container';
+ 	var plotsSVG = $('.main-svg').first();
+ 	plotsSVG.attr('id', 'plots-svg-container');
  	
  	/* hack: move info layer from meta svg to main svg in order to create one svg with all data in it */
  	var infoLayer = $('.infolayer').first();
  	infoLayer.detach();
  	var mainSvg = $('.main-svg').first();
  	mainSvg.append(infoLayer);
+ 	
+ 	/* hack: delete draglayer, because it causes artifacts in the svg */
+ 	$('.draglayer').remove();
   }
 
   // change layout onClick on scale button
