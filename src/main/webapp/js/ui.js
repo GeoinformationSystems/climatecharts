@@ -113,32 +113,36 @@ var UI  = {
 	// finally save it to a png file.
 	"saveToPng": function(rootDivId, filename) {
 		var rootDiv = $('#'+rootDivId);
-		var parentDiv = rootDiv.parent();
+		var body = $('body');
 
 		rootDiv.panzoom("reset");
 
 		rootDiv.clone()
 			   .attr("id", "clone")
-			   .appendTo(parentDiv);
+			   .appendTo(body);
 
-		parentDiv.append("<canvas>");
+		body.append("<canvas>");
 
 		/*
 		 * Set hardcoded width value for raster graphic and scale height
 		 * dynamically by newWidth/originalWidth - factor. The chosen fixed
-		 * width is twice the size of the original svg object, insuring that it
-		 * stays sharp when it is scaled up.
+		 * width is x (scaleFactor) times the size of the original svg object,
+		 * insuring that it stays sharp when it is scaled up.
 		 */
+		var scaleFactor = 2;
+		
 		var clone = d3.select("#clone"),
 			width_svg = $(rootDiv).width(),
-			width_png = Math.floor($(rootDiv).width()*2),
-			height_png = Math.floor($(rootDiv).height()*2);
+			width_png = Math.floor($(rootDiv).width()*scaleFactor),
+			height_png = Math.floor($(rootDiv).height()*scaleFactor);
 
 		clone.attr("width", width_png)
 		   .attr("height", height_png)
 		   .attr("viewbox", "0 0 " + width_png + " " + height_png)
 		   .attr("preserveAspectRatio", "xMinYMin meet")
-		   .style("font-size", "16px");
+		   .style("font-size", "16px")
+		   .style("background-color", "white");
+			
 
 		var svg = $("#clone")[0],
 			canvas = $("canvas")[0],
