@@ -276,7 +276,9 @@ drawPlots = function(data, name, elevation) {
     
     // problem: 'text-anchor: begin' does not work when transforming to png
     // hacky solution: determine the width of the text element and resetting its x-position to half
-    dataSourceDiv.attr('x', dataSourceDiv.width()/2);
+//    dataSourceDiv.attr('x', dataSourceDiv.width()/2);
+    dataSourceDiv.attr('x', 0);
+    dataSourceDiv.attr('text-anchor', 'begin');
 
     var referenceDiv = $(footerWrapper.children()[1]);
     referenceDiv.text(PLOT.reference);
