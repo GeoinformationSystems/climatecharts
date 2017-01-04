@@ -31,6 +31,7 @@
 	<meta name="author" content="Felix Wiemann & Marcus Kossatz">
 	<meta name="description" content="An application to create meteorological charts for places worldwide.">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
+	
 	<!-- Piwik -->
 	<script type="text/javascript">
 	  var _paq = _paq || [];
@@ -45,7 +46,6 @@
 	    g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'piwik.js'; s.parentNode.insertBefore(g,s);
 	  })();
 	</script>
-	<!-- End Piwik Code -->
 	<noscript>
 		<p>
 			<img src="https://mars.geo.tu-dresden.de/piwik.php?idsite=4&rec=1" style="border:0" alt="" />
@@ -115,7 +115,7 @@
 												<label for=lt>Latitude:</label> <input id="lt"
 													class="form-control coordinates" type="text">
 												<label for=ln>Longitude:</label> <input id="ln"
-													class="form-control coordinates" type="text"> <br>
+													class="form-control coordinates" type="text"> <br/>
 												<p class="period">Period:</p>
 												<div id="min"></div>
 												<p class="period">to</p>
@@ -161,7 +161,7 @@
 												</p>
 												<p>
 													For the title and elevation value "Geonames"
-													gazetteer is used: <br> http://www.geonames.org/,
+													gazetteer is used: <br/> http://www.geonames.org/,
 													Creative Commons Attribution 3.0 License
 												</p>
 												<p class="block">
@@ -231,19 +231,22 @@
 												<p>
 													The <a target="_blank" href="http://tu-dresden.de/impressum">
 													imprint of the Technical University Dresden</a>	is applied
-													with the following constraint:<br>
-													<br>
-													Web design and technical development: <br>
-													M.Sc. Felix Wiemann<br>
-													<br>
-													Contact: <br>
-													Prof. Dr. Lars Bernard<br>
-													Mail: Lars.Bernard@tu-dresden.de<br>
-													Phone: +49 (0)351 463-35880<br>
+													with the following constraint:<br/>
+													<br/>
+													Web design and technical development: <br/>
+													M.Sc. Felix Wiemann <br/>
+													M.Sc. Marcus Kossatz <br/>
+													<br/>
+													Contact: <br/>
+													Prof. Dr. Lars Bernard<br/>
+													Mail: Lars.Bernard@tu-dresden.de<br/>
+													Phone: +49 (0)351 463-35880<br/>
 												</p>
 											</div>
 										</div>
-										<iframe id="piwik-tracking" style="border: 0; height: 200px; width: 600px;" src="https://mars.geo.tu-dresden.de/index.php?module=CoreAdminHome&action=optOut&idsite=4&language=de"></iframe>
+                    <div class="box-quiet">
+										  <iframe id="piwik-tracking" style="width: 100%; height: 100%; border: 0" src="https://mars.geo.tu-dresden.de/index.php?module=CoreAdminHome&action=optOut&idsite=4&language=de" frameborder="0" scrolling="no"></iframe>
+								    </div>
 									</div>
 								</div>
 							</div>
