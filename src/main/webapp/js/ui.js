@@ -364,8 +364,15 @@ var UI  = {
 					 	plotOptions.appendChild(saveButtonArea);
 
 						/* functionality */
-					 	// problem: draglayer causes artifacts in the svg
-					 	// solution: disable before saving
+					 	/* hacks
+					 	 * 1) 	problem: draglayer causes artifacts in the svg
+					 	 * 		solution: disable before saving
+					 	 * 2) 	problem: 'text-anchor: begin' does not work in the external library
+					 	 * 		for creating the png (text is always centered)
+					 	 * 		manual setting of x-position does not work properly cross-browser
+					 	 * 		solution: manually set the x-position only for saving purpose
+					 	 */
+					 	
 					 	$('#save-plots-to-svg').click(function()
 			 			{
 					 		$('.draglayer').hide();
@@ -374,8 +381,12 @@ var UI  = {
 		 				});
 					 	$('#save-plots-to-png').click(function()
 			 			{
+					 		var dataSourceDiv = $('#plots-footer-wrapper').children().first();
+					 		var oldX = dataSourceDiv.attr('x');
+					 		dataSourceDiv.attr('x', dataSourceDiv.width()/2);
 					 		$('.draglayer').hide();
 			 				UI.saveToPng('plots-svg-container', 'climate-plots');
+			 				dataSourceDiv.attr('x', oldX);
 			 				$('.draglayer').show();
 		 				});
 
