@@ -114,13 +114,24 @@ select {
 	background-color:white;
 	margin-top: 15px;
 	margin-bottom: 30px;
-    border: 1px solid #babdb6;
-    font-size: 1.2em;
+  border: 1px solid #babdb6;
+  font-size: 1.2em;
 }
 
 .box:hover {
 	box-shadow: 0px 0px 6px #babdb6;
-  	transition: 0.2s;
+  transition: 0.2s;
+}
+
+.box-quiet
+{
+	position: relative;
+	width: 100%;
+	margin: 0;
+	border: 0;
+	padding: 0;
+	background: none;
+  font-size: 1.0em;	
 }
 
 .col-lg {
