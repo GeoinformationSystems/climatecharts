@@ -1,24 +1,24 @@
 /*
  * ClimateCharts (climatecharts.net)
  * Author: Felix Wiemann
- * 
- * This file contains the function to define and draw the svg elements of the climate chart with the given arguments. In 
- * the first part, some variables like width, height and the climate class are calculated from the input json array. In 
- * the second and third part the elements of the chart like axes, gridlines and scales are defined and then added to the 
+ *
+ * This file contains the function to define and draw the svg elements of the climate chart with the given arguments. In
+ * the first part, some variables like width, height and the climate class are calculated from the input json array. In
+ * the second and third part the elements of the chart like axes, gridlines and scales are defined and then added to the
  * svg container. The main framework used for drawing the chart is D3 (Data Driven Documents), see: http://d3js.org.
- * 
+ *
  * Necessary Parameters to call the function:
  * 	- data: a json array containing objects with the propertys month, tmp and pre
  *  - name: the name for the place the chart is corresponding to
  *  - elevation: the elevation above sea level in meters for the attached coordinates
- *  
- *  Please note that the styles for all elements within the graphic are not defined by external CSS but by D3. Otherwise 
+ *
+ *  Please note that the styles for all elements within the graphic are not defined by external CSS but by D3. Otherwise
  *  the styles won´t be saved to file if the user wants use the "saveSVG" or "savePNG" functions from the UI object.
  */
 
 drawChart = function (data, name, elevation){
 
-//Clear the chart container everytime this function is called.
+// Clear the chart container everytime this function is called.
 $("#climate-chart").empty();
 
 //Set the basic dimension variables for the SVG element.
@@ -33,7 +33,8 @@ var WIDTH = 728,
 				bottomS: 40,
 				left : 40};
 
-//Append chart element to parent container and set basic styles.
+// Append chart element to parent container and set basic styles.
+
 
 // check if chart already exists, otherwise create it
 var chart = d3.select("#climate-chart-wrapper")
@@ -44,7 +45,8 @@ var chart = d3.select("#climate-chart-wrapper")
 			.attr("xmlns", "http://www.w3.org/2000/svg")
 			.attr("preserveAspectRatio", "xMinYMin meet")
 			.attr("viewBox" , "0 0 " + WIDTH + " " + HEIGHT)
-			.attr("width", "100%")
+			.attr('width', '100%')
+			.attr('height', '1000px')	// for compatibility with IE, this has to be here. But just forget about the actual number, it is a max value does not matter...
 			.classed("svg-content-responsive", true)
 			.style("font-size", "15px")
 			.style("font-family", "Arial, sans-serif")
@@ -100,7 +102,7 @@ var y3_height = 0,
 	y2_min = 0,
 	y3_max = 0;
 
-/*Set up variables for minimum, maximum etc for temperature and precipiation (especially needed for 
+/*Set up variables for minimum, maximum etc for temperature and precipiation (especially needed for
  * climate classification).
  */
 var tmp_range = 0,
@@ -110,7 +112,7 @@ var tmp_range = 0,
 	pre_max = d3.max(data, function(d) { return d.pre; });
 
 //Create arrays only with precipitation values for winter and summer, depending on the hemisphere.
-if (UI.lt >= 0) {   
+if (UI.lt >= 0) {
 	 pre_summer = (function () {
 			var summer = [];
 			for (i = 3; i < 9; i++){
@@ -118,7 +120,7 @@ if (UI.lt >= 0) {
 			}
 			return summer;
 		})();
-	
+
 	 pre_winter = (function () {
 		var winter = [];
 			for (var i = 0; i < 12; i++){
@@ -154,16 +156,16 @@ else {
 		return winter;
 	})();
 }
-				
+
 //Calculate minimum, maximum, mean and sum values for temperature/precipiation.
 var pre_minS = (function (){
 						return Math.min.apply(Math, pre_summer);
 					})();
-	
+
 var pre_maxS = (function (){
 						return Math.max.apply(Math, pre_summer);
 					})();
-	
+
 var pre_minW = (function (){
 						return Math.min.apply(Math, pre_winter);
 					})();
@@ -197,7 +199,7 @@ var count_warmMonths = (function () {
 							return count;
 						})();
 
-/*Calculate the stepsize between two axis tick marks based on the standard HEIGHT value and the number of ticks, 
+/*Calculate the stepsize between two axis tick marks based on the standard HEIGHT value and the number of ticks,
  * assuming there aren´t any negative tmp values.
  */
 var y1_stepsize = (HEIGHT - MARGINS.top - MARGINS.bottom)/5;
@@ -214,14 +216,14 @@ chart.attr("viewBox", "0 0 " + WIDTH + " " +HEIGHT);
 //Adjust height of #wrapper to fit to SVG content.
 $("#climate-chart-wrapper").css("padding-bottom", 100*(HEIGHT/WIDTH) +"%");
 
-/*The ticks for all y axes have to be calculated manually to make sure that they are in alignment and have the 
+/*The ticks for all y axes have to be calculated manually to make sure that they are in alignment and have the
  * correct ratio.
  */
 function setTickValues(){
-	
+
 	if (tmp_min < 0){
 		for (i = Math.floor(tmp_min/10); i <= 5; i++){
-			
+
 			if (i < 0){
 				var tickValue = i*10;
 				ticks_y1.push(tickValue);
@@ -239,20 +241,20 @@ function setTickValues(){
 				ticks_y2.push(tickValue*2);
 		}
 	}
-	
+
 	if (pre_max > 100){
 		var y3_tickNumber = Math.ceil((pre_max - 100)/200);
-		
+
 		for (i=1; i <= y3_tickNumber; i++){
 			var tickValue = 100 + i*200;
 			ticks_y3.push(tickValue);
 		}
 	}
-	
+
 	y1_min = d3.min(ticks_y1);
 	y1_max = d3.max(ticks_y1);
 	y3_max = d3.max(ticks_y3);
-	
+
 	//If there are negative tmp values, calculate pre_min in a way so that the zeropoints of both y axes are in alignment.
 	y2_min = y1_min*2;
 }
@@ -261,9 +263,9 @@ function setTickValues(){
 function adjustHeight(){
 	y1_height_negative = (ticks_y1.length - 6) * y1_stepsize;
 	y3_height = ticks_y3.length * y1_stepsize;
-	
+
 	HEIGHT = HEIGHT + y3_height + y1_height_negative;
-	
+
 	chart_height = chart_height + y1_height_negative + y3_height;
 }
 
@@ -271,14 +273,14 @@ function adjustHeight(){
 function getClimateClass (){
 	var cl = "";
 	var pre_dry = getPreDry();
-	
-//	console.log("tmp_max: " +tmp_max +", tmp_min: " +tmp_min +", pre_max: " +pre_max +", pre_min: " +pre_min 
-//			+", pre_minS: " +pre_minS +", pre_minW: " +pre_minW +", pre_maxS: " +pre_maxS +", pre_maxW: " 
+
+//	console.log("tmp_max: " +tmp_max +", tmp_min: " +tmp_min +", pre_max: " +pre_max +", pre_min: " +pre_min
+//			+", pre_minS: " +pre_minS +", pre_minW: " +pre_minW +", pre_maxS: " +pre_maxS +", pre_maxW: "
 //			+pre_maxW +", pre_dry: " +pre_dry +", count_warmMonths: " +count_warmMonths);
-	
+
 //	console.log("pre_summer: " +pre_summer.toString());
 //	console.log("pre_winter: " +pre_winter.toString());
-	
+
 	if (tmp_max < 10){
 		cl = "E";
 		if (0 < tmp_max < 10) {
@@ -294,7 +296,7 @@ function getClimateClass (){
 			//2nd letter
 			if (pre_sum > 5*pre_dry){
 				cl += "S";
-			} 
+			}
 			else {
 				cl += "W";
 			}
@@ -305,7 +307,7 @@ function getClimateClass (){
 			else {
 				cl += "k";
 			}
-			
+
 		}
 		else {
 			if (tmp_min >= 18){
@@ -383,9 +385,9 @@ function getClimateClass (){
 
 //Calculate dryness index which is needed for climate classification.
 function getPreDry () {
-	
+
 	var pre_dry = 0;
-	
+
 	var sum_summer = (function (){
 						var sum = 0;
 						$.each(pre_summer,function() {
@@ -393,7 +395,7 @@ function getPreDry () {
 						});
 						return sum;
 					})();
-	
+
 	var sum_winter = (function (){
 							var sum = 0;
 							$.each(pre_winter,function() {
@@ -401,32 +403,32 @@ function getPreDry () {
 							});
 							return sum;
 						})();
-		
-	
+
+
 	var pre_diff = sum_summer - sum_winter;
-	
-//	console.log("sum_summer: " +sum_summer +", sum_winter: " +sum_winter +", 
+
+//	console.log("sum_summer: " +sum_summer +", sum_winter: " +sum_winter +",
 //	2/3*pre_sum: " +2/3*pre_sum);
-	
+
 	if (sum_summer >= 2/3*pre_sum) {
 		pre_dry = 2*tmp_mean + 28;
 	}
 	else if (sum_winter >= 2/3*pre_sum){
 		pre_dry = 2*tmp_mean;
-	} 
+	}
 	else {
 		pre_dry = 2*tmp_mean + 14;
 	}
-	
+
 	return pre_dry;
 }
 
 //Create the title which is shown above the graph.
 function getTitle() {
-	
+
 	var lt = UI.lt;
 	var ln = UI.ln;
-	
+
 	if (lt >= 0){
 		lt = lt +"N";
 	} else {
@@ -437,30 +439,30 @@ function getTitle() {
 	} else {
 		ln = Math.abs(ln) +"W";
 	}
-	
+
 	var title = name;
 	var subtitle = lt + " " + ln;
-	
+
 	if (elevation > -1000){
 		subtitle += " | " + elevation + "m";
-	} 
-	
+	}
+
 	subtitle += " | Climate Class: " + getClimateClass() + " | Years: " + UI.start + "-" + UI.end;
-	
+
 	return [title, subtitle];
 }
 
 //Fill table column with values of the variable given as an argument.
 function fillColumn (col, column, x) {
-	
+
 	for (i = 0; i < 12; i++){
 		var obj = data[i];
-		
+
 		for (key in obj){
 		    if (key === column){
 		    	if(typeof(obj[key]) === "number") {
 		    		var number = obj[key].toFixed(1);
-		    		
+
 			    	col.append('tspan')
 				    	.attr("id", column + "_c" + i)
 				    	.attr("class", "cell")
@@ -485,11 +487,11 @@ function fillColumn (col, column, x) {
 
 //Define function for mouseover effect.
 function mouseMove(d) {
-	var m = d3.mouse(this), 
-		lowDiff = 1e99, 
+	var m = d3.mouse(this),
+		lowDiff = 1e99,
 		xI = null,
 		tickPos = xScale.range();
-	
+
 	for (var i = 0; i < tickPos.length; i++) {
 		var diff = Math.abs(m[0] - tickPos[i]);
 		if (diff < lowDiff) {
@@ -497,18 +499,18 @@ function mouseMove(d) {
 			xI = i;
 		}
 	}
-	
+
 	var c1 = chart.select("#c1"),
 		c2 = chart.select("#c2"),
 		month = "#month_c" + xI,
 		tmp = "#tmp_c" + xI,
 		pre = "#pre_c" + xI,
-		month = chart.select(month), 
+		month = chart.select(month),
 		tmp = chart.select(tmp),
 		pre = chart.select(pre),
 		rows = chart.selectAll(".cell");
-	
-	rows.attr("fill", black)	
+
+	rows.attr("fill", black)
 		.attr("font-weight", "normal")
 		.style("text-shadow", "none");
 	month.style("text-shadow", "1px 1px 2px gray")
@@ -519,10 +521,10 @@ function mouseMove(d) {
 	pre.attr("fill", colPre)
 		.attr("font-weight", "bold")
 		.style("text-shadow", "2px 2px 2px gray");
-	
+
 	c1.attr("transform", "translate(" + tickPos[xI] + ","
 			+ yScale1(data[xI].tmp) + ")");
-	
+
 	if ( data[xI].pre <= 100) {
 		c2.attr("transform", "translate(" + tickPos[xI] + ","
 				+ yScale2(data[xI].pre) + ")");
@@ -535,16 +537,16 @@ function mouseMove(d) {
 
 //Get the doi of the dataset reference used to create the chart.
 function getSource () {
-	
+
 	var source = "";
-	
+
 	$.each(UI.catalog.dataset, function(i, v) {
-		
+
 		if (v._name == UI.dataset) {
 	    	source = v._name +" (" +v.documentation[1].__text +")";
 	    }
 	});
-	
+
 	return source;
 }
 
@@ -588,20 +590,20 @@ function wrap(text, width, char) {
 var xScale = d3.scale
 			.ordinal()
 			.range([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12])
-			.domain(["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", 
+			.domain(["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug",
 			"Sep", "Oct", "Nov", "Dec"])
 			.rangePoints([MARGINS.left, WIDTH - MARGINS.right], 0);
-	
+
 var yScale1 = d3.scale
 		   .linear()
 		   .range([HEIGHT - MARGINS.bottom, y3_height + MARGINS.top])
-		   .domain([y1_min, y1_max]); 
-			            
+		   .domain([y1_min, y1_max]);
+
 var yScale2 = d3.scale
 		   .linear()
 		   .range([HEIGHT - MARGINS.bottom, y3_height + MARGINS.top])
 		   .domain([y2_min, y2_max]);
-		   
+
 var yScale3 = d3.scale
 		   .linear()
 		   .range([y3_height + MARGINS.top, MARGINS.top])
@@ -736,7 +738,7 @@ var areaAbovePre = d3.svg.area()
 					.y1(yScale2(100))
 					.interpolate('linear');
 
-						
+
 //-----------------------------------------------------------------------------------------------------------------------
 // Append features of chart to the html svg element. ---------------------------------------------------------------------
 
@@ -945,17 +947,17 @@ chart.append("text")
 	.text(url);
 
 //TABLE ELEMENTS
-chart.append("line")          
-	.attr("x1", table_x + table_width/3)    
-	.attr("y1", table_y - 15)   
+chart.append("line")
+	.attr("x1", table_x + table_width/3)
+	.attr("y1", table_y - 15)
 	.attr("x2", table_x + table_width/3)
 	.attr("y2", table_y + table_height - 10)
 	.attr("shape-rendering", "crispEdges")
 	.style("stroke", colGrid);
 
-chart.append("line") 
-	.attr("x1", table_x + table_width*2/3)    
-	.attr("y1", table_y - 15)   
+chart.append("line")
+	.attr("x1", table_x + table_width*2/3)
+	.attr("y1", table_y - 15)
 	.attr("x2", table_x + table_width*2/3)
 	.attr("y2", table_y + table_height - 10)
 	.attr("shape-rendering", "crispEdges")
@@ -969,7 +971,7 @@ chart.append('text')
 	.attr('y', table_y)
 	.attr('text-anchor', 'middle')
 	.text("Month");
-	
+
 chart.append('text')
 	.attr('id', "tmp")
 	.attr("class", "info")
@@ -1043,7 +1045,7 @@ chart.selectAll(".area")
 chart.append("g")
 	.attr("class", "focus")
 	.attr("visibility", "hidden");
-	
+
 chart.select(".focus")
 	.append("circle")
 	.attr("id", "c1")
@@ -1068,13 +1070,13 @@ chart.append("rect")
 	.attr("height", chart_height)
 	.attr("fill", "none")
 	.style("pointer-events", "all")
-	.on("mouseover", function() { 
+	.on("mouseover", function() {
 		chart.select(".focus")
-			 .attr("visibility", "visible"); 
+			 .attr("visibility", "visible");
 		})
-	.on("mouseout", function() { 
+	.on("mouseout", function() {
 		chart.select(".focus")
-			 .attr("visibility", "hidden"); 
+			 .attr("visibility", "hidden");
 
 		chart.selectAll(".cell")
 			 .attr("fill", black)
@@ -1083,5 +1085,4 @@ chart.append("rect")
 			 .style("text-shadow", "none");
 		})
 	.on("mousemove", mouseMove);
-
 }
