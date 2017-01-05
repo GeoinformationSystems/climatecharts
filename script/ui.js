@@ -21,6 +21,9 @@ var UI  = {
 	"data": [],
 	"srtm": 0,
 
+  // Root URL
+  "ccRootURL": "https://climatecharts.net",
+
 	// Name of the currently selected datasets.
 	"dataset": "",
 
@@ -81,7 +84,7 @@ var UI  = {
 			UI.createChart();
 		});
 	},
-	
+
 	// Save SVG inline code to a svg file.
 	"saveToSvg": function (rootDivId, filename) {
 		var rootDiv = $('#'+rootDivId);
@@ -112,7 +115,7 @@ var UI  = {
 	// Clone the original svg graphic, upscale and rasterize the clone and
 	// finally save it to a png file.
 	"saveToPng": function(rootDivId, filename) {
-	
+
 		// get root element
 		var rootDiv = $('#'+rootDivId);
 		var body = $('body');
@@ -132,7 +135,7 @@ var UI  = {
 		 * insuring that it stays sharp when it is scaled up.
 		 */
 		var scaleFactor = 2;
-		
+
 		var clone = d3.select("#clone"),
 			width_png = Math.floor($(rootDiv).width()*scaleFactor),
 			height_png = Math.floor($(rootDiv).height()*scaleFactor);
@@ -141,7 +144,7 @@ var UI  = {
 		   .attr("height", height_png)
 		   .attr("viewbox", "0 0 " + width_png + " " + height_png)
 		   .attr("preserveAspectRatio", "xMinYMin meet");
-			
+
 		var svg = $("#clone")[0],
 			canvas = $("canvas")[0],
 			serializer = new XMLSerializer(),
@@ -372,7 +375,7 @@ var UI  = {
 					 	 * 		manual setting of x-position does not work properly cross-browser
 					 	 * 		solution: manually set the x-position only for saving purpose
 					 	 */
-					 	
+
 					 	$('#save-plots-to-svg').click(function()
 			 			{
 					 		$('.draglayer').hide();
@@ -402,7 +405,7 @@ var UI  = {
 							climateData.temperature[i] = 	[];
 							climateData.precipitation[i] = 	[];
 						}
-						
+
 						// sort temperature and precipitation data by month
 						// -> all data for one Month in one Array
 						var numElems = rawDataA1.point.length;
@@ -419,7 +422,7 @@ var UI  = {
 
 							// get actual temperature value
 							tmp = parseFloat(dataObj[3].__text);
-							
+
 							// if temperature values are in Kelvin, convert them to Celsius.
 							if (tmp >= 200) {
 								tmp -= 273.15;
@@ -438,13 +441,13 @@ var UI  = {
 							date = new Date(dataObj[0].__text);
 							month = date.getMonth();
 							pre = parseFloat(dataObj[3].__text);
-							
+
 							// workaround for the precipitation dataset created by University of Delaware
 							// -> Values are converted from cm to mm.
 							if (UI.dataset === "University of Delaware Air Temperature and Precipitation v4.01") {
 								pre *= 10;
 							}
-						
+
 							climateData.precipitation[month].push(pre);
 						}
 
@@ -561,7 +564,9 @@ var UI  = {
 	// List all the datasets available on the server-side.
 	"listDatasets": function () {
 
-		var catalogUrl = "" +window.location.protocol +"//" +window.location.host
+		var catalogUrl = ""
+              +UI.ccRootURL
+              // +window.location.protocol +"//" +window.location.host
 							+"/thredds/catalog.xml";
 
 		$.get(catalogUrl)
