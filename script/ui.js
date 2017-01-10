@@ -321,10 +321,10 @@ var UI  = {
 
 						// create structure
 					 	/* plot-wrapper
-					 	 * |-- plots-container   // main svg canvas, contains plots, will be printed
-					 	 * |-- plot-options			 // buttons for changing / saving plots, will not be printed
-					 	 *     |-- plot-scale-switch   // optimal <-> fixed scale
-					 	 *     |-- plot-save-buttons   // save as svg and png
+					 	 * |-> plots-container   // main svg canvas, contains plots, will be printed
+					 	 * |-> plot-options			 // buttons for changing / saving plots, will not be printed
+					 	 *     |-> plot-scale-switch   // optimal <-> fixed scale
+					 	 *     |-> plot-save-buttons   // save as svg and png
 					 	 */
 
 					 	// level 0
@@ -340,20 +340,55 @@ var UI  = {
 						plotWrapper.appendChild(plotsContainer);
 
 						// level 1 - options
-			            var plotOptions = document.createElement('div');
-			            plotOptions.id = 'plot-options';
-			            plotWrapper.appendChild(plotOptions);
+            var plotOptions = document.createElement('div');
+            plotOptions.id = 'plot-options';
+            plotWrapper.appendChild(plotOptions);
 
-			            // level 2 - switch
-			            var plotSwitch = document.createElement('label');
+            // level 2 - switch
+            var plotSwitch = document.createElement('div');
 						plotSwitch.id = 'plot-scale-switch'
-						plotSwitch.className += 'switch ';
 						plotOptions.appendChild(plotSwitch);
 
-						// level 3 - inside the switch (ugly, but works)
-						plotSwitch.innerHTML += '<input id="plot-scale-input" class="switch-input" type="checkbox" />';
-						plotSwitch.innerHTML += '<span id="plot-scale-label" class="switch-label"></span>';
-						plotSwitch.innerHTML += '<span class="switch-handle"></span>';
+						// level 3 - inside the switch
+            // label      '.switch-light switch-candy'
+            // |-> input  'plot-switch-input' (!!! <input> tag does not have children!)
+            // |-> div    'plot-switch-title'
+            // |-> span   'plot-switch-options'
+            //     |-> span 'plot-switch-option-l'
+            //     |-> span 'plot-switch-option-r'
+            //     |-> a    'plot-switch-button'
+            var switchLabel = document.createElement('label');
+            switchLabel.className += 'switch-light switch-candy ';
+            switchLabel.setAttribute('onclick', ' ');
+            plotSwitch.appendChild(switchLabel);
+
+            var switchInput = document.createElement('input');
+            switchInput.id = 'plot-switch-input';
+            switchInput.setAttribute('type', 'checkbox');
+            switchLabel.appendChild(switchInput);
+
+            var switchTitle = document.createElement('div');
+            switchTitle.id = 'plot-switch-title';
+            switchLabel.appendChild(switchTitle);
+
+            var switchOptions = document.createElement('span');
+            switchOptions.id = 'plot-switch-options';
+            switchLabel.appendChild(switchOptions);
+
+            var switchOptionL = document.createElement('span');
+            switchOptionL.id = 'plot-switch-option-l';
+            switchOptionL.className += 'plot-switch-option ';
+            switchOptions.appendChild(switchOptionL);
+
+            var switchOptionR = document.createElement('span');
+            switchOptionR.id = 'plot-switch-option-r';
+            switchOptionR.className += 'plot-switch-option ';
+            switchOptions.appendChild(switchOptionR);
+
+            var switchButton = document.createElement('a');
+            switchButton.id = 'plot-switch-button';
+            switchOptions.appendChild(switchButton);
+
 
 						// level 2 - save buttons
 						var saveButtonArea = document.createElement('div');
