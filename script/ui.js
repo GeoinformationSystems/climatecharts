@@ -21,9 +21,6 @@ var UI  = {
 	"data": [],
 	"srtm": 0,
 
-  // Root URL
-  "ccRootURL": "https://climatecharts.net",
-
 	// Name of the currently selected datasets.
 	"dataset": "",
 
@@ -481,14 +478,15 @@ var UI  = {
 								 variable = UI.ncML[Index].variable[name]._name;
 							 }
 						 }
-
-						 url += window.location.protocol +"//" +window.location.host +"/thredds/ncss/"
-						 	+UI.catalog.dataset[key].dataset[Index]._urlPath
-						 	+"?var=" +variable
-						 	+"&latitude=" +UI.lt
-						 	+"&longitude=" +UI.ln
-						 	+"&time_start=" +UI.start +"-01-01T00:00:00Z"
-						 	+"&time_end=" +UI.end +"-12-30T00:00:00Z";
+             url  += ""
+                  + ENDPOINTS.thredds
+                  + "/ncss/"
+                  + UI.catalog.dataset[key].dataset[Index]._urlPath
+                  + "?var=" +variable
+                  + "&latitude=" +UI.lt
+                  + "&longitude=" +UI.ln
+                  + "&time_start=" +UI.start +"-01-01T00:00:00Z"
+                  + "&time_end=" +UI.end +"-12-30T00:00:00Z";
 					 }
 				}
 
@@ -502,22 +500,34 @@ var UI  = {
 			//Query geonames.org gazetteer for placename.
 			function getName (){
 				if ($("#name1").is(':checked') === true){
-					return $.get("/climatecharts/api/gazetteer/findNearbyPlaceNameJSON",
-							{lat: UI.lt, lng: UI.ln})
-							.fail(function(jqXHR, textStatus, errorThrown){
-								$("#loader").css("visibility", "hidden");
-								$("#climate-chart").empty();
-								$("#climate-chart-wrapper").append("<h3 id='nodata'>");
-								$("#nodata").text("External Service not responding: " +errorThrown);
-								$("#nodata").fadeTo("slow", 1);
-							});
+          var url = ""
+            + ENDPOINTS.gazetteer
+            + "/findNearbyPlaceNameJSON"
+					return $.get(url,
+            {
+              lat: UI.lt,
+              lng: UI.ln
+            })
+						.fail(function(jqXHR, textStatus, errorThrown){
+							$("#loader").css("visibility", "hidden");
+							$("#climate-chart").empty();
+							$("#climate-chart-wrapper").append("<h3 id='nodata'>");
+							$("#nodata").text("External Service not responding: " +errorThrown);
+							$("#nodata").fadeTo("slow", 1);
+						});
 					}
 			};
 
 			//Query geonames.org gazetteer for srtm elevation.
 			function getElevation (){
-				return $.get("/climatecharts/api/gazetteer/srtm3JSON",
-						{lat: UI.lt, lng: UI.ln})
+        var url = ""
+          + ENDPOINTS.gazetteer
+          + "/findNearbyPlaceNameJSON"
+				return $.get(url,
+						{
+              lat: UI.lt,
+              lng: UI.ln
+            })
 						.fail(function(jqXHR, textStatus, errorThrown){
 							$("#loader").css("visibility", "hidden");
 							$("#climate-chart").empty();
@@ -565,9 +575,8 @@ var UI  = {
 	"listDatasets": function () {
 
 		var catalogUrl = ""
-              +UI.ccRootURL
-              // +window.location.protocol +"//" +window.location.host
-							+"/thredds/catalog.xml";
+      + ENDPOINTS.thredds
+		  + "/catalog.xml";
 
 		$.get(catalogUrl)
 			.done(function (data) {
@@ -684,10 +693,14 @@ var UI  = {
 		$.each(UI.catalog.dataset, function(i, v) {
 		    if (v._name == $("#datasets").val()) {
 
-		    	var urlTmp = "" +window.location.protocol +"//" +window.location.host
-		    			+"/thredds/ncml/" +v.dataset[0]._urlPath,
-		    		urlPre = "" +window.location.protocol +"//" +window.location.host
-		    			+"/thredds/ncml/" +v.dataset[1]._urlPath;
+		    	var urlTmp = ""
+            + ENDPOINTS.thredds
+		    		+ "/ncml/"
+            + v.dataset[0]._urlPath;
+		    	var urlPre = ""
+            + ENDPOINTS.thredds
+		    		+ "/ncml/"
+            + v.dataset[1]._urlPath;
 
 		    	$.when($.get(urlTmp), $.get(urlPre))
 				 	.done(function(a1, a2){

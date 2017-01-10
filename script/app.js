@@ -8,12 +8,18 @@
  */
 
 // for localhost development
-THREDDS_ENDPOINT = "https://climatecharts.net/thredds"
-GAZETTEER_ENDPOINT = "https://climatecharts.net/api/gazetteer"
+ENDPOINTS =
+{
+  'thredds':  "https://climatecharts.net/thredds",
+  'gazetteer': "https://climatecharts.net/api/gazetteer"
+}
 
 // for deployment
-// THREDDS_ENDPOINT = window.location.protocol +"//" +window.location.host + "/thredds"
-// GAZETTEER_ENDPOINT = window.location.protocol +"//" +window.location.host + "/api/gazetteer"
+// ENDPOINTS =
+// {
+//   'thredds':  window.location.protocol +"//" +window.location.host + "/thredds",
+//   'gazeteer': window.location.protocol +"//" +window.location.host + "/api/gazetteer"
+// }
 
 
 UI.createMap();
