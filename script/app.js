@@ -28,7 +28,7 @@ UI.listDatasets();
 $('#plot-wrapper').css('visibility', 'hidden');
 
 $('.form-group').trigger("reset");
-$("#datasets").change(UI.setDataset);
+$("#datasets").change(UI.getMetadata);
 $("#lat").change(UI.createChart);
 $("#lng").change(UI.createChart);
 $("#checkbox").change(UI.resetSliderHandles);

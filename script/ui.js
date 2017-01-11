@@ -793,12 +793,6 @@ var UI  = {
         UI.setSliderLabels();
 	},
 
-	// If the user selects another dataset fetch the corresponding metadata from
-	// the server.
-	"setDataset": function () {
-		UI.getMetadata();
-	},
-
 	// Use ncML service from TDS to get the metadata for the currently selected
 	// dataset.
 	"getMetadata": function () {
@@ -851,6 +845,9 @@ var UI  = {
 									parseInt(v.timeCoverage.end));
 
 						}
+
+            // finally create the chart
+            UI.createChart();
 
 //						console.log(UI.ncML);
 				 });
