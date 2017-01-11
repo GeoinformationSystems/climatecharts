@@ -294,15 +294,13 @@ drawPlots = function(data, name, elevation) {
 
     var dataSourceDiv = $(footerWrapper.children()[0]);
     dataSourceDiv.text("Data Source: " + PLOT.data_source);
+    dataSourceDiv.attr('id', 'plot-link-text')
     dataSourceDiv.attr('data-unformatted', "Data Source: " + PLOT.data_source);
     dataSourceDiv.css('font-size', 12);
     dataSourceDiv.css('fill', 'grey');
     dataSourceDiv.attr('y', PLOT_HEIGHT-20);
     dataSourceDiv.attr('x', 0);
     dataSourceDiv.attr('text-anchor', 'begin');
-
-    // make hyperlink to source
-    dataSourceDiv.css('cursor', 'pointer');
 
     var referenceDiv = $(footerWrapper.children()[1]);
     referenceDiv.text(PLOT.reference);
@@ -324,8 +322,18 @@ drawPlots = function(data, name, elevation) {
   	   titleDiv.text("");
   	}
 
-    // remove other layers
-    $('.main-svg').last().remove();
+    // hack: macke "clickable" hyperlink to source
+    $('#plot-wrapper').append('<div id="plot-link"></div>');
+    var plotLink = $('#plot-link');
+    plotLink.css('width', $('#plot-link-text').width()+10);
+    plotLink.click(function()
+    {
+      var source = PLOT.data_source;
+      var firstPar = source.indexOf('(');
+      var lastPar = source.lastIndexOf(')');
+      var url = "http://" + source.slice(firstPar+1, lastPar);
+      window.open(url);
+    })
 
  	  /* add id and important attributes to actual svg container */
     var chart = d3.select("#plots-svg-container")

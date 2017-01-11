@@ -409,7 +409,6 @@ select {
   background-color: rgb(89,131,213) !important;
 }
 
-
 #save-button-area
 {
   float: right;
@@ -420,4 +419,14 @@ select {
 {
 	background: #ffffff;
 	fill: #ffffff;
+}
+
+#plot-link
+{
+  position: absolute;
+  bottom: 17px;
+  left: 10px;
+  width: 750px;
+  height: 22px;
+  cursor: pointer;
 }
