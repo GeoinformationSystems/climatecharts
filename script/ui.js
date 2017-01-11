@@ -8,6 +8,12 @@
  * html element is clicked or it´s value changes (see file app.js).
  */
 
+// constant configs
+COORD_PRECISION = 4     // precision of lat/lng coordinates shown
+LAT_EXTENT      = 90    // min/max value for latitude
+LNG_EXTENT      = 180   // min/max value for longitude
+
+
 var UI  = {
 
 	// Query parameter for the data request.
@@ -57,13 +63,43 @@ var UI  = {
 
 		// Update coordinate variables if the user clicked on the map.
 		function updatePosition (e){
-				var lat = (Math.round(e.latlng.lat*100)/100).toString();
-				var lng = (Math.round(e.latlng.lng*100)/100).toString();
 
-				$("#lat").val(lat);
-				$("#lng").val(lng);
+        // original value from the map
+        // -> where the user clicked and the marker will be placed
+        var latOrig = e.latlng.lat;
+        var lngOrig = e.latlng.lng;
 
-				marker.setLatLng([lat, lng]).addTo(map);
+        // real value stripped to the extend of the geographic coordinate system
+        var latReal = latOrig;
+        while (latReal < -LAT_EXTENT)
+        {
+          latReal += LAT_EXTENT*2;
+        }
+        while (latReal > LAT_EXTENT)
+        {
+          latReal -= LAT_EXTENT*2;
+        }
+
+        var lngReal = lngOrig;
+        while (lngReal < -LNG_EXTENT)
+        {
+          lngReal += LNG_EXTENT*2;
+        }
+        while (lngReal > LNG_EXTENT)
+        {
+          lngReal -= LNG_EXTENT*2;
+        }
+
+        // visualized value shown in the information box on the right
+        var factor = Math.pow(10, COORD_PRECISION);
+				var latViz = (Math.round(latReal*factor)/factor);
+				var lngViz = (Math.round(lngReal*factor)/factor);
+
+				$("#lat").val(latViz.toString());
+				$("#lng").val(lngViz.toString());
+
+        // set marker to the original position
+				marker.setLatLng([latOrig, lngOrig]).addTo(map);
 				$("#createChart").prop("disabled", false);
 
 				// create chart immediately
