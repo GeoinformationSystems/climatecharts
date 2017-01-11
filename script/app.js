@@ -21,10 +21,11 @@ ENDPOINTS =
 //   'gazeteer': window.location.protocol +"//" +window.location.host + "/api/gazetteer"
 // }
 
-
 UI.createMap();
 UI.listDatasets();
-UI.initLoader("progressBar");
+
+// initially hide plot-wrapper
+$('#plot-wrapper').css('visibility', 'hidden');
 
 $('.form-group').trigger("reset");
 $("#datasets").change(UI.setDataset);

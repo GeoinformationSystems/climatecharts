@@ -293,7 +293,7 @@ select {
 	text-align: justify;
 }
 
-#loader {
+.loader {
 	position: absolute;
 	top: 50%;
 	left: 50%;
@@ -302,10 +302,10 @@ select {
 	margin-top: -50px;
 	margin-left: -110px;
 	background-color: white;
-    z-index: 1000;
-    visibility: hidden;
-    border: 1px solid gray;
-    border-radius: 10px;
+  z-index: 1000;
+  visibility: hidden;
+  border: 1px solid gray;
+  border-radius: 10px;
 }
 
 #map {

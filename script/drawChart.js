@@ -25,13 +25,15 @@ $("#climate-chart").empty();
 var WIDTH = 728,
 	HEIGHT = 360,
 	min_width = 728,
-	MARGINS =  {top : 70,
-				topS: 30,
-				right : 220,
-				rightS : 30,
-				bottom : 90,
-				bottomS: 40,
-				left : 40};
+	MARGINS = {
+    top : 70,
+		topS: 30,
+		right : 220,
+		rightS : 30,
+		bottom : 90,
+		bottomS: 40,
+		left : 40
+  };
 
 // Append chart element to parent container and set basic styles.
 

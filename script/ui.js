@@ -175,7 +175,7 @@ var UI  = {
 	 */
 	"createChart": function (){
 
-			//Pick the current values of time slider and position.
+			// Pick the current values of time slider and position.
 			UI.start = $("#slider").slider("values", 0);
 			UI.end = $("#slider").slider("values", 1);
 			UI.lt = $("#lt").val();
@@ -183,9 +183,34 @@ var UI  = {
 
 			UI.dataset = $("#datasets").val();
 
-			$("#loader").css("visibility", "visible");
+      // activate plot wrapper
+      $('#plot-wrapper').css('visibility', 'visible');
+
+      // set loader divs
+      var chartLoader = document.createElement('div');
+      chartLoader.className = 'loader';
+      document.getElementById('climate-chart-wrapper').appendChild(chartLoader);
+
+      var plotLoader = document.createElement('div');
+      plotLoader.className = 'loader';
+      document.getElementById('plot-wrapper').appendChild(plotLoader);
+
+      var loaders = $('.loader')
+      loaders.waitMe({
+        effect: 'progressBar',
+        text:   'Loading! Please Wait...',
+        bg:     '',
+        color:  'gray',
+        sizeW:  '',
+        sizeH:  '',
+        source: '',
+        onClose: function() {}
+      });
+
+			loaders.css("visibility", "visible");
 			$("#info").fadeTo("slow", 0.0);
 			$("#climate-chart").fadeTo("slow", 0.3);
+			$("#plots-container").fadeTo("slow", 0.3);
 			$("#nodata").css("opacity", 0.4);
 
 			// Draw the chart when all four ajax calls have received a response.
@@ -243,7 +268,7 @@ var UI  = {
 
 					// Only continue if there are realistic data values for this
 					// place and time, otherwise show an error message.
-					if (Math.max.apply(null, dataTmp) < 100
+					if ( Math.max.apply(null, dataTmp) < 100
 						&& Math.min.apply(null, dataTmp) > -100
 						&& Math.max.apply(null, dataPre) < 10000
 						&& Math.min.apply(null, dataPre) >= 0) {
@@ -285,15 +310,15 @@ var UI  = {
 			    	  	UI.name = name;
 			    	  	UI.srtm = height;
 
-						$("#loader").css("visibility", "hidden");
+						$(".loader").css("visibility", "hidden");
 						$("#nodata").empty();
-						$("#climate-chart").remove();
-						$("#plot-wrapper").remove();
+						$("#climate-chart-wrapper").empty();
+						$("#plot-wrapper").empty();
 
 						// Finally draw the chart.
 						drawChart(UI.data, name, height);
 
-						$("#loader").css("visibility", "hidden");
+						$(".loader").css("visibility", "hidden");
 						$("#info").remove();
 
 						UI.activatePanning();
@@ -323,16 +348,13 @@ var UI  = {
 					 	/* plot-wrapper
 					 	 * |-> plots-container   // main svg canvas, contains plots, will be printed
 					 	 * |-> plot-options			 // buttons for changing / saving plots, will not be printed
-					 	 *     |-> plot-scale-switch   // optimal <-> fixed scale
-					 	 *     |-> plot-save-buttons   // save as svg and png
+					 	 * |   |-> plot-scale-switch   // optimal <-> fixed scale
+					 	 * |   |-> plot-save-buttons   // save as svg and png
+             * |-> .loader
 					 	 */
 
 					 	// level 0
-						var parentWrapper = document.getElementById('climate-chart-wrapper').parentNode;
-						var plotWrapper = document.createElement('div');
-						plotWrapper.id = 'plot-wrapper';
-						plotWrapper.className += 'box ';
-						parentWrapper.appendChild(plotWrapper);
+						var plotWrapper = document.getElementById('plot-wrapper');
 
 						// level 1 - main container
 						var plotsContainer = document.createElement('div');
@@ -487,9 +509,9 @@ var UI  = {
 
 					} else {
 						// Show error message if there is no data available.
-						$("#loader").css("visibility", "hidden");
+						$(".loader").css("visibility", "hidden");
 						$("#climate-chart").empty();
-						$("#climate-chart-wrapper").append("<h3 id='nodata'>");
+						$("#climate-chart-wrapper").append("<div id='nodata'></div>");
 						$("#nodata").text("No data available for this area!");
 						$("#nodata").fadeTo("slow", 1);
 					}
@@ -544,9 +566,9 @@ var UI  = {
               lng: UI.ln
             })
 						.fail(function(jqXHR, textStatus, errorThrown){
-							$("#loader").css("visibility", "hidden");
+							$(".loader").css("visibility", "hidden");
 							$("#climate-chart").empty();
-							$("#climate-chart-wrapper").append("<h3 id='nodata'>");
+							$("#climate-chart-wrapper").append("<div id='nodata'></div>");
 							$("#nodata").text("External Service not responding: " +errorThrown);
 							$("#nodata").fadeTo("slow", 1);
 						});
@@ -564,9 +586,9 @@ var UI  = {
               lng: UI.ln
             })
 						.fail(function(jqXHR, textStatus, errorThrown){
-							$("#loader").css("visibility", "hidden");
+							$(".loader").css("visibility", "hidden");
 							$("#climate-chart").empty();
-							$("#climate-chart-wrapper").append("<h3 id='nodata'>");
+							$("#climate-chart-wrapper").append("<div id='nodata'></div>");
 							$("#nodata").text("External Service not responding: " +errorThrown);
 							$("#nodata").fadeTo("slow", 1);
 						});
@@ -590,21 +612,6 @@ var UI  = {
 			}
 	},
 
-	 // Run loading Animation from "WaitMe" plugin.
-	"initLoader": function initLoader(effect){
-
-		var loader = $('#loader').waitMe({
-			effect: effect,
-			text: 'Please Wait...',
-			bg: '',
-			color: 'gray',
-			sizeW: '',
-			sizeH: '',
-			source: '',
-			onClose: function() {
-			}
-		});
-	},
 
 	// List all the datasets available on the server-side.
 	"listDatasets": function () {

@@ -12,13 +12,12 @@
     <!-- THIRD-PARTY STYLESHEETS -->
   	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css">
-    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/css-toggle-switch/latest/toggle-switch.css" />
-
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/css-toggle-switch/latest/toggle-switch.css" />
+    <link rel="stylesheet" href="style/waitMe.min.css">
 
     <!-- OWN STYLESHEETS -->
   	<link rel="stylesheet" href="style/layout.css">
   	<link rel="stylesheet" href="style/leaflet.css">
-  	<link rel="stylesheet" href="style/waitMe.min.css">
 
     <!-- THIRD-PARTY SCRIPTS -->
   	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
@@ -88,8 +87,7 @@
   									</ul>
   								</div>
   								<div class="col-lg-2">
-  									<a target="_blank" href="https://tu-dresden.de/die_tu_dresden/fakultaeten/
-  									fakultaet_forst_geo_und_hydrowissenschaften/fachrichtung_geowissenschaften/gis">
+  									<a target="_blank" href="https://tu-dresden.de/bu/umwelt/geo/geoinformatik">
   									<img class="img img-responsive" id="logo" src="data/img/logo_weiss.svg"> </a>
   								</div>
   							</div>
@@ -111,8 +109,8 @@
   												On the right side you can change the source of the
   												climate data and change the time frame of the data.
   											</p>
-  											<div id="loader"></div>
   										</div>
+                      <div id="plot-wrapper" class="box"></div>
   									</div>
   									<div class="col-lg-3">
   										<div class="box">
