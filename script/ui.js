@@ -109,12 +109,36 @@ var UI  = {
 		// Update coordinate variables if the user typed in coordinate values
 		// manually.
 		$(".coordinates").change(function () {
-			map.setView([$("#lat").val(), $("#lng").val()], 5);
-			marker.setLatLng([$("#lat").val(), $("#lng").val()]).addTo(map);
-			$("#createChart").prop("disabled", false);
 
-			// create chart immediately
-			UI.createChart();
+      // original lat/lng values that user typed into the box
+      var latTyped = parseFloat($("#lat").val());
+      var lngTyped = parseFloat($("#lng").val());
+
+      // strip to extend of geographic coordinate system
+      var latReal = latTyped;
+      while (latReal < -LAT_EXTENT)
+      {
+        latReal += LAT_EXTENT*2;
+      }
+      while (latReal > LAT_EXTENT)
+      {
+        latReal -= LAT_EXTENT*2;
+      }
+
+      var lngReal = lngTyped;
+      while (lngReal < -LNG_EXTENT)
+      {
+        lngReal += LNG_EXTENT*2;
+      }
+      while (lngReal > LNG_EXTENT)
+      {
+        lngReal -= LNG_EXTENT*2;
+      }
+
+      // hack "event" object to hand it into updatePosition function
+      // act as if user clicked on the map
+      var e = {latlng: {lat: latReal, lng: lngReal} };
+      updatePosition(e);
 		});
 	},
 
