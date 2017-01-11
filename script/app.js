@@ -29,11 +29,10 @@ $('#plot-wrapper').css('visibility', 'hidden');
 
 $('.form-group').trigger("reset");
 $("#datasets").change(UI.setDataset);
-$("#lat").change(UI.changeButtonStatus);
-$("#lng").change(UI.changeButtonStatus);
+$("#lat").change(UI.createChart);
+$("#lng").change(UI.createChart);
 $("#checkbox").change(UI.resetSliderHandles);
 $(".name").click(UI.changeNameInputStatus);
-$("#createChart").click(UI.createChart);
 $(".tab-links a").click(UI.selectTab);
 $(window).resize(function(){
     UI.setSliderLabels();

@@ -100,7 +100,6 @@ var UI  = {
 
         // set marker to the original position
 				marker.setLatLng([latOrig, lngOrig]).addTo(map);
-				$("#createChart").prop("disabled", false);
 
 				// create chart immediately
 				UI.createChart();
@@ -113,6 +112,12 @@ var UI  = {
       // original lat/lng values that user typed into the box
       var latTyped = parseFloat($("#lat").val());
       var lngTyped = parseFloat($("#lng").val());
+
+      // stop if one of the values is not given
+      if (isNaN(latTyped) || isNaN(lngTyped))
+      {
+        return null;
+      }
 
       // strip to extend of geographic coordinate system
       var latReal = latTyped;
@@ -238,8 +243,14 @@ var UI  = {
 			// Pick the current values of time slider and position.
 			UI.start = $("#slider").slider("values", 0);
 			UI.end = $("#slider").slider("values", 1);
-			UI.lt = $("#lat").val();
-			UI.ln = $("#lng").val();
+			UI.lat = $("#lat").val();
+			UI.lng = $("#lng").val();
+
+      // stop if one of the values is not given
+      if (isNaN(parseFloat(UI.lat)) || isNaN(parseFloat(UI.lng)))
+      {
+        return null;
+      }
 
 			UI.dataset = $("#datasets").val();
 
@@ -600,8 +611,8 @@ var UI  = {
                   + "/ncss/"
                   + UI.catalog.dataset[key].dataset[Index]._urlPath
                   + "?var=" +variable
-                  + "&latitude=" +UI.lt
-                  + "&longitude=" +UI.ln
+                  + "&latitude=" +UI.lat
+                  + "&longitude=" +UI.lng
                   + "&time_start=" +UI.start +"-01-01T00:00:00Z"
                   + "&time_end=" +UI.end +"-12-30T00:00:00Z";
 					 }
@@ -622,8 +633,8 @@ var UI  = {
             + "/findNearbyPlaceNameJSON"
 					return $.get(url,
             {
-              lat: UI.lt,
-              lng: UI.ln
+              lat: UI.lat,
+              lng: UI.lng
             })
 						.fail(function(jqXHR, textStatus, errorThrown){
 							$(".loader").css("visibility", "hidden");
@@ -642,8 +653,8 @@ var UI  = {
           + "/findNearbyPlaceNameJSON"
 				return $.get(url,
 						{
-              lat: UI.lt,
-              lng: UI.ln
+              lat: UI.lat,
+              lng: UI.lng
             })
 						.fail(function(jqXHR, textStatus, errorThrown){
 							$(".loader").css("visibility", "hidden");
@@ -859,17 +870,6 @@ var UI  = {
 		else {
 			$("#userName").prop("disabled", true);
 			$("#userName").val("");
-		}
-	},
-
-	// Only enable button for creating the chart if the necessary variables are
-	// defined.
-	"changeButtonStatus": function () {
-		this.lt = $("#lat").val();
-		this.ln = $("#lng").val();
-
-		if (this.lt !== null && this.ln !== null){
-			$("#createChart").prop("disabled", false);
 		}
 	},
 
