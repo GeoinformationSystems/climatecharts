@@ -552,6 +552,15 @@ function getSource () {
 	return source;
 }
 
+//Get the doi link
+function getSourceLink () {
+	var source = getSource();
+  var firstPar = source.indexOf('(');
+  var lastPar = source.lastIndexOf(')');
+  var url = "http://" + source.slice(firstPar+1, lastPar);
+  return url;
+}
+
 //Wrap text input string and split into multiple lines if necessary.
 function wrap(text, width, char) {
     text.each(function () {
@@ -929,7 +938,6 @@ chart.append("text")
 	.attr("y", HEIGHT - MARGINS.bottomS)
 	.text("Precipitation Sum: " + pre_sum + "mm");
 
-
 chart.append("text")
 	.attr("class", "source")
 	.attr("id", "dataSource")
@@ -937,7 +945,9 @@ chart.append("text")
 	.attr("x", 10)
 	.text("Data Source: " + getSource())
 	.call(wrap, WIDTH - 100, " ")
-	.attr("y", HEIGHT + 14 - $('#dataSource')[0].getBBox().height);
+	.attr("y", HEIGHT + 14 - $('#dataSource')[0].getBBox().height)
+  .on("click", function() { window.open(getSourceLink()); })
+  .style("cursor", "pointer");
 
 chart.append("text")
 	.attr("id", "url")

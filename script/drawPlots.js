@@ -298,10 +298,6 @@ drawPlots = function(data, name, elevation) {
     dataSourceDiv.css('font-size', 12);
     dataSourceDiv.css('fill', 'grey');
     dataSourceDiv.attr('y', PLOT_HEIGHT-20);
-
-    // problem: 'text-anchor: begin' does not work when transforming to png
-    // hacky solution: determine the width of the text element and resetting its x-position to half
-    // dataSourceDiv.attr('x', dataSourceDiv.width()/2);
     dataSourceDiv.attr('x', 0);
     dataSourceDiv.attr('text-anchor', 'begin');
 
