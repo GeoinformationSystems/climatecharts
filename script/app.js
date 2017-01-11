@@ -29,8 +29,8 @@ $('#plot-wrapper').css('visibility', 'hidden');
 
 $('.form-group').trigger("reset");
 $("#datasets").change(UI.setDataset);
-$("#lt").change(UI.changeButtonStatus);
-$("#ln").change(UI.changeButtonStatus);
+$("#lat").change(UI.changeButtonStatus);
+$("#lng").change(UI.changeButtonStatus);
 $("#checkbox").change(UI.resetSliderHandles);
 $(".name").click(UI.changeNameInputStatus);
 $("#createChart").click(UI.createChart);

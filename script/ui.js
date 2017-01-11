@@ -11,8 +11,8 @@
 var UI  = {
 
 	// Query parameter for the data request.
-	"lt": null,
-	"ln": null,
+	"lat": null,
+	"lng": null,
 	"start": 0,
 	"end": 0,
 
@@ -57,13 +57,13 @@ var UI  = {
 
 		// Update coordinate variables if the user clicked on the map.
 		function updatePosition (e){
-				var lat = (Math.round(e.latlng.lat*100)/100).toString(),
-					lon = (Math.round(e.latlng.lng*100)/100).toString();
+				var lat = (Math.round(e.latlng.lat*100)/100).toString();
+				var lng = (Math.round(e.latlng.lng*100)/100).toString();
 
-				$("#lt").val(lat);
-				$("#ln").val(lon);
+				$("#lat").val(lat);
+				$("#lng").val(lng);
 
-				marker.setLatLng([lat, lon]).addTo(map);
+				marker.setLatLng([lat, lng]).addTo(map);
 				$("#createChart").prop("disabled", false);
 
 				// create chart immediately
@@ -73,8 +73,8 @@ var UI  = {
 		// Update coordinate variables if the user typed in coordinate values
 		// manually.
 		$(".coordinates").change(function () {
-			map.setView([$("#lt").val(), $("#ln").val()], 5);
-			marker.setLatLng([$("#lt").val(), $("#ln").val()]).addTo(map);
+			map.setView([$("#lat").val(), $("#lng").val()], 5);
+			marker.setLatLng([$("#lat").val(), $("#lng").val()]).addTo(map);
 			$("#createChart").prop("disabled", false);
 
 			// create chart immediately
@@ -178,8 +178,8 @@ var UI  = {
 			// Pick the current values of time slider and position.
 			UI.start = $("#slider").slider("values", 0);
 			UI.end = $("#slider").slider("values", 1);
-			UI.lt = $("#lt").val();
-			UI.ln = $("#ln").val();
+			UI.lt = $("#lat").val();
+			UI.ln = $("#lng").val();
 
 			UI.dataset = $("#datasets").val();
 
@@ -805,8 +805,8 @@ var UI  = {
 	// Only enable button for creating the chart if the necessary variables are
 	// defined.
 	"changeButtonStatus": function () {
-		this.lt = $("#lt").val();
-		this.ln = $("#ln").val();
+		this.lt = $("#lat").val();
+		this.ln = $("#lng").val();
 
 		if (this.lt !== null && this.ln !== null){
 			$("#createChart").prop("disabled", false);
