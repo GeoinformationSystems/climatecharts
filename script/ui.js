@@ -145,6 +145,16 @@ var UI  = {
       var e = {latlng: {lat: latReal, lng: lngReal} };
       updatePosition(e);
 		});
+
+    // update chart if user chose to use a different title for the diagrams
+    $('input[type=radio][class=name]').change(function()
+    {
+      UI.createChart();
+    });
+    $('#userName').change(function()
+    {
+      UI.createChart();
+    })
 	},
 
 	// Save SVG inline code to a svg file.
@@ -728,48 +738,58 @@ var UI  = {
 	//Initialize slider to set the time frame.
 	"setTimeFrame": function (min, max){
 
-	    $("#slider").slider({
+	    $("#slider").slider(
+        {
 	        range: true,
 	        min: min,
 	        max: max,
 	        values: [max - 30, max],
-	        slide: function(event, ui) {
+	        slide: function(event, ui)
+            {
+        	    var checked = $("#checkbox").is(":checked");
+        	    if (checked === true)
+              {
+                var delay = function()
+                {
+                  UI.setSliderLabels();
+                };
+              }
+	        	  else
+              {
+                var delay = function()
+                {
+                  $("#slider").slider("values", 0, $("#slider").slider("values", 1) - 30);
+                  UI.setSliderLabels();
+	              };
+	        	  }
 
-	        	var checked = $("#checkbox").is(":checked");
-
-	        	if (checked === true) {
-
-		            var delay = function() {
-
-		                UI.setSliderLabels();
-		            };
-	        	}
-	        	else {
-	        		var delay = function() {
-		                $("#slider").slider("values", 0, $("#slider").slider("values", 1) - 30);
-
-		                UI.setSliderLabels();
-		            };
-	        	}
-
-	            //Wait for the ui.handle to set its position
-	            setTimeout(delay, 8);
-	        }
-	    });
+              //Wait for the ui.handle to set its position
+  	          setTimeout(delay, 10);
+	          },
+          change: UI.createChart
+	      }
+      );
 
 	    //Set default values on page load.
-        UI.setSliderLabels();
+      UI.setSliderLabels();
 
-        $(".ui-slider-horizontal").css({"height": "10px"});
+      $(".ui-slider-horizontal").css(
+        {
+          "height": "10px"
+        }
+      );
+      $(".ui-slider .ui-slider-handle").css(
+        {
+          "height": "18px",
+          "width": "18px",
+          "margin-top": "-1px",
+          "border-radius": "10px",
+          "background": "white",
+          "color": "black"
+        }
+      );
 
-        $(".ui-slider .ui-slider-handle").css({"height": "18px",
-        										"width": "18px",
-        										"margin-top": "-1px",
-        										"border-radius": "10px",
-        										"background": "white",
-        										"color": "black"
-        										});
-
+      // redraw the chart and plot when time frame was changed
 
 	},
 
