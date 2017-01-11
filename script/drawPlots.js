@@ -301,6 +301,9 @@ drawPlots = function(data, name, elevation) {
     dataSourceDiv.attr('x', 0);
     dataSourceDiv.attr('text-anchor', 'begin');
 
+    // make hyperlink to source
+    dataSourceDiv.css('cursor', 'pointer');
+
     var referenceDiv = $(footerWrapper.children()[1]);
     referenceDiv.text(PLOT.reference);
     referenceDiv.attr('data-unformatted', PLOT.reference);
@@ -320,6 +323,9 @@ drawPlots = function(data, name, elevation) {
   	{
   	   titleDiv.text("");
   	}
+
+    // remove other layers
+    $('.main-svg').last().remove();
 
  	  /* add id and important attributes to actual svg container */
     var chart = d3.select("#plots-svg-container")
