@@ -136,15 +136,15 @@ drawPlots = function(data, name, elevation) {
   }
 
   // get subtitle
-  var lt = UI.lt,
-  	  ln = UI.ln;
+  var lat = UI.lat,
+  	  lng = UI.lng;
 
-  if (lt >= 0)  {lt = lt +"N";}
-  else          {lt = Math.abs(lt) +"S";}
-  if (ln >= 0)  {ln = ln +"E";}
-  else          {ln = Math.abs(ln) +"W";}
+  if (lat >= 0)  {lat = lat +"N";}
+  else          {lat = Math.abs(lat) +"S";}
+  if (lng >= 0)  {lng = lng +"E";}
+  else          {lng = Math.abs(lng) +"W";}
 
-  PLOT.subtitle = lt + " " + ln;
+  PLOT.subtitle = lat + " " + lng;
 
   if (elevation > -1000)
   {
