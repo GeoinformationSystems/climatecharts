@@ -557,7 +557,17 @@ function getSourceLink () {
 	var source = getSource();
   var firstPar = source.indexOf('(');
   var lastPar = source.lastIndexOf(')');
-  var url = "http://" + source.slice(firstPar+1, lastPar);
+  var url = source.slice(firstPar+1, lastPar);
+  // take only first url
+  if (url.indexOf(',') > 0)
+  {
+    url = url.slice(0,url.indexOf(','));
+  }
+  // append http protocol, if necessary
+  if (!url.startsWith('http'))
+  {
+    url = 'http://' + url;
+  }
   return url;
 }
 

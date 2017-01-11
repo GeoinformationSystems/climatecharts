@@ -139,9 +139,9 @@ drawPlots = function(data, name, elevation) {
   var lat = UI.lat,
   	  lng = UI.lng;
 
-  if (lat >= 0)  {lat = lat +"N";}
+  if (lat >= 0) {lat = lat +"N";}
   else          {lat = Math.abs(lat) +"S";}
-  if (lng >= 0)  {lng = lng +"E";}
+  if (lng >= 0) {lng = lng +"E";}
   else          {lng = Math.abs(lng) +"W";}
 
   PLOT.subtitle = lat + " " + lng;
@@ -331,7 +331,17 @@ drawPlots = function(data, name, elevation) {
       var source = PLOT.data_source;
       var firstPar = source.indexOf('(');
       var lastPar = source.lastIndexOf(')');
-      var url = "http://" + source.slice(firstPar+1, lastPar);
+      var url = source.slice(firstPar+1, lastPar);
+      // take only first url
+      if (url.indexOf(',') > 0)
+      {
+        url = url.slice(0,url.indexOf(','));
+      }
+      // append http protocol if necessary
+      if (!url.startsWith('http'))
+      {
+        url = 'http://' + url;
+      }
       window.open(url);
     })
 
