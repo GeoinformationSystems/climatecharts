@@ -34,19 +34,22 @@ var UI  = {
 	"catalog": {},
 	"ncML": [],
 
+  // leaflet map
+  "map": null,
+
 	// Initialize the leaflet map object with two baselayers and a scale.
 	"createMap": function(){
 
 		var marker = new L.marker();
 
-		var map = new L.map("map");
-		map.setView([40,10], 2);
-		map.on("click", updatePosition);
+		UI.map = new L.map("map");
+		UI.map.setView([40,10], 2);
+		UI.map.on("click", updatePosition);
 
 		var ESRI = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', {
 			maxZoom: 20,
 			attribution: 'Tiles &copy; ESRI'
-			}).addTo(map);
+    }).addTo(UI.map);
 
 		var OpenStreetMap_Mapnik = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 			maxZoom: 19,
@@ -58,8 +61,8 @@ var UI  = {
 				"OpenStreetMap": OpenStreetMap_Mapnik
 		}
 
-		L.control.layers(baseMaps).addTo(map);
-		L.control.scale().addTo(map);
+		L.control.layers(baseMaps).addTo(UI.map);
+		L.control.scale().addTo(UI.map);
 
 		// Update coordinate variables if the user clicked on the map.
 		function updatePosition (e){
@@ -99,7 +102,10 @@ var UI  = {
 				$("#lng").val(lngViz.toString());
 
         // set marker to the original position
-				marker.setLatLng([latOrig, lngOrig]).addTo(map);
+				marker.setLatLng([latOrig, lngOrig]).addTo(UI.map);
+
+        // visualize the current raster cell the climate data is from
+        UI.showRasterCell(latReal, lngReal);
 
 				// create chart immediately
 				UI.createChart();
@@ -387,9 +393,8 @@ var UI  = {
 							name = name.substring(0, name.length-2);
 						}
 
-
-			    	  	UI.name = name;
-			    	  	UI.srtm = height;
+	    	  	UI.name = name;
+	    	  	UI.srtm = height;
 
 						$(".loader").css("visibility", "hidden");
 						$("#nodata").empty();
@@ -946,5 +951,27 @@ var UI  = {
         $(this).parent('li').addClass('active').siblings().removeClass('active');
 
         e.preventDefault();
-	}
+	},
+
+  // Show the raster cell of the current climate data on the map
+  // and make obvious that the climate data is for that cell, not for this point
+  "showRasterCell": function(latReal, lngReal)
+  {
+    // get resolution of current dataset
+    var latResolution = parseFloat(UI.ncML[0].group[0].attribute[6]._value);
+    var lngResolution = parseFloat(UI.ncML[0].group[0].attribute[7]._value);
+
+    // determine the cell the current point is in
+    var minLat = Math.floor(latReal/latResolution)*latResolution;
+    var minLng = Math.floor(lngReal/lngResolution)*lngResolution;
+    var maxLat = minLat + latResolution;
+    var maxLng = minLng + lngResolution;
+    console.log(minLat, minLng, maxLat, maxLng);
+
+    // create a raster cell as rectangle
+    var rectBounds = [[minLat, minLng], [maxLat, maxLng]];
+    L.rectangle(rectBounds, {color: '#990000'}).addTo(UI.map);
+
+    UI.map.fitBounds(rectBounds);
+  }
 }
