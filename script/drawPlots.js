@@ -72,7 +72,7 @@ drawPlots = function(data, name, elevation) {
               // not "-button", because that is just setting the bg color
   }
 
-  SWITCH_TITLE = 'Y-Axis Range';
+  SWITCH_TITLE = 'Y-Axis Scaling';
   // possible switch states
   // N.B. must be same names as layout.xxx
   SWITCH_STATES = ['automatic', 'fixed'];

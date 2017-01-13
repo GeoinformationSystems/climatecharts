@@ -37,6 +37,9 @@ var UI  = {
   // leaflet map
   "map": null,
 
+  // currently active raster cell from which the data originates
+  "currentRasterCell": null,
+
 	// Initialize the leaflet map object with two baselayers and a scale.
 	"createMap": function(){
 
@@ -957,6 +960,13 @@ var UI  = {
   // and make obvious that the climate data is for that cell, not for this point
   "showRasterCell": function(latReal, lngReal)
   {
+    // clear current raster cell
+    if (UI.currentRasterCell)
+    {
+      UI.map.removeLayer(UI.currentRasterCell);
+      UI.currentRasterCell = null;
+    }
+
     // get resolution of current dataset
     var latResolution = parseFloat(UI.ncML[0].group[0].attribute[6]._value);
     var lngResolution = parseFloat(UI.ncML[0].group[0].attribute[7]._value);
@@ -966,12 +976,25 @@ var UI  = {
     var minLng = Math.floor(lngReal/lngResolution)*lngResolution;
     var maxLat = minLat + latResolution;
     var maxLng = minLng + lngResolution;
-    console.log(minLat, minLng, maxLat, maxLng);
 
     // create a raster cell as rectangle
     var rectBounds = [[minLat, minLng], [maxLat, maxLng]];
-    L.rectangle(rectBounds, {color: '#990000'}).addTo(UI.map);
+    UI.currentRasterCell = L.rectangle(rectBounds, {color: '#990000'})
+    UI.currentRasterCell.addTo(UI.map);
 
-    UI.map.fitBounds(rectBounds);
+    // if the user has zoomed into the map too far, i.e. the raster cell bounds
+    // are not completely visible on the map
+    // => the cell itself is visible to the user
+
+    // backward conditions: check if rectangle is completely visible
+    // 1) map completely contains cell?
+    // 2) cell completely covered by map?
+    var mapContainsCell = UI.map.getBounds().contains(UI.currentRasterCell.getBounds())
+    var cellCoveredByMap = UI.currentRasterCell.getBounds().contains(UI.map.getBounds())
+
+    if (!mapContainsCell && !cellCoveredByMap)
+    {
+      UI.map.fitBounds(rectBounds);
+    }
   }
 }

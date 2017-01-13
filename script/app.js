@@ -7,18 +7,25 @@
  * user can interact with.
  */
 
+// deploy option: if you are developping locally (on localhost) => set false
+//                else the website is deployed => set true
+DEPLOY = false
+
 // for localhost development
-ENDPOINTS =
+ENDPOINTS = {}
+
+if (DEPLOY)
 {
-  'thredds':  "https://climatecharts.net/thredds",
-  'gazetteer': "https://climatecharts.net/api/gazetteer"
+  ENDPOINTS.thredds =   window.location.protocol +"//" +window.location.host + "/thredds",
+  ENDPOINTS.gazetteer = window.location.protocol +"//" +window.location.host + "/api/gazetteer"
+} else {
+  ENDPOINTS.thredds =   "https://climatecharts.net/thredds",
+  ENDPOINTS.gazetteer = "https://climatecharts.net/api/gazetteer"
 }
 
 // for deployment
 // ENDPOINTS =
 // {
-//   'thredds':  window.location.protocol +"//" +window.location.host + "/thredds",
-//   'gazeteer': window.location.protocol +"//" +window.location.host + "/api/gazetteer"
 // }
 
 UI.createMap();
