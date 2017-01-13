@@ -428,22 +428,22 @@ function getPreDry () {
 //Create the title which is shown above the graph.
 function getTitle() {
 
-	var lt = UI.lt;
-	var ln = UI.ln;
+	var lat = UI.lat;
+	var lng = UI.lng;
 
-	if (lt >= 0){
-		lt = lt +"N";
+	if (lat >= 0){
+		lat = lat +"N";
 	} else {
-		lt = Math.abs(lt) +"S";
+		lat = Math.abs(lat) +"S";
 	}
-	if (ln >= 0){
-		ln = ln +"E";
+	if (lng >= 0){
+		lng = lng +"E";
 	} else {
-		ln = Math.abs(ln) +"W";
+		lng = Math.abs(lng) +"W";
 	}
 
 	var title = name;
-	var subtitle = lt + " " + ln;
+	var subtitle = lat + " " + lng;
 
 	if (elevation > -1000){
 		subtitle += " | " + elevation + "m";

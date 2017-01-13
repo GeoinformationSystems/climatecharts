@@ -13,6 +13,8 @@ COORD_PRECISION = 4     // precision of lat/lng coordinates shown
 LAT_EXTENT      = 90    // min/max value for latitude
 LNG_EXTENT      = 180   // min/max value for longitude
 
+RASTER_CELL_COLOR = '#000099' // color of the raster cell the climate data is from
+
 
 var UI  = {
 
@@ -387,7 +389,7 @@ var UI  = {
 						}
 
 						if (typeof a4 !== 'undefined') {
-				    	  	height = a4[0].srtm3;
+              height = a4[0].srtm3;
 						}
 
 						// truncate the last ", "
@@ -979,7 +981,7 @@ var UI  = {
 
     // create a raster cell as rectangle
     var rectBounds = [[minLat, minLng], [maxLat, maxLng]];
-    UI.currentRasterCell = L.rectangle(rectBounds, {color: '#990000'})
+    UI.currentRasterCell = L.rectangle(rectBounds, {color: RASTER_CELL_COLOR})
     UI.currentRasterCell.addTo(UI.map);
 
     // if the user has zoomed into the map too far, i.e. the raster cell bounds
