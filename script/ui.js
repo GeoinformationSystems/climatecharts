@@ -1013,6 +1013,5 @@ var UI  = {
       UI.map.fitBounds(cellBounds);
     }
     // otherwise the cell is completely visible, so there is nothing to do
-    }
   }
 }
