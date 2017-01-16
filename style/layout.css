@@ -324,10 +324,11 @@ select {
     display: inline-block;
 }
 
-#nodata {
+.nodata {
 	position: absolute;
 	top: 50%;
-	left: 30%;
+	left: 50%;
+  margin-left: -80px;
 }
 
 #slider {

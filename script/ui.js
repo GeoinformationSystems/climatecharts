@@ -306,7 +306,7 @@ var UI  = {
 			$("#info").fadeTo("slow", 0.0);
 			$("#climate-chart").fadeTo("slow", 0.3);
 			$("#plots-container").fadeTo("slow", 0.3);
-			$("#nodata").css("opacity", 0.4);
+			$(".nodata").css("opacity", 0.4);
 
 			// Draw the chart when all four ajax calls have received a response.
 			$.when(getData(0), getData(1), getName(), getElevation())
@@ -405,7 +405,7 @@ var UI  = {
 	    	  	UI.srtm = height;
 
 						$(".loader").css("visibility", "hidden");
-						$("#nodata").empty();
+						$(".nodata").empty();
 						$("#climate-chart-wrapper").empty();
 						$("#plot-wrapper").empty();
 
@@ -605,9 +605,11 @@ var UI  = {
 						// Show error message if there is no data available.
 						$(".loader").css("visibility", "hidden");
 						$("#climate-chart").empty();
-						$("#climate-chart-wrapper").append("<div id='nodata'></div>");
-						$("#nodata").text("No data available for this area!");
-						$("#nodata").fadeTo("slow", 1);
+						$("#climate-chart-wrapper").append("<div class='nodata'></div>");
+            $("#plots-svg-container").empty()
+						$("#plot-wrapper").append("<div class='nodata'></div>");
+						$(".nodata").text("No data available for this area!");
+						$(".nodata").fadeTo("slow", 1);
 					}
 			 });
 
@@ -662,9 +664,11 @@ var UI  = {
 						.fail(function(jqXHR, textStatus, errorThrown){
 							$(".loader").css("visibility", "hidden");
 							$("#climate-chart").empty();
-							$("#climate-chart-wrapper").append("<div id='nodata'></div>");
-							$("#nodata").text("External Service not responding: " +errorThrown);
-							$("#nodata").fadeTo("slow", 1);
+							$("#climate-chart-wrapper").append("<div class='nodata'></div>");
+              $("#plots-svg-container").empty();
+							$("#plot-wrapper").append("<div class='nodata'></div>");
+							$(".nodata").text("External Service not responding: " +errorThrown);
+							$(".nodata").fadeTo("slow", 1);
 						});
 					}
 			};
@@ -682,9 +686,11 @@ var UI  = {
 						.fail(function(jqXHR, textStatus, errorThrown){
 							$(".loader").css("visibility", "hidden");
 							$("#climate-chart").empty();
-							$("#climate-chart-wrapper").append("<div id='nodata'></div>");
-							$("#nodata").text("External Service not responding: " +errorThrown);
-							$("#nodata").fadeTo("slow", 1);
+							$("#climate-chart-wrapper").append("<div class='nodata'></div>");
+              $("#plots-svg-container").empty()
+							$("#plot-wrapper").append("<div class='nodata'></div>");
+							$(".nodata").text("External Service not responding: " +errorThrown);
+							$(".nodata").fadeTo("slow", 1);
 						});
 			};
 
