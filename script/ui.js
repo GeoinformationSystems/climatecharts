@@ -43,7 +43,7 @@ var UI  = {
   "map": null,
 
   // currently active raster cell from which the data originates
-  "currentRasterCell": null,
+  "climateCell": null,
 
 	// Initialize the leaflet map object with two baselayers and a scale.
 	"createMap": function(){
@@ -113,7 +113,7 @@ var UI  = {
 				marker.setLatLng([latOrig, lngOrig]).addTo(UI.map);
 
         // visualize the current raster cell the climate data is from
-        UI.showRasterCell(latReal, lngReal);
+        UI.showClimateCell(latReal, lngReal);
 
 				// create chart immediately
 				UI.createChart();
@@ -673,7 +673,7 @@ var UI  = {
 			function getElevation (){
         var url = ""
           + ENDPOINTS.gazetteer
-          + "/findNearbyPlaceNameJSON"
+          + "/srtm3JSON"
 				return $.get(url,
 						{
               lat: UI.lat,
@@ -963,13 +963,13 @@ var UI  = {
 
   // Show the raster cell of the current climate data on the map
   // and make obvious that the climate data is for that cell, not for this point
-  "showRasterCell": function(latReal, lngReal)
+  "showClimateCell": function(latReal, lngReal)
   {
     // clear current raster cell
-    if (UI.currentRasterCell)
+    if (UI.climateCell)
     {
-      UI.map.removeLayer(UI.currentRasterCell);
-      UI.currentRasterCell = null;
+      UI.map.removeLayer(UI.climateCell);
+      UI.climateCell = null;
     }
 
     // get resolution of current dataset
@@ -989,22 +989,30 @@ var UI  = {
       color:  RASTER_CELL_STYLE.color,
       weight: RASTER_CELL_STYLE.stroke_width,
     }
-    UI.currentRasterCell = L.rectangle(rectBounds, rectStyle)
-    UI.currentRasterCell.addTo(UI.map);
+    UI.climateCell = L.rectangle(rectBounds, rectStyle)
+    UI.climateCell.addTo(UI.map);
 
-    // if the user has zoomed into the map too far, i.e. the raster cell bounds
-    // are not completely visible on the map
-    // => the cell itself is visible to the user
+    // Idea: The user should always see the full extent of the climate cell
+    // => determine if the bounds of the cell are fully visible in the viewport
+    var mapBounds = UI.map.getBounds();
+    var cellBounds = UI.climateCell.getBounds();
 
-    // backward conditions: check if rectangle is completely visible
-    // 1) map completely contains cell?
-    // 2) cell completely covered by map?
-    var mapContainsCell = UI.map.getBounds().contains(UI.currentRasterCell.getBounds())
-    var cellCoveredByMap = UI.currentRasterCell.getBounds().contains(UI.map.getBounds())
-
-    if (!mapContainsCell && !cellCoveredByMap)
+    // Decision tree
+    // If the climate cell is completely in the viewport
+    // i.e. no bound of the cell is visible
+    // => zoom out to fit the bounds
+    if (cellBounds.contains(mapBounds))
     {
-      UI.map.fitBounds(rectBounds);
+      UI.map.fitBounds(cellBounds);
+    }
+    // If not, check if the cell is partially covered by the map
+    // i.e. the map does not contain the full extent of the cell
+    // => move the map so the cell is completely visible
+    else if (!mapBounds.contains(cellBounds))
+    {
+      UI.map.fitBounds(cellBounds);
+    }
+    // otherwise the cell is completely visible, so there is nothing to do
     }
   }
 }

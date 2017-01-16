@@ -20,7 +20,7 @@ if (DEPLOY)
   ENDPOINTS.gazetteer = window.location.protocol +"//" +window.location.host + "/api/gazetteer"
 } else {
   ENDPOINTS.thredds =   "https://climatecharts.net/thredds",
-  ENDPOINTS.gazetteer = "https://climatecharts.net/api/gazetteer"
+  ENDPOINTS.gazetteer = "https://climatecharts.net/gazetteer/api"
 }
 
 // for deployment
