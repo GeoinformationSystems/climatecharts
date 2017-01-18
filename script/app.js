@@ -53,7 +53,7 @@ $("#datasets").change(UI.getMetadata);
 $("#lat").change(UI.createChart);
 $("#lng").change(UI.createChart);
 $("#period-checkbox").change(UI.resetSliderHandles);
-$(".name").click(UI.changeNameInputStatus);
+$("#user-name-checkbox").click(UI.changeTitleInputStatus);
 $(".tab-links a").click(UI.selectTab);
 $(window).resize(function()
 {

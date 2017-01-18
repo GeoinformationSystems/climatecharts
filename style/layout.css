@@ -64,8 +64,9 @@ input {
 	margin-bottom: 5px;
 }
 
-label {
-    font-weight: normal !important;
+label
+{
+  font-weight: normal !important;
 }
 
 select {
@@ -79,8 +80,8 @@ select {
 
 .background {
 	background-image: url("img/earth.svg");
-    background-repeat: no-repeat;
-    background-size: contain;
+  background-repeat: no-repeat;
+  background-size: contain;
 }
 
 .block {
@@ -149,6 +150,21 @@ select {
 	padding-top: 10px;
 	padding-bottom: 5px;
 	border-bottom: 1px white solid;
+}
+
+/* latitude and longitude input*/
+.coordinates-label
+{
+  display: inline-block;
+  width: 60px;
+  text-align: right;
+}
+
+.coordinates
+{
+  margin-left: 10px;
+  display: inline-block;
+  width: 140px;
 }
 
 .humid {

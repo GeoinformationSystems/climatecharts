@@ -22,15 +22,15 @@ RASTER_CELL_STYLE =     // style options of the raster cell the climate data is 
 var UI  = {
 
 	// Query parameter for the data request.
-	"lat": null,
-	"lng": null,
+	"lat":   null,
+	"lng":   null,
 	"start": 0,
-	"end": 0,
+	"end":   0,
 
 	// Properties for the current climatechart.
-	"name": "",
-	"data": [],
-	"srtm": 0,
+	"title": "",
+	"data":  [],
+	"srtm":  0,
 
 	// Name of the currently selected datasets.
 	"dataset": "",
@@ -161,11 +161,7 @@ var UI  = {
 		});
 
     // update chart if user chose to use a different title for the diagrams
-    $('input[type=radio][class=name]').change(function()
-    {
-      UI.createChart();
-    });
-    $('#userName').change(function()
+    $('#user-name').change(function()
     {
       UI.createChart();
     })
@@ -342,19 +338,15 @@ var UI  = {
           var dataPre = calculateMeans(rawDataA2);
 
 					// If temperature values are in Kelvin units, convert them to Celsius.
-					for (var key in dataTmp) {
-						if (dataTmp[key] >= 200) {
+					for (var key in dataTmp)
+						if (dataTmp[key] >= 200)
 							dataTmp[key] = dataTmp[key] - 273.15;
-						}
-					}
 
 					// Workaround for the precipitation dataset created by Uni Delaware.
           // Convert values from cm to mm.
-					if (UI.dataset === "University of Delaware Air Temperature and Precipitation v4.01") {
-						for (var key in dataPre) {
+					if (UI.dataset === "University of Delaware Air Temperature and Precipitation v4.01")
+						for (var key in dataPre)
 							dataPre[key] = dataPre[key]*10;
-						}
-					}
 
 					for (var i = 0; i < UI.data.length; i++) {
 						UI.data[i].tmp = dataTmp[i];
@@ -370,47 +362,37 @@ var UI  = {
           {
 					// Create the name string from gazetteer values or user input.
           var geoname = a3[0];
-					if ($("#name1").is(':checked') === true)
-          {
-						if (typeof geoname !== 'undefined')
-            {
-							if (geoname.name !== "" && typeof geoname.name !== "undefined")
-              {
-								place = geoname.name +", ";
-							}
-							if (geoname.adminName1 !== "" && typeof geoname.adminName1 !== "undefined")
-              {
-								admin = geoname.adminName1 +", ";
-							}
-							if (geoname.countryName !== "" && typeof geoname.countryName !== "undefined")
-              {
-								country = geoname.countryName + ", ";
-							}
-						}
-						name = place + admin + country;
-					}
-					else
-          {
-						name = $("#userName").val();
+          var title = "";
 
-						if (name !== "")
+          if ($("#user-name-checkbox").is(':checked'))
+          {
+            title = $('#user-name').val()
+          }
+          else
+          {
+  					if (typeof geoname !== 'undefined')
             {
-							name += ", ";
-						}
-					}
+  						if (geoname.name !== "" && typeof geoname.name !== "undefined")
+  							place = geoname.name +", ";
+
+  						if (geoname.adminName1 !== "" && typeof geoname.adminName1 !== "undefined")
+  							admin = geoname.adminName1 +", ";
+
+  						if (geoname.countryName !== "" && typeof geoname.countryName !== "undefined")
+  							country = geoname.countryName + ", ";
+
+              title = place + admin + country;
+  					}
+          }
 
 					if (typeof a4 !== 'undefined')
-          {
             height = a4[0].srtm3;
-					}
 
 					// truncate the last ", "
 					if (name.substring(name.length-2, name.length) == ', ')
-					{
-						name = name.substring(0, name.length-2);
-					}
+						title = name.substring(0, name.length-2);
 
-    	  	UI.name = name;
+    	  	UI.title = title;
     	  	UI.srtm = height;
 
 					$(".loader").css("visibility", "hidden");
@@ -419,7 +401,7 @@ var UI  = {
 					$("#plot-wrapper").empty();
 
 					// Finally draw the chart.
-					drawChart(UI.data, name, height);
+					drawChart(UI.data, title, height);
 
 					$(".loader").css("visibility", "hidden");
 					$("#info").remove();
@@ -436,13 +418,13 @@ var UI  = {
 
 				 	// bind save functionality to button
 				 	$('#save-chart-to-svg').click(function()
-				 			{
-				 				UI.saveToSvg('climate-chart', 'climate-chart');
-			 				});
+		 			{
+		 				UI.saveToSvg('climate-chart', 'climate-chart');
+	 				});
 				 	$('#save-chart-to-png').click(function()
-				 			{
-				 				UI.saveToPng('climate-chart', 'climate-chart');
-			 				});
+		 			{
+		 				UI.saveToPng('climate-chart', 'climate-chart');
+	 				});
 
 					// CREATE BOXPLOT
 					// --------------
@@ -581,9 +563,8 @@ var UI  = {
 						tmp = parseFloat(dataObj[3].__text);
 
 						// if temperature values are in Kelvin, convert them to Celsius.
-						if (tmp >= 200) {
+						if (tmp >= 200)
 							tmp -= 273.15;
-						}
 
 						// put temperature data point in the correct Array
 						// month in JS Date object: month number - 1 (Jan = 0, Feb = 1, ... , Dec = 11)
@@ -601,14 +582,13 @@ var UI  = {
 
 						// workaround for the precipitation dataset created by University of Delaware
 						// -> Values are converted from cm to mm.
-						if (UI.dataset === "University of Delaware Air Temperature and Precipitation v4.01") {
+						if (UI.dataset === "University of Delaware Air Temperature and Precipitation v4.01")
 							pre *= 10;
-						}
 
 						climateData.precipitation[month].push(pre);
 					}
 
-					drawPlots(climateData, name, height);
+					drawPlots(climateData, title, height);
 
         } else {
         	// Show error message if there is no data available.
@@ -632,15 +612,12 @@ var UI  = {
         {
           if (UI.catalog.dataset[key]._name == UI.dataset)
           {
-            //Detect the climate variable in the netcdf dataset by using the dimensions as an
-            //indicator.
+            // Detect the climate variable in the netcdf dataset by using the
+            // dimensions as an indicator.
             for (var name in UI.ncML[Index].variable)
-            {
               if (UI.ncML[Index].variable[name]._shape == "time lat lon")
-              {
                 variable = UI.ncML[Index].variable[name]._name;
-              }
-            }
+
             url += ""
                 + ENDPOINTS.thredds
                 + "/ncss/"
@@ -662,31 +639,28 @@ var UI  = {
           );
 			};
 
-			//Query geonames.org gazetteer for placename.
-			function getName ()
+			// Query geonames.org gazetteer for placename.
+			function getName()
       {
-				if ($("#name1").is(':checked') === true)
-        {
-          var url = ""
-            + ENDPOINTS.gazetteer
-            + "/getName"
-					return $.get(url,
+        var url = ""
+          + ENDPOINTS.gazetteer
+          + "/getName"
+				return $.get(url,
+          {
+            lat: UI.lat,
+            lng: UI.lng
+          })
+          .fail(function(jqXHR, textStatus, errorThrown)
             {
-              lat: UI.lat,
-              lng: UI.lng
-            })
-            .fail(function(jqXHR, textStatus, errorThrown)
-              {
-    						$(".loader").css("visibility", "hidden");
-    						$("#climate-chart").empty();
-    						$("#climate-chart-wrapper").append("<div class='nodata'></div>");
-                $("#plots-svg-container").empty();
-    						$("#plot-wrapper").append("<div class='nodata'></div>");
-    						$(".nodata").text("External Service not responding: " +errorThrown);
-    						$(".nodata").fadeTo("slow", 1);
-    					}
-            );
-				}
+  						$(".loader").css("visibility", "hidden");
+  						$("#climate-chart").empty();
+  						$("#climate-chart-wrapper").append("<div class='nodata'></div>");
+              $("#plots-svg-container").empty();
+  						$("#plot-wrapper").append("<div class='nodata'></div>");
+  						$(".nodata").text("External Service not responding: " +errorThrown);
+  						$(".nodata").fadeTo("slow", 1);
+  					}
+          );
 			};
 
 			//Query geonames.org gazetteer for srtm elevation.
@@ -804,7 +778,7 @@ var UI  = {
 
               // Wait for the ui.handle to set its position
   	          setTimeout(delay, 10);
-	          }
+	          },
           change: UI.createChart
 	      }
       );
@@ -911,33 +885,33 @@ var UI  = {
 
 	// Enable/disable text input field if the user wants to type in an
 	// individual title for the chart or use a gazetteer.
-	"changeNameInputStatus": function () {
-		var checked = $("#name2").is(":checked");
+	"changeTitleInputStatus": function ()
+  {
+		var checked = $("#user-name-checkbox").is(":checked");
 
-		if (checked === true){
-			$("#userName").prop("disabled", false );
-			$("#userName").val("");
+		if (checked === true)
+    {
+			$("#user-name").prop("disabled", false );
+			$("#user-name").val("");
 		}
-		else {
-			$("#userName").prop("disabled", true);
-			$("#userName").val("");
+		else
+    {
+			$("#user-name").prop("disabled", true);
+			$("#user-name").val("");
 		}
+
+    UI.createChart();
 	},
 
 	//Reset handles of time slider if a fixed time range is activated.
 	"resetSliderHandles": function ()
   {
-		var checked = $("#name2").is(":checked");
+		$("#slider").slider("values", [
+      $("#slider").slider("values", 1) - 30,
+      $("#slider").slider("values", 1)
+    ]);
 
-		if (checked === false)
-    {
-			$("#slider").slider("values", [
-        $("#slider").slider("values", 1) - 30,
-        $("#slider").slider("values", 1)
-      ]);
-
-      UI.setSliderLabels();
-		}
+    UI.setSliderLabels();
 	},
 
 	// Reset position of svg if it is not centered due to panning/zooming.
