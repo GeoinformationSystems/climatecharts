@@ -52,7 +52,7 @@ $('.form-group').trigger("reset");
 $("#datasets").change(UI.getMetadata);
 $("#lat").change(UI.createChart);
 $("#lng").change(UI.createChart);
-$("#checkbox").change(UI.resetSliderHandles);
+$("#period-checkbox").change(UI.resetSliderHandles);
 $(".name").click(UI.changeNameInputStatus);
 $(".tab-links a").click(UI.selectTab);
 $(window).resize(function()
