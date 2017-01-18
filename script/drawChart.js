@@ -771,10 +771,12 @@ defs.append('clipPath')
   .append('path')
   .attr('d', areaTmpTo100(data));
 
+// bugfix: area100ToMax sometimes causes NaN errors
+// => avoid drawing the path
 defs.append('clipPath')
-	.attr('id', 'clip-tmp2')
-	.append('path')
-	.attr('d', area100ToMax(data));
+  .attr('id', 'clip-tmp2')
+  .append('path')
+  .attr('d', area100ToMax(data));
 
 defs.append('clipPath')
   .attr('id', 'clip-pre')
@@ -840,12 +842,14 @@ chart.append('path')
 	.attr('fill', areaPre)
 	.attr('stroke', 'none');
 
+// bugfix: areaBelowPre2 sometimes causes NaN-error
+// => avoid drawing the path
 chart.append('path')
-	.data(data)
-	.attr('d', areaBelowPre2(data))
-	.attr('clip-path', 'url(#clip-tmp2)')
-	.attr('fill', colPre)
-	.attr('stroke', 'none');
+  .data(data)
+  .attr('d', areaBelowPre2(data))
+  .attr('clip-path', 'url(#clip-tmp2)')
+  .attr('fill', colPre)
+  .attr('stroke', 'none');
 
 //LINES
 chart.append('svg:path')
@@ -863,6 +867,8 @@ chart.append('svg:path')
 	.attr('stroke-width', 1.5)
 	.attr('fill', 'none');
 
+// bugfix: linePre2 sometimes causes NaN errors
+// => avoid drawing the path
 chart.append('svg:path')
 	.attr('class', 'line')
 	.attr('d', linePre2(data))

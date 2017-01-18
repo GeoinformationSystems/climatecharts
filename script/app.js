@@ -7,20 +7,34 @@
  * user can interact with.
  */
 
-// deploy option: if you are developping locally (on localhost) => set false
-//                else the website is deployed => set true
-DEPLOY = false
-
-// for localhost development
-ENDPOINTS = {}
-
-if (DEPLOY)
+// RUN_LOCALLY = server-side apps (gazetteer and thredds) development options
+//  true:   running on localhost  (tomcat8 -> localhost:10080)
+//  false:  running on the server (tomcat8 -> https://climatecharts.net)
+RUN_LOCALLY =
 {
-  ENDPOINTS.thredds =   window.location.protocol +"//" +window.location.host + "/thredds",
-  ENDPOINTS.gazetteer = window.location.protocol +"//" +window.location.host + "/api/gazetteer"
-} else {
-  ENDPOINTS.thredds =   "https://climatecharts.net/thredds",
-  ENDPOINTS.gazetteer = "https://climatecharts.net/gazetteer/api"
+  'thredds':    false,
+  'gazetteer':  false
+}
+
+// port on which tomcat8 runs on the localhost and / or on the server
+TOMCAT_PORT = 10080
+
+URL =
+{
+  'local':   window.location.protocol + "//" + window.location.host + ":" + TOMCAT_PORT,
+  'server':  "https://climatecharts.net"
+}
+
+APP_LOCATION =
+{
+  'thredds':    "/thredds",
+  'gazetteer':  "/gazetteer/api"
+}
+
+ENDPOINTS =
+{
+  'thredds':    (RUN_LOCALLY.thredds   ? URL.local : URL.server) + APP_LOCATION.thredds,
+  'gazetteer':  (RUN_LOCALLY.gazetteer ? URL.local : URL.server) + APP_LOCATION.gazetteer
 }
 
 // for deployment
@@ -41,7 +55,8 @@ $("#lng").change(UI.createChart);
 $("#checkbox").change(UI.resetSliderHandles);
 $(".name").click(UI.changeNameInputStatus);
 $(".tab-links a").click(UI.selectTab);
-$(window).resize(function(){
+$(window).resize(function()
+{
     UI.setSliderLabels();
     UI.activatePanning();
 });

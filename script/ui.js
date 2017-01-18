@@ -328,28 +328,28 @@ var UI  = {
 					            {month: "Nov"},
 					            {month: "Dec"}];
 
-					var place = "",
-						admin = "",
-						country = "",
-						name = "",
-						height = "";
+					var place = "";
+          var admin = "";
+          var country = "";
+          var name = "";
+          var height = "";
 
-					//Convert xml response to JSON.
-					var x2js = new X2JS(),
-						rawDataA1 = x2js.xml2json(a1[0]).grid,
-						rawDataA2 = x2js.xml2json(a2[0]).grid;
-					var dataTmp = calculateMeans(rawDataA1),
-						dataPre = calculateMeans(rawDataA2);
+					// Convert xml response to JSON.
+					var x2js = new X2JS();
+          var rawDataA1 = x2js.xml2json(a1[0]).grid;
+          var rawDataA2 = x2js.xml2json(a2[0]).grid;
+          var dataTmp = calculateMeans(rawDataA1);
+          var dataPre = calculateMeans(rawDataA2);
 
-					//If temperature values are in Kelvin units, convert them to Celsius.
+					// If temperature values are in Kelvin units, convert them to Celsius.
 					for (var key in dataTmp) {
 						if (dataTmp[key] >= 200) {
 							dataTmp[key] = dataTmp[key] - 273.15;
 						}
 					}
 
-					//Workaround for the precipitation dataset created by University of Delaware. Values
-					//are converted from cm to mm.
+					// Workaround for the precipitation dataset created by Uni Delaware.
+          // Convert values from cm to mm.
 					if (UI.dataset === "University of Delaware Air Temperature and Precipitation v4.01") {
 						for (var key in dataPre) {
 							dataPre[key] = dataPre[key]*10;
@@ -366,32 +366,41 @@ var UI  = {
 					if ( Math.max.apply(null, dataTmp) < 100
 						&& Math.min.apply(null, dataTmp) > -100
 						&& Math.max.apply(null, dataPre) < 10000
-						&& Math.min.apply(null, dataPre) >= 0) {
-
+						&& Math.min.apply(null, dataPre) >= 0)
+          {
 						// Create the name string from gazetteer values or user input.
-						if ($("#name1").is(':checked') === true) {
-							if (typeof a3[0].geonames[0] !== 'undefined'){
-								if (a3[0].geonames[0].name !== ""){
-									place = a3[0].geonames[0].name +", ";
+            var geoname = a3[0];
+						if ($("#name1").is(':checked') === true)
+            {
+							if (typeof geoname !== 'undefined')
+              {
+								if (geoname.name !== "")
+                {
+									place = geoname.name +", ";
 								}
-								if (a3[0].geonames[0].adminName1 !== ""){
-									admin = a3[0].geonames[0].adminName1 +", ";
+								if (geoname.adminName1 !== "")
+                {
+									admin = geoname.adminName1 +", ";
 								}
-								if (a3[0].geonames[0].countryName !== ""){
-									country = a3[0].geonames[0].countryName + ", ";
+								if (geoname.countryName !== "")
+                {
+									country = geoname.countryName + ", ";
 								}
 							}
 							name = place + admin + country;
 						}
-						else {
+						else
+            {
 							name = $("#userName").val();
 
-							if (name !== "") {
+							if (name !== "")
+              {
 								name += ", ";
 							}
 						}
 
-						if (typeof a4 !== 'undefined') {
+						if (typeof a4 !== 'undefined')
+            {
               height = a4[0].srtm3;
 						}
 
@@ -614,70 +623,78 @@ var UI  = {
 			 });
 
 			//Query NetCdf data for a single dataset from the TDS server.
-			function getData(Index){
-				var url = "".
-					variable = "";
+			function getData(Index)
+      {
+				var url = "";
+				var variable = "";
 
-				for (var key in UI.catalog.dataset) {
-
-					 if (UI.catalog.dataset[key]._name == UI.dataset) {
-
-						 //Detect the climate variable in the netcdf dataset by using the dimensions as an
-						 //indicator.
-						 for (var name in UI.ncML[Index].variable) {
-
-							 if (UI.ncML[Index].variable[name]._shape == "time lat lon") {
-
-								 variable = UI.ncML[Index].variable[name]._name;
-							 }
-						 }
-             url  += ""
-                  + ENDPOINTS.thredds
-                  + "/ncss/"
-                  + UI.catalog.dataset[key].dataset[Index]._urlPath
-                  + "?var=" +variable
-                  + "&latitude=" +UI.lat
-                  + "&longitude=" +UI.lng
-                  + "&time_start=" +UI.start +"-01-01T00:00:00Z"
-                  + "&time_end=" +UI.end +"-12-30T00:00:00Z";
-					 }
+				for (var key in UI.catalog.dataset)
+        {
+          if (UI.catalog.dataset[key]._name == UI.dataset)
+          {
+            //Detect the climate variable in the netcdf dataset by using the dimensions as an
+            //indicator.
+            for (var name in UI.ncML[Index].variable)
+            {
+              if (UI.ncML[Index].variable[name]._shape == "time lat lon")
+              {
+                variable = UI.ncML[Index].variable[name]._name;
+              }
+            }
+            url += ""
+                + ENDPOINTS.thredds
+                + "/ncss/"
+                + UI.catalog.dataset[key].dataset[Index]._urlPath
+                + "?var=" +variable
+                + "&latitude=" +  UI.lat
+                + "&longitude=" + UI.lng
+                + "&time_start=" +UI.start +  "-01-01T00:00:00Z"
+                + "&time_end=" +  UI.end +    "-12-30T00:00:00Z";
+          }
 				}
 
 
 				return $.get(url)
-						.fail(function(jqXHR, textStatus, errorThrown){
-							alert("Error occured: " +errorThrown);
-						});
+  				.fail(function(jqXHR, textStatus, errorThrown)
+            {
+  						alert("Error occured: " +errorThrown);
+  					}
+          );
 			};
 
 			//Query geonames.org gazetteer for placename.
-			function getName (){
-				if ($("#name1").is(':checked') === true){
+			function getName ()
+      {
+				if ($("#name1").is(':checked') === true)
+        {
           var url = ""
             + ENDPOINTS.gazetteer
-            + "/findNearbyPlaceNameJSON"
+            + "/getName"
 					return $.get(url,
             {
               lat: UI.lat,
               lng: UI.lng
             })
-						.fail(function(jqXHR, textStatus, errorThrown){
-							$(".loader").css("visibility", "hidden");
-							$("#climate-chart").empty();
-							$("#climate-chart-wrapper").append("<div class='nodata'></div>");
-              $("#plots-svg-container").empty();
-							$("#plot-wrapper").append("<div class='nodata'></div>");
-							$(".nodata").text("External Service not responding: " +errorThrown);
-							$(".nodata").fadeTo("slow", 1);
-						});
-					}
+            .fail(function(jqXHR, textStatus, errorThrown)
+              {
+    						$(".loader").css("visibility", "hidden");
+    						$("#climate-chart").empty();
+    						$("#climate-chart-wrapper").append("<div class='nodata'></div>");
+                $("#plots-svg-container").empty();
+    						$("#plot-wrapper").append("<div class='nodata'></div>");
+    						$(".nodata").text("External Service not responding: " +errorThrown);
+    						$(".nodata").fadeTo("slow", 1);
+    					}
+            );
+				}
 			};
 
 			//Query geonames.org gazetteer for srtm elevation.
-			function getElevation (){
+			function getElevation ()
+      {
         var url = ""
           + ENDPOINTS.gazetteer
-          + "/srtm3JSON"
+          + "/getElevation"
 				return $.get(url,
 						{
               lat: UI.lat,
@@ -695,14 +712,15 @@ var UI  = {
 			};
 
 			//Calculate the average values for each month of the input data array.
-			function calculateMeans(dataIn) {
-
+			function calculateMeans(dataIn)
+      {
 				var avg = [];
 
-				for (var j = 0; j < 12; j++) {
+				for (var j = 0; j < 12; j++)
+        {
 					var sum = 0;
-
-					for (var i = 0 + j; i < dataIn.point.length; i += 12) {
+					for (var i = 0 + j; i < dataIn.point.length; i += 12)
+          {
 						sum += Number(dataIn.point[i].data[3].__text);
 					}
 					avg[j] = sum/(dataIn.point.length/12);
@@ -714,20 +732,22 @@ var UI  = {
 
 
 	// List all the datasets available on the server-side.
-	"listDatasets": function () {
-
+	"listDatasets": function ()
+  {
 		var catalogUrl = ""
       + ENDPOINTS.thredds
 		  + "/catalog.xml";
 
-		$.get(catalogUrl)
-			.done(function (data) {
+		$ .get(catalogUrl)
+			.done(function (data)
+      {
 				var x2js = new X2JS();
 
 				UI.catalog = x2js.xml2json(data).catalog;
 
 				//List all datasets contained in the catalog.
-				for (var key in UI.catalog.dataset) {
+				for (var key in UI.catalog.dataset)
+        {
 					$("#datasets").append("<option "
 									+"id='" +UI.catalog.dataset[key]._ID
 									+"' value='" +UI.catalog.dataset[key]._name +"'>"
@@ -737,8 +757,8 @@ var UI  = {
 				// Set the first pair of datasets in the catalogue as default.
 				UI.dataset = $("#datasets").val();
 
-
-				$.each(UI.catalog.dataset, function (index, value) {
+				$.each(UI.catalog.dataset, function (index, value)
+        {
 					$("#source").append("<p> <b>" +UI.catalog.dataset[index]._name +": </b> <br>"
 											+UI.catalog.dataset[index].documentation[0].__text +", <br>"
 											+UI.catalog.dataset[index].documentation[1].__text
@@ -747,11 +767,11 @@ var UI  = {
 
 				UI.getMetadata();
 
-//				console.log(UI.catalog);
 			})
-			.fail(function(jqXHR, textStatus, errorThrown){
-				console.log("Error occured: " +errorThrown);
-		});
+			.fail(function(jqXHR, textStatus, errorThrown)
+      {
+				console.error("Error occured: " +errorThrown);
+      });
 	},
 
 	//Initialize slider to set the time frame.
@@ -887,8 +907,6 @@ var UI  = {
 
             // finally create the chart
             UI.createChart();
-
-//						console.log(UI.ncML);
 				 });
 		    }
 		});
@@ -1009,14 +1027,14 @@ var UI  = {
     // => zoom out to fit the bounds
     if (cellBounds.contains(mapBounds))
     {
-      UI.map.fitBounds(cellBounds);
+      // UI.map.fitBounds(cellBounds);
     }
     // If not, check if the cell is partially covered by the map
     // i.e. the map does not contain the full extent of the cell
     // => move the map so the cell is completely visible
     else if (!mapBounds.contains(cellBounds))
     {
-      UI.map.fitBounds(cellBounds);
+      // UI.map.fitBounds(cellBounds);
     }
     // otherwise the cell is completely visible, so there is nothing to do
   }
