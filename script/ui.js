@@ -370,7 +370,6 @@ var UI  = {
           {
 					// Create the name string from gazetteer values or user input.
           var geoname = a3[0];
-          console.log(a3);
 					if ($("#name1").is(':checked') === true)
           {
 						if (typeof geoname !== 'undefined')
