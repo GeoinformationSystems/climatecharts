@@ -1002,14 +1002,14 @@ var UI  = {
     // => zoom out to fit the bounds
     if (cellBounds.contains(mapBounds))
     {
-      // UI.map.fitBounds(cellBounds);
+      UI.map.fitBounds(cellBounds);
     }
     // If not, check if the cell is partially covered by the map
     // i.e. the map does not contain the full extent of the cell
     // => move the map so the cell is completely visible
     else if (!mapBounds.contains(cellBounds))
     {
-      // UI.map.fitBounds(cellBounds);
+      UI.map.fitBounds(cellBounds);
     }
     // otherwise the cell is completely visible, so there is nothing to do
   }
