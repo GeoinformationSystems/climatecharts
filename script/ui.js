@@ -799,15 +799,13 @@ var UI  = {
                 {
                   $("#slider").slider("values", 0, $("#slider").slider("values", 1) - 30);
                   UI.setSliderLabels();
-
-                  // check if it has changed, and if so -> recreate the charts
-                  UI.createChart();
 	              };
 	        	  }
 
               // Wait for the ui.handle to set its position
   	          setTimeout(delay, 10);
 	          }
+          change: UI.createChart
 	      }
       );
 
@@ -927,12 +925,16 @@ var UI  = {
 	},
 
 	//Reset handles of time slider if a fixed time range is activated.
-	"resetSliderHandles": function () {
+	"resetSliderHandles": function ()
+  {
 		var checked = $("#name2").is(":checked");
 
-		if (checked === false) {
-			$("#slider").slider("values", [$("#slider").slider("values", 1) - 30,
-			                               $("#slider").slider("values", 1)]);
+		if (checked === false)
+    {
+			$("#slider").slider("values", [
+        $("#slider").slider("values", 1) - 30,
+        $("#slider").slider("values", 1)
+      ]);
 
       UI.setSliderLabels();
 		}
