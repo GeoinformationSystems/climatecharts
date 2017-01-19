@@ -45,6 +45,11 @@ var UI  = {
   // currently active raster cell from which the data originates
   "climateCell": null,
 
+  // did user just click the default-period checkbox?
+  // store the dates before the period change
+  // only reload the diagram if period has really changed!
+  "periodChange": null,
+
 	// Initialize the leaflet map object with two baselayers and a scale.
 	"createMap": function(){
 
@@ -759,7 +764,7 @@ var UI  = {
 	        values: [max - 30, max],
 	        slide: function(event, ui)
             {
-        	    var checked = $("#checkbox").is(":checked");
+        	    var checked = $("#period-checkbox").is(":checked");
         	    if (checked === true)
               {
                 var delay = function()
@@ -779,7 +784,32 @@ var UI  = {
               // Wait for the ui.handle to set its position
   	          setTimeout(delay, 10);
 	          },
-          change: UI.createChart
+          change: function(event, ui)
+            {
+              // has the user clicked the periodChanged button?
+              if (UI.periodChange != null)
+              {
+                // if so, have the dates changed?
+                oldLeft = UI.periodChange.oldLeft;
+                oldRight = UI.periodChange.oldRight;
+                newLeft = $('#slider').slider("values", 0);
+                newRight = $('#slider').slider("values", 1);
+                if ((oldLeft != newLeft) | (oldRight != newRight))
+                {
+                  UI.createChart();
+
+                  // prevent bug of loading it twice: manually set the stored old values
+                  UI.periodChange.oldLeft = newLeft;
+                  UI.periodChange.oldRight = newRight;
+                }
+              }
+              // if not, the dates must have changed
+              // => reload!
+              else
+              {
+                UI.createChart();
+              }
+            }
 	      }
       );
 
@@ -906,12 +936,20 @@ var UI  = {
 	//Reset handles of time slider if a fixed time range is activated.
 	"resetSliderHandles": function ()
   {
+    UI.periodChange =
+    {
+      oldLeft:  $("#slider").slider("values", 0),
+      oldRight: $("#slider").slider("values", 1)
+    };
+
 		$("#slider").slider("values", [
       $("#slider").slider("values", 1) - 30,
       $("#slider").slider("values", 1)
     ]);
 
     UI.setSliderLabels();
+
+    UI.periodChange = null;
 	},
 
 	// Reset position of svg if it is not centered due to panning/zooming.

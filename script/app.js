@@ -21,8 +21,8 @@ TOMCAT_PORT = 10080
 
 URL =
 {
-  'local':   window.location.protocol + "//" + window.location.host + ":" + TOMCAT_PORT,
-  'server':  "https://climatecharts.net"
+  'local':      window.location.protocol + "//" + window.location.host + ":" + TOMCAT_PORT,
+  'server':     "https://climatecharts.net"
 }
 
 APP_LOCATION =
