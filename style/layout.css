@@ -1,20 +1,25 @@
-@media (max-width: 767px) {
+@media (max-width: 767px)
+{
 
-	.info {
+	.info
+  {
 		padding: 0;
 	}
 
-    .tab-links > li {
+    .tab-links > li
+    {
     	padding: 5px;
     	height: 40px;
     }
 
-    .ui-slider .ui-slider-handle {
+    .ui-slider .ui-slider-handle
+    {
     	height: 50px;
-        width: 20px
+      width: 20px
     }
 
-    body {
+    body
+    {
     	background: none !important;;
     }
 }
@@ -307,6 +312,13 @@ select {
 #datasetInfo {
 	display: none;
 	text-align: justify;
+}
+
+#set-diagram-title
+{
+  position: absolute;
+  right: 10px;
+  margin-top: -9px;
 }
 
 .loader {

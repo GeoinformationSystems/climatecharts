@@ -166,10 +166,7 @@ var UI  = {
 		});
 
     // update chart if user chose to use a different title for the diagrams
-    $('#user-name').change(function()
-    {
-      UI.createChart();
-    })
+    $('#user-title').change(UI.setDiagramTitle);
 	},
 
 	// Save SVG inline code to a svg file.
@@ -353,28 +350,23 @@ var UI  = {
 						for (var key in dataPre)
 							dataPre[key] = dataPre[key]*10;
 
-					for (var i = 0; i < UI.data.length; i++) {
+					for (var i = 0; i < UI.data.length; i++)
+          {
 						UI.data[i].tmp = dataTmp[i];
 						UI.data[i].pre = dataPre[i];
 					}
 
 					// Only continue if there are realistic data values for this
 					// place and time, otherwise show an error message.
-					if ( Math.max.apply(null, dataTmp) < 100
-						&& Math.min.apply(null, dataTmp) > -100
-						&& Math.max.apply(null, dataPre) < 10000
-						&& Math.min.apply(null, dataPre) >= 0)
+					if ( Math.max.apply(null, dataTmp) <   100
+						&& Math.min.apply(null, dataTmp) >  -100
+						&& Math.max.apply(null, dataPre) <   10000
+						&& Math.min.apply(null, dataPre) >=  0)
           {
-					// Create the name string from gazetteer values or user input.
-          var geoname = a3[0];
-          var title = "";
+  					// Create the name string from gazetteer values or user input.
+            var geoname = a3[0];
+            var title = "";
 
-          if ($("#user-name-checkbox").is(':checked'))
-          {
-            title = $('#user-name').val()
-          }
-          else
-          {
   					if (typeof geoname !== 'undefined')
             {
   						if (geoname.name !== "" && typeof geoname.name !== "undefined")
@@ -388,212 +380,214 @@ var UI  = {
 
               title = place + admin + country;
   					}
-          }
 
-					if (typeof a4 !== 'undefined')
-            height = a4[0].srtm3;
+  					if (typeof a4 !== 'undefined')
+              height = a4[0].srtm3;
 
-					// truncate the last ", "
-					if (name.substring(name.length-2, name.length) == ', ')
-						title = name.substring(0, name.length-2);
+  					// truncate the last ", "
+  					if (title.substring(title.length-2, title.length) == ', ')
+  						title = title.substring(0, title.length-2);
 
-    	  	UI.title = title;
-    	  	UI.srtm = height;
+      	  	UI.title = title;
+      	  	UI.srtm = height;
 
-					$(".loader").css("visibility", "hidden");
-					$(".nodata").empty();
-					$("#climate-chart-wrapper").empty();
-					$("#plot-wrapper").empty();
+            // put name in diagram title box
+            $('#user-title').val(title);
 
-					// Finally draw the chart.
-					drawChart(UI.data, title, height);
+  					$(".loader").css("visibility", "hidden");
+  					$(".nodata").empty();
+  					$("#climate-chart-wrapper").empty();
+  					$("#plot-wrapper").empty();
 
-					$(".loader").css("visibility", "hidden");
-					$("#info").remove();
+  					// Finally draw the chart.
+  					drawChart(UI.data, title, height);
 
-					UI.activatePanning();
+  					$(".loader").css("visibility", "hidden");
+  					$("#info").remove();
 
-					// add the save buttons
-					var saveButtonArea = document.createElement('div');
-				 	saveButtonArea.className += "save-button-area ";
-				 	saveButtonArea.innerHTML = "" +
-				 			"<button id='save-chart-to-svg' class='btn btn-primary save-button'>SVG</button>" +
-				 			"<button id='save-chart-to-png' class='btn btn-primary save-button'>PNG</button>";
-				 	document.getElementById('climate-chart-wrapper').appendChild(saveButtonArea);
+  					UI.activatePanning();
 
-				 	// bind save functionality to button
-				 	$('#save-chart-to-svg').click(function()
-		 			{
-		 				UI.saveToSvg('climate-chart', 'climate-chart');
-	 				});
-				 	$('#save-chart-to-png').click(function()
-		 			{
-		 				UI.saveToPng('climate-chart', 'climate-chart');
-	 				});
+  					// add the save buttons
+  					var saveButtonArea = document.createElement('div');
+  				 	saveButtonArea.className += "save-button-area ";
+  				 	saveButtonArea.innerHTML = "" +
+  				 			"<button id='save-chart-to-svg' class='btn btn-primary save-button'>SVG</button>" +
+  				 			"<button id='save-chart-to-png' class='btn btn-primary save-button'>PNG</button>";
+  				 	document.getElementById('climate-chart-wrapper').appendChild(saveButtonArea);
 
-					// CREATE BOXPLOT
-					// --------------
+  				 	// bind save functionality to button
+  				 	$('#save-chart-to-svg').click(function()
+  		 			{
+  		 				UI.saveToSvg('climate-chart', 'climate-chart');
+  	 				});
+  				 	$('#save-chart-to-png').click(function()
+  		 			{
+  		 				UI.saveToPng('climate-chart', 'climate-chart');
+  	 				});
 
-					// create structure
-				 	/* plot-wrapper
-				 	 * |-> plots-container   // main svg canvas, contains plots, will be printed
-				 	 * |-> plot-options			 // buttons for changing / saving plots, will not be printed
-				 	 * |   |-> plot-scale-switch   // optimal <-> fixed scale
-				 	 * |   |-> plot-save-buttons   // save as svg and png
-           * |-> .loader
-				 	 */
+  					// CREATE BOXPLOT
+  					// --------------
 
-				 	// level 0
-					var plotWrapper = document.getElementById('plot-wrapper');
+  					// create structure
+  				 	/* plot-wrapper
+  				 	 * |-> plots-container   // main svg canvas, contains plots, will be printed
+  				 	 * |-> plot-options			 // buttons for changing / saving plots, will not be printed
+  				 	 * |   |-> plot-scale-switch   // optimal <-> fixed scale
+  				 	 * |   |-> plot-save-buttons   // save as svg and png
+             * |-> .loader
+  				 	 */
 
-					// level 1 - main container
-					var plotsContainer = document.createElement('div');
-					plotsContainer.id = 'plots-container';
-					plotWrapper.appendChild(plotsContainer);
+  				 	// level 0
+  					var plotWrapper = document.getElementById('plot-wrapper');
 
-					// level 1 - options
-          var plotOptions = document.createElement('div');
-          plotOptions.id = 'plot-options';
-          plotWrapper.appendChild(plotOptions);
+  					// level 1 - main container
+  					var plotsContainer = document.createElement('div');
+  					plotsContainer.id = 'plots-container';
+  					plotWrapper.appendChild(plotsContainer);
 
-          // level 2 - switch
-          var plotSwitch = document.createElement('div');
-					plotSwitch.id = 'plot-scale-switch'
-					plotOptions.appendChild(plotSwitch);
+  					// level 1 - options
+            var plotOptions = document.createElement('div');
+            plotOptions.id = 'plot-options';
+            plotWrapper.appendChild(plotOptions);
 
-					// level 3 - inside the switch
-          // label      '.switch-light switch-candy'
-          // |-> input  'plot-switch-input' (!!! <input> tag does not have children!)
-          // |-> div    'plot-switch-title'
-          // |-> span   'plot-switch-options'
-          //     |-> span 'plot-switch-option-l'
-          //     |-> span 'plot-switch-option-r'
-          //     |-> a    'plot-switch-button'
-          var switchLabel = document.createElement('label');
-          switchLabel.className += 'switch-light switch-candy ';
-          switchLabel.setAttribute('onclick', ' ');
-          plotSwitch.appendChild(switchLabel);
+            // level 2 - switch
+            var plotSwitch = document.createElement('div');
+  					plotSwitch.id = 'plot-scale-switch'
+  					plotOptions.appendChild(plotSwitch);
 
-          var switchInput = document.createElement('input');
-          switchInput.id = 'plot-switch-input';
-          switchInput.setAttribute('type', 'checkbox');
-          switchLabel.appendChild(switchInput);
+  					// level 3 - inside the switch
+            // label      '.switch-light switch-candy'
+            // |-> input  'plot-switch-input' (!!! <input> tag does not have children!)
+            // |-> div    'plot-switch-title'
+            // |-> span   'plot-switch-options'
+            //     |-> span 'plot-switch-option-l'
+            //     |-> span 'plot-switch-option-r'
+            //     |-> a    'plot-switch-button'
+            var switchLabel = document.createElement('label');
+            switchLabel.className += 'switch-light switch-candy ';
+            switchLabel.setAttribute('onclick', ' ');
+            plotSwitch.appendChild(switchLabel);
 
-          var switchTitle = document.createElement('div');
-          switchTitle.id = 'plot-switch-title';
-          switchLabel.appendChild(switchTitle);
+            var switchInput = document.createElement('input');
+            switchInput.id = 'plot-switch-input';
+            switchInput.setAttribute('type', 'checkbox');
+            switchLabel.appendChild(switchInput);
 
-          var switchOptions = document.createElement('span');
-          switchOptions.id = 'plot-switch-options';
-          switchLabel.appendChild(switchOptions);
+            var switchTitle = document.createElement('div');
+            switchTitle.id = 'plot-switch-title';
+            switchLabel.appendChild(switchTitle);
 
-          var switchOptionL = document.createElement('span');
-          switchOptionL.id = 'plot-switch-option-l';
-          switchOptionL.className += 'plot-switch-option ';
-          switchOptions.appendChild(switchOptionL);
+            var switchOptions = document.createElement('span');
+            switchOptions.id = 'plot-switch-options';
+            switchLabel.appendChild(switchOptions);
 
-          var switchOptionR = document.createElement('span');
-          switchOptionR.id = 'plot-switch-option-r';
-          switchOptionR.className += 'plot-switch-option ';
-          switchOptions.appendChild(switchOptionR);
+            var switchOptionL = document.createElement('span');
+            switchOptionL.id = 'plot-switch-option-l';
+            switchOptionL.className += 'plot-switch-option ';
+            switchOptions.appendChild(switchOptionL);
 
-          var switchButton = document.createElement('a');
-          switchButton.id = 'plot-switch-button';
-          switchOptions.appendChild(switchButton);
+            var switchOptionR = document.createElement('span');
+            switchOptionR.id = 'plot-switch-option-r';
+            switchOptionR.className += 'plot-switch-option ';
+            switchOptions.appendChild(switchOptionR);
 
-
-					// level 2 - save buttons
-					var saveButtonArea = document.createElement('div');
-				 	saveButtonArea.className += "save-button-area ";
-				 	saveButtonArea.innerHTML = "" +
-			 			"<button id='save-plots-to-svg' class='btn btn-primary save-button'>SVG</button>" +
-			 			"<button id='save-plots-to-png' class='btn btn-primary save-button'>PNG</button>";
-				 	plotOptions.appendChild(saveButtonArea);
-
-					/* functionality */
-				 	/* hacks
-				 	 * 1) 	problem: draglayer causes artifacts in the svg
-				 	 * 		solution: disable before saving
-				 	 * 2) 	problem: 'text-anchor: begin' does not work in the external library
-				 	 * 		for creating the png (text is always centered)
-				 	 * 		manual setting of x-position does not work properly cross-browser
-				 	 * 		solution: manually set the x-position only for saving purpose
-				 	 */
-
-				 	$('#save-plots-to-svg').click(function()
-		 			{
-				 		$('.draglayer').hide();
-			 			UI.saveToSvg('plots-svg-container', 'climate-plots');
-			 			$('.draglayer').show();
-	 				});
-				 	$('#save-plots-to-png').click(function()
-		 			{
-				 		var dataSourceDiv = $('#plots-footer-wrapper').children().first();
-				 		var oldX = dataSourceDiv.attr('x');
-				 		dataSourceDiv.attr('x', dataSourceDiv.width()/2);
-				 		$('.draglayer').hide();
-		 				UI.saveToPng('plots-svg-container', 'climate-plots');
-		 				dataSourceDiv.attr('x', oldX);
-		 				$('.draglayer').show();
-	 				});
-
-					// create data structure for temperature / precipitation: [[Jan],[Feb],...,[Dec]]
-					var climateData =
-					{
-						temperature: 	[],
-						precipitation:	[]
-					}
-
-					for (var i = 0; i < 12; i++)
-					{
-						climateData.temperature[i] = 	[];
-						climateData.precipitation[i] = 	[];
-					}
-
-					// sort temperature and precipitation data by month
-					// -> all data for one Month in one Array
-					var numElems = rawDataA1.point.length;
-					for (var i = 0; i < numElems; i++)
-					{
-						// 1) Temperature
-
-						// get actual data object (safe, instead of for .. in loop)
-						dataObj = rawDataA1.point[i].data;
-
-						// get month time stamp of the current data object
-						date = new Date(dataObj[0].__text);
-						month = date.getMonth();
-
-						// get actual temperature value
-						tmp = parseFloat(dataObj[3].__text);
-
-						// if temperature values are in Kelvin, convert them to Celsius.
-						if (tmp >= 200)
-							tmp -= 273.15;
-
-						// put temperature data point in the correct Array
-						// month in JS Date object: month number - 1 (Jan = 0, Feb = 1, ... , Dec = 11)
-						// => getMonth() value can be used directly as Array index
-						climateData.temperature[month].push(tmp);
+            var switchButton = document.createElement('a');
+            switchButton.id = 'plot-switch-button';
+            switchOptions.appendChild(switchButton);
 
 
-						// 2) Precipitation
-						// TODO: make nicer ;)
+  					// level 2 - save buttons
+  					var saveButtonArea = document.createElement('div');
+  				 	saveButtonArea.className += "save-button-area ";
+  				 	saveButtonArea.innerHTML = "" +
+  			 			"<button id='save-plots-to-svg' class='btn btn-primary save-button'>SVG</button>" +
+  			 			"<button id='save-plots-to-png' class='btn btn-primary save-button'>PNG</button>";
+  				 	plotOptions.appendChild(saveButtonArea);
 
-						dataObj = rawDataA2.point[i].data;
-						date = new Date(dataObj[0].__text);
-						month = date.getMonth();
-						pre = parseFloat(dataObj[3].__text);
+  					/* functionality */
+  				 	/* hacks
+  				 	 * 1) 	problem: draglayer causes artifacts in the svg
+  				 	 * 		solution: disable before saving
+  				 	 * 2) 	problem: 'text-anchor: begin' does not work in the external library
+  				 	 * 		for creating the png (text is always centered)
+  				 	 * 		manual setting of x-position does not work properly cross-browser
+  				 	 * 		solution: manually set the x-position only for saving purpose
+  				 	 */
 
-						// workaround for the precipitation dataset created by University of Delaware
-						// -> Values are converted from cm to mm.
-						if (UI.dataset === "University of Delaware Air Temperature and Precipitation v4.01")
-							pre *= 10;
+  				 	$('#save-plots-to-svg').click(function()
+  		 			{
+  				 		$('.draglayer').hide();
+  			 			UI.saveToSvg('plots-svg-container', 'climate-plots');
+  			 			$('.draglayer').show();
+  	 				});
+  				 	$('#save-plots-to-png').click(function()
+  		 			{
+  				 		var dataSourceDiv = $('#plots-footer-wrapper').children().first();
+  				 		var oldX = dataSourceDiv.attr('x');
+  				 		dataSourceDiv.attr('x', dataSourceDiv.width()/2);
+  				 		$('.draglayer').hide();
+  		 				UI.saveToPng('plots-svg-container', 'climate-plots');
+  		 				dataSourceDiv.attr('x', oldX);
+  		 				$('.draglayer').show();
+  	 				});
 
-						climateData.precipitation[month].push(pre);
-					}
+  					// create data structure for temperature / precipitation: [[Jan],[Feb],...,[Dec]]
+  					var climateData =
+  					{
+  						temperature: 	[],
+  						precipitation:	[]
+  					}
 
-					drawPlots(climateData, title, height);
+  					for (var i = 0; i < 12; i++)
+  					{
+  						climateData.temperature[i] = 	[];
+  						climateData.precipitation[i] = 	[];
+  					}
+
+  					// sort temperature and precipitation data by month
+  					// -> all data for one Month in one Array
+  					var numElems = rawDataA1.point.length;
+  					for (var i = 0; i < numElems; i++)
+  					{
+  						// 1) Temperature
+
+  						// get actual data object (safe, instead of for .. in loop)
+  						dataObj = rawDataA1.point[i].data;
+
+  						// get month time stamp of the current data object
+  						date = new Date(dataObj[0].__text);
+  						month = date.getMonth();
+
+  						// get actual temperature value
+  						tmp = parseFloat(dataObj[3].__text);
+
+  						// if temperature values are in Kelvin, convert them to Celsius.
+  						if (tmp >= 200)
+  							tmp -= 273.15;
+
+  						// put temperature data point in the correct Array
+  						// month in JS Date object: month number - 1 (Jan = 0, Feb = 1, ... , Dec = 11)
+  						// => getMonth() value can be used directly as Array index
+  						climateData.temperature[month].push(tmp);
+
+
+  						// 2) Precipitation
+  						// TODO: make nicer ;)
+
+  						dataObj = rawDataA2.point[i].data;
+  						date = new Date(dataObj[0].__text);
+  						month = date.getMonth();
+  						pre = parseFloat(dataObj[3].__text);
+
+  						// workaround for the precipitation dataset created by University of Delaware
+  						// -> Values are converted from cm to mm.
+  						if (UI.dataset === "University of Delaware Air Temperature and Precipitation v4.01")
+  							pre *= 10;
+
+  						climateData.precipitation[month].push(pre);
+  					}
+
+  					drawPlots(climateData, title, height);
 
         } else {
         	// Show error message if there is no data available.
@@ -893,17 +887,15 @@ var UI  = {
 												+metadata);
 
 
-						if ($("#slider").is(":empty")) {
-
+						if ($("#slider").is(":empty"))
+            {
 							UI.setTimeFrame(parseInt(v.timeCoverage.start),
 									parseInt(v.timeCoverage.end));
-
 						}
-						else {
-
+						else
+            {
 							UI.updateSlider(parseInt(v.timeCoverage.start),
 									parseInt(v.timeCoverage.end));
-
 						}
 
             // finally create the chart
@@ -915,22 +907,13 @@ var UI  = {
 
 	// Enable/disable text input field if the user wants to type in an
 	// individual title for the chart or use a gazetteer.
-	"changeTitleInputStatus": function ()
+	"setDiagramTitle": function ()
   {
-		var checked = $("#user-name-checkbox").is(":checked");
+    UI.title = $('#user-title').val();
 
-		if (checked === true)
-    {
-			$("#user-name").prop("disabled", false );
-			$("#user-name").val("");
-		}
-		else
-    {
-			$("#user-name").prop("disabled", true);
-			$("#user-name").val("");
-		}
-
-    UI.createChart();
+    // reset titles
+    $('#climate-chart-title').text(UI.title);
+    $('#climate-plots-title').text(UI.title);
 	},
 
 	//Reset handles of time slider if a fixed time range is activated.
@@ -957,8 +940,8 @@ var UI  = {
 		$("#climate-chart").panzoom("reset");
 	},
 
-	"activatePanning": function () {
-
+	"activatePanning": function ()
+  {
 		// If the screenwidth of the chart container is smaller
 		// than a minimum width, activate panning.
 		if ($("#climate-chart-wrapper").width() < 500) {
@@ -973,28 +956,25 @@ var UI  = {
 				$("#reset").click(UI.resetSVG);
 			}
 		}
-		else {
-
-			//Disable panning if screensize is large enough.
-			if ($('#reset').length && $("#panzoomText").length) {
-
+		else
+    {
+			// Disable panning if screensize is large enough.
+			if ($('#reset').length && $("#panzoomText").length)
+      {
 				UI.resetSVG();
 				$("#climate-chart").panzoom("destroy");
 				$('#reset').remove();
 				$("#panzoomText").remove();
-
 			}
 		}
 	},
 
 	// Switch between "Home" and "About" tab.
-	"selectTab": function (e) {
+	"selectTab": function (e)
+  {
         var currentAttrValue = $(this).attr('href');
-
         $('.tabs ' + currentAttrValue).show().siblings().hide();
-
         $(this).parent('li').addClass('active').siblings().removeClass('active');
-
         e.preventDefault();
 	},
 

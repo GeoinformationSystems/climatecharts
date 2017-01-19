@@ -270,8 +270,11 @@ drawPlots = function(data, name, elevation) {
     // get title wrapper
     var titleWrapper = $('.g-gtitle')
 
-    // add subtitle
+    // give id to title, so it can be changed
     var titleDiv = $(titleWrapper.children()[0]);
+    titleDiv.attr('id', 'climate-plots-title');
+
+    // add subtitle
     titleDiv.clone().appendTo(titleWrapper);
 
     var subtitleDiv = $(titleWrapper.children()[1]);

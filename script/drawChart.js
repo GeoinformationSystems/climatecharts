@@ -925,6 +925,7 @@ chart.append("text")
 	.attr('fill', colPre);
 
 chart.append("text")
+  .attr("id", "climate-chart-title")
 	.attr("class", "info")
 	.attr("x", WIDTH*2/5)
     .attr("y", MARGINS.top*1/3-5)
