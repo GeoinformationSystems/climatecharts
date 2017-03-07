@@ -62,6 +62,9 @@ Create a symbolic link to the directory of the Apaches webappps
 Access the website through a normal Web Browser through port 80 (default port so it can be omitted):  
   http://localhost/climatecharts/  
   
+If you get the 403 error (Permission denied), that can have several causes. It is most likely a permission problem. It is important to note that when Apache follows symlinks, the path must be accessible all the way down by the calling user. This means you need execute access in the folder you are linking and the parent folders above it:
+  chmod o+x /home/$USER /home/$USER/Projects /home/$USER/Projects/ClimateCharts /home/$USER/Projects/ClimateCharts/climatecharts
+  
   
 ## Setup of the Server-side Applications  
   
@@ -71,13 +74,33 @@ Install Java and its Runtime Environment
   $ sudo apt-get install openjdk-8-jdk openjdk-8-demo openjdk-8-doc openjdk-8-jre-headless openjdk-8-source  
   
 Install Eclipse Java EE (Mars2) as the desired IDE  
-  http://www.eclipse.org/downloads/packages/eclipse-ide-java-ee-developers/mars2  
+-> http://www.eclipse.org/downloads/packages/eclipse-ide-java-ee-developers/mars2  
+Download from here to /home/$USER/Downloads:  
+  http://www.eclipse.org/downloads/download.php?file=/technology/epp/downloads/release/mars/2/eclipse-jee-mars-2-linux-gtk-x86_64.tar.gz  
+Extract the folder  
+  $ cd ~/Downloads  
+  $ tar xf eclipse-jee-mars-2-linux-gtk-x86_64.tar.gz  
+  $ rm eclipse-jee-mars-2-linux-gtk-x86_64.tar.gz  
+Copy into program folder  
+  $ sudo mv /home/$USER/Downloads/eclipse /etc/  
+Create Launcher entry  
+  $ cd /usr/share/applications/  
+  $ sudo touch eclipse.desktop  
+  $ gksudo gedit eclipse.desktop  
+Copy the following content in it, save and leave  
+  [Desktop Entry]
+  Encoding=UTF-8
+  Name=Eclipse IDE
+  Exec=/etc/eclipse/eclipse
+  Icon=/etc/eclipse/icon.xpm
+  Type=Application
+  Categories=Development;
   
 Install Tomcat8 as the web server on the localhost  
   $ sudo apt-get install tomcat8 tomcat8-user  
   
 Create local instance of Tomcat 8 in your development folder:  
-  $ tomcat7-instance-create -p 10080 -c 10005 /home/$USER/Development/Tomcat_local  
+  $ tomcat8-instance-create -p 10080 -c 10005 /home/$USER/Development/Tomcat_local  
   
 Make Eclipse happy  
   $ cd /home/$USER/Development/Tomcat_local  
