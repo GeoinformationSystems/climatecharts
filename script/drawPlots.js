@@ -5,48 +5,49 @@
  * This file contains the function to define and draw the svg elements of the plots showing the distribution of
  * temperature and precipitation data underneath the climate charts
  *
- * Necessary Parameters to call the function:
- * 	- data: a json array containing objects with the properties month, tmp and pre
  */
 
-drawPlots = function(data, name, elevation)
+drawPlots = function(climateData, name, elevation)
 {
-  console.log("plot");
-  console.log(data);
-
 	// =============================================================================
 	// GLOBAL CONSTANTS
 	// =============================================================================
 
-  MONTHS_IN_YEAR = [
-	        "Jan", "Feb", "Mar", "Apr", "May", "Jun",
-	        "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" ];
+  // hack: restore old data structure
+  // prec: 12*[30*[]]
+  // temp: 12*[30*[]]
+  var tempData = []
+  var precData = []
+  for (var monthIdx=0; monthIdx<12; monthIdx++)
+  {
+    tempData[monthIdx] = climateData.temp[monthIdx].rawData;
+    precData[monthIdx] = climateData.prec[monthIdx].rawData;
+  }
+
 
   // error handling: if no name, make XXX string that will be removed later
   if (name == "")
-  {
   	name = 'XXX';
-  }
 
   // Plots
   PLOT =
     {
-      title:      name,
-      subtitle:   null,
-      data_source:null,
-      reference:  "ClimateCharts.net",
-      container:  document.getElementById('plots-container'),
-      graphD3:    null,
+      title:        name,
+      subtitle:     null,
+      data_source:  null,
+      reference:    "ClimateCharts.net",
+      container:    document.getElementById('plots-container'),
+      graphD3:      null,
       subplots:
       [
         {             // temperature
-          data:       data.temperature,
+          data:       tempData,
           title:      "Distribution of Temperature [&deg;C]",
           color:      'rgb(230, 20, 20)',
           max_range:  [-40, +40]
         },
         {             // precipitation
-          data:       data.precipitation,
+          data:       precData,
           title:      "Distribution of Precipitation [mm]",
           color:      'rgb(4, 61, 186)',
           max_range:  [0, +1000]
@@ -55,12 +56,14 @@ drawPlots = function(data, name, elevation)
     }
 
   // styling options
-  PLOT_HEIGHT =             500; // px
-  PLOT_MARGIN_HORIZONTAL =  30;  // px
-  PLOT_MARGIN_VERTICAL =    80;  // px
-  PLOT_PADDING =            0;   // px
-  SUBPLOT_DISTANCE =        10;  // distance between temperature and precipitation plot [px]
-  LINE_COLOR =              'grey';
+  STYLE = {
+    plot_height :             500, // px
+    plot_margin_horizontal :  30,  // px
+    plot_margin_vertical :    80,  // px
+    plot_padding :            0,   // px
+    subplot_distance :        10,  // distance between temperature and precipitation plot [px]
+    line_color :              'grey',
+  }
 
   // important div containers
   SWITCH =
@@ -94,7 +97,7 @@ drawPlots = function(data, name, elevation)
   .style(
     {
       width: 100 + '%',
-      height: PLOT_HEIGHT + 'px',
+      height: STYLE.plot_height + 'px',
     }
   );
   PLOT.graphD3 = graphD3.node();
@@ -178,11 +181,11 @@ drawPlots = function(data, name, elevation)
     showlegend: false,
     margin:
     {
-      l:        PLOT_MARGIN_HORIZONTAL,
-      r:        PLOT_MARGIN_HORIZONTAL,
-      b:        PLOT_MARGIN_VERTICAL,
-      t:        PLOT_MARGIN_VERTICAL+20,
-      pad:      PLOT_PADDING
+      l:        STYLE.plot_margin_horizontal,
+      r:        STYLE.plot_margin_horizontal,
+      b:        STYLE.plot_margin_vertical,
+      t:        STYLE.plot_margin_vertical+20,
+      pad:      STYLE.plot_padding
     },
     xaxis:      {},
     yaxis:      {},
@@ -205,19 +208,19 @@ drawPlots = function(data, name, elevation)
     axes[i].showgrid =    true;
     axes[i].showline =    true;
     axes[i].mirror =      'ticks';
-    axes[i].linecolor =   LINE_COLOR;
+    axes[i].linecolor =   STYLE.line_color;
     axes[i].linewidth =   1;
   }
 
   // special style / content for axes
   axes[0].title =     PLOT.subplots[0].title;
-  axes[0].domain =    [0, 0.5-SUBPLOT_DISTANCE/100/2],  // left part of the plot
+  axes[0].domain =    [0, 0.5-STYLE.subplot_distance/100/2],  // left part of the plot
   axes[1].anchor =    'x1';
   axes[1].range =     PLOT.subplots[0].max_range;
   axes[1].autorange = false;
 
   axes[2].title =     PLOT.subplots[1].title;
-  axes[2].domain =    [0.5+SUBPLOT_DISTANCE/100/2, 1],  // right part of the plot
+  axes[2].domain =    [0.5+STYLE.subplot_distance/100/2, 1],  // right part of the plot
   axes[3].anchor =    'x2';
   axes[3].range =     PLOT.subplots[1].max_range;
   axes[3].autorange = false;
@@ -304,7 +307,7 @@ drawPlots = function(data, name, elevation)
     dataSourceDiv.attr('data-unformatted', "Data Source: " + PLOT.data_source);
     dataSourceDiv.css('font-size', 12);
     dataSourceDiv.css('fill', 'grey');
-    dataSourceDiv.attr('y', PLOT_HEIGHT-20);
+    dataSourceDiv.attr('y', STYLE.plot_height-20);
     dataSourceDiv.attr('x', 0);
     dataSourceDiv.attr('text-anchor', 'begin');
 
@@ -314,7 +317,7 @@ drawPlots = function(data, name, elevation)
     referenceDiv.css('font-size', 12);
     referenceDiv.css('fill', 'grey');
     referenceDiv.attr('x', mainSvg.width()-80); // why this random number?
-    referenceDiv.attr('y', PLOT_HEIGHT-20);
+    referenceDiv.attr('y', STYLE.plot_height-20);
 
    	/* hack: move info layer from meta svg to main svg in order to create one svg with all data in it */
    	var infoLayer = $('.infolayer').first();

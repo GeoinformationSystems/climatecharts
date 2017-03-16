@@ -24,30 +24,12 @@ drawChart = function (climateData, name, elevation)
   var data = []
   for (var monthIdx=0; monthIdx<12; monthIdx++)
   {
-    var monthObj = {
-      month:  null,
-      pre:   climateData.prec[monthIdx].mean,
-      tmp:   climateData.temp[monthIdx].mean,
-    }
-    switch(monthIdx)
-    {
-      case  0: monthObj.month="Jan"; break;
-      case  1: monthObj.month="Feb"; break;
-      case  2: monthObj.month="Mar"; break;
-      case  3: monthObj.month="Apr"; break;
-      case  4: monthObj.month="May"; break;
-      case  5: monthObj.month="Jun"; break;
-      case  6: monthObj.month="Jul"; break;
-      case  7: monthObj.month="Aug"; break;
-      case  8: monthObj.month="Sep"; break;
-      case  9: monthObj.month="Oct"; break;
-      case 10: monthObj.month="Nov"; break;
-      case 11: monthObj.month="Dec"; break;
-    }
-    data.push(monthObj);
+    data.push({
+      month:  MONTHS_IN_YEAR[monthIdx],
+      pre:    climateData.prec[monthIdx].mean,
+      tmp:    climateData.temp[monthIdx].mean,
+    });
   }
-
-  console.log(data);
 
 // Clear the chart container everytime this function is called.
 $("#climate-chart").empty();

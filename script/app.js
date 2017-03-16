@@ -40,6 +40,10 @@ ENDPOINTS =
   'weatherstations':  (RUN_LOCALLY.weatherstations  ? URL.local : URL.server) + APP_LOCATION.weatherstations,
 }
 
+MONTHS_IN_YEAR = [
+        "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+        "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" ];
+
 UI.createMap();
 UI.listDatasets();
 WeatherStations.init();
