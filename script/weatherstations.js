@@ -16,7 +16,7 @@ MARKER_SCALE_FACTOR = 1.5
 
 // miminum and maximum radius that will never be surpassed / exceeded
 MIN_MARKER_RADIUS = 1
-MAX_MARKER_RADIUS = 7.5
+MAX_MARKER_RADIUS = 10
 
 // style of markers
 MARKER_STYLE =
@@ -85,9 +85,6 @@ var WeatherStations = {
                 ),
                 function(stationClimateData)
                 {
-                  var a1 = 0
-                  var a2 = 0
-
                   var geoname =
                   {
                     name:         station.name,
@@ -96,28 +93,7 @@ var WeatherStations = {
                   }
                   var elevation = station.elev
 
-                  console.log(geoname.name, geoname.countryName);
-
-                  // quality of data
-                  var numYears = UI.end-UI.start
-                  var maxPts = numYears*12*2
-                  var covPts = 0
-                  // for each year
-                  for (var year=0; year<numYears; year++)
-                  {
-                    // for each month
-                    for (var month=0; month<12; month++)
-                    {
-                      if (stationClimateData[year].prec[month] != 0)
-                        covPts++
-                      if (stationClimateData[year].temp[month] != 0)
-                        covPts++
-                    }
-                  }
-                  console.log(100*covPts/maxPts);
-                  console.log(stationClimateData);
-
-                  // UI.visualizeClimate(a1, a2, geoname, elevation)
+                  UI.visualizeClimate(stationClimateData, geoname, elevation)
                 }
             )
             }.bind(marker, station),
@@ -150,8 +126,8 @@ var WeatherStations = {
             // visible radius of the marker, always in between min and max radius
             // have to be distinguished to maintain mapping zoom level <-> radius
             var visibleMarkerRadius = markerRadius
-            visibleMarkerRadius = Math.min(MAX_MARKER_RADIUS, markerRadius)
-            visibleMarkerRadius = Math.max(MIN_MARKER_RADIUS, markerRadius)
+            visibleMarkerRadius = Math.min(MAX_MARKER_RADIUS, visibleMarkerRadius)
+            visibleMarkerRadius = Math.max(MIN_MARKER_RADIUS, visibleMarkerRadius)
             for (var markerIdx in markers)
               markers[markerIdx].setRadius(visibleMarkerRadius)
           }

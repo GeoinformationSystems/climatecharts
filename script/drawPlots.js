@@ -9,7 +9,10 @@
  * 	- data: a json array containing objects with the properties month, tmp and pre
  */
 
-drawPlots = function(data, name, elevation) {
+drawPlots = function(data, name, elevation)
+{
+  console.log("plot");
+  console.log(data);
 
 	// =============================================================================
 	// GLOBAL CONSTANTS

@@ -313,13 +313,126 @@ var UI  = {
           {
             // Convert xml response to JSON.
             var x2js = new X2JS();
-            var rawDataTemp = x2js.xml2json(a1[0]).grid;
-            var rawDataPrec = x2js.xml2json(a2[0]).grid;
+            var origDataTemp = x2js.xml2json(a1[0]).grid;
+            var origDataPrec = x2js.xml2json(a2[0]).grid;
+
+            /**
+        		 *  data structure:
+        		 *  {
+        		 *  	numYears:          number of years
+        		 *  	prec:					     for each dataset
+        		 *  	[                  for each month
+        		 *  		{
+        		 *  			rawData: []    data for each year
+        		 *  			mean:          data mean by month
+        		 *  			numGaps:       number of missing years
+        		 *  		},
+        		 *  		{...}            for each month
+        		 *  	],
+        		 *  	temp:
+        		 *  	[...]              for each dataset
+        		 *  }
+        		 */
+            var climateData =
+            {
+              numYears: UI.end-UI.start,
+              temp: [],
+              prec: [],
+            }
+            for (var monthIdx=0; monthIdx<12; monthIdx++)
+            {
+              climateData.temp.push(
+                {
+                  rawData:  [],
+                  mean:     null,
+                  numGaps:  0,
+                }
+              );
+              climateData.prec.push(
+                {
+                  rawData:  [],
+                  mean:     null,
+                  numGaps:  0,
+                }
+              );
+
+              // init rawData with null (instead of undefined)
+              for (var yearIdx=0; yearIdx<climateData.numYears; yearIdx++)
+              {
+                climateData.temp[monthIdx].rawData[yearIdx] = null
+                climateData.prec[monthIdx].rawData[yearIdx] = null
+              }
+            }
+
+            // convert data into data structure
+            for (var ds=0; ds<2; ds++)
+            {
+              var dataset     = (ds==0) ? origDataTemp : origDataPrec
+              var outputData  = (ds==0) ? climateData.temp : climateData.prec
+              var len = dataset.point.length
+              for (var i=0; i<len; i++)
+              {
+                var dataPoint = dataset.point[i].data
+                var yearIdx = Number(dataPoint[0].__text.substring(0,4))-UI.start
+                var monthIdx= Number(dataPoint[0].__text.substring(5,7))-1
+                var value   = Number(dataPoint[3].__text)
+
+                // If temperature values are in Kelvin units
+                // => convert to Celsius.
+                if ((ds == 0) && (value >= 200))
+                  value -= 273.15;
+
+                // Workaround for the precipitation dataset created by Uni Delaware.
+                // Convert values from cm to mm.
+                if ((UI.dataset === "University of Delaware Air Temperature and Precipitation v4.01") && (ds == 1))
+                  value *= 10;
+
+                outputData[monthIdx].rawData[yearIdx] = value
+              }
+            }
+
+            // calculate mean for climate chart
+            // and gaps for data quality assessment
+        		for (var monthIdx=0; monthIdx<12; monthIdx++)
+        		{
+        			// for each dataset
+        			for (var ds=0; ds<2; ds++)
+        			{
+        				var dataset = null;
+        				if (ds==0)	// temperature
+        					dataset = climateData.temp;
+        				else		    // precipitation
+        					dataset = climateData.prec;
+
+
+        				// sum up values for each year in this month
+        				// count the gaps and values to calculate mean and determine the quality
+        				var sum = 0;
+        				var numValues = 0;
+        				var numGaps = 0;
+        				for (var yearIdx=0; yearIdx<climateData.numYears; yearIdx++)
+        				{
+        					var value = dataset[monthIdx].rawData[yearIdx];
+        					if (value == null)
+        						numGaps++;
+        					else
+        					{
+        						sum += value;
+        						numValues++;
+        					}
+        				}
+
+        				// write data
+        				if (numValues > 0)
+        					dataset[monthIdx].mean = sum/numValues;
+                dataset[monthIdx].numGaps = numGaps
+        			}
+        		}
 
             var geoname = a3[0];
             var elevation = a4[0].srtm3;
 
-            UI.visualizeClimate(rawDataTemp, rawDataPrec, geoname, elevation)
+            UI.visualizeClimate(climateData, geoname, elevation)
           }
         );
 
@@ -346,8 +459,8 @@ var UI  = {
                 + "?var=" +variable
                 + "&latitude=" +  UI.lat
                 + "&longitude=" + UI.lng
-                + "&time_start=" +UI.start +  "-01-01T00:00:00Z"
-                + "&time_end=" +  UI.end +    "-12-30T00:00:00Z";
+                + "&time_start=" +UI.start   + "-01-01T00:00:00Z"
+                + "&time_end=" +  (UI.end-1) + "-12-30T00:00:00Z";
           }
 				}
 
@@ -408,61 +521,27 @@ var UI  = {
 
   // visualize the climate using climate chart and boxplots
 
-  "visualizeClimate": function(rawDataTemp, rawDataPrec, geoname, elevation)
+  "visualizeClimate": function(climateData, geoname, elevation)
   {
  		// Get actual grid cell (from a1)
  		// document: a1[0]
 
-		UI.data = [
-      {month: "Jan"},
-      {month: "Feb"},
-      {month: "Mar"},
-      {month: "Apr"},
-      {month: "May"},
-      {month: "Jun"},
-      {month: "Jul"},
-      {month: "Aug"},
-      {month: "Sep"},
-      {month: "Oct"},
-      {month: "Nov"},
-      {month: "Dec"}
-    ];
-
-		var place = "";
-    var admin = "";
-    var country = "";
-    var name = "";
-    var elevation = "";
-
-    var dataTemp = calculateMeans(rawDataTemp);
-    var dataPrec = calculateMeans(rawDataPrec);
-
-		// If temperature values are in Kelvin units, convert them to Celsius.
-		for (var key in dataTemp)
-			if (dataTemp[key] >= 200)
-				dataTemp[key] = dataTemp[key] - 273.15;
-
-		// Workaround for the precipitation dataset created by Uni Delaware.
-    // Convert values from cm to mm.
-		if (UI.dataset === "University of Delaware Air Temperature and Precipitation v4.01")
-			for (var key in dataPrec)
-				dataPrec[key] = dataPrec[key]*10;
-
-		for (var i = 0; i < UI.data.length; i++)
-    {
-			UI.data[i].tmp = dataTemp[i];
-			UI.data[i].pre = dataPrec[i];
-		}
+		UI.data = climateData;
 
 		// Only continue if there are realistic data values for this
 		// place and time, otherwise show an error message.
-		if ( Math.max.apply(null, dataTemp) <   100
-			&& Math.min.apply(null, dataTemp) >  -100
-			&& Math.max.apply(null, dataPrec) <   10000
-			&& Math.min.apply(null, dataPrec) >=  0)
+		if ( Math.max.apply(null, climateData.temp[0].rawData) <   100
+			&& Math.min.apply(null, climateData.temp[0].rawData) >  -100
+			&& Math.max.apply(null, climateData.prec[0].rawData) <   10000
+			&& Math.min.apply(null, climateData.prec[0].rawData) >=  0)
     {
 			// Create the name string from gazetteer values or user input.
       var title = "";
+      var place = "";
+      var admin = "";
+      var country = "";
+      var name = "";
+      var elevation = "";
 
 			if (typeof geoname !== 'undefined')
       {
@@ -493,7 +572,7 @@ var UI  = {
 			$("#climate-chart-wrapper").empty();
 			$("#plot-wrapper").empty();
 
-			// Finally draw the chart.
+			// Finally draw the climate chart.
 			drawChart(UI.data, title, elevation);
 
 			$(".loader").css("visibility", "hidden");
@@ -511,13 +590,15 @@ var UI  = {
 
 		 	// bind save functionality to button
 		 	$('#save-chart-to-svg').click(function()
- 			{
- 				UI.saveToSvg('climate-chart', 'climate-chart');
-				});
+   			{
+   				UI.saveToSvg('climate-chart', 'climate-chart');
+  			}
+      );
 		 	$('#save-chart-to-png').click(function()
- 			{
- 				UI.saveToPng('climate-chart', 'climate-chart');
-				});
+ 			  {
+ 				  UI.saveToPng('climate-chart', 'climate-chart');
+				}
+      );
 
 			// CREATE BOXPLOT
 			// --------------
@@ -609,81 +690,29 @@ var UI  = {
 		 	 */
 
 		 	$('#save-plots-to-svg').click(function()
- 			{
-		 		$('.draglayer').hide();
-	 			UI.saveToSvg('plots-svg-container', 'climate-plots');
-	 			$('.draglayer').show();
-				});
+   			{
+  		 		$('.draglayer').hide();
+  	 			UI.saveToSvg('plots-svg-container', 'climate-plots');
+  	 			$('.draglayer').show();
+        }
+      );
 		 	$('#save-plots-to-png').click(function()
- 			{
-		 		var dataSourceDiv = $('#plots-footer-wrapper').children().first();
-		 		var oldX = dataSourceDiv.attr('x');
-		 		dataSourceDiv.attr('x', dataSourceDiv.width()/2);
-		 		$('.draglayer').hide();
- 				UI.saveToPng('plots-svg-container', 'climate-plots');
- 				dataSourceDiv.attr('x', oldX);
- 				$('.draglayer').show();
-				});
+   			{
+  		 		var dataSourceDiv = $('#plots-footer-wrapper').children().first();
+  		 		var oldX = dataSourceDiv.attr('x');
+  		 		dataSourceDiv.attr('x', dataSourceDiv.width()/2);
+  		 		$('.draglayer').hide();
+   				UI.saveToPng('plots-svg-container', 'climate-plots');
+   				dataSourceDiv.attr('x', oldX);
+   				$('.draglayer').show();
+				}
+      );
 
-			// create data structure for temperature / precipitation: [[Jan],[Feb],...,[Dec]]
-			var climateData =
-			{
-				temperature: 	[],
-				precipitation:	[]
-			}
-
-			for (var i = 0; i < 12; i++)
-			{
-				climateData.temperature[i] = 	[];
-				climateData.precipitation[i] = 	[];
-			}
-
-			// sort temperature and precipitation data by month
-			// -> all data for one Month in one Array
-			var numElems = rawDataTemp.point.length;
-			for (var i = 0; i < numElems; i++)
-			{
-				// 1) Temperature
-
-				// get actual data object (safe, instead of for .. in loop)
-				dataObj = rawDataTemp.point[i].data;
-
-				// get month time stamp of the current data object
-				date = new Date(dataObj[0].__text);
-				month = date.getMonth();
-
-				// get actual temperature value
-				tmp = parseFloat(dataObj[3].__text);
-
-				// if temperature values are in Kelvin, convert them to Celsius.
-				if (tmp >= 200)
-					tmp -= 273.15;
-
-				// put temperature data point in the correct Array
-				// month in JS Date object: month number - 1 (Jan = 0, Feb = 1, ... , Dec = 11)
-				// => getMonth() value can be used directly as Array index
-				climateData.temperature[month].push(tmp);
-
-				// 2) Precipitation
-				// TODO: make nicer ;)
-
-				dataObj = rawDataPrec.point[i].data;
-				date = new Date(dataObj[0].__text);
-				month = date.getMonth();
-				pre = parseFloat(dataObj[3].__text);
-
-				// workaround for the precipitation dataset created by University of Delaware
-				// -> Values are converted from cm to mm.
-				if (UI.dataset === "University of Delaware Air Temperature and Precipitation v4.01")
-					pre *= 10;
-
-				climateData.precipitation[month].push(pre);
-			}
-
-			drawPlots(climateData, title, elevation);
-
-    } else {
-    	// Show error message if there is no data available.
+      drawPlots(climateData, title, elevation);
+		}
+    else
+    {
+    	// no data available => show error message
     	$(".loader").css("visibility", "hidden");
     	$("#climate-chart").empty();
     	$("#climate-chart-wrapper").append("<div class='nodata'></div>");
@@ -691,25 +720,6 @@ var UI  = {
     	$("#plot-wrapper").append("<div class='nodata'></div>");
     	$(".nodata").text("No data available for this area!");
     	$(".nodata").fadeTo("slow", 1);
-    }
-
-    //Calculate the average values for each month of the input data array.
-    function calculateMeans(dataIn)
-    {
-      var avg = [];
-
-      for (var j = 0; j < 12; j++)
-      {
-        var sum = 0;
-        var len = dataIn.point.length;
-        for (var i = 0 + j; i < len; i += 12)
-        {
-          sum += Number(dataIn.point[i].data[3].__text);
-        }
-        avg[j] = sum/(dataIn.point.length/12);
-      }
-
-      return avg;
     }
   },
 
