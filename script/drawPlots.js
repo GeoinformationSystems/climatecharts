@@ -14,15 +14,17 @@ drawPlots = function(climateData, name, elevation)
 	// =============================================================================
 
   // hack: restore old data structure
-  // prec: 12*[30*[]]
-  // temp: 12*[30*[]]
+  // prec: 12*[30*[]], temp: 12*[30*[]]
+  // erase null values
   var tempData = []
   var precData = []
   for (var monthIdx=0; monthIdx<12; monthIdx++)
   {
-    tempData[monthIdx] = climateData.temp[monthIdx].rawData;
-    precData[monthIdx] = climateData.prec[monthIdx].rawData;
+    tempData[monthIdx] = climateData.temp[monthIdx].rawData.filter(Number);
+    precData[monthIdx] = climateData.prec[monthIdx].rawData.filter(Number);
   }
+
+  // erase null values
 
 
   // error handling: if no name, make XXX string that will be removed later
@@ -127,11 +129,11 @@ drawPlots = function(climateData, name, elevation)
     {
       data.push(
         {
-          xaxis: 'x'+(i+1),
-          yaxis: 'y'+(i+1),
-          y:    PLOT.subplots[i].data[j],
-          type: 'box',
-          name:	MONTHS_IN_YEAR[j],
+          xaxis:  'x'+(i+1),
+          yaxis:  'y'+(i+1),
+          y:      PLOT.subplots[i].data[j],
+          type:   'box',
+          name:	  MONTHS_IN_YEAR[j],
           marker:
           {
             color: PLOT.subplots[i].color
