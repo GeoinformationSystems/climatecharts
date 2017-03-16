@@ -35,8 +35,35 @@ drawChart = function (climateData, name, elevation)
   		left : 40
     };
 
-  // Append chart element to parent container and set basic styles.
+  // hack: create original climateData structure
+  // [month, prec, temp] * 12
+  var data = []
+  for (var monthIdx=0; monthIdx<12; monthIdx++)
+  {
+    var monthObj = {
+      month:  null,
+      pre:   climateData.prec[monthIdx].mean,
+      tmp:   climateData.temp[monthIdx].mean,
+    }
+    switch(monthIdx)
+    {
+      case  0: monthObj.month="Jan";
+      case  1: monthObj.month="Feb";
+      case  2: monthObj.month="Mar";
+      case  3: monthObj.month="Apr";
+      case  4: monthObj.month="May";
+      case  5: monthObj.month="Jun";
+      case  6: monthObj.month="Jul";
+      case  7: monthObj.month="Aug";
+      case  8: monthObj.month="Sep";
+      case  9: monthObj.month="Oct";
+      case 10: monthObj.month="Nov";
+      case 11: monthObj.month="Dec";
+    }
+    data.push(monthObj);
+  }
 
+  console.log(data);
 
   // check if chart already exists, otherwise create it
   var chart = d3.select("#climate-chart-wrapper")
@@ -70,13 +97,13 @@ drawChart = function (climateData, name, elevation)
 
   //Colors
   var background = "transparent",
-  	areaTemp = d3.rgb(255, 233, 15),
-  	areaPrec = d3.rgb(89,131,213),
-  	colPrec = d3.rgb(4,61,183),
-  	colTemp = d3.rgb(230,20,20),
+  	areaTmp = d3.rgb(255, 233, 15),
+  	areaPre = d3.rgb(89,131,213),
+  	colPre = d3.rgb(4,61,183),
+  	colTmp = d3.rgb(230,20,20),
   	colGrid = "lightgrey",
-  	colTempBright = d3.rgb(255,150,150),
-  	colPrecBright = d3.rgb(150,150,255),
+  	colTmpBright = d3.rgb(255,150,150),
+  	colPreBright = d3.rgb(150,150,255),
   	black = "black";
 
   //Font sizes of different text classes in the chart.
@@ -92,8 +119,8 @@ drawChart = function (climateData, name, elevation)
   var ticks_y1 = [],
   	ticks_y2 = [],
   	ticks_y3 = [],
-  	prec_summer,
-  	prec_winter;
+  	pre_summer,
+  	pre_winter;
 
   //Value definition placeholders for the axes.
   var y3_height = 0,
@@ -107,60 +134,52 @@ drawChart = function (climateData, name, elevation)
   /*Set up variables for minimum, maximum etc for temperature and precipiation (especially needed for
    * climate classification).
    */
-  var temp_range = 0;
-  var temp_min =  100;
-  var temp_max = -100;
-  var prec_min =  10000;
-  var prec_max =  0;
-
-  for (var monthIdx=0; monthIdx<12; monthIdx++)
-  {
-    temp_min = Math.min(temp_min, climateData.temp[monthIdx].mean)
-    temp_max = Math.max(temp_max, climateData.temp[monthIdx].mean)
-    prec_min = Math.min(prec_min, climateData.prec[monthIdx].mean)
-    prec_max = Math.max(prec_max, climateData.prec[monthIdx].mean)
-  }
+  var tmp_range = 0,
+  	tmp_min = d3.min(data, function(d) { return d.tmp; }),
+  	tmp_max = d3.max(data, function(d) { return d.tmp; }),
+  	pre_min = d3.min(data, function(d) { return d.pre; }),
+  	pre_max = d3.max(data, function(d) { return d.pre; });
 
   //Create arrays only with precipitation values for winter and summer, depending on the hemisphere.
-  if (UI.lat >= 0) {
-  	 prec_summer = (function () {
+  if (UI.lt >= 0) {
+  	 pre_summer = (function () {
   			var summer = [];
   			for (i = 3; i < 9; i++){
-  				summer.push(climateData.prec[i].mean);
+  				summer.push(data[i].pre);
   			}
   			return summer;
   		})();
 
-  	 prec_winter = (function () {
+  	 pre_winter = (function () {
   		var winter = [];
   			for (var i = 0; i < 12; i++){
   				if (i < 3) {
-  					winter.push(climateData.prec[i].mean);
+  					winter.push(data[i].pre);
   				}
   				if (i > 8) {
-  					winter.push(climateData.prec[i].mean);
+  					winter.push(data[i].pre);
   				}
   			}
   			return winter;
   		})();
   }
   else {
-  	prec_winter = (function () {
+  	pre_winter = (function () {
   		var summer = [];
   		for (i = 3; i < 9; i++){
-  			summer.push(climateData.prec[i].mean);
+  			summer.push(data[i].pre);
   		}
   		return summer;
   	})();
 
-  	prec_summer = (function () {
+  	pre_summer = (function () {
   		var winter = [];
   		for (var i = 0; i < 12; i++){
   			if (i < 3) {
-  				winter.push(climateData.prec[i].mean);
+  				winter.push(data[i].pre);
   			}
   			if (i > 8) {
-  				winter.push(climateData.prec[i].mean);
+  				winter.push(data[i].pre);
   			}
   		}
   		return winter;
@@ -168,43 +187,41 @@ drawChart = function (climateData, name, elevation)
   }
 
   //Calculate minimum, maximum, mean and sum values for temperature/precipiation.
-  var prec_minS = (function (){
-  						return Math.min.apply(Math, prec_summer);
+  var pre_minS = (function (){
+  						return Math.min.apply(Math, pre_summer);
   					})();
 
-  var prec_maxS = (function (){
-  						return Math.max.apply(Math, prec_summer);
+  var pre_maxS = (function (){
+  						return Math.max.apply(Math, pre_summer);
   					})();
 
-  var prec_minW = (function (){
-  						return Math.min.apply(Math, prec_winter);
+  var pre_minW = (function (){
+  						return Math.min.apply(Math, pre_winter);
   					})();
 
-  var prec_maxW = (function (){
-  						return Math.max.apply(Math, prec_winter);
+  var pre_maxW = (function (){
+  						return Math.max.apply(Math, pre_winter);
   					})();
 
-  var temp_mean = (function () {
+  var tmp_mean = (function () {
   					var sum = 0;
-  					var len = climateData.temp.length;
-  					for (i = 0; i < len; i++){
-  						sum += climateData.temp[i].mean;
+  					var length = data.length;
+  					for (i = 0; i < length; i++){
+  						sum += data[i].tmp;
   					}
   					return Math.round((sum/length) * 10) / 10 ;
   				})();
-  var prec_sum = (function () {
+  var pre_sum = (function () {
   					var sum = 0;
-            var len = climateData.prec.length;
-  					for (i = 0; i < len; i++){
-  						sum += climateData.prec[i].mean;
+  					for (i = 0; i < data.length; i++){
+  						sum += data[i].pre;
   					}
   					return Math.round(sum);
   				})();
   var count_warmMonths = (function () {
   							var count = 0;
-                var len = climateData.temp.length;
-  							for (i = 0; i < len; i++) {
-  								if (climateData.temp[i].mean >= 10){
+  							for (i = 0; i < data.length; i++) {
+  								if (data[i].tmp >= 10){
   									count++;
   								}
   							}
@@ -212,14 +229,14 @@ drawChart = function (climateData, name, elevation)
   						})();
 
   /*Calculate the stepsize between two axis tick marks based on the standard HEIGHT value and the number of ticks,
-   * assuming there aren´t any negative temp values.
+   * assuming there aren´t any negative tmp values.
    */
   var y1_stepsize = (HEIGHT - MARGINS.top - MARGINS.bottom)/5;
 
   setTickValues();
 
   //Change height if precipitation is over 100mm or temperature below 0°C
-  if (prec_max > 100 || temp_min < 0){
+  if (pre_max > 100 || tmp_min < 0){
   	adjustHeight();
   }
 
@@ -233,8 +250,8 @@ drawChart = function (climateData, name, elevation)
    */
   function setTickValues(){
 
-  	if (temp_min < 0){
-  		for (i = Math.floor(temp_min/10); i <= 5; i++){
+  	if (tmp_min < 0){
+  		for (i = Math.floor(tmp_min/10); i <= 5; i++){
 
   			if (i < 0){
   				var tickValue = i*10;
@@ -254,8 +271,8 @@ drawChart = function (climateData, name, elevation)
   		}
   	}
 
-  	if (prec_max > 100){
-  		var y3_tickNumber = Math.ceil((prec_max - 100)/200);
+  	if (pre_max > 100){
+  		var y3_tickNumber = Math.ceil((pre_max - 100)/200);
 
   		for (i=1; i <= y3_tickNumber; i++){
   			var tickValue = 100 + i*200;
@@ -267,7 +284,7 @@ drawChart = function (climateData, name, elevation)
   	y1_max = d3.max(ticks_y1);
   	y3_max = d3.max(ticks_y3);
 
-  	//If there are negative temp values, calculate prec_min in a way so that the zeropoints of both y axes are in alignment.
+  	//If there are negative tmp values, calculate pre_min in a way so that the zeropoints of both y axes are in alignment.
   	y2_min = y1_min*2;
   }
 
@@ -281,21 +298,21 @@ drawChart = function (climateData, name, elevation)
   	chart_height = chart_height + y1_height_negative + y3_height;
   }
 
-  //Calculate the climate class for the current position from the climateData array.
+  //Calculate the climate class for the current position from the data array.
   function getClimateClass (){
   	var cl = "";
-  	var prec_dry = getPrecDry();
+  	var pre_dry = getPreDry();
 
-  //	console.log("temp_max: " +temp_max +", temp_min: " +temp_min +", prec_max: " +prec_max +", prec_min: " +prec_min
-  //			+", prec_minS: " +prec_minS +", prec_minW: " +prec_minW +", prec_maxS: " +prec_maxS +", prec_maxW: "
-  //			+prec_maxW +", prec_dry: " +prec_dry +", count_warmMonths: " +count_warmMonths);
+  //	console.log("tmp_max: " +tmp_max +", tmp_min: " +tmp_min +", pre_max: " +pre_max +", pre_min: " +pre_min
+  //			+", pre_minS: " +pre_minS +", pre_minW: " +pre_minW +", pre_maxS: " +pre_maxS +", pre_maxW: "
+  //			+pre_maxW +", pre_dry: " +pre_dry +", count_warmMonths: " +count_warmMonths);
 
-  //	console.log("prec_summer: " +prec_summer.toString());
-  //	console.log("prec_winter: " +prec_winter.toString());
+  //	console.log("pre_summer: " +pre_summer.toString());
+  //	console.log("pre_winter: " +pre_winter.toString());
 
-  	if (temp_max < 10){
+  	if (tmp_max < 10){
   		cl = "E";
-  		if (0 < temp_max < 10) {
+  		if (0 < tmp_max < 10) {
   			cl += "T";
   		}
   		else {
@@ -303,17 +320,17 @@ drawChart = function (climateData, name, elevation)
   		}
   	}
   	else {
-  		if (prec_sum < 10*prec_dry){
+  		if (pre_sum < 10*pre_dry){
   			cl = "B";
   			//2nd letter
-  			if (prec_sum > 5*prec_dry){
+  			if (pre_sum > 5*pre_dry){
   				cl += "S";
   			}
   			else {
   				cl += "W";
   			}
   			//3rd letter
-  			if (temp_mean >= 18){
+  			if (tmp_mean >= 18){
   				cl += "h";
   			}
   			else {
@@ -322,71 +339,71 @@ drawChart = function (climateData, name, elevation)
 
   		}
   		else {
-  			if (temp_min >= 18){
+  			if (tmp_min >= 18){
   				cl = "A";
   				//2nd letter
-  				if (prec_min >= 60){
+  				if (pre_min >= 60){
   					cl += "f";
   				}
-  				else if (prec_sum >= 25*(100 - prec_min)) {
+  				else if (pre_sum >= 25*(100 - pre_min)) {
   					cl += "m";
   				}
-  				else if (prec_minS < 60) {
+  				else if (pre_minS < 60) {
   					cl += "s";
   				}
-  				else if (prec_minW < 60) {
+  				else if (pre_minW < 60) {
   					cl += "w";
   				}
   			}
-  			else if (temp_min <= -3){
+  			else if (tmp_min <= -3){
   				cl = "D";
   				//2nd letter
-  				if (prec_minS < prec_minW && prec_maxW > 3*prec_minS && prec_minS < 40) {
+  				if (pre_minS < pre_minW && pre_maxW > 3*pre_minS && pre_minS < 40) {
   					cl += "s";
   				}
-  				else if (prec_minW < prec_minS && prec_maxS > 10*prec_minW) {
+  				else if (pre_minW < pre_minS && pre_maxS > 10*pre_minW) {
   					cl += "w";
   				}
   				else {
   					cl += "f";
   				}
   				//3rd letter
-  				if (temp_max >= 22){
+  				if (tmp_max >= 22){
   					cl += "a";
   				}
-  				else if (temp_max < 22 && count_warmMonths > 3){
+  				else if (tmp_max < 22 && count_warmMonths > 3){
   					cl += "b";
   				}
-  				else if (temp_max < 22 && count_warmMonths <= 3 && temp_min > -38){
+  				else if (tmp_max < 22 && count_warmMonths <= 3 && tmp_min > -38){
   					cl += "c";
   				}
-  				else if (temp_max < 22 && count_warmMonths <= 3 && temp_min <= -38){
+  				else if (tmp_max < 22 && count_warmMonths <= 3 && tmp_min <= -38){
   					cl += "d";
   				}
   			}
-  			else if (temp_min > -3 && temp_min < 18) {
+  			else if (tmp_min > -3 && tmp_min < 18) {
   				cl = "C";
   				//2nd letter
-  				if (prec_minS < prec_minW && prec_maxW > 3*prec_minS && prec_minS < 40) {
+  				if (pre_minS < pre_minW && pre_maxW > 3*pre_minS && pre_minS < 40) {
   					cl = cl + "s";
   				}
-  				else if (prec_minW < prec_minS && prec_maxS > 10*prec_minW) {
+  				else if (pre_minW < pre_minS && pre_maxS > 10*pre_minW) {
   					cl = cl + "w";
   				}
   				else {
   					cl = cl + "f";
   				}
   				//3rd letter
-  				if (temp_max >= 22){
+  				if (tmp_max >= 22){
   					cl += "a";
   				}
-  				else if (temp_max < 22 && count_warmMonths > 3){
+  				else if (tmp_max < 22 && count_warmMonths > 3){
   					cl += "b";
   				}
-  				else if (temp_max < 22 && count_warmMonths <= 3 && temp_min > -38){
+  				else if (tmp_max < 22 && count_warmMonths <= 3 && tmp_min > -38){
   					cl += "c";
   				}
-  				else if (temp_max < 22 && count_warmMonths <= 3 && temp_min <= -38){
+  				else if (tmp_max < 22 && count_warmMonths <= 3 && tmp_min <= -38){
   					cl += "d";
   				}
   			}
@@ -396,13 +413,13 @@ drawChart = function (climateData, name, elevation)
   }
 
   //Calculate dryness index which is needed for climate classification.
-  function getPrecDry () {
+  function getPreDry () {
 
-  	var prec_dry = 0;
+  	var pre_dry = 0;
 
   	var sum_summer = (function (){
   						var sum = 0;
-  						$.each(prec_summer,function() {
+  						$.each(pre_summer,function() {
   						    sum += this;
   						});
   						return sum;
@@ -410,29 +427,29 @@ drawChart = function (climateData, name, elevation)
 
   	var sum_winter = (function (){
   							var sum = 0;
-  							$.each(prec_winter,function() {
+  							$.each(pre_winter,function() {
   							    sum += this;
   							});
   							return sum;
   						})();
 
 
-  	var prec_diff = sum_summer - sum_winter;
+  	var pre_diff = sum_summer - sum_winter;
 
   //	console.log("sum_summer: " +sum_summer +", sum_winter: " +sum_winter +",
-  //	2/3*prec_sum: " +2/3*prec_sum);
+  //	2/3*pre_sum: " +2/3*pre_sum);
 
-  	if (sum_summer >= 2/3*prec_sum) {
-  		prec_dry = 2*temp_mean + 28;
+  	if (sum_summer >= 2/3*pre_sum) {
+  		pre_dry = 2*tmp_mean + 28;
   	}
-  	else if (sum_winter >= 2/3*prec_sum){
-  		prec_dry = 2*temp_mean;
+  	else if (sum_winter >= 2/3*pre_sum){
+  		pre_dry = 2*tmp_mean;
   	}
   	else {
-  		prec_dry = 2*temp_mean + 14;
+  		pre_dry = 2*tmp_mean + 14;
   	}
 
-  	return prec_dry;
+  	return pre_dry;
   }
 
   //Create the title which is shown above the graph.
@@ -464,49 +481,37 @@ drawChart = function (climateData, name, elevation)
   	return [title, subtitle];
   }
 
-  // Fill table column with values of the variable given as an argument.
-  function fillColumn (col, column, x)
-  {
-    for (ds = 0; ds < 2; ds++)
-    {
-      var values = null;
-      if (ds==0)  // temperature
-        values = climateData.temp
-      else        // precipitation
-        values = climateData.prec
+  //Fill table column with values of the variable given as an argument.
+  function fillColumn (col, column, x) {
 
-      for (monthIdx = 0; monthIdx < 12; monthIdx++)
-      {
-        value = values[monthIdx].mean
-        // TODO: what is column?
-        // console.log(column);
-        if (value === column)
-        {
-          if (typeof(value) === "number")
-          {
-            var number = value.toFixed(1);
+  	for (i = 0; i < 12; i++){
+  		var obj = data[i];
 
-            col.append('tspan')
-              .attr("id", column + "_c" + monthIdx)
-              .attr("class", "cell")
-              .attr('x', x)
-              .attr('y', table_y + (table_height/13) * (monthIdx + 1))
-              .style("text-align", "right")
-              .text(number);
-          }
-          else
-          {
-            col.append('tspan')
-              .attr("id", column + "_c" + monthIdx)
-              .attr("class", "cell")
-              .attr('x', x)
-              .attr('y', table_y + (table_height/13) * (monthIdx + 1))
-              .style("text-align", "right")
-              .text(value);
-          }
-        }
-      }
-    }
+  		for (key in obj){
+  		    if (key === column){
+  		    	if(typeof(obj[key]) === "number") {
+  		    		var number = obj[key].toFixed(1);
+
+  			    	col.append('tspan')
+  				    	.attr("id", column + "_c" + i)
+  				    	.attr("class", "cell")
+  				        .attr('x', x)
+  				        .attr('y', table_y + (table_height/13) * (i + 1))
+  				    	.style("text-align", "right")
+  				        .text(number);
+  		    	}
+  		    	else {
+  			    	col.append('tspan')
+  			    	.attr("id", column + "_c" + i)
+  			    	.attr("class", "cell")
+  			        .attr('x', x)
+  			        .attr('y', table_y + (table_height/13) * (i + 1))
+  			    	.style("text-align", "right")
+  			        .text(obj[key]);
+  		    	}
+  		    }
+  		}
+  	}
   }
 
   //Define function for mouseover effect.
@@ -527,11 +532,11 @@ drawChart = function (climateData, name, elevation)
   	var c1 = chart.select("#c1"),
   		c2 = chart.select("#c2"),
   		month = "#month_c" + xI,
-  		temp = "#temp_c" + xI,
-  		prec = "#prec_c" + xI,
+  		tmp = "#tmp_c" + xI,
+  		pre = "#pre_c" + xI,
   		month = chart.select(month),
-  		temp = chart.select(temp),
-  		prec = chart.select(prec),
+  		tmp = chart.select(tmp),
+  		pre = chart.select(pre),
   		rows = chart.selectAll(".cell");
 
   	rows.attr("fill", black)
@@ -539,27 +544,27 @@ drawChart = function (climateData, name, elevation)
   		.style("text-shadow", "none");
   	month.style("text-shadow", "1px 1px 2px gray")
   		.attr("font-weight", "bold");
-  	temp.attr("fill", colTemp)
+  	tmp.attr("fill", colTmp)
   		.attr("font-weight", "bold")
   		.style("text-shadow", "1px 2px 2px gray");
-  	prec.attr("fill", colprec)
+  	pre.attr("fill", colPre)
   		.attr("font-weight", "bold")
   		.style("text-shadow", "2px 2px 2px gray");
 
   	c1.attr("transform", "translate(" + tickPos[xI] + ","
-  			+ yScale1(climateData.temp[xI].mean) + ")");
+  			+ yScale1(data[xI].tmp) + ")");
 
-  	if (climateData.prec[xI].mean <= 100) {
+  	if ( data[xI].pre <= 100) {
   		c2.attr("transform", "translate(" + tickPos[xI] + ","
-  				+ yScale2(climateData.prec[xI].mean) + ")");
+  				+ yScale2(data[xI].pre) + ")");
   	}
-  	if (climateData.prec[xI].mean > 100) {
+  	if ( data[xI].pre > 100) {
   		c2.attr("transform", "translate(" + tickPos[xI] + ","
-  				+ yScale3(climateData.prec[xI].mean) + ")");
+  				+ yScale3(data[xI].pre) + ")");
   	}
   }
 
-  //Get the doi of the climateDataset reference used to create the chart.
+  //Get the doi of the dataset reference used to create the chart.
   function getSource () {
 
   	var source = "";
@@ -732,42 +737,42 @@ drawChart = function (climateData, name, elevation)
   					.orient('left')
   					.tickFormat("");
 
-  var lineTemp = d3.svg.line()
+  var lineTmp = d3.svg.line()
   				.x(function(d) {return xScale(d.month);})
-  				.y(function(d) {return yScale1(d.temp);})
+  				.y(function(d) {return yScale1(d.tmp);})
   				.interpolate('linear');
 
-  var linePrec = d3.svg.line()
+  var linePre = d3.svg.line()
   				.x(function(d) {return xScale(d.month);})
-  				.y(function(d) {return yScale2(d.prec)})
+  				.y(function(d) {return yScale2(d.pre)})
   				.interpolate('linear');
 
-  var linePrec2 = d3.svg.line()
+  var linePre2 = d3.svg.line()
   				.x(function(d) {return xScale(d.month);})
-  				.y(function(d) {return yScale3(d.prec)})
+  				.y(function(d) {return yScale3(d.pre)})
   				.interpolate('linear');
 
   //Polygons for drawing the colored areas below the curves.
-  var areaBelowTemp = d3.svg.area()
+  var areaBelowTmp = d3.svg.area()
   					.x(function(d) {return xScale(d.month);})
-  					.y0(function(d) {return yScale1(d.temp);})
+  					.y0(function(d) {return yScale1(d.tmp);})
   					.y1(HEIGHT)
   					.interpolate('linear');
-  var areaBelowPrec = d3.svg.area()
+  var areaBelowPre = d3.svg.area()
   					.x(function(d) {return xScale(d.month);})
-  					.y0(function(d) {return yScale2(d.prec);})
+  					.y0(function(d) {return yScale2(d.pre);})
   					.y1(HEIGHT)
   					.interpolate('linear');
-  var areaBelowPrec2 = d3.svg.area()
+  var areaBelowPre2 = d3.svg.area()
   					.x(function(d) {return xScale(d.month);})
-  					.y0(function(d) {return yScale3(d.prec);})
+  					.y0(function(d) {return yScale3(d.pre);})
   					.y1(yScale2(100))
   					.interpolate('linear');
 
   //Polygons used as clipping masks to define the visible parts of the polygons defined above.
-  var areaTempTo100 = d3.svg.area()
+  var areaTmpTo100 = d3.svg.area()
   					.x(function(d) {return xScale(d.month);})
-  					.y0(function(d) {return yScale1(d.temp);})
+  					.y0(function(d) {return yScale1(d.tmp);})
   					.y1(yScale2(100))
   					.interpolate('linear');
   var area100ToMax = d3.svg.area()
@@ -775,9 +780,9 @@ drawChart = function (climateData, name, elevation)
   					.y0(yScale3(101))
   					.y1(0)
   					.interpolate('linear');
-  var areaAbovePrec = d3.svg.area()
+  var areaAbovePre = d3.svg.area()
   					.x(function(d) {return xScale(d.month);})
-  					.y0(function(d) {return yScale2(d.prec);})
+  					.y0(function(d) {return yScale2(d.pre);})
   					.y1(yScale2(100))
   					.interpolate('linear');
 
@@ -788,27 +793,22 @@ drawChart = function (climateData, name, elevation)
   //Defs contains the paths that are later used for clipping the areas between the temperature and precipitation lines.
   var defs = chart.append('defs');
 
-  // hack: create original climateData structure
-  // [month, prec, temp] * 12
-  var climateDataPure = []
-
-
   defs.append('clipPath')
-    .attr('id', 'clip-temp')
+    .attr('id', 'clip-tmp')
     .append('path')
-    .attr('d', areaTempTo100(climateDataPure));
+    .attr('d', areaTmpTo100(data));
 
   // bugfix: area100ToMax sometimes causes NaN errors
   // => avoid drawing the path
   defs.append('clipPath')
-    .attr('id', 'clip-temp2')
+    .attr('id', 'clip-tmp2')
     .append('path')
-    .attr('d', area100ToMax(climateDataPure));
+    .attr('d', area100ToMax(data));
 
   defs.append('clipPath')
-    .attr('id', 'clip-prec')
+    .attr('id', 'clip-pre')
     .append('path')
-    .attr('d', areaAbovePrec(climateDataPure));
+    .attr('d', areaAbovePre(data));
 
   defs.append('clipPath')
   	.attr('id', 'rect_bottom')
@@ -854,53 +854,53 @@ drawChart = function (climateData, name, elevation)
 
   //COLORED AREAS BETWEEN LINES
   chart.append('path')
-  	.data(climateDataPure)
+  	.data(data)
   	.attr("class", "area")
-  	.attr('d', areaBelowTemp(climateDataPure))
-  	.attr('clip-path', 'url(#clip-prec)')
-  	.attr('fill', areaTemp)
+  	.attr('d', areaBelowTmp(data))
+  	.attr('clip-path', 'url(#clip-pre)')
+  	.attr('fill', areaTmp)
   	.attr('stroke', 'none');
 
   chart.append('path')
-  	.data(climateDataPure)
+  	.data(data)
   	.attr("class", "area")
-  	.attr('d', areaBelowPrec(climateDataPure))
-  	.attr('clip-path', 'url(#clip-temp)')
-  	.attr('fill', areaPrec)
+  	.attr('d', areaBelowPre(data))
+  	.attr('clip-path', 'url(#clip-tmp)')
+  	.attr('fill', areaPre)
   	.attr('stroke', 'none');
 
-  // bugfix: areaBelowPrec2 sometimes causes NaN-error
+  // bugfix: areaBelowPre2 sometimes causes NaN-error
   // => avoid drawing the path
   chart.append('path')
-    .data(climateDataPure)
-    .attr('d', areaBelowPrec2(climateDataPure))
-    .attr('clip-path', 'url(#clip-temp2)')
-    .attr('fill', colPrec)
+    .data(data)
+    .attr('d', areaBelowPre2(data))
+    .attr('clip-path', 'url(#clip-tmp2)')
+    .attr('fill', colPre)
     .attr('stroke', 'none');
 
   //LINES
   chart.append('svg:path')
   	.attr('class', 'line')
-  	.attr('d', lineTemp(climateDataPure))
-  	.attr('stroke', colTemp)
+  	.attr('d', lineTmp(data))
+  	.attr('stroke', colTmp)
   	.attr('stroke-width', 1.5)
   	.attr('fill', 'none');
 
   chart.append('svg:path')
   	.attr('class', 'line')
-  	.attr('d', linePrec(climateDataPure))
+  	.attr('d', linePre(data))
   	.attr('clip-path', 'url(#rect_bottom)')
-  	.attr('stroke', colPrec)
+  	.attr('stroke', colPre)
   	.attr('stroke-width', 1.5)
   	.attr('fill', 'none');
 
-  // bugfix: linePrec2 sometimes causes NaN errors
+  // bugfix: linePre2 sometimes causes NaN errors
   // => avoid drawing the path
   chart.append('svg:path')
   	.attr('class', 'line')
-  	.attr('d', linePrec2(climateDataPure))
+  	.attr('d', linePre2(data))
   	.attr('clip-path', 'url(#rect_top)')
-  	.attr('stroke', colPrec)
+  	.attr('stroke', colPre)
   	.attr('stroke-width', 1)
   	.attr('fill', 'none');
 
@@ -920,19 +920,19 @@ drawChart = function (climateData, name, elevation)
   	.attr('class', 'y axis')
   	.attr('transform','translate(' + MARGINS.left + ',0)')
   	.call(yAxis1)
-  	.style('fill', colTemp);
+  	.style('fill', colTmp);
 
   chart.append('svg:g')
   	.attr('class', 'y axis')
   	.attr('transform','translate(' + (chart_width + MARGINS.left) + ',0)')
   	.call(yAxis2)
-  	.style('fill', colPrec);
+  	.style('fill', colPre);
 
   chart.append('svg:g')
   	.attr('class', 'y axis')
   	.attr('transform','translate(' + (chart_width + MARGINS.left) + ',0)')
   	.call(yAxis3)
-  	.style('fill', colPrec);
+  	.style('fill', colPre);
 
   //ADDITIONAL ELEMENTS LIKE TITLE, CLIMATE CLASS, ETC...
   chart.append("text")
@@ -941,7 +941,7 @@ drawChart = function (climateData, name, elevation)
   	.attr("x", MARGINS.left + 10)
   	.attr("y", table_y-10)
   	.text("[°C]")
-  	.attr('fill', colTemp);
+  	.attr('fill', colTmp);
 
   chart.append("text")
   	.attr("class", "tick")
@@ -949,7 +949,7 @@ drawChart = function (climateData, name, elevation)
   	.attr("x", chart_width + MARGINS.left + 20)
   	.attr("y", table_y-10)
   	.text("[mm]")
-  	.attr('fill', colPrec);
+  	.attr('fill', colPre);
 
   chart.append("text")
     .attr("id", "climate-chart-title")
@@ -974,13 +974,13 @@ drawChart = function (climateData, name, elevation)
   	.attr("class", "info")
   	.attr("x", MARGINS.left + chart_width/11)
   	.attr("y", HEIGHT - MARGINS.bottomS)
-  	.text("Temperature Mean: " + temp_mean + "°C");
+  	.text("Temperature Mean: " + tmp_mean + "°C");
 
   chart.append("text")
   	.attr("class", "info")
   	.attr("x", MARGINS.left + chart_width*6/10)
   	.attr("y", HEIGHT - MARGINS.bottomS)
-  	.text("Precipitation Sum: " + prec_sum + "mm");
+  	.text("Precipitation Sum: " + pre_sum + "mm");
 
   chart.append("text")
   	.attr("class", "source")
@@ -1029,7 +1029,7 @@ drawChart = function (climateData, name, elevation)
   	.text("Month");
 
   chart.append('text')
-  	.attr('id', "temp")
+  	.attr('id', "tmp")
   	.attr("class", "info")
   	.attr('x', table_x + table_width*3/6)
   	.attr('y', table_y)
@@ -1037,12 +1037,12 @@ drawChart = function (climateData, name, elevation)
   	.text("Temp");
 
   chart.append('text')
-  	.attr('id', "prec")
+  	.attr('id', "pre")
   	.attr("class", "info")
   	.attr('x', table_x + table_width*5/6)
   	.attr('y', table_y)
   	.attr('text-anchor', 'middle')
-  	.text("Prec");
+  	.text("Precip");
 
   //Add column values to table using fillColumn method.
   chart.append('text')
@@ -1058,14 +1058,14 @@ drawChart = function (climateData, name, elevation)
   	.attr('x', table_x + table_width*3/6)
   	.attr('y', table_y)
   	.attr('text-anchor', 'end')
-  	.call(fillColumn, "temp", table_x + table_width*6/10);
+  	.call(fillColumn, "tmp", table_x + table_width*6/10);
 
   chart.append('text')
   	.attr("class", "info")
   	.attr('x', table_x + table_width*5/6)
   	.attr('y', table_y)
   	.attr('text-anchor', 'end')
-  	.call(fillColumn, "prec", table_x + table_width*19/20);
+  	.call(fillColumn, "pre", table_x + table_width*19/20);
 
   //SET STYLING FOR DIFFERENT GROUPS OF ELEMENTS
   chart.selectAll(".grid")
@@ -1107,7 +1107,7 @@ drawChart = function (climateData, name, elevation)
   	.attr("id", "c1")
   	.attr("r", 4.5)
   	.attr("fill", "white")
-  	.attr("stroke", colTemp)
+  	.attr("stroke", colTmp)
   	.style("stroke-width", 1.5);
 
   chart.select(".focus")
@@ -1115,7 +1115,7 @@ drawChart = function (climateData, name, elevation)
   	.attr("id", "c2")
   	.attr("r", 4.5)
   	.attr("fill", "white")
-  	.attr("stroke", colPrec)
+  	.attr("stroke", colPre)
   	.style("stroke-width", 1.5);
 
   chart.append("rect")
@@ -1141,4 +1141,4 @@ drawChart = function (climateData, name, elevation)
   			 .style("text-shadow", "none");
   		})
   	.on("mousemove", mouseMove);
-}
+  }
