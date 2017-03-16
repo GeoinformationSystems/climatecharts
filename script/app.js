@@ -12,12 +12,13 @@
 //  false:  running on the server (tomcat8 -> https://climatecharts.net)
 RUN_LOCALLY =
 {
-  'thredds':    false,
-  'gazetteer':  false
+  'thredds':          false,
+  'gazetteer':        false,
+  'weatherstations':  true
 }
 
 // port on which tomcat8 runs on the localhost and / or on the server
-TOMCAT_PORT = 10080
+TOMCAT_PORT = 8080
 
 URL =
 {
@@ -27,23 +28,21 @@ URL =
 
 APP_LOCATION =
 {
-  'thredds':    "/thredds",
-  'gazetteer':  "/gazetteer/api"
+  'thredds':          "/thredds",
+  'gazetteer':        "/gazetteer/api",
+  'weatherstations':  "/weatherstations-api",
 }
 
 ENDPOINTS =
 {
-  'thredds':    (RUN_LOCALLY.thredds   ? URL.local : URL.server) + APP_LOCATION.thredds,
-  'gazetteer':  (RUN_LOCALLY.gazetteer ? URL.local : URL.server) + APP_LOCATION.gazetteer
+  'thredds':          (RUN_LOCALLY.thredds          ? URL.local : URL.server) + APP_LOCATION.thredds,
+  'gazetteer':        (RUN_LOCALLY.gazetteer        ? URL.local : URL.server) + APP_LOCATION.gazetteer,
+  'weatherstations':  (RUN_LOCALLY.weatherstations  ? URL.local : URL.server) + APP_LOCATION.weatherstations,
 }
-
-// for deployment
-// ENDPOINTS =
-// {
-// }
 
 UI.createMap();
 UI.listDatasets();
+WeatherStations.init();
 
 // initially hide plot-wrapper
 $('#plot-wrapper').css('visibility', 'hidden');
