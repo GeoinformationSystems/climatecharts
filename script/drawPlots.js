@@ -144,6 +144,10 @@ drawPlots = function(climateData, name, elevation)
   var lat = UI.lat,
   	  lng = UI.lng;
 
+  var factor = Math.pow(10, 2);
+  lat = (Math.round(lat*factor)/factor);
+  lng = (Math.round(lng*factor)/factor);
+
   if (lat >= 0) {lat = lat +"N";}
   else          {lat = Math.abs(lat) +"S";}
   if (lng >= 0) {lng = lng +"E";}

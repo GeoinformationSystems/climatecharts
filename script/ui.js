@@ -904,8 +904,8 @@ var UI  = {
 
 	// Use ncML service from TDS to get the metadata for the currently selected
 	// dataset.
-	"getMetadata": function () {
-
+	"getMetadata": function ()
+  {
 		$.each(UI.catalog.dataset, function(i, v) {
 		    if (v._name == $("#datasets").val()) {
 
@@ -1051,11 +1051,13 @@ var UI  = {
     var rectBounds = [[minLat, minLng], [maxLat, maxLng]];
     var rectStyle =
     {
-      color:  RASTER_CELL_STYLE.color,
-      weight: RASTER_CELL_STYLE.stroke_width,
+      color:      RASTER_CELL_STYLE.color,
+      weight:     RASTER_CELL_STYLE.stroke_width,
+      clickable:  false,
     }
     UI.activeClimateCell = L.rectangle(rectBounds, rectStyle)
     UI.activeClimateCell.addTo(UI.map);
+    UI.activeClimateCell.bringToBack();  // below weatherstation
 
     // Idea: The user should always see the full extent of the climate cell
     // => determine if the bounds of the cell are fully visible in the viewport

@@ -65,7 +65,12 @@ var WeatherStations = {
             )
           // TODO: support title -> extra div? mouseover? ...
           // station.name + ", " + station.country + " (elevation:" + station.elev + ")",
+
+          // put markers on the map
           marker.addTo(UI.map)
+          marker.bringToBack()
+
+          // make marker accessible
           markers.push(marker)
           station.marker = marker   // cross-reference data <-> visualization
 
@@ -78,13 +83,13 @@ var WeatherStations = {
               UI.setPosition(station.lat, station.lng)
               // decide: activate or deactivate?
 
-              if (UI.activeWeatherStation == station)  // deactivate clicked station
+              if (UI.activeWeatherStation == station)   // deactivate station
               {
                 WeatherStations.deactivateStation();
                 UI.removeCharts();
               }
 
-              else                          // activate clicked station
+              else                                      // activate station
               {
                 // cleanup current climate cell or weatherstation
                 UI.deactivateClimateCell();

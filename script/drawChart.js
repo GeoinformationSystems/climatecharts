@@ -439,21 +439,24 @@ function getPreDry () {
 }
 
 //Create the title which is shown above the graph.
-function getTitle() {
-
+function getTitle()
+{
 	var lat = UI.lat;
 	var lng = UI.lng;
 
-	if (lat >= 0){
+  var factor = Math.pow(10, 2);
+  lat = (Math.round(lat*factor)/factor);
+  lng = (Math.round(lng*factor)/factor);
+
+	if (lat >= 0)
 		lat = lat +"N";
-	} else {
+	else
 		lat = Math.abs(lat) +"S";
-	}
-	if (lng >= 0){
+
+	if (lng >= 0)
 		lng = lng +"E";
-	} else {
+	else
 		lng = Math.abs(lng) +"W";
-	}
 
 	var title = name;
 	var subtitle = lat + " " + lng;
