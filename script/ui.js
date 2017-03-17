@@ -90,7 +90,8 @@ var UI  = {
       var latOrig = e.latlng.lat;
       var lngOrig = e.latlng.lng;
 
-      // real value stripped to the extend of the geographic coordinate system
+      // map can be infinitely panned in x-direction
+      // => real value stripped to the extend of geographic coordinate system
       var latReal = latOrig;
       while (latReal < -LAT_EXTENT)
         latReal += LAT_EXTENT*2;
@@ -100,19 +101,12 @@ var UI  = {
       var lngReal = lngOrig;
       while (lngReal < -LNG_EXTENT)
         lngReal += LNG_EXTENT*2;
-
       while (lngReal > LNG_EXTENT)
         lngReal -= LNG_EXTENT*2;
 
-      // visualized value shown in the information box on the right
-      var factor = Math.pow(10, COORD_PRECISION);
-			var latViz = (Math.round(latReal*factor)/factor);
-			var lngViz = (Math.round(lngReal*factor)/factor);
-
-			$("#lat").val(latViz.toString());
-			$("#lng").val(lngViz.toString());
-
-      // set marker to the original position
+      // set lat/lng coordinates
+      UI.setPosition(latReal, lngReal);
+      // set marker to original position, because it could be on the "next" map
       UI.setMarker(latOrig, lngOrig);
 
       // cleanup current raster cell or weather station
@@ -123,7 +117,7 @@ var UI  = {
       UI.activateClimateCell(latReal, lngReal);
 
 			// create chart immediately
-			UI.createChart();
+			UI.createCharts();
 		};
 
 		// Update coordinate variables if the user typed in coordinate values
@@ -163,6 +157,20 @@ var UI  = {
     $('#user-title').change(UI.setDiagramTitle);
 	},
 
+  "setPosition": function(lat, lng)
+  {
+    UI.lat = lat;
+    UI.lng = lng;
+
+    // visualized value shown in the information box on the right
+    var factor = Math.pow(10, COORD_PRECISION);
+    var latViz = (Math.round(lat*factor)/factor);
+    var lngViz = (Math.round(lng*factor)/factor);
+
+    $("#lat").val(latViz.toString());
+    $("#lng").val(lngViz.toString());
+  },
+
   "setMarker": function(lat, lng)
   {
     // decision: set initially or update?
@@ -174,7 +182,6 @@ var UI  = {
       UI.marker = new L.marker();
       UI.marker.setLatLng([lat, lng]).addTo(UI.map);
     }
-
   },
 
   "removeMarker": function()
@@ -193,10 +200,13 @@ var UI  = {
 
 		rootDiv.panzoom("reset");
 
-	    try {
-	        var isFileSaverSupported = !!new Blob();
-	    } catch (e) {
-	        alert("This function is not supported by your browser!");
+	    try
+      {
+        var isFileSaverSupported = !!new Blob();
+	    }
+      catch (e)
+      {
+        alert("This function is not supported by your browser!");
 	    }
 
 	    // create new temporary div where the to print is copied in
@@ -277,52 +287,64 @@ var UI  = {
 	 * Query function to get the data for temperature and precipitation for the
 	 * corresponding position and time and draw the chart.
 	 */
-	"createChart": function ()
+	"createCharts": function ()
   {
-			// Pick the current values of time slider and position.
-			UI.start = $("#slider").slider("values", 0);
-			UI.end = $("#slider").slider("values", 1);
-			UI.lat = $("#lat").val();
-			UI.lng = $("#lng").val();
+		// Pick the current values of time slider and position.
+		UI.start = $("#slider").slider("values", 0);
+		UI.end = $("#slider").slider("values", 1);
+		UI.lat = $("#lat").val();
+		UI.lng = $("#lng").val();
 
-      // stop if one of the values is not given
-      if (isNaN(parseFloat(UI.lat)) || isNaN(parseFloat(UI.lng)))
-      {
-        return null;
-      }
+    // stop if one of the values is not given
+    if (isNaN(parseFloat(UI.lat)) || isNaN(parseFloat(UI.lng)))
+      return null;
 
-			UI.dataset = $("#datasets").val();
+		UI.dataset = $("#datasets").val();
 
-      // activate plot wrapper
-      $('#plot-wrapper').css('visibility', 'visible');
+    // activate plot wrapper
+    $('#plot-wrapper').css('visibility', 'visible');
 
-      // set loader divs
-      var chartLoader = document.createElement('div');
-      chartLoader.className = 'loader';
-      document.getElementById('climate-chart-wrapper').appendChild(chartLoader);
+    // set loader divs
+    var chartLoader = document.createElement('div');
+    chartLoader.className = 'loader';
+    document.getElementById('climate-chart-wrapper').appendChild(chartLoader);
 
-      var plotLoader = document.createElement('div');
-      plotLoader.className = 'loader';
-      document.getElementById('plot-wrapper').appendChild(plotLoader);
+    var plotLoader = document.createElement('div');
+    plotLoader.className = 'loader';
+    document.getElementById('plot-wrapper').appendChild(plotLoader);
 
-      var loaders = $('.loader')
-      loaders.waitMe({
-        effect: 'progressBar',
-        text:   'Loading! Please Wait...',
-        bg:     '',
-        color:  'gray',
-        sizeW:  '',
-        sizeH:  '',
-        source: '',
-        onClose: function() {}
-      });
+    var loaders = $('.loader')
+    loaders.waitMe({
+      effect: 'progressBar',
+      text:   'Loading! Please Wait...',
+      bg:     '',
+      color:  'gray',
+      sizeW:  '',
+      sizeH:  '',
+      source: '',
+      onClose: function() {}
+    });
 
-			loaders.css("visibility", "visible");
-			$("#info").fadeTo("slow", 0.0);
-			$("#climate-chart").fadeTo("slow", 0.3);
-			$("#plots-container").fadeTo("slow", 0.3);
-			$(".nodata").css("opacity", 0.4);
+		loaders.css("visibility", "visible");
+		$("#info").fadeTo("slow", 0.0);
+		$("#climate-chart").fadeTo("slow", 0.3);
+		$("#plots-container").fadeTo("slow", 0.3);
+		$(".nodata").css("opacity", 0.4);
 
+    // decide if weather station or climate cell data should be loaded
+    if (UI.activeClimateCell)
+      UI.loadDataForClimateCell();
+    else if (UI.activeWeatherStation)
+      WeatherStations.loadData();
+  },
+
+  "removeCharts": function()
+  {
+    $('#plot-wrapper').css('visibility', 'hidden');
+  },
+
+  "loadDataForClimateCell": function()
+  {
 			// Draw the chart when all four ajax calls have received a response.
 			$.when(getData(0), getData(1), getName(), getElevation())
 			 	.done(
@@ -825,7 +847,7 @@ var UI  = {
                 newRight = $('#slider').slider("values", 1);
                 if ((oldLeft != newLeft) | (oldRight != newRight))
                 {
-                  UI.createChart();
+                  UI.createCharts();
 
                   // prevent bug of loading it twice: manually set the stored old values
                   UI.periodChange.oldLeft = newLeft;
@@ -835,9 +857,7 @@ var UI  = {
               // if not, the dates must have changed
               // => reload!
               else
-              {
-                UI.createChart();
-              }
+                UI.createCharts();
             }
 	      }
       );
@@ -863,8 +883,8 @@ var UI  = {
 	},
 
 	//Display the labels for the slider under the slider handles.
-	"setSliderLabels": function () {
-
+	"setSliderLabels": function ()
+  {
         $('#min').html($('#slider')
         		.slider('values', 0));
 
@@ -875,11 +895,11 @@ var UI  = {
 	},
 
 	//Set both slider handles to the min/max values.
-	"updateSlider": function (min, max) {
+	"updateSlider": function (min, max)
+  {
 		$("#slider").slider("option", "min", min);
 		$("#slider").slider("option", "max", max);
-
-        UI.setSliderLabels();
+    UI.setSliderLabels();
 	},
 
 	// Use ncML service from TDS to get the metadata for the currently selected
@@ -934,7 +954,7 @@ var UI  = {
 						}
 
             // finally create the chart
-            UI.createChart();
+            UI.createCharts();
 				 });
 		    }
 		});

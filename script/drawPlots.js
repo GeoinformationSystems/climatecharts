@@ -24,9 +24,6 @@ drawPlots = function(climateData, name, elevation)
     precData[monthIdx] = climateData.prec[monthIdx].rawData.filter(Number);
   }
 
-  // erase null values
-
-
   // error handling: if no name, make XXX string that will be removed later
   if (name == "")
   	name = 'XXX';

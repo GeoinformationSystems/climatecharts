@@ -75,39 +75,26 @@ var WeatherStations = {
           marker.addEventListener('click',
             function(station, evt)
             {
-              // cleanup current climate cell or weatherstation
-              UI.removeMarker();
-              UI.deactivateClimateCell();
-              WeatherStations.deactivateStation();
+              UI.setPosition(station.lat, station.lng)
+              // decide: activate or deactivate?
 
-              // activate current weatherstation
-              WeatherStations.activateStation(station);
+              if (UI.activeWeatherStation == station)  // deactivate clicked station
+              {
+                WeatherStations.deactivateStation();
+                UI.removeCharts();
+              }
 
-              // get data from weatherstation and visualize
-              $.get(
-                (''
-                  + ENDPOINTS.weatherstations
-                  + '/getStationData'
-                  + '?stationId='
-                  + station.id
-                  + '&minYear='
-                  + UI.start
-                  + '&maxYear='
-                  + UI.end
-                ),
-                function(stationClimateData)
-                {
-                  var geoname =
-                  {
-                    name:         station.name,
-                    adminName1:   '',
-                    countryName:  station.country
-                  }
-                  var elevation = station.elev
+              else                          // activate clicked station
+              {
+                // cleanup current climate cell or weatherstation
+                UI.deactivateClimateCell();
+                WeatherStations.deactivateStation();
 
-                  UI.visualizeClimate(stationClimateData, geoname, elevation)
-                }
-            )
+                // activate current weatherstation
+                WeatherStations.activateStation(station);
+                UI.setMarker(station.lat, station.lng);
+                UI.createCharts();
+              }
             }.bind(marker, station),
             false
           );
@@ -146,6 +133,35 @@ var WeatherStations = {
         )
       }
     );
+  },
+
+  "loadData": function()
+  {
+    // get data from weatherstation and visualize
+    $.get(
+      (''
+        + ENDPOINTS.weatherstations
+        + '/getStationData'
+        + '?stationId='
+        + UI.activeWeatherStation.id
+        + '&minYear='
+        + UI.start
+        + '&maxYear='
+        + UI.end
+      ),
+      function(stationClimateData)
+      {
+        var geoname =
+        {
+          name:         UI.activeWeatherStation.name,
+          adminName1:   '',
+          countryName:  UI.activeWeatherStation.country
+        }
+        var elevation = UI.activeWeatherStation.elev
+
+        UI.visualizeClimate(stationClimateData, geoname, elevation)
+      }
+    )
   },
 
   "activateStation": function(station)
