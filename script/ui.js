@@ -755,7 +755,7 @@ var UI  = {
     	$("#climate-chart").empty();
     	$("#climate-chart-wrapper").append("<div class='nodata'></div>");
       $("#plots-svg-container").empty()
-    	$("#plot-wrapper").append("<div class='nodata'></div>");
+    	$("#plot-wrapper").css('visibility', 'hidden');
     	$(".nodata").text("No data available for this area!");
     	$(".nodata").fadeTo("slow", 1);
     }
