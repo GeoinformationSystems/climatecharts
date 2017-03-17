@@ -42,8 +42,12 @@ var UI  = {
   // leaflet map
   "map": null,
 
-  // currently active raster cell from which the data originates
-  "climateCell": null,
+  // currently active marker on the map
+  "marker": null,
+
+  // currently active raster cell or weather station for climate data
+  "activeClimateCell": null,
+  "activeWeatherStation": null,
 
   // did user just click the default-period checkbox?
   // store the dates before the period change
@@ -51,10 +55,8 @@ var UI  = {
   "periodChange": null,
 
 	// Initialize the leaflet map object with two baselayers and a scale.
-	"createMap": function(){
-
-		var marker = new L.marker();
-
+	"createMap": function()
+  {
 		UI.map = new L.map("map");
 		UI.map.setView([40,10], 2);
 		UI.map.on("click", updatePosition);
@@ -64,100 +66,92 @@ var UI  = {
 			attribution: 'Tiles &copy; ESRI'
     }).addTo(UI.map);
 
-		var OpenStreetMap_Mapnik = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-			maxZoom: 19,
-			attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-			});
+		var OpenStreetMap_Mapnik = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+      {
+  			maxZoom: 19,
+  			attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+			}
+    );
 
-		var baseMaps = {
-				"ESRI World Map": ESRI,
-				"OpenStreetMap": OpenStreetMap_Mapnik
+		var baseMaps =
+    {
+			"ESRI World Map": ESRI,
+			"OpenStreetMap": OpenStreetMap_Mapnik
 		}
 
 		L.control.layers(baseMaps).addTo(UI.map);
 		L.control.scale().addTo(UI.map);
 
 		// Update coordinate variables if the user clicked on the map.
-		function updatePosition (e){
+		function updatePosition (e)
+    {
+      // original value from the map
+      // -> where the user clicked and the marker will be placed
+      var latOrig = e.latlng.lat;
+      var lngOrig = e.latlng.lng;
 
-        // original value from the map
-        // -> where the user clicked and the marker will be placed
-        var latOrig = e.latlng.lat;
-        var lngOrig = e.latlng.lng;
+      // real value stripped to the extend of the geographic coordinate system
+      var latReal = latOrig;
+      while (latReal < -LAT_EXTENT)
+        latReal += LAT_EXTENT*2;
+      while (latReal > LAT_EXTENT)
+        latReal -= LAT_EXTENT*2;
 
-        // real value stripped to the extend of the geographic coordinate system
-        var latReal = latOrig;
-        while (latReal < -LAT_EXTENT)
-        {
-          latReal += LAT_EXTENT*2;
-        }
-        while (latReal > LAT_EXTENT)
-        {
-          latReal -= LAT_EXTENT*2;
-        }
+      var lngReal = lngOrig;
+      while (lngReal < -LNG_EXTENT)
+        lngReal += LNG_EXTENT*2;
 
-        var lngReal = lngOrig;
-        while (lngReal < -LNG_EXTENT)
-        {
-          lngReal += LNG_EXTENT*2;
-        }
-        while (lngReal > LNG_EXTENT)
-        {
-          lngReal -= LNG_EXTENT*2;
-        }
+      while (lngReal > LNG_EXTENT)
+        lngReal -= LNG_EXTENT*2;
 
-        // visualized value shown in the information box on the right
-        var factor = Math.pow(10, COORD_PRECISION);
-				var latViz = (Math.round(latReal*factor)/factor);
-				var lngViz = (Math.round(lngReal*factor)/factor);
+      // visualized value shown in the information box on the right
+      var factor = Math.pow(10, COORD_PRECISION);
+			var latViz = (Math.round(latReal*factor)/factor);
+			var lngViz = (Math.round(lngReal*factor)/factor);
 
-				$("#lat").val(latViz.toString());
-				$("#lng").val(lngViz.toString());
+			$("#lat").val(latViz.toString());
+			$("#lng").val(lngViz.toString());
 
-        // set marker to the original position
-				marker.setLatLng([latOrig, lngOrig]).addTo(UI.map);
+      // set marker to the original position
+      UI.setMarker(latOrig, lngOrig);
 
-        // visualize the current raster cell the climate data is from
-        UI.showClimateCell(latReal, lngReal);
+      // cleanup current raster cell or weather station
+      UI.deactivateClimateCell();
+      WeatherStations.deactivateStation();
 
-				// create chart immediately
-				UI.createChart();
-			};
+      // visualize the current raster cell the climate data is from
+      UI.activateClimateCell(latReal, lngReal);
+
+			// create chart immediately
+			UI.createChart();
+		};
 
 		// Update coordinate variables if the user typed in coordinate values
 		// manually.
-		$(".coordinates").change(function () {
-
+		$(".coordinates").change(function ()
+    {
       // original lat/lng values that user typed into the box
       var latTyped = parseFloat($("#lat").val());
       var lngTyped = parseFloat($("#lng").val());
 
       // stop if one of the values is not given
       if (isNaN(latTyped) || isNaN(lngTyped))
-      {
         return null;
-      }
 
       // strip to extend of geographic coordinate system
       var latReal = latTyped;
       while (latReal < -LAT_EXTENT)
-      {
         latReal += LAT_EXTENT*2;
-      }
+
       while (latReal > LAT_EXTENT)
-      {
         latReal -= LAT_EXTENT*2;
-      }
 
       var lngReal = lngTyped;
       while (lngReal < -LNG_EXTENT)
-      {
         lngReal += LNG_EXTENT*2;
-      }
+
       while (lngReal > LNG_EXTENT)
-      {
         lngReal -= LNG_EXTENT*2;
-      }
 
       // hack "event" object to hand it into updatePosition function
       // act as if user clicked on the map
@@ -168,6 +162,29 @@ var UI  = {
     // update chart if user chose to use a different title for the diagrams
     $('#user-title').change(UI.setDiagramTitle);
 	},
+
+  "setMarker": function(lat, lng)
+  {
+    // decision: set initially or update?
+
+    if (UI.marker)  // update
+      UI.marker.setLatLng([lat, lng]);
+    else            // create
+    {
+      UI.marker = new L.marker();
+      UI.marker.setLatLng([lat, lng]).addTo(UI.map);
+    }
+
+  },
+
+  "removeMarker": function()
+  {
+    if (UI.marker)
+    {
+      UI.map.removeLayer(UI.marker);
+      UI.marker = null;
+    }
+  },
 
 	// Save SVG inline code to a svg file.
 	"saveToSvg": function (rootDivId, filename) {
@@ -520,7 +537,6 @@ var UI  = {
 	},
 
   // visualize the climate using climate chart and boxplots
-
   "visualizeClimate": function(climateData, geoname, elevation)
   {
  		// Get actual grid cell (from a1)
@@ -999,15 +1015,8 @@ var UI  = {
 
   // Show the raster cell of the current climate data on the map
   // and make obvious that the climate data is for that cell, not for this point
-  "showClimateCell": function(latReal, lngReal)
+  "activateClimateCell": function(latReal, lngReal)
   {
-    // clear current raster cell
-    if (UI.climateCell)
-    {
-      UI.map.removeLayer(UI.climateCell);
-      UI.climateCell = null;
-    }
-
     // get resolution of current dataset
     var latResolution = parseFloat(UI.ncML[0].group[0].attribute[6]._value);
     var lngResolution = parseFloat(UI.ncML[0].group[0].attribute[7]._value);
@@ -1025,13 +1034,13 @@ var UI  = {
       color:  RASTER_CELL_STYLE.color,
       weight: RASTER_CELL_STYLE.stroke_width,
     }
-    UI.climateCell = L.rectangle(rectBounds, rectStyle)
-    UI.climateCell.addTo(UI.map);
+    UI.activeClimateCell = L.rectangle(rectBounds, rectStyle)
+    UI.activeClimateCell.addTo(UI.map);
 
     // Idea: The user should always see the full extent of the climate cell
     // => determine if the bounds of the cell are fully visible in the viewport
     var mapBounds = UI.map.getBounds();
-    var cellBounds = UI.climateCell.getBounds();
+    var cellBounds = UI.activeClimateCell.getBounds();
 
     // Decision tree
     // If the climate cell is completely in the viewport
@@ -1049,5 +1058,15 @@ var UI  = {
       UI.map.fitBounds(cellBounds);
     }
     // otherwise the cell is completely visible, so there is nothing to do
+  },
+
+  // clear current raster cell
+  "deactivateClimateCell": function()
+  {
+    if (UI.activeClimateCell)
+    {
+      UI.map.removeLayer(UI.activeClimateCell);
+      UI.activeClimateCell = null;
+    }
   }
 }

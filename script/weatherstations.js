@@ -14,17 +14,19 @@ INIT_MARKER_RADIUS = 1
 // factor with which the station markers are resized with when the map is zoomed
 MARKER_SCALE_FACTOR = 1.5
 
-// miminum and maximum radius that will never be surpassed / exceeded
+// miminum and maximum radius that will never be undershot / exceeded
 MIN_MARKER_RADIUS = 1
-MAX_MARKER_RADIUS = 10
+MAX_MARKER_RADIUS = 7
 
 // style of markers
 MARKER_STYLE =
 {
-  strokeColor:    '#999999',
-  strokeOpacity:  0.75,
-  fillColor:      '#666666',
-  fillOpacity:    1.0,
+  strokeColor:        '#999999',
+  strokeColor_active: '#2e6c97',
+  strokeOpacity:      0.75,
+  fillColor:          '#666666',
+  fillColor_active:   '#2b83cb',
+  fillOpacity:        1.0,
 }
 
 
@@ -65,6 +67,7 @@ var WeatherStations = {
           // station.name + ", " + station.country + " (elevation:" + station.elev + ")",
           marker.addTo(UI.map)
           markers.push(marker)
+          station.marker = marker   // cross-reference data <-> visualization
 
           // clicking on the marker => get climate data
           // using JavaScript anonymous-functions-and-bind-magic :)
@@ -72,6 +75,15 @@ var WeatherStations = {
           marker.addEventListener('click',
             function(station, evt)
             {
+              // cleanup current climate cell or weatherstation
+              UI.removeMarker();
+              UI.deactivateClimateCell();
+              WeatherStations.deactivateStation();
+
+              // activate current weatherstation
+              WeatherStations.activateStation(station);
+
+              // get data from weatherstation and visualize
               $.get(
                 (''
                   + ENDPOINTS.weatherstations
@@ -134,19 +146,33 @@ var WeatherStations = {
         )
       }
     );
+  },
 
-		// Update coordinate variables if the user clicked on the map.
-		// function localFunction ()
-
-		// Update coordinate variables if the user typed in coordinate values
-		// manually.
-		$("jQuery selector").change(function ()
+  "activateStation": function(station)
+  {
+    station.marker.setStyle(
       {
-
-	    }
+        color:        MARKER_STYLE.strokeColor_active,
+        fillColor:    MARKER_STYLE.fillColor_active
+      }
     );
+    UI.activeWeatherStation = station
+  },
 
-	}
+  // clear current weather station
+  "deactivateStation": function()
+  {
+    if (UI.activeWeatherStation)
+    {
+      UI.activeWeatherStation.marker.setStyle(
+        {
+          color:        MARKER_STYLE.strokeColor,
+          fillColor:    MARKER_STYLE.fillColor
+        }
+      );
+      UI.activeWeatherStation = null;
+    }
+  }
 }
 
 /* station object
