@@ -157,7 +157,7 @@ drawPlots = function(climateData, name, elevation)
 
   if (elevation > -1000)
   {
-    PLOT.subtitle += " | " + elevation + "m";
+    PLOT.subtitle += " | " + elevation + " m";
   }
 
   PLOT.subtitle += " | Years " + UI.start + "-" + UI.end;

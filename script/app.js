@@ -40,9 +40,15 @@ ENDPOINTS =
   'weatherstations':  (RUN_LOCALLY.weatherstations  ? URL.local : URL.server) + APP_LOCATION.weatherstations,
 }
 
-MONTHS_IN_YEAR = [
-        "Jan", "Feb", "Mar", "Apr", "May", "Jun",
-        "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" ];
+MONTHS_IN_YEAR =
+[
+  "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+  "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+];
+
+
+////////////////////////////////////////////////////////////////////////////////
+
 
 UI.createMap();
 UI.listDatasets();
@@ -59,7 +65,8 @@ $("#period-checkbox").change(UI.resetSliderHandles);
 $("#set-diagram-title").click(UI.setDiagramTitle);
 $(".tab-links a").click(UI.selectTab);
 $(window).resize(function()
-{
+  {
     UI.setSliderLabels();
     UI.activatePanning();
-});
+  }
+);

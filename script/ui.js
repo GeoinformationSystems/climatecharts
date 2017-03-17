@@ -30,7 +30,7 @@ var UI  = {
 	// Properties for the current climatechart.
 	"title": "",
 	"data":  [],
-	"srtm":  0,
+	"elevation":  0,
 
 	// Name of the currently selected datasets.
 	"dataset": "",
@@ -579,8 +579,8 @@ var UI  = {
       var admin = "";
       var country = "";
       var name = "";
-      var elevation = "";
 
+      // parse title
 			if (typeof geoname !== 'undefined')
       {
 				if (geoname.name !== "" && typeof geoname.name !== "undefined")
@@ -600,7 +600,7 @@ var UI  = {
 				title = title.substring(0, title.length-2);
 
 	  	UI.title = title;
-	  	UI.srtm = elevation;
+	  	UI.elevation = elevation;
 
       // put name in diagram title box
       $('#user-title').val(title);
@@ -768,7 +768,7 @@ var UI  = {
       + ENDPOINTS.thredds
 		  + "/catalog.xml";
 
-		$ .get(catalogUrl)
+		$.get(catalogUrl)
 			.done(function (data)
       {
 				var x2js = new X2JS();

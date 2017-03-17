@@ -462,7 +462,7 @@ function getTitle()
 	var subtitle = lat + " " + lng;
 
 	if (elevation > -1000){
-		subtitle += " | " + elevation + "m";
+		subtitle += " | " + elevation + " m";
 	}
 
 	subtitle += " | Climate Class: " + getClimateClass() + " | Years: " + UI.start + "-" + UI.end;
