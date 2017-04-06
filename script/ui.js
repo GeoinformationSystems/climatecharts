@@ -297,11 +297,12 @@ var UI  =
 
     // stop if one of the values is not given
     if (isNaN(parseFloat(UI.lat)) || isNaN(parseFloat(UI.lng)))
-      return null;
+      return null
 
 		UI.dataset = $("#datasets").val();
 
-    // activate plot wrapper
+    // activate viz wrappers
+    $('#climate-chart-wrapper').css('visibility', 'visible');
     $('#plot-wrapper').css('visibility', 'visible');
 
     // set loader divs
@@ -340,6 +341,7 @@ var UI  =
 
   "removeCharts": function()
   {
+    $('#climate-chart-wrapper').css('visibility', 'hidden');
     $('#plot-wrapper').css('visibility', 'hidden');
   },
 
@@ -804,9 +806,9 @@ var UI  =
       });
 	},
 
-	//Initialize slider to set the time frame.
-	"setTimeFrame": function (min, max){
-
+	// Initialize slider to set the time frame.
+	"setTimeFrame": function (min, max)
+  {
 	    $("#slider").slider(
         {
 	        range: true,
@@ -819,17 +821,17 @@ var UI  =
         	    if (checked === true)
               {
                 var delay = function()
-                {
-                  UI.setSliderLabels();
-                };
+                  {
+                    UI.setSliderLabels();
+                  };
               }
 	        	  else
               {
                 var delay = function()
-                {
-                  $("#slider").slider("values", 0, $("#slider").slider("values", 1) - 30);
-                  UI.setSliderLabels();
-	              };
+                  {
+                    $("#slider").slider("values", 0, $("#slider").slider("values", 1) - 30);
+                    UI.setSliderLabels();
+  	              };
 	        	  }
 
               // Wait for the ui.handle to set its position
@@ -858,8 +860,14 @@ var UI  =
               // => reload!
               else
               {
-                UI.createCharts();
+                // ugly hack, but seems to work
+                UI.start = $("#slider").slider("values", 0);
+                UI.end = $("#slider").slider("values", 1);
                 WeatherStations.updateStations();
+                if (UI.activeClimateCell || UI.activeWeatherStation)
+                  UI.createCharts();
+                else
+                  UI.removeCharts();
               }
             }
 	      }

@@ -170,8 +170,12 @@ var WeatherStations =
   "updateStations": function()
   {
     // check for current station if it is out of range
-    if (!WeatherStations.isActiveInTimeRange(UI.activeWeatherStation))
+    if (UI.activeWeatherStation &&
+        !WeatherStations.isActiveInTimeRange(UI.activeWeatherStation))
+    {
       WeatherStations.deactivateStation()
+      UI.removeCharts();
+    }
 
     // check for each station if its status changed
     for (var stationIdx in WeatherStations.stations)
