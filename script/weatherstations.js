@@ -21,16 +21,28 @@ MAX_MARKER_RADIUS = 7
 // style of markers
 MARKER_STYLE =
 {
-  strokeColor:        '#999999',
+  strokeWidth:        1.5,
+  strokeColor:        '#888888',
   strokeColor_active: '#2e6c97',
   strokeOpacity:      0.75,
-  fillColor:          '#666666',
+  fillColor:          '#661323',
   fillColor_active:   '#2b83cb',
   fillOpacity:        1.0,
 }
 
 
-var WeatherStations = {
+var WeatherStations =
+{
+  //////////////////////////////////////////////////////////////////////////////
+  // Member Variables
+  //////////////////////////////////////////////////////////////////////////////
+
+  "stations": [],
+
+
+  //////////////////////////////////////////////////////////////////////////////
+  // Public Member Functions
+  //////////////////////////////////////////////////////////////////////////////
 
 	// Initialize the stations on the map
 	"init": function()
@@ -41,8 +53,6 @@ var WeatherStations = {
       + "/getAllStations",
       function(allStationsData)
       {
-        markers = []
-
         // for each station
         for (var idx in allStationsData)
         {
@@ -57,6 +67,7 @@ var WeatherStations = {
                 stroke:       true,
                 color:        MARKER_STYLE.strokeColor,
                 opacity:      MARKER_STYLE.strokeOpacity,
+                weight:       MARKER_STYLE.strokeWidth,
                 fill:         true,
                 fillColor:    MARKER_STYLE.fillColor,
                 fillOpacity:  MARKER_STYLE.fillOpacity,
@@ -66,13 +77,22 @@ var WeatherStations = {
           // TODO: support title -> extra div? mouseover? ...
           // station.name + ", " + station.country + " (elevation:" + station.elev + ")",
 
-          // put markers on the map
-          marker.addTo(UI.map)
-          marker.bringToBack()
+          // additional attribute: does the station have data in the current
+          // time range = can it be shown or must it be hidden?
+          station.hasData = false;
 
-          // make marker accessible
-          markers.push(marker)
+          // put markers on the map, if it has data in the current time range
+          // initially ensure only available stations are shown
+          if (WeatherStations.isActiveInTimeRange(station))
+          {
+            station.hasData = true;
+            marker.addTo(UI.map)
+            marker.bringToBack()
+          }
+
+          // make station accessible
           station.marker = marker   // cross-reference data <-> visualization
+          WeatherStations.stations.push(station)
 
           // clicking on the marker => get climate data
           // using JavaScript anonymous-functions-and-bind-magic :)
@@ -105,7 +125,10 @@ var WeatherStations = {
           );
         }
 
-        // scale circles with zoom level
+        // Event Handling
+        // --------------
+
+        // Zoom: scale circles with zoom level
         var zoom =
         {
           start:  UI.map.getZoom(),
@@ -132,17 +155,63 @@ var WeatherStations = {
             var visibleMarkerRadius = markerRadius
             visibleMarkerRadius = Math.min(MAX_MARKER_RADIUS, visibleMarkerRadius)
             visibleMarkerRadius = Math.max(MIN_MARKER_RADIUS, visibleMarkerRadius)
-            for (var markerIdx in markers)
-              markers[markerIdx].setRadius(visibleMarkerRadius)
+            for (var stationIdx in WeatherStations.stations)
+              WeatherStations.stations[stationIdx].marker.setRadius(visibleMarkerRadius)
           }
         )
       }
     );
   },
 
+
+  // deselect station if out of range
+  // show stations that now have data,
+  // hide stations that do not have data anymore in the new time range
+  "updateStations": function()
+  {
+    // check for current station if it is out of range
+    if (!WeatherStations.isActiveInTimeRange(UI.activeWeatherStation))
+      WeatherStations.deactivateStation()
+
+    // check for each station if its status changed
+    for (var stationIdx in WeatherStations.stations)
+    {
+      var station = WeatherStations.stations[stationIdx]
+      var stationHadData = station.hasData
+      var stationHasData = WeatherStations.isActiveInTimeRange(station)
+
+      // Four cases:
+
+      // 1) Station had data before and still has => no action required
+      // 2) Station had no data befor and now has => show
+      if (!stationHadData && stationHasData)
+      {
+        station.hasData = true;
+        station.marker.addTo(UI.map)
+        station.marker.bringToBack()
+      }
+
+      // 3) Station had data before and now does not have anymore => hide
+      else if (stationHadData && !stationHasData)
+      {
+        station.hasData = false
+        UI.map.removeLayer(station.marker)
+      }
+
+      // 4) Station had no data before and still does not have => no action
+
+    }
+  },
+
+
+  //////////////////////////////////////////////////////////////////////////////
+  // Private Member / Helper Functions
+  //////////////////////////////////////////////////////////////////////////////
+
+
+  // get data from weatherstation and visualize it
   "loadData": function()
   {
-    // get data from weatherstation and visualize
     $.get(
       (''
         + ENDPOINTS.weatherstations
@@ -169,6 +238,29 @@ var WeatherStations = {
     )
   },
 
+  // ensure that the station is only shown if it actually has data
+  // in the current time period
+  "isActiveInTimeRange": function(station)
+  {
+    // idea: two time perions (A and B), two time points (0 = start, 1 = end)
+    // A and B overlap if A0 < B1 and B0 < A1
+    //                A0 < B1              B0 < A1
+    if (station.min_year < UI.end && UI.start < station.max_year)
+      return true
+    else
+      return false
+  },
+
+  // // for each marker: check if current period overlaps with
+  // // period of available data for the station
+  // for (var stationIdx in WeatherStations.stations)
+  // {
+  //   var station = WeatherStations.stations[stationIdx];
+  //   var isActive =
+  //   console.log(station.min_year, station.max_year, UI.start, UI.end);
+  // }
+
+  // make current weather station visible
   "activateStation": function(station)
   {
     station.marker.setStyle(
@@ -191,7 +283,7 @@ var WeatherStations = {
           fillColor:    MARKER_STYLE.fillColor
         }
       );
-      UI.activeWeatherStation = null;
+      UI.activeWeatherStation = null
     }
   }
 }

@@ -1,5 +1,7 @@
 # Tasks
 
+BA/MA topic for dealing with data quality
+
 ## Features
 
 Enable inclusion of weather stations

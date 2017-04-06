@@ -19,8 +19,8 @@ RASTER_CELL_STYLE =     // style options of the raster cell the climate data is 
   stroke_width:  2          // width [px] of the outline / stroke around the rectangle
 }
 
-var UI  = {
-
+var UI  =
+{
 	// Query parameter for the data request.
 	"lat":   null,
 	"lng":   null,
@@ -857,7 +857,10 @@ var UI  = {
               // if not, the dates must have changed
               // => reload!
               else
+              {
                 UI.createCharts();
+                WeatherStations.updateStations();
+              }
             }
 	      }
       );
