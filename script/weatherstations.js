@@ -186,8 +186,7 @@ var WeatherStations =
 
       // Four cases:
 
-      // 1) Station had data before and still has => no action required
-      // 2) Station had no data befor and now has => show
+      // 1) Station had no data befor and now has => show
       if (!stationHadData && stationHasData)
       {
         station.hasData = true;
@@ -195,14 +194,16 @@ var WeatherStations =
         station.marker.bringToBack()
       }
 
-      // 3) Station had data before and now does not have anymore => hide
+      // 2) Station had data before and now does not have anymore => hide
       else if (stationHadData && !stationHasData)
       {
         station.hasData = false
         UI.map.removeLayer(station.marker)
       }
 
-      // 4) Station had no data before and still does not have => no action
+      // 3) Station had data before and still has
+      // 4) Station had no data before and still does not have
+      // => no action required
 
     }
   },

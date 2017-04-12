@@ -568,6 +568,8 @@ var UI  =
 
 		UI.data = climateData;
 
+    console.log(UI.data);
+
 		// Only continue if there are realistic data values for this
 		// place and time, otherwise show an error message.
 		if ( Math.max.apply(null, climateData.temp[0].rawData) <   100
