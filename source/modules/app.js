@@ -52,7 +52,7 @@ MONTHS_IN_YEAR =
 ////////////////////////////////////////////////////////////////////////////////
 
 
-UI.createMap();
+Map.construct();
 UI.listDatasets();
 WeatherStations.init();
 

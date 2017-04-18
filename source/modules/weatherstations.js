@@ -86,7 +86,7 @@ var WeatherStations =
           if (WeatherStations.isActiveInTimeRange(station))
           {
             station.hasData = true;
-            marker.addTo(UI.map)
+            marker.addTo(Map.map)
             marker.bringToBack()
           }
 
@@ -131,20 +131,20 @@ var WeatherStations =
         // Zoom: scale circles with zoom level
         var zoom =
         {
-          start:  UI.map.getZoom(),
-          end:    UI.map.getZoom()
+          start:  Map.map.getZoom(),
+          end:    Map.map.getZoom()
         }
         var markerRadius = INIT_MARKER_RADIUS
 
-        UI.map.on('zoomstart', function(e)
+        Map.map.on('zoomstart', function(e)
           {
-            zoom.start = UI.map.getZoom()
+            zoom.start = Map.map.getZoom()
           }
         )
 
-        UI.map.on('zoomend', function(e)
+        Map.map.on('zoomend', function(e)
           {
-            zoom.end = UI.map.getZoom()
+            zoom.end = Map.map.getZoom()
             var diff = zoom.end - zoom.start
 
             // actual mathematical radius of the marker, depending on zoom level
@@ -190,7 +190,7 @@ var WeatherStations =
       if (!stationHadData && stationHasData)
       {
         station.hasData = true;
-        station.marker.addTo(UI.map)
+        station.marker.addTo(Map.map)
         station.marker.bringToBack()
       }
 
@@ -198,7 +198,7 @@ var WeatherStations =
       else if (stationHadData && !stationHasData)
       {
         station.hasData = false
-        UI.map.removeLayer(station.marker)
+        Map.map.removeLayer(station.marker)
       }
 
       // 3) Station had data before and still has
