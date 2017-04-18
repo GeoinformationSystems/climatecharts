@@ -34,7 +34,7 @@ body {
 	font-family: Verdana, Geneva, sans-serif;
 	/*font-family: Palatino Linotype, Book Antiqua, Palatino, serif;*/
 	font-size: 1.0em;
-	background: url("../data/img/earth.svg") no-repeat center center;
+	background: url("../../data/img/earth.svg") no-repeat center center;
 	background-size:cover;
     background-attachment: fixed;
 	display: inline-block;

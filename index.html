@@ -9,33 +9,51 @@
     <meta name="description" content="An application to create meteorological charts for places worldwide.">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <!-- THIRD-PARTY STYLESHEETS -->
-  	<link rel="stylesheet" href="style/third_party/bootstrap.min.css">
-    <link rel="stylesheet" href="style/third_party/jquery-ui.css">
-    <link rel="stylesheet" href="style/third_party/toggle-switch.css" />
-    <link rel="stylesheet" href="style/third_party/waitMe.min.css">
-    <link rel="stylesheet" href="style/third_party/leaflet.css">
 
-    <!-- OWN STYLESHEETS -->
-  	<link rel="stylesheet" href="style/layout.css">
+    <!-- THIRD-PARTY LIBARIES -->
 
-    <!-- THIRD-PARTY SCRIPTS -->
-  	<script src="script/third_party/jquery/jquery.min.js"></script>
-  	<script src="script/third_party/jquery/jquery-ui.min.js"></script>
-    <script src="script/third_party/jquery/jquery.ui.touch-punch.min.js"></script>
-  	<script src="script/third_party/bootstrap.min.js"></script>
-  	<script src="script/third_party/d3.v3.min.js"></script>
-  	<script src="script/third_party/rgbcolor.js"></script>
-  	<script src="script/third_party/StackBlur.js"></script>
-  	<script src="script/third_party/canvg.js"></script>
-  	<script src="script/third_party/plotly-latest.min.js"></script> <!-- plotly.js for boxplots -->
-  	<script src="script/third_party/leaflet/leaflet.js"></script>
-  	<script src="script/third_party/FileSaver/Blob.js"></script>
-  	<script src="script/third_party/FileSaver/FileSaver.min.js"></script>
-  	<script src="script/third_party/panzoom/panzoom.js"></script>
-  	<script src="script/third_party/panzoom/pointertouch.js"></script>
-  	<script src="script/third_party/waitMe.min.js"></script>
-    <script src="script/third_party/x2js/xml2json.js"></script>
+    <!-- jQuery -->
+    <script src="source/third-party/jquery/jquery.min.js"></script>
+    <script src="source/third-party/jquery/jquery-ui.min.js"></script>
+    <script src="source/third-party/jquery/jquery.ui.touch-punch.min.js"></script>
+    <link  href="source/third-party/jquery/jquery-ui.css" rel="stylesheet" />
+    <script src="source/third-party/jquery/panzoom.js"></script>
+    <script src="source/third-party/jquery/pointertouch.js"></script>
+    <script src="source/third-party/bootstrap/bootstrap.min.js"></script>
+
+    <!-- Bootstrap (requires jQuery) -->
+    <link  href="source/third-party/bootstrap/bootstrap.min.css" rel="stylesheet" />
+
+    <!-- canvg: JS SVG parser and renderer on Canvas -->
+    <script src="source/third-party/canvg/canvg.js"></script>
+    <script src="source/third-party/canvg/rgbcolor.js"></script>
+    <script src="source/third-party/canvg/StackBlur.js"></script>
+
+    <!-- d3 and plotly: visualization (plotly: for boxplots) -->
+    <script src="source/third-party/d3/d3.v3.min.js"></script>
+    <script src="source/third-party/plotly/plotly-latest.min.js"></script>
+
+    <!-- FileSaver: conveniently save canvas to external file -->
+    <script src="source/third-party/FileSaver/Blob.js"></script>
+    <script src="source/third-party/FileSaver/FileSaver.min.js"></script>
+
+    <!-- Leaflet: map and interaction -->
+    <script src="source/third-party/leaflet/leaflet.js"></script>
+    <link  href="source/third-party/leaflet/leaflet.css" rel="stylesheet" />
+
+    <!-- toggle-switch: nice little style for simple toggles -->
+    <link  href="source/third-party/toggle-switch/toggle-switch.css" rel="stylesheet" />
+
+    <!-- waitMe: loading ... -->
+    <script src="source/third-party/waitMe/waitMe.min.js"></script>
+    <link  href="source/third-party/waitMe/waitMe.min.css" rel="stylesheet" />
+
+    <!-- x2js: conversion XML <-> JSON -->
+    <script src="source/third-party/x2js/xml2json.js"></script>
+
+    <!-- OWN MODULES -->
+    <link  href="source/modules/layout.css" rel="stylesheet" />
+
 
   	<!-- Piwik -->
   	<script type="text/javascript">
@@ -271,11 +289,11 @@
 
     <!-- OWN SCRIPTS -->
 
-  	<script src="script/ui.js"></script>
-  	<script src="script/drawChart.js"></script>
-  	<script src="script/drawPlots.js"></script>
-    <script src="script/weatherstations.js"></script>
-  	<script src="script/app.js"></script>
+  	<script src="source/modules/ui.js"></script>
+  	<script src="source/modules/drawChart.js"></script>
+  	<script src="source/modules/drawPlots.js"></script>
+    <script src="source/modules/weatherstations.js"></script>
+  	<script src="source/modules/app.js"></script>
 
   </body>
 </html>
