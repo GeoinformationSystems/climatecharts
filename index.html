@@ -13,43 +13,43 @@
     <!-- THIRD-PARTY LIBARIES -->
 
     <!-- jQuery -->
-    <script src="source/third-party/jquery/jquery.min.js"></script>
-    <script src="source/third-party/jquery/jquery-ui.min.js"></script>
-    <script src="source/third-party/jquery/jquery.ui.touch-punch.min.js"></script>
-    <link  href="source/third-party/jquery/jquery-ui.css" rel="stylesheet" />
-    <script src="source/third-party/jquery/panzoom.js"></script>
-    <script src="source/third-party/jquery/pointertouch.js"></script>
-    <script src="source/third-party/bootstrap/bootstrap.min.js"></script>
+    <script src="build/jquery.min.js"></script>
+    <script src="build/jquery-ui.min.js"></script>
+    <script src="build/jquery.ui.touch-punch.min.js"></script>
+    <link  href="build/jquery-ui.css" rel="stylesheet" />
+    <script src="build/panzoom.js"></script>
+    <script src="build/pointertouch.js"></script>
 
     <!-- Bootstrap (requires jQuery) -->
-    <link  href="source/third-party/bootstrap/bootstrap.min.css" rel="stylesheet" />
+    <script src="build/bootstrap.min.js"></script>
+    <link  href="build/bootstrap.min.css" rel="stylesheet" />
 
     <!-- canvg: JS SVG parser and renderer on Canvas -->
-    <script src="source/third-party/canvg/canvg.js"></script>
-    <script src="source/third-party/canvg/rgbcolor.js"></script>
-    <script src="source/third-party/canvg/StackBlur.js"></script>
+    <script src="build/canvg.js"></script>
+    <script src="build/rgbcolor.js"></script>
+    <script src="build/StackBlur.js"></script>
 
     <!-- d3 and plotly: visualization (plotly: for boxplots) -->
-    <script src="source/third-party/d3/d3.v3.min.js"></script>
-    <script src="source/third-party/plotly/plotly-latest.min.js"></script>
+    <script src="build/d3.v3.min.js"></script>
+    <script src="build/plotly-latest.min.js"></script>
 
     <!-- FileSaver: conveniently save canvas to external file -->
-    <script src="source/third-party/FileSaver/Blob.js"></script>
-    <script src="source/third-party/FileSaver/FileSaver.min.js"></script>
+    <script src="build/Blob.js"></script>
+    <script src="build/FileSaver.min.js"></script>
 
     <!-- Leaflet: map and interaction -->
-    <script src="source/third-party/leaflet/leaflet.js"></script>
-    <link  href="source/third-party/leaflet/leaflet.css" rel="stylesheet" />
+    <script src="build/leaflet.js"></script>
+    <link  href="build/leaflet.css" rel="stylesheet" />
 
     <!-- toggle-switch: nice little style for simple toggles -->
-    <link  href="source/third-party/toggle-switch/toggle-switch.css" rel="stylesheet" />
+    <link  href="build/toggle-switch.css" rel="stylesheet" />
 
     <!-- waitMe: loading ... -->
-    <script src="source/third-party/waitMe/waitMe.min.js"></script>
-    <link  href="source/third-party/waitMe/waitMe.min.css" rel="stylesheet" />
+    <script src="build/waitMe.min.js"></script>
+    <link  href="build/waitMe.min.css" rel="stylesheet" />
 
     <!-- x2js: conversion XML <-> JSON -->
-    <script src="source/third-party/x2js/xml2json.js"></script>
+    <script src="build/xml2json.js"></script>
 
   	<!-- Piwik -->
   	<script type="text/javascript">
@@ -284,17 +284,24 @@
 
 
     <!-- OWN MODULES -->
-    <script src="source/modules/Map.js"></script>
-    <link  href="source/modules/Map.css" rel="stylesheet" />
 
-    <script src="source/modules/drawChart.js"></script>
-  	<script src="source/modules/drawPlots.js"></script>
-    <script src="source/modules/weatherstations.js"></script>
+    <!-- MODEL -->
+
+    <!-- VIEW -->
+    <script src="build/Map.js"></script>
+    <link  href="build/Map.css" rel="stylesheet" />
+
+    <!-- CONTROLLER -->
+    <script src="build/LocationController.js"></script>
+    <script src="build/StationController.js"></script>
 
 
-    <script src="source/modules/main.js"></script>
-    <link  href="source/modules/main.css" rel="stylesheet" />
-    <script src="source/modules/app.js"></script>
+    <script src="build/drawChart.js"></script>
+  	<script src="build/drawPlots.js"></script>
+
+    <!-- MAIN -->
+    <script src="build/main.js"></script>
+    <link  href="build/main.css" rel="stylesheet" />
 
   </body>
 </html>

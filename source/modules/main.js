@@ -7,23 +7,48 @@
  * and subsequently draw the chart. The UI functions are triggered, if the corresponding
  * html element is clicked or it´s value changes (see file app.js).
  */
+ RUN_LOCALLY =
+ {
+   'thredds':          false,
+   'gazetteer':        false,
+   'weatherstations':  true
+ }
 
-// constant configs
-COORD_PRECISION = 4     // precision of lat/lng coordinates shown
-LAT_EXTENT      = 90    // min/max value for latitude   // XXX
-LNG_EXTENT      = 180   // min/max value for longitude  // XXX
+ // port on which tomcat8 runs on the localhost and / or on the server
+ TOMCAT_PORT = 8080
 
-RASTER_CELL_STYLE =     // style options of the raster cell for climate data
-{
-  color:        '#000099',  // background color
-  stroke_width:  2          // width [px] of the outline around the rectangle
-}
+ URL =
+ {
+   'local':      window.location.protocol + "//" + window.location.host + ":" + TOMCAT_PORT,
+   'server':     "https://climatecharts.net"
+ }
+
+ APP_LOCATION =
+ {
+   'thredds':          "/thredds",
+   'gazetteer':        "/gazetteer/api",
+   'weatherstations':  "/weatherstations-api",
+ }
+
+ ENDPOINTS =
+ {
+   'thredds':          (RUN_LOCALLY.thredds          ? URL.local : URL.server) + APP_LOCATION.thredds,
+   'gazetteer':        (RUN_LOCALLY.gazetteer        ? URL.local : URL.server) + APP_LOCATION.gazetteer,
+   'weatherstations':  (RUN_LOCALLY.weatherstations  ? URL.local : URL.server) + APP_LOCATION.weatherstations,
+ }
+
+ MONTHS_IN_YEAR =
+ [
+   "Jan", "Feb", "Mar",
+   "Apr", "May", "Jun",
+   "Jul", "Aug", "Sep",
+   "Oct", "Nov", "Dec"
+ ];
+
 
 var UI  =
 {
 	// Query parameter for the data request.
-	"lat":   null,
-	"lng":   null,
 	"start": 0,
 	"end":   0,
 
@@ -39,56 +64,54 @@ var UI  =
 	"catalog": {},
 	"ncML": [],
 
-  // leaflet map
-  "map": null,  // XXX
-
   // currently active marker on the map
   "marker": null,
 
   // currently active raster cell or weather station for climate data
-  "activeClimateCell": null,
-  "activeWeatherStation": null,
+  "activeClimateCell": null, // XXX
+  "activeWeatherStation": null, // XXX
 
   // did user just click the default-period checkbox?
   // store the dates before the period change
   // only reload the diagram if period has really changed!
   "periodChange": null,
 
-	// Initialize the leaflet map object with two baselayers and a scale.
-  "setPosition": function(lat, lng)
+  // TODO: Location controller
+  "updatePosition": function(latOrig, lngOrig)
   {
-    UI.lat = lat;
-    UI.lng = lng;
 
-    // visualized value shown in the information box on the right
-    var factor = Math.pow(10, COORD_PRECISION);
-    var latViz = (Math.round(lat*factor)/factor);
-    var lngViz = (Math.round(lng*factor)/factor);
+    // cleanup current raster cell or weather station
+    UI.deactivateClimateCell();
+    WeatherStations.deactivateStation();
 
-    $("#lat").val(latViz.toString());
-    $("#lng").val(lngViz.toString());
+    // visualize the current raster cell the climate data is from
+    UI.activateClimateCell(latReal, lngReal);
+
+    // create chart immediately
+    UI.createCharts();
   },
 
-  "setMarker": function(lat, lng)
+  // XXX
+  "initStuff": function ()
   {
-    // decision: set initially or update?
-
-    if (UI.marker)  // update
-      UI.marker.setLatLng([lat, lng]);
-    else            // create
+    // Update coordinate variables if the user typed in coordinate values
+    // manually.
+    $(".coordinates").change(function ()
     {
-      UI.marker = new L.marker();
-      UI.marker.setLatLng([lat, lng]).addTo(UI.map);
-    }
-  },
+      // original lat/lng values that user typed into the box
+      var lat = parseFloat($("#lat").val());
+      var lng = parseFloat($("#lng").val());
 
-  "removeMarker": function()
-  {
-    if (UI.marker)
-    {
-      UI.map.removeLayer(UI.marker);
-      UI.marker = null;
-    }
+      // stop if one of the values is not given
+      if (isNaN(lat) || isNaN(lng))
+        return null;
+
+      LocationController.setPostion({lat: lat, lng: lng});
+    });
+
+
+    // update chart if user chose to use a different title for the diagrams
+    $('#user-title').change(UI.setDiagramTitle);
   },
 
 	// Save SVG inline code to a svg file.
@@ -465,8 +488,6 @@ var UI  =
  		// document: a1[0]
 
 		UI.data = climateData;
-
-    console.log(UI.data);
 
 		// Only continue if there are realistic data values for this
 		// place and time, otherwise show an error message.
@@ -943,63 +964,30 @@ var UI  =
         $(this).parent('li').addClass('active').siblings().removeClass('active');
         e.preventDefault();
 	},
-
-  // Show the raster cell of the current climate data on the map
-  // and make obvious that the climate data is for that cell, not for this point
-  "activateClimateCell": function(latReal, lngReal)
-  {
-    // get resolution of current dataset
-    var latResolution = parseFloat(UI.ncML[0].group[0].attribute[6]._value);
-    var lngResolution = parseFloat(UI.ncML[0].group[0].attribute[7]._value);
-
-    // determine the cell the current point is in
-    var minLat = Math.floor(latReal/latResolution)*latResolution;
-    var minLng = Math.floor(lngReal/lngResolution)*lngResolution;
-    var maxLat = minLat + latResolution;
-    var maxLng = minLng + lngResolution;
-
-    // create a raster cell as rectangle
-    var rectBounds = [[minLat, minLng], [maxLat, maxLng]];
-    var rectStyle =
-    {
-      color:      RASTER_CELL_STYLE.color,
-      weight:     RASTER_CELL_STYLE.stroke_width,
-      clickable:  false,
-    }
-    UI.activeClimateCell = L.rectangle(rectBounds, rectStyle)
-    UI.activeClimateCell.addTo(UI.map);
-    UI.activeClimateCell.bringToBack();  // below weatherstation
-
-    // Idea: The user should always see the full extent of the climate cell
-    // => determine if the bounds of the cell are fully visible in the viewport
-    var mapBounds = UI.map.getBounds();
-    var cellBounds = UI.activeClimateCell.getBounds();
-
-    // Decision tree
-    // If the climate cell is completely in the viewport
-    // i.e. no bound of the cell is visible
-    // => zoom out to fit the bounds
-    if (cellBounds.contains(mapBounds))
-    {
-      UI.map.fitBounds(cellBounds);
-    }
-    // If not, check if the cell is partially covered by the map
-    // i.e. the map does not contain the full extent of the cell
-    // => move the map so the cell is completely visible
-    else if (!mapBounds.contains(cellBounds))
-    {
-      UI.map.fitBounds(cellBounds);
-    }
-    // otherwise the cell is completely visible, so there is nothing to do
-  },
-
-  // clear current raster cell
-  "deactivateClimateCell": function()
-  {
-    if (UI.activeClimateCell)
-    {
-      UI.map.removeLayer(UI.activeClimateCell);
-      UI.activeClimateCell = null;
-    }
-  }
 }
+
+
+////////////////////////////////////////////////////////////////////////////////
+
+
+Map.construct();
+UI.listDatasets();
+
+// initially hide plot-wrapper
+$('#plot-wrapper').css('visibility', 'hidden');
+
+$('.form-group').trigger("reset");
+$("#datasets").change(UI.getMetadata);
+$("#lat").change(UI.createChart);
+$("#lng").change(UI.createChart);
+$("#period-checkbox").change(UI.resetSliderHandles);
+$("#set-diagram-title").click(UI.setDiagramTitle);
+$(".tab-links a").click(UI.selectTab);
+$(window).resize(function()
+  {
+    UI.setSliderLabels();
+    UI.activatePanning();
+  }
+);
+
+UI.initStuff();
