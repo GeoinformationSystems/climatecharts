@@ -13,65 +13,58 @@
 // - Sending data of current location to the map and the climate visualizations
 // ############################################################################
 
-var LocationController =
+
+class LocationController
 {
-  // ##########################################################################
-  // PRIVATE MEMBER VARIABLES
-  // ##########################################################################
-
-  // Extent of geographic coordinates (in lat/lng)
-  "LAT_EXTENT": 90,
-  "LNG_EXTENT": 180,
-
-  // Current mode: null = none, R = random location, W = weather station
-  "mode": null,
-
-  // R) Current geographic coordinates (lat and lng)
-  "coords":
-  {
-    lat: null,
-    lng: null,
-  },
-
-  // R) Dimension of climate cell (extent in lat / lng direction)
-  "cellDimensions":
-  {
-    lat: null,
-    lng: null,
-  },
-
-  // W) Current weather station
-  "station": null,
-
-
 
   // ##########################################################################
-  // PUBLIC MEMBER FUNCTIONS
+  // PUBLIC MEMBERS
   // ##########################################################################
-
 
   // ==========================================================================
   // Constructor
   // ==========================================================================
 
-  "construct": function()
+  constructor(main)
   {
-  },
+    // Current mode:
+    // null = none
+    // R = random location -> User clicks on map -> climate data from cell
+    // W = weather station -> User clicks on station -> data from station
+    this._mode = null
+
+    // R) Current geographic coordinates (lat and lng)
+    this._coords =
+    {
+      lat: null,
+      lng: null,
+    }
+
+    // R) Dimension of climate cell (extent in lat / lng direction)
+    this._cellDimensions =
+    {
+      lat: null,
+      lng: null,
+    }
+
+    // W) Current weather station
+    this._station = null
+  }
 
 
   // ==========================================================================
   // New location => Marker and Climate cell
   // ==========================================================================
 
-  "setPosition": function(origCoords)
+  setPosition (origCoords)
   {
     // origCoords: corrdinates the user has clicked on the map -> unlimited map
     //             => lat can be outside of the geographic coordinate system
     // coords:     translated coordinates definitely inside coordinate system
-    this.coords = this.translateCoordsInBounds(origCoords)
+    this._coords = this.bringCoordsInBounds(origCoords)
 
     // if already in random location mode => update marker and cell
-    if (this.mode == 'R')
+    if (this._mode == 'R')
     {
       Map.updateMarker(origCoords)
       Map.updateCell(this.getCellBounds(origCoords))
@@ -79,20 +72,19 @@ var LocationController =
     }
 
     // else: switch into R mode and setup marker and cell
-
-
-  },
+    // TODO
+  }
 
 
   // ==========================================================================
   // New dataset => reset dimension of climate cells in lat/lng
   // ==========================================================================
 
-  "setCellDimensions": function(lat, lng)
+  setCellDimensions (lat, lng)
   {
-    cellDimensions.lat = lat
-    cellDimensions.lng = lng
-  },
+    this._cellDimensions.lat = lat
+    this._cellDimensions.lng = lng
+  }
 
 
   // ##########################################################################
@@ -103,10 +95,10 @@ var LocationController =
   // Switch the location mode
   // ==========================================================================
 
-  "switchMode": function(newMode)
+  switchMode (newMode)
   {
     // get old and new mode
-    var oldMode = this.mode
+    var oldMode = this._mode
 
     // test: mode must be either null, R or W
     if (newMode != null || newMode != 'R' || newMode != 'W')
@@ -118,7 +110,7 @@ var LocationController =
     // leave random location mode: reset coords
     if (oldMode == 'R')
     {
-      this.coords = {lat: null, lng: null}
+      this._coords = {lat: null, lng: null}
       Map.removeMarker()
       Map.removeCell()
     }
@@ -126,13 +118,13 @@ var LocationController =
     // leave weather station mode: reset station
     else if (oldMode == 'W')
     {
-      this.station = null
+      this._station = null
       Map.DeselectStation()
     }
 
     // set new mode
-    this.mode = newMode
-  },
+    this._mode = newMode
+  }
 
 
   // ==========================================================================
@@ -140,71 +132,71 @@ var LocationController =
   // geographic coordinate system (lat 90, lng 180)
   // ==========================================================================
 
-  "translateCoordsInBounds": function(origCoords)
+  bringCoordsInBounds (origCoords)
   {
-    realCoords = {
+    let realCoords = {
       lat: origCoords,
       lng: origCoords
     }
 
-    while (realCoords.lat < -this.LAT_EXTENT)
-      realCoords.lat += this.LAT_EXTENT*2
-    while (realCoords.lat > this.LAT_EXTENT)
-      realCoords.lat -= this.LAT_EXTENT*2
+    while (realCoords.lat < -LAT_EXTENT)
+      realCoords.lat += LAT_EXTENT*2
+    while (realCoords.lat > LAT_EXTENT)
+      realCoords.lat -= LAT_EXTENT*2
 
-    while (realCoords.lng < -this.LNG_EXTENT)
-      realCoords.lng += this.LNG_EXTENT*2
-    while (realCoords.lng > this.LNG_EXTENT)
-      realCoords.lng -= this.LNG_EXTENT*2
+    while (realCoords.lng < -LNG_EXTENT)
+      realCoords.lng += LNG_EXTENT*2
+    while (realCoords.lng > LNG_EXTENT)
+      realCoords.lng -= LNG_EXTENT*2
 
     return(realCoords)
-  },
+  }
 
 
   // ==========================================================================
   // Calculate the raster cell in which a clicked point is in
   // ==========================================================================
 
-  "getCellBounds": function(coords)
+  getCellBounds (coords)
   {
     // XXX
-    cellDimensions.lat = parseFloat(UI.ncML[0].group[0].attribute[6]._value)
-    cellDimensions.lng = parseFloat(UI.ncML[0].group[0].attribute[7]._value)
+    this._cellDimensions.lat = parseFloat(UI.ncML[0].group[0].attribute[6]._value)
+    this._cellDimensions.lng = parseFloat(UI.ncML[0].group[0].attribute[7]._value)
 
     // determine the cell the current point is in
     // in array format, not object format!
     var minPoint =
     [
-      Math.floor(coords.lat/cellDimensions.lat)*cellDimensions.lat,
-      Math.floor(coords.lng/cellDimensions.lng)*cellDimensions.lng
+      Math.floor(coords.lat/this._cellDimensions.lat)*this._cellDimensions.lat,
+      Math.floor(coords.lng/this._cellDimensions.lng)*this._cellDimensions.lng
     ]
     var maxPoint =
     [
-      minPoint[0] + cellDimensions.lat,
-      minPoint[1] + cellDimensions.lng
+      minPoint[0] + this._cellDimensions.lat,
+      minPoint[1] + this._cellDimensions.lng
     ]
 
     return([minPoint, maxPoint])
-  },
+  }
 
 
   // ##########################################################################
   // XXX
-  "showCoords": function(coords)
-  {
-    //
-    var COORD_PRECISION = 4
-    var factor = Math.pow(10, COORD_PRECISION)
-
-    // visualized value shown in the information box on the right
-    var vizCoords =
-    {
-      lat: (Math.round(coords.lat*factor)/factor),
-      lng: (Math.round(coords.lng*factor)/factor),
-    }
-
-    $("#lat").val(vizCoords.lat.toString());
-    $("#lng").val(vizCoords.lng.toString());
-  },
+  // "showCoords": function(coords)
+  // {
+  //   //
+  //   var COORD_PRECISION = 4
+  //   var factor = Math.pow(10, COORD_PRECISION)
+  //
+  //   // visualized value shown in the information box on the right
+  //   var vizCoords =
+  //   {
+  //     lat: (Math.round(coords.lat*factor)/factor),
+  //     lng: (Math.round(coords.lng*factor)/factor),
+  //   }
+  //
+  //   $("#lat").val(vizCoords.lat.toString());
+  //   $("#lng").val(vizCoords.lng.toString());
+  // },
 
 }
