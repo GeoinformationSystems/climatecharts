@@ -27,31 +27,29 @@ class LocationController
 
   constructor(main)
   {
-    // save main
     this._main = main
 
-    // Current mode:
-    // null = none
-    // R = random location -> User clicks on map -> climate data from cell
-    // W = weather station -> User clicks on station -> data from station
-    this._mode = null
+    // ------------------------------------------------------------------------
+    // Member Variables
+    // ------------------------------------------------------------------------
 
-    // R) Current geographic coordinates (lat and lng)
+    // Currently in location mode?
+    // User clicks on map -> climate data from cell
+    this._inLocationMode = false
+
+    // Current geographic coordinates (lat and lng)
     this._coords =
     {
       lat: null,
       lng: null,
     }
 
-    // R) Dimension of climate cell (extent in lat / lng direction)
+    // Dimension of climate cell (extent in lat / lng direction)
     this._cellDimensions =
     {
       lat: null,
       lng: null,
     }
-
-    // W) Current weather station
-    this._station = null
   }
 
 
@@ -59,27 +57,38 @@ class LocationController
   // Click new location => (re)set marker and climate cell
   // ==========================================================================
 
-  setPosition (origCoords)
+  setLocation(origCoords)
   {
     // origCoords: corrdinates the user has clicked on the map -> unlimited map
     //             => lat can be outside of the geographic coordinate system
     // coords:     translated coordinates definitely inside coordinate system
-    this._coords = this.bringCoordsInBounds(origCoords)
+    this._coords = this._bringCoordsInBounds(origCoords)
 
     // if already in random location mode => update marker and cell
-    if (this._mode == 'R')
+    if (this._inLocationMode)
     {
-      this._main.modules.map.updateMarker(origCoords)
-      this._main.modules.map.updateCell(this.getCellBounds(origCoords))
+      this._main.modules.map.resetMarker(origCoords)
+      this._main.modules.map.resetCell(this._getCellBounds(origCoords))
     }
 
     // else: switch into R mode and setup marker and cell
     else
     {
-      this._switchMode('R')
+      this._inLocationMode = true
       this._main.modules.map.setMarker(origCoords)
-      this._main.modules.map.setCell(this.getCellBounds(origCoords))
+      this._main.modules.map.setCell(this._getCellBounds(origCoords))
     }
+  }
+
+  // ==========================================================================
+  // Cleanup location: remove location marker and cell
+  // ==========================================================================
+
+  cleanup()
+  {
+    this._coords = {lat: null, lng: null}
+    this._main.modules.map.removeMarker()
+    this._main.modules.map.removeCell()
   }
 
 
@@ -87,7 +96,7 @@ class LocationController
   // New dataset => reset dimension of climate cells in lat/lng
   // ==========================================================================
 
-  setCellDimensions (lat, lng)
+  setCellDimensions(lat, lng)
   {
     this._cellDimensions.lat = lat
     this._cellDimensions.lng = lng
@@ -95,53 +104,18 @@ class LocationController
 
 
   // ##########################################################################
-  // PRIVATE MEMBER FUNCTIONS
+  // PRIVATE MEMBERS
   // ##########################################################################
-
-  // ==========================================================================
-  // Switch the location mode
-  // ==========================================================================
-
-  switchMode (newMode)
-  {
-    // get old and new mode
-    var oldMode = this._mode
-
-    // test: mode must be either null, R or W
-    if (newMode != null || newMode != 'R' || newMode != 'W')
-    {
-      console.error("The location mode " + newMode + " does not exist!")
-      return null
-    }
-
-    // leave random location mode: reset coords
-    if (oldMode == 'R')
-    {
-      this._coords = {lat: null, lng: null}
-      this._main.modules.map.removeMarker()
-      this._main.modules.map.removeCell()
-    }
-
-    // leave weather station mode: reset station
-    else if (oldMode == 'W')
-    {
-      this._station = null
-      this._main.modules.map.DeselectStation()
-    }
-
-    // set new mode
-    this._mode = newMode
-  }
-
 
   // ==========================================================================
   // Bring clicked coordinates of the user into the bounds of the
   // geographic coordinate system (lat 90, lng 180)
   // ==========================================================================
 
-  bringCoordsInBounds (origCoords)
+  _bringCoordsInBounds(origCoords)
   {
-    let realCoords = {
+    let realCoords =
+    {
       lat: origCoords.lat,
       lng: origCoords.lng
     }
@@ -164,11 +138,13 @@ class LocationController
   // Calculate the raster cell in which a clicked point is in
   // ==========================================================================
 
-  getCellBounds (coords)
+  _getCellBounds(coords)
   {
     // XXX
-    this._cellDimensions.lat = parseFloat(UI.ncML[0].group[0].attribute[6]._value)
-    this._cellDimensions.lng = parseFloat(UI.ncML[0].group[0].attribute[7]._value)
+    this._cellDimensions.lat = 0.5
+    // parseFloat(UI.ncML[0].group[0].attribute[6]._value)
+    this._cellDimensions.lng = 0.5
+    // parseFloat(UI.ncML[0].group[0].attribute[7]._value)
 
     // determine the cell the current point is in
     // in array format, not object format!

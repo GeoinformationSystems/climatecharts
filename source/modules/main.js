@@ -17,6 +17,42 @@
 const LAT_EXTENT = 90
 const LNG_EXTENT = 180
 
+// Months
+const MONTHS_IN_YEAR =
+[
+  "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+  "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+]
+
+// Database connection information
+
+const RUN_LOCALLY =
+{
+  'thredds':          false,
+  'gazetteer':        false,
+  'weatherstations':  true
+}
+
+// port on which tomcat8 runs on the localhost and / or on the server
+const TOMCAT_PORT = 8080
+
+const URL =
+{
+  'local':      window.location.protocol + "//" + window.location.host + ":" + TOMCAT_PORT,
+  'server':     "https://climatecharts.net"
+}
+
+const ENDPOINTS =
+{
+  'thredds':          (RUN_LOCALLY.thredds          ? URL.local : URL.server)
+    + "/thredds",
+  'gazetteer':        (RUN_LOCALLY.gazetteer        ? URL.local : URL.server)
+    + "/gazetteer/api",
+  'weatherstations':  (RUN_LOCALLY.weatherstations  ? URL.local : URL.server)
+    + "/weatherstations-api",
+}
+
+
 
 // ##########################################################################
 // MAIN OBJECT -> containing all configuration and modules !!!
@@ -30,6 +66,7 @@ let main = {}
 
 main.config =
 {
+  // Map
   mapContainer: "map",
   startPos:     [50, 10],   // initial map center [lat, lng]
   startZoom:    2,          // discrete zoom level [0 .. 12]
@@ -50,10 +87,35 @@ main.config =
       }
     )
   ],
+
+  // Climate cells
   cellStyle:
   {
     color:  '#000099',  // background color
     weight: 2,          // stroke width
+  },
+
+  // Weather stations (marker: circle)
+  initStationRadius: 1,     // initial radius of a station [px]
+  stationScaleFactor: 1.5,  // resize factor on map zoom
+  stationMinRadius: 1,      // minimum radius that will never be undershot
+  stationMaxRadius: 7,      // maximum radius that will never be exceeded
+  normalStationStyle:       // leaflet style for deselected weather station
+  {
+    className:    'weatherstation-marker',
+    radius:       1,        // initial marker radius
+    stroke:       true,
+    color:        '#888888',
+    opacity:      0.75,
+    weight:       1.5,
+    fill:         true,
+    fillColor:    '#661323',
+    fillOpacity:  1.0
+  },
+  selectedStationStyle:     // leaflet style override for selected station
+  {
+    color:        '#2e6c97',
+    fillColor:    '#2b83cb'
   },
 }
 
@@ -68,7 +130,8 @@ main.modules = {}
 // Controller
 // --------------------------------------------------------------------------
 
-main.modules.locationController = new LocationController(main),
+main.modules.locationController = new LocationController(main)
+main.modules.weatherStationController = new WeatherStationController(main)
 
 
 // --------------------------------------------------------------------------
@@ -76,46 +139,13 @@ main.modules.locationController = new LocationController(main),
 // --------------------------------------------------------------------------
 
 main.modules.map = new Map(main)
+main.modules.weatherStationsOnMap = new WeatherStationsOnMap(main)
 
 
 
 ///////////////////////////////////////////////////////////////////////////////
 
-// RUN_LOCALLY =
-// {
-//   'thredds':          false,
-//   'gazetteer':        false,
-//   'weatherstations':  true
-// }
-//
-// // port on which tomcat8 runs on the localhost and / or on the server
-// TOMCAT_PORT = 8080
-//
-// URL =
-// {
-//   'local':      window.location.protocol + "//" + window.location.host + ":" + TOMCAT_PORT,
-//   'server':     "https://climatecharts.net"
-// }
-//
-// APP_LOCATION =
-// {
-//   'thredds':          "/thredds",
-//   'gazetteer':        "/gazetteer/api",
-//   'weatherstations':  "/weatherstations-api",
-// }
-//
-// ENDPOINTS =
-// {
-//   'thredds':          (RUN_LOCALLY.thredds          ? URL.local : URL.server) + APP_LOCATION.thredds,
-//   'gazetteer':        (RUN_LOCALLY.gazetteer        ? URL.local : URL.server) + APP_LOCATION.gazetteer,
-//   'weatherstations':  (RUN_LOCALLY.weatherstations  ? URL.local : URL.server) + APP_LOCATION.weatherstations,
-// }
-//
-// MONTHS_IN_YEAR =
-// [
-//   "Jan", "Feb", "Mar", "Apr", "May", "Jun",
-//   "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
-// ]
+
 
 // Map.construct();
 // UI.listDatasets();

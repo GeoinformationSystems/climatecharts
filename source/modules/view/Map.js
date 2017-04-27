@@ -19,12 +19,11 @@ class Map
 
   constructor(main)
   {
-    // ------------------------------------------------------------------------
-    // Variable Declaration & Initialization
-    // ------------------------------------------------------------------------
-
-    // Save main
     this._main = main
+
+    // ------------------------------------------------------------------------
+    // Member Variables
+    // ------------------------------------------------------------------------
 
     // Leaflet map with initial position / zoom
     this._map = new L.Map(main.config.mapContainer)
@@ -43,17 +42,15 @@ class Map
     // TODO: fix it...
     this._map._onResize()
 
-    // Leaflet marker
+    // Climate marker:
     // showing the current location the user selected
+    // -> Leaflet marker
     this._marker = null
 
-    // Leaflet rectangle
-    // showing the raster cell the current climate data originates
+    // Climate cell:
+    // showing the raster cell the current climate data originates from
+    // -> Leaflet rectangle
     this._cell = null
-
-    // Leaflet station
-    // shows a weather station that can be (de)selected
-    this._station = null
 
 
     // ------------------------------------------------------------------------
@@ -71,10 +68,20 @@ class Map
         }
 
         // Tell controller that location has changed
-        this._main.modules.locationController.setPosition(coords)
+        this._main.modules.locationController.setLocation(coords)
       }
     )
   }
+
+  // ==========================================================================
+  // Getter
+  // ==========================================================================
+
+  getMap()
+  {
+    return this._map
+  }
+
 
   // ==========================================================================
   // Handle marker position on the map (set, reset, remove)
@@ -120,12 +127,26 @@ class Map
     this._cell = null
   }
 
+  // ==========================================================================
+  // Add / remove layer on map
+  // ==========================================================================
+
+  addLayer(layer)
+  {
+    layer.addTo(this._map)
+  }
+
+  removeLayer(layer)
+  {
+    this._map.removeLayer(layer)
+  }
+
 
   // ##########################################################################
-  // PRIVATE MEMBER FUNCTIONS
+  // PRIVATE MEMBERS
   // ##########################################################################
 
-  makeCellVisible()
+  _makeCellVisible()
   {
     this._cell.bringToBack()
 

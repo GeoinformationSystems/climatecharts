@@ -6,34 +6,45 @@
 // - So that everybody understands what this is for
 // ############################################################################
 
-function WeatherStation()
+class WeatherStation
 {
+  // ##########################################################################
+  // PUBLIC MEMBERS
+  // ##########################################################################
 
   // ==========================================================================
-  // Raw data
+  // Constructor
   // ==========================================================================
 
-  this.id =             null
-  this.name =           ""
-  this.coords =
+  constructor()
   {
-    lat:                0.0,
-    lng:                0.0
+    // ------------------------------------------------------------------------
+    // General data
+    // ------------------------------------------------------------------------
+
+    this.id =             null
+    this.name =           ""
+    this.coords =
+    {
+      lat:                0.0,
+      lng:                0.0
+    }
+    this.elev =           0.0
+    this.min_year =       0
+    this.max_year =       9999
+    this.coverage_rate =  1.0
+    this.largest_gap =    0
+    this.data =           null    // new ClimateData
+
+
+    // ------------------------------------------------------------------------
+    // Visualization data
+    // ------------------------------------------------------------------------
+
+    this.marker =         null    // map marker
+    this.is_active =      false   // is the marker currently active on the map
+                                  // = does the station currently have data?
+    this.is_selected =    false   // is the marker currently selected?
   }
-  this.elev =           0.0
-  this.min_year =       0
-  this.max_year =       9999
-  this.coverage_rate =  1.0
-  this.largest_gap =    0
-  this.data =           new ClimateData();
-
-
-  // ==========================================================================
-  // Visualization data
-  // ==========================================================================
-
-  this.has_data =       false
-  this.is_visible =     false
-  this.is_selected =    false
 
 }

@@ -84,7 +84,7 @@ select {
 }
 
 .background {
-	background-image: url("data/img/earth.svg");
+	background-image: url("../../data/img/earth.svg");
   background-repeat: no-repeat;
   background-size: contain;
 }
