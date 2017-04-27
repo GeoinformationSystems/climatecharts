@@ -23,8 +23,8 @@ class Map
     // Variable Declaration & Initialization
     // ------------------------------------------------------------------------
 
-    // Other modules
-    this._locationController = main.modules.locationController
+    // Save main
+    this._main = main
 
     // Leaflet map with initial position / zoom
     this._map = new L.Map(main.config.mapContainer)
@@ -71,9 +71,53 @@ class Map
         }
 
         // Tell controller that location has changed
-        this._locationController.setPosition(coords)
+        this._main.modules.locationController.setPosition(coords)
       }
     )
+  }
+
+  // ==========================================================================
+  // Handle marker position on the map (set, reset, remove)
+  // ==========================================================================
+
+  setMarker(coords)
+  {
+    this._marker = new L.marker()
+    this._marker.setLatLng([coords.lat, coords.lng])
+    this._marker.addTo(this._map)
+  }
+
+  resetMarker(coords)
+  {
+    this._marker.setLatLng([coords.lat, coords.lng])
+  }
+
+  removeMarker()
+  {
+    this._map.removeLayer(this._marker)
+    this._marker = null
+  }
+
+
+  // ==========================================================================
+  // Handle climate cell on the map (set, reset, remove)
+  // ==========================================================================
+
+  setCell(bounds)
+  {
+    this._cell = new L.rectangle(bounds, main.config.cellSytle)
+    this._cell.addTo(this._map)
+  }
+
+  resetCell(bounds)
+  {
+    this._cell.setBounds(bounds)
+  }
+
+  removeCell()
+  {
+    this._map.removeLayer(this._cell)
+    this._cell = null
   }
 
 

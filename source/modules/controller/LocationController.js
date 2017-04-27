@@ -27,6 +27,9 @@ class LocationController
 
   constructor(main)
   {
+    // save main
+    this._main = main
+
     // Current mode:
     // null = none
     // R = random location -> User clicks on map -> climate data from cell
@@ -53,12 +56,11 @@ class LocationController
 
 
   // ==========================================================================
-  // New location => Marker and Climate cell
+  // Click new location => (re)set marker and climate cell
   // ==========================================================================
 
   setPosition (origCoords)
   {
-    console.log("MUH!");
     // origCoords: corrdinates the user has clicked on the map -> unlimited map
     //             => lat can be outside of the geographic coordinate system
     // coords:     translated coordinates definitely inside coordinate system
@@ -67,13 +69,17 @@ class LocationController
     // if already in random location mode => update marker and cell
     if (this._mode == 'R')
     {
-      Map.updateMarker(origCoords)
-      Map.updateCell(this.getCellBounds(origCoords))
-      this.showCoords(realCoords)
+      this._main.modules.map.updateMarker(origCoords)
+      this._main.modules.map.updateCell(this.getCellBounds(origCoords))
     }
 
     // else: switch into R mode and setup marker and cell
-    // TODO
+    else
+    {
+      this._switchMode('R')
+      this._main.modules.map.setMarker(origCoords)
+      this._main.modules.map.setCell(this.getCellBounds(origCoords))
+    }
   }
 
 
@@ -112,15 +118,15 @@ class LocationController
     if (oldMode == 'R')
     {
       this._coords = {lat: null, lng: null}
-      Map.removeMarker()
-      Map.removeCell()
+      this._main.modules.map.removeMarker()
+      this._main.modules.map.removeCell()
     }
 
     // leave weather station mode: reset station
     else if (oldMode == 'W')
     {
       this._station = null
-      Map.DeselectStation()
+      this._main.modules.map.DeselectStation()
     }
 
     // set new mode
@@ -136,8 +142,8 @@ class LocationController
   bringCoordsInBounds (origCoords)
   {
     let realCoords = {
-      lat: origCoords,
-      lng: origCoords
+      lat: origCoords.lat,
+      lng: origCoords.lng
     }
 
     while (realCoords.lat < -LAT_EXTENT)

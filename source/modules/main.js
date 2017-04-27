@@ -50,6 +50,11 @@ main.config =
       }
     )
   ],
+  cellStyle:
+  {
+    color:  '#000099',  // background color
+    weight: 2,          // stroke width
+  },
 }
 
 
