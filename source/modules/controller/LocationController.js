@@ -58,6 +58,7 @@ class LocationController
 
   setPosition (origCoords)
   {
+    console.log("MUH!");
     // origCoords: corrdinates the user has clicked on the map -> unlimited map
     //             => lat can be outside of the geographic coordinate system
     // coords:     translated coordinates definitely inside coordinate system

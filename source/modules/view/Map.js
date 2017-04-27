@@ -37,6 +37,12 @@ class Map
     L.control.layers(main.config.tileLayers).addTo(this._map)
     L.control.scale().addTo(this._map)
 
+    // Problem: for some reason this code only leads tiles from the northern
+    // hemisphere. Only after window resize everything loads
+    // Hack: manual resize event :/ -> not nice, but works!
+    // TODO: fix it...
+    this._map._onResize()
+
     // Leaflet marker
     // showing the current location the user selected
     this._marker = null
