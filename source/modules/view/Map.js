@@ -26,9 +26,16 @@ class Map
     // Other modules
     this._locationController = main.modules.locationController
 
-    // Leaflet base map
-    this._map = new L.map(main.configs.mapContainer)
-    this._map.setView(main.configs.startPos, main.configs.startZoom)
+    // Leaflet map with initial position / zoom
+    this._map = new L.Map(main.config.mapContainer)
+    this._map.setView(main.config.startPos, main.config.startZoom)
+
+    // First base map
+    main.config.tileLayers[0].addTo(this._map)
+
+    // Map interaction controls: layer selection and scale
+    L.control.layers(main.config.tileLayers).addTo(this._map)
+    L.control.scale().addTo(this._map)
 
     // Leaflet marker
     // showing the current location the user selected
@@ -41,32 +48,6 @@ class Map
     // Leaflet station
     // shows a weather station that can be (de)selected
     this._station = null
-
-    // Base map styles: ESRI and OSM
-		let baseMaps =
-    {
-			"ESRI_WorldMap": L.tileLayer(
-        'https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}',
-        {
-    			maxZoom: 20,
-    			attribution: 'Tiles &copy; ESRI'
-        }
-      ),
-	    "OpenStreetMap": L.tileLayer(
-        'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-        {
-    			maxZoom: 19,
-    			attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-  			}
-      )
-		}
-    baseMaps.ESRI_WorldMap.addTo(this._map)
-
-    // Map interaction controls
-		L.control.layers(baseMaps).addTo(this._map)
-
-    // Map scale
-		L.control.scale().addTo(this._map)
 
 
     // ------------------------------------------------------------------------

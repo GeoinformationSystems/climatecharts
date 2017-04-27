@@ -28,11 +28,28 @@ let main = {}
 // Init main configurations
 // ============================================================================
 
-main.configs =
+main.config =
 {
   mapContainer: "map",
   startPos:     [50, 10],   // initial map center [lat, lng]
   startZoom:    2,          // discrete zoom level [0 .. 12]
+  tileLayers:
+  [
+    L.tileLayer(    // ESRI Online
+      'https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}',
+      {
+        maxZoom: 20,
+        attribution: 'Tiles &copy; ESRI'
+      }
+    ),
+    L.tileLayer(    // OpenStreetMap
+      'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+      {
+        maxZoom: 19,
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+      }
+    )
+  ],
 }
 
 
