@@ -86,9 +86,13 @@ class LocationController
 
   cleanup()
   {
-    this._coords = {lat: null, lng: null}
-    this._main.modules.map.removeMarker()
-    this._main.modules.map.removeCell()
+    if (this._inLocationMode)
+    {
+      this._coords = {lat: null, lng: null}
+      this._main.modules.map.removeMarker()
+      this._main.modules.map.removeCell()
+      this._inLocationMode = false
+    }
   }
 
 

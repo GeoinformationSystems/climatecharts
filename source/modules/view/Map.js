@@ -57,20 +57,32 @@ class Map
     // User Interaction
     // ------------------------------------------------------------------------
 
-		// Update coordinate variables if the user clicked on the map.
+		// Handle click event on map
+    // distinguish between click on station or directly on map
     this._map.on("click", evt =>
       {
-        // Get original value from the map
-        // -> where the user clicked and the marker will be placed
-        let coords = {
-          lat: evt.latlng.lat,
-          lng: evt.latlng.lng
+        // If user has clicked on weather station
+        if (this._main.config.activeStation)
+        {
+          // reset variable for next click on station
+          this._main.config.activeStation = null
+          // setup weatherstation handled in WeatherStationsOnMap
+          // cleanup location
+          this._main.modules.locationController.cleanup()
         }
+        else // user has clicked on map
+        {
+          // Get original value from the map
+          // -> where the user clicked and the marker will be placed
+          let coords = {
+            lat: evt.latlng.lat,
+            lng: evt.latlng.lng
+          }
 
-        console.log(evt);
-
-        // Tell controller that location has changed
-        this._main.modules.locationController.setLocation(coords)
+          // Setup location and cleanup weatherstation
+          this._main.modules.weatherStationController.cleanup()
+          this._main.modules.locationController.setLocation(coords)
+        }
       }
     )
   }
@@ -116,6 +128,7 @@ class Map
   {
     this._cell = new L.rectangle(bounds, main.config.cellSytle)
     this._cell.addTo(this._map)
+    this._cell.bringToBack()
   }
 
   resetCell(bounds)

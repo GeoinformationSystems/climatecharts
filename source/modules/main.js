@@ -97,6 +97,7 @@ main.config =
   },
 
   // Weather stations (marker: circle)
+  activeStation:    null,   // currently active weather station or null
   initStationRadius: 1,     // initial radius of a station [px]
   stationScaleFactor: 1.5,  // resize factor on map zoom
   stationMinRadius: 1,      // minimum radius that will never be undershot

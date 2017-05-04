@@ -98,6 +98,7 @@ class WeatherStationsOnMap
     // Click on station => activate
     stationMarker.addEventListener('click', (evt) =>
       {
+        this._main.config.activeStation = stationMarker.station
         this._main.modules.weatherStationController.select(stationMarker.station)
       }
     )
