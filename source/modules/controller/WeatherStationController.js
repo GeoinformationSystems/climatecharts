@@ -60,14 +60,17 @@ class WeatherStationController
 
   deselect()
   {
-    // model
-    this._selectedStation.is_selected = false
+    if (this._selectedStation)
+    {
+      // model
+      this._selectedStation.is_selected = false
 
-    // view
-    this._main.modules.weatherStationsOnMap.deHighlight(this._selectedStation)
+      // view
+      this._main.modules.weatherStationsOnMap.deHighlight(this._selectedStation)
 
-    // controller
-    this._selectedStation = null
+      // controller
+      this._selectedStation = null
+    }
   }
 
 

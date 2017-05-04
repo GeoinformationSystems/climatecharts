@@ -9,7 +9,7 @@ The ClimateCharts project is a typical Web application divided into two parts:
 The client-side webapp has two versions:  
 1. The main master version, for everybody accessible and to be promoted:  
   http:/climatecharts.net  
-2. The test development version, for the testers, codrs and other affiliates, not to be promoted:  
+2. The test development version, for the testers, coders and other affiliates, not to be promoted:  
   http:/climatecharts.net/develop  
 
 As soon as the develop version is accepted by all affiliates, it replaces the current master version.  
@@ -100,7 +100,7 @@ Copy the following content in it, save and leave
 
 Install Tomcat8 as the web server on the localhost  
   $ sudo apt-get install tomcat8  
-  
+
 Install a local Tomcat v8.0 instance that can be used by Eclipse
   https://tomcat.apache.org/download-80.cgi  
   $ cd ~/Downloads  
@@ -112,7 +112,7 @@ Install a local Tomcat v8.0 instance that can be used by Eclipse
 Now there are two different Tomcat servers  
   /usr/share/tomcatX                    -\> system-wide Tomcat installation  
   /home/$USER/Development/Tomcat_local -\> local Tomcat installation used by Eclipse  
-  
+
 Use Tomcat8 Server in Eclipse and connect local webapps to it  
   Window -> Show View -> Servers  
   Create New Server  

@@ -58,14 +58,16 @@ class Map
     // ------------------------------------------------------------------------
 
 		// Update coordinate variables if the user clicked on the map.
-    this._map.on("click", e =>
+    this._map.on("click", evt =>
       {
         // Get original value from the map
         // -> where the user clicked and the marker will be placed
         let coords = {
-          lat: e.latlng.lat,
-          lng: e.latlng.lng
+          lat: evt.latlng.lat,
+          lng: evt.latlng.lng
         }
+
+        console.log(evt);
 
         // Tell controller that location has changed
         this._main.modules.locationController.setLocation(coords)

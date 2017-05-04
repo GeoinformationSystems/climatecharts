@@ -55,7 +55,8 @@ const ENDPOINTS =
 
 
 // ##########################################################################
-// MAIN OBJECT -> containing all configuration and modules !!!
+// MAIN OBJECT
+// -> containing all configuration and modules !!!
 // ##########################################################################
 
 let main = {}
@@ -100,22 +101,24 @@ main.config =
   stationScaleFactor: 1.5,  // resize factor on map zoom
   stationMinRadius: 1,      // minimum radius that will never be undershot
   stationMaxRadius: 7,      // maximum radius that will never be exceeded
-  normalStationStyle:       // leaflet style for deselected weather station
+  stationStyle:
   {
-    className:    'weatherstation-marker',
-    radius:       1,        // initial marker radius
-    stroke:       true,
-    color:        '#888888',
-    opacity:      0.75,
-    weight:       1.5,
-    fill:         true,
-    fillColor:    '#661323',
-    fillOpacity:  1.0
-  },
-  selectedStationStyle:     // leaflet style override for selected station
-  {
-    color:        '#2e6c97',
-    fillColor:    '#2b83cb'
+    default:        // leaflet style for deselected weather station
+    {
+      className:    'weatherstation-marker',
+      stroke:       true,
+      opacity:      0.75,
+      weight:       1.5,
+      fill:         true,
+      fillOpacity:  1.0,
+      color:        '#888888',
+      fillColor:    '#661323',
+    },
+    selected:       // leaflet style for selected / highlighted station
+    {
+      color:        '#2e6c97',
+      fillColor:    '#2b83cb',
+    },
   },
 }
 
@@ -125,6 +128,12 @@ main.config =
 // ============================================================================
 
 main.modules = {}
+
+// --------------------------------------------------------------------------
+// Helpers
+// --------------------------------------------------------------------------
+
+main.modules.helpers = new Helpers(main)
 
 // --------------------------------------------------------------------------
 // Controller
