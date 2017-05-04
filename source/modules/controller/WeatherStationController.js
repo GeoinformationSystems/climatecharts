@@ -49,6 +49,7 @@ class WeatherStationController
 
       // model
       station.is_selected = true
+      this._loadDataForStation(station)
 
       // view
       this._main.modules.weatherStationsOnMap.highlight(station)
@@ -167,6 +168,49 @@ class WeatherStationController
       }
     );
   }
+
+
+  // ==========================================================================
+  // Load climate data for one specific station from database
+  // ==========================================================================
+
+  _loadDataForStation(station)
+  {
+    // TODO: years
+    let minYear = 1970
+    let maxYear = 2000
+    $.get(
+      (''
+        + ENDPOINTS.weatherstations
+        + '/getStationData'
+        + '?stationId='
+        + station.id
+        + '&minYear='
+        + minYear
+        + '&maxYear='
+        + maxYear
+      ),
+      climateData =>
+        {
+          // initialize empty climate data object
+          station.climateData = new ClimateData()
+
+          // fill station with climate data
+          station.climateData.fillTemp(climateData.temp)
+          station.climateData.fillPrec(climateData.prec)
+
+          // calculate number of years
+          // TODO: check for reasonability
+          station.climateData.calcNumYears(minYear, maxYear)
+        }
+    )
+  }
+
+  _fillClimateData(station, climateData)
+  {
+
+  }
+
 
 
   // ==========================================================================

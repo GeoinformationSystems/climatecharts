@@ -34,7 +34,7 @@ class WeatherStation
     this.max_year =       9999
     this.coverage_rate =  1.0
     this.largest_gap =    0
-    this.data =           null    // new ClimateData
+    this.climateData =    null
 
 
     // ------------------------------------------------------------------------

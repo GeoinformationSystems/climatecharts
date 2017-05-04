@@ -101,6 +101,14 @@ class Map
   // Handle marker position on the map (set, reset, remove)
   // ==========================================================================
 
+  hasMarker()
+  {
+    if (this._marker != null)
+      return true
+    else
+      return false
+  }
+
   setMarker(coords)
   {
     this._marker = new L.marker()
