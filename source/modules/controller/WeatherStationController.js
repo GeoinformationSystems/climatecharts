@@ -2,8 +2,8 @@
 // StationController                                                Controller
 // ############################################################################
 // Manages all weather stations in the system
-// - Load and stations from the database
-// - Manage (de)active weather station based on availability of data in system
+// - Load stations from the database
+// - Manage (in)active weather station based on availability of data in system
 // - Tell StationsOnMap about (de)active weather stations
 // ############################################################################
 
@@ -133,7 +133,7 @@ class WeatherStationController
       + "/getAllStations",
       (allStationsData) =>
       {
-        // for each station
+        // For each station
         for (var stationData of allStationsData)
         {
           var station =           new WeatherStation()
@@ -154,14 +154,17 @@ class WeatherStationController
           station.largest_gap =     stationData.largest_gap
           station.missing_months =  stationData.missing_months
 
-          // put markers on the map, if it has data in the current time range
-          // initially ensure only available stations are shown
-          this._activate(station)
-
-          // make station accessible
+          // Save station
           this._stations.push(station)
 
-          // clicking on the marker => get climate data
+          // Put markers on the map, if it has data in the current time range
+          if (this._isActiveInTimeRange(station))
+          {
+            this._activate(station)
+            this._activeStations.push(station)
+          }
+
+          // Click on marker => get climate data
           // using JavaScript anonymous-functions-and-bind-magic :)
           // credits: http://stackoverflow.com/questions/10000083/javascript-event-handler-with-parameters
         }
@@ -177,8 +180,6 @@ class WeatherStationController
   _loadDataForStation(station)
   {
     // TODO: years
-    let minYear = 1970
-    let maxYear = 2000
     $.get(
       (''
         + ENDPOINTS.weatherstations
@@ -186,9 +187,9 @@ class WeatherStationController
         + '?stationId='
         + station.id
         + '&minYear='
-        + minYear
+        + this._main.timeController.getMinYear()
         + '&maxYear='
-        + maxYear
+        + this._main.timeController.getMaxYear()
       ),
       climateData =>
         {
@@ -206,12 +207,6 @@ class WeatherStationController
     )
   }
 
-  _fillClimateData(station, climateData)
-  {
-
-  }
-
-
 
   // ==========================================================================
   // Ensure that a station is only shown if it actually has data
@@ -221,9 +216,9 @@ class WeatherStationController
   _isActiveInTimeRange(station)
   {
     // idea: two time perions (A and B), two time points (0 = start, 1 = end)
-    // A and B overlap if A0 < B1 and B0 < A1
-    //                A0 < B1              B0 < A1
-    if (station.min_year < UI.end && UI.start < station.max_year)
+    // A and B overlap if A0 < B1 and A1 > B0
+    if ((station.min_year < this._main.timeController.getMaxYear()) &&  // A0 < B1
+        (station.max_year > this._main.timeController.getMinYear()))    // A1 > B0
       return true
     else
       return false

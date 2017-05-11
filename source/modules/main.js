@@ -144,6 +144,7 @@ main.modules.helpers = new Helpers(main)
 // --------------------------------------------------------------------------
 
 main.modules.locationController = new LocationController(main)
+main.modules.timeController = new TimeController(main)
 main.modules.weatherStationController = new WeatherStationController(main)
 
 
