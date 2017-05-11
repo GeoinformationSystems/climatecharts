@@ -91,37 +91,97 @@ class ClimateData
 
   fillTemp(data)
   {
-    // TODO: Check data for integrity, consistency, ...
+    let numMonthsWithData = MONTHS_IN_YEAR.length
 
-    // Set data
-    this._temp.raw_data = data
-
-    // TODO
-
-    // Calculate and gaps mean per month
-    this._temp_mean = 0
+    // Get data and calculate mean per month
     for (var monthIdx = 0; monthIdx < MONTHS_IN_YEAR.length; monthIdx++)
-      this._temp_mean += data[monthIdx].mean
-    this._temp_mean /= MONTHS_IN_YEAR.length
+    {
+      // Get raw data
+      this._temp[monthIdx].raw_data = data[monthIdx]
+
+      // For each year
+      let numYears = data[monthIdx].length
+      for (var yearIdx = 0; yearIdx < numYears; yearIdx++)
+      {
+        // Distinguish: is the value given?
+        let tempValue = data[monthIdx][yearIdx]
+        // If yes, account for monthly mean
+        if (tempValue != null)
+          this._temp[monthIdx].mean += data[monthIdx][yearIdx]
+        // If no, do not account for monthly mean and increase number of gaps
+        else
+          this._temp[monthIdx].num_gaps += 1
+      }
+
+      // Calculate monthly mean
+      // -> Current sum / number of years with data (years without gap)
+      let numYearsWithData = numYears-this._temp[monthIdx].num_gaps
+      // Error handling: Division by 0
+      if (numYearsWithData > 0)
+        this._temp[monthIdx].mean /= numYearsWithData
+      else
+        this._temp[monthIdx].mean = null
+
+      // Accumulate final yearly mean
+      // Only if at least one year had data
+      if (this._temp[monthIdx].mean != null)
+        this._temp_mean += this._temp[monthIdx].mean
+      // Otherwise, do not account for final yearly mean
+      else
+        numMonthsWithData -= 1
+    }
 
     // Calculate yearly mean
+    // Error handling: Division by 0
+    if (numMonthsWithData > 0)
+      this._temp_mean /= numMonthsWithData
+    else
+      this._temp_mean = null
   }
 
   fillPrec(data)
   {
-    // TODO: Check data for integrity, consistency, ...
-    // TODO
+    let numMonthsWithData = MONTHS_IN_YEAR.length
 
-    // Set data
-    this._prec.raw_data = data
-
-    // Calculate sum and gaps per month
-
-    // Calculate yearly sum
-    this._prec_sum = 0
+    // Calculate sum per month
     for (var monthIdx = 0; monthIdx < MONTHS_IN_YEAR.length; monthIdx++)
-      this._prec_sum += data[monthIdx].sum
-  }
+    {
+      // Get raw data
+      this._prec[monthIdx].raw_data = data[monthIdx]
+
+      // For each year
+      let numYears = data[monthIdx].length
+      for (var yearIdx = 0; yearIdx < numYears; yearIdx++)
+      {
+        // Distinguish: is the value given?
+        let tempValue = data[monthIdx][yearIdx]
+        // If yes, account for monthly sum
+        if (tempValue != null)
+          this._prec[monthIdx].sum += data[monthIdx][yearIdx]
+        // If not, do not account for monthly sum and increase number of gaps
+        else
+          this._prec[monthIdx].num_gaps += 1
+      }
+
+      // For monthly sum: write null instead of 0.0 if no data
+      let numYearsWithData = numYears-this._prec[monthIdx].num_gaps
+      // Error handling: Division by 0
+      if (numYearsWithData == 0)
+        this._prec[monthIdx].sum = null
+
+      // Accumulate final yearly mean
+      // Only if at least one year had data
+      if (this._prec[monthIdx].sum != null)
+        this._prec_sum += this._prec[monthIdx].sum
+      // If not, do not account for final yearly mean
+      else
+        numMonthsWithData -= 1
+    }
+
+    // For yearly sum: write null instead of 0.0 if no data
+    if (numMonthsWithData == 0)
+      this._prec_sum = null
+}
 
   // ==========================================================================
   // Calculate number of years
@@ -142,8 +202,8 @@ class ClimateData
       // Check for each month in year if there is a data value available
       for (var monthIdx = 0; monthIdx < MONTHS_IN_YEAR.length; monthIdx++)
       {
-        if( (this._prec[monthIdx].rawData[yearIdx] != null) ||
-            (this._temp[monthIdx].rawData[yearIdx] != null))
+        if( (this._prec[monthIdx].raw_data[yearIdx] != null) ||
+            (this._temp[monthIdx].raw_data[yearIdx] != null))
         {
           dataFound = true
           break
@@ -166,8 +226,8 @@ class ClimateData
       // Check for each month in year if there is a data value available
       for (var monthIdx = 0; monthIdx < MONTHS_IN_YEAR.length; monthIdx++)
       {
-        if( (this._prec[monthIdx].rawData[yearIdx] != null) ||
-            (this._temp[monthIdx].rawData[yearIdx] != null))
+        if( (this._prec[monthIdx].raw_data[yearIdx] != null) ||
+            (this._temp[monthIdx].raw_data[yearIdx] != null))
         {
           dataFound = true
           break

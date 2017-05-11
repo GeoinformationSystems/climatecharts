@@ -24,7 +24,10 @@ const MONTHS_IN_YEAR =
   "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
 ]
 
+
+// ============================================================================
 // Database connection information
+// ============================================================================
 
 const RUN_LOCALLY =
 {
@@ -49,7 +52,7 @@ const ENDPOINTS =
   'gazetteer':        (RUN_LOCALLY.gazetteer        ? URL.local : URL.server)
     + "/gazetteer/api",
   'weatherstations':  (RUN_LOCALLY.weatherstations  ? URL.local : URL.server)
-    + "/weatherstations-api",
+    + "/weatherstations-api_new",
 }
 
 
