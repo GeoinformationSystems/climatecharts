@@ -70,6 +70,10 @@ let main = {}
 
 main.config =
 {
+  // Time
+  periodLength: 30,         // number of years in time period (default: 30)
+  endYear:      2000,       // initial end year of the period
+
   // Map
   mapContainer: "map",
   startPos:     [50, 10],   // initial map center [lat, lng]
@@ -92,7 +96,7 @@ main.config =
     )
   ],
 
-  // Climate cells
+  // Climate cell
   cellStyle:
   {
     color:  '#000099',  // background color
@@ -100,30 +104,32 @@ main.config =
   },
 
   // Weather stations (marker: circle)
-  activeStation:    null,   // currently active weather station or null
-  initStationRadius: 1,     // initial radius of a station [px]
-  stationScaleFactor: 1.5,  // resize factor on map zoom
-  stationMinRadius: 1,      // minimum radius that will never be undershot
-  stationMaxRadius: 7,      // maximum radius that will never be exceeded
-  stationStyle:
+  station:
   {
-    default:        // leaflet style for deselected weather station
+    initRadius:  1,      // initial radius of a station [px]
+    scaleFactor: 1.5,    // resize factor on map zoom
+    minRadius:   1,      // minimum radius that will never be undershot
+    maxRadius:   7,      // maximum radius that will never be exceeded
+    style:
     {
-      className:    'weatherstation-marker',
-      stroke:       true,
-      opacity:      0.75,
-      weight:       1.5,
-      fill:         true,
-      fillOpacity:  1.0,
-      color:        '#888888',
-      fillColor:    '#661323',
-    },
-    selected:       // leaflet style for selected / highlighted station
-    {
-      color:        '#2e6c97',
-      fillColor:    '#2b83cb',
-    },
-  },
+      default:        // leaflet style for deselected weather station
+      {
+        className:    'weatherstation-marker',
+        stroke:       true,
+        opacity:      0.75,
+        weight:       1.5,
+        fill:         true,
+        fillOpacity:  1.0,
+        color:        '#888888',
+        fillColor:    '#661323',
+      },
+      selected:       // leaflet style for selected / highlighted station
+      {
+        color:        '#2e6c97',
+        fillColor:    '#2b83cb',
+      }
+    }
+  }
 }
 
 
@@ -143,8 +149,10 @@ main.modules.helpers = new Helpers(main)
 // Controller
 // --------------------------------------------------------------------------
 
-main.modules.locationController = new LocationController(main)
 main.modules.timeController = new TimeController(main)
+main.modules.mapController = new MapController(main)
+main.modules.locationMarkerController = new LocationMarkerController(main)
+main.modules.climateCellController = new ClimateCellController(main)
 main.modules.weatherStationController = new WeatherStationController(main)
 
 
@@ -153,6 +161,8 @@ main.modules.weatherStationController = new WeatherStationController(main)
 // --------------------------------------------------------------------------
 
 main.modules.map = new Map(main)
+main.modules.locationMarkerOnMap = new LocationMarkerOnMap(main)
+main.modules.climateCellOnMap = new ClimateCellOnMap(main)
 main.modules.weatherStationsOnMap = new WeatherStationsOnMap(main)
 
 

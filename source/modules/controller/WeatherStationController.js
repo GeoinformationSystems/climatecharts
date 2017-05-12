@@ -56,6 +56,7 @@ class WeatherStationController
 
       // controller
       this._selectedStation = station
+      this._main.modules.mapController.clickedOnStation()
     }
   }
 
@@ -82,6 +83,16 @@ class WeatherStationController
   cleanup()
   {
     this.deselect()
+  }
+
+
+  // ==========================================================================
+  // Return currently active weather station
+  // ==========================================================================
+
+  getActiveStation()
+  {
+    return this._selectedStation
   }
 
 
@@ -187,9 +198,9 @@ class WeatherStationController
         + '?stationId='
         + station.id
         + '&minYear='
-        + this._main.timeController.getMinYear()
+        + this._main.modules.timeController.getMinYear()
         + '&maxYear='
-        + this._main.timeController.getMaxYear()
+        + this._main.modules.timeController.getMaxYear()
       ),
       climateData =>
         {
@@ -202,6 +213,8 @@ class WeatherStationController
 
           // calculate number of years
           // TODO: check for reasonability
+          let minYear = this._main.modules.timeController.getMinYear()
+          let maxYear = this._main.modules.timeController.getMaxYear()
           station.climateData.calcNumYears(minYear, maxYear)
         }
     )
@@ -217,8 +230,8 @@ class WeatherStationController
   {
     // idea: two time perions (A and B), two time points (0 = start, 1 = end)
     // A and B overlap if A0 < B1 and A1 > B0
-    if ((station.min_year < this._main.timeController.getMaxYear()) &&  // A0 < B1
-        (station.max_year > this._main.timeController.getMinYear()))    // A1 > B0
+    if ((station.min_year < this._main.modules.timeController.getMaxYear()) &&
+        (station.max_year > this._main.modules.timeController.getMinYear()) )
       return true
     else
       return false

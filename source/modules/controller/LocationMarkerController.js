@@ -1,11 +1,10 @@
 // ############################################################################
-// TimeController                                                   Controller
+// LocationMarkerController                                          Controller
 // ############################################################################
-// Manages the temporal aspect of the information system
-// - Set and get min and max year
+// Manages the current location marker
 // ############################################################################
 
-class TimeController
+class LocationMarkerController
 {
   // ##########################################################################
   // PUBLIC MEMBERS
@@ -23,54 +22,49 @@ class TimeController
     // Member Variables
     // ------------------------------------------------------------------------
 
-    this._minYear = main.config.endYear-main.config.periodLength
-    this._maxYear = main.config.endYear-1
+    this._markerActive = false
+
+    // Current geographic coordinates (lat and lng)
+    this._coords =
+    {
+      lat: null,
+      lng: null,
+    }
   }
 
 
   // ==========================================================================
-  // Setter
+  // Setup / Move marker
   // ==========================================================================
 
-  setMinYear(year)
+  set(coords)
   {
-    // TODO: consistency check:
-    // - really a year?
-    // - smaller than max year?
-    this._minYear = year
+    if (this._markerActive)
+      this._main.modules.locationMarkerOnMap.reset(coords)
+    else
+    {
+      this._main.modules.locationMarkerOnMap.set(coords)
+      this._markerActive = true
+    }
   }
-
-  setMaxYear(year)
-  {
-    // TODO: consistency check:
-    // - really a year?
-    // - larger than min year?
-    this._maxYear = year
-  }
-
 
   // ==========================================================================
-  // Getter
+  // Cleanup
   // ==========================================================================
 
-  getMinYear()
+  cleanup()
   {
-    return this._minYear
-  }
-
-  getMaxYear()
-  {
-    return this._maxYear
-  }
-
-  getNumYears()
-  {
-    return this._maxYear - this._minYear
+    if (this._markerActive)
+    {
+      this._main.modules.locationMarkerOnMap.remove()
+      this._markerActive = false
+    }
   }
 
 
   // ##########################################################################
   // PRIVATE MEMBERS
   // ##########################################################################
+
 
 }

@@ -33,12 +33,12 @@ class WeatherStationsOnMap
       end:    this._map.getZoom()
     }
 
-    this._realMarkerRadius = this._main.config.initStationRadius
+    this._realMarkerRadius = this._main.config.station.initRadius
 
     // mixin style configs (highlight -> default style)
-    this._main.config.stationStyle.selected = this._helpers.mixin(
-      this._main.config.stationStyle.selected,
-      this._main.config.stationStyle.default,
+    this._main.config.station.style.selected = this._helpers.mixin(
+      this._main.config.station.style.selected,
+      this._main.config.station.style.default,
     )
 
 
@@ -58,7 +58,7 @@ class WeatherStationsOnMap
 
         // actual mathematical radius of the marker, depending on zoom level
         this._realMarkerRadius *=
-          Math.pow(this._main.config.stationScaleFactor, diff)
+          Math.pow(this._main.config.station.scaleFactor, diff)
 
         // Actually resize circles
         for (var station of this._activeStations)
@@ -77,11 +77,10 @@ class WeatherStationsOnMap
     // Add to map (in background)
     let stationMarker = L.circleMarker(
       [station.position.lat, station.position.lng], // position
-      this._main.config.stationStyle.default        // style
+      this._main.config.station.style.default        // style
     )
     stationMarker.setRadius(this.cropRadius(this._realMarkerRadius))
-    this._main.modules.map.addLayer(stationMarker)
-    // stationMarker.bringToBack()
+    stationMarker.addTo(this._map)
 
     // Establish link model <-> view
     station.marker = stationMarker
@@ -98,7 +97,6 @@ class WeatherStationsOnMap
     // Click on station => activate
     stationMarker.addEventListener('click', (evt) =>
       {
-        this._main.config.activeStation = stationMarker.station
         this._main.modules.weatherStationController.select(stationMarker.station)
       }
     )
@@ -112,7 +110,7 @@ class WeatherStationsOnMap
   hide(station)
   {
     // Remove from map
-    this._main.modules.map.removeLayer(station)
+    this._map.removeLayer(station)
 
     // Remove link model <-> view
     station.marker = null
@@ -129,12 +127,12 @@ class WeatherStationsOnMap
 
   highlight(station)
   {
-    station.marker.setStyle(this._main.config.stationStyle.selected)
+    station.marker.setStyle(this._main.config.station.style.selected)
   }
 
   deHighlight(station)
   {
-    station.marker.setStyle(this._main.config.stationStyle.default)
+    station.marker.setStyle(this._main.config.station.style.default)
   }
 
 
@@ -152,15 +150,13 @@ class WeatherStationsOnMap
     // have to be distinguished to maintain mapping zoom level <-> radius
     let croppedRadius = inRadius
     croppedRadius = Math.min(
-      this._main.config.stationMaxRadius,
+      this._main.config.station.maxRadius,
       croppedRadius
     )
     croppedRadius = Math.max(
-      this._main.config.stationMinRadius,
+      this._main.config.station.minRadius,
       croppedRadius
     )
     return croppedRadius
   }
-
-
 }

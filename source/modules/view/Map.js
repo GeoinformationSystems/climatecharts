@@ -42,16 +42,6 @@ class Map
     // TODO: fix it...
     this._map._onResize()
 
-    // Climate marker:
-    // showing the current location the user selected
-    // -> Leaflet marker
-    this._marker = null
-
-    // Climate cell:
-    // showing the raster cell the current climate data originates from
-    // -> Leaflet rectangle
-    this._cell = null
-
 
     // ------------------------------------------------------------------------
     // User Interaction
@@ -61,28 +51,13 @@ class Map
     // distinguish between click on station or directly on map
     this._map.on("click", evt =>
       {
-        // If user has clicked on weather station
-        if (this._main.config.activeStation)
-        {
-          // reset variable for next click on station
-          this._main.config.activeStation = null
-          // setup weatherstation handled in WeatherStationsOnMap
-          // cleanup location
-          this._main.modules.locationController.cleanup()
-        }
-        else // user has clicked on map
-        {
-          // Get original value from the map
-          // -> where the user clicked and the marker will be placed
-          let coords = {
+        let coords =
+        this._main.modules.mapController.setLocation(
+          {
             lat: evt.latlng.lat,
             lng: evt.latlng.lng
           }
-
-          // Setup location and cleanup weatherstation
-          this._main.modules.weatherStationController.cleanup()
-          this._main.modules.locationController.setLocation(coords)
-        }
+        )
       }
     )
   }
@@ -95,102 +70,4 @@ class Map
   {
     return this._map
   }
-
-
-  // ==========================================================================
-  // Handle marker position on the map (set, reset, remove)
-  // ==========================================================================
-
-  hasMarker()
-  {
-    if (this._marker != null)
-      return true
-    else
-      return false
-  }
-
-  setMarker(coords)
-  {
-    this._marker = new L.marker()
-    this._marker.setLatLng([coords.lat, coords.lng])
-    this._marker.addTo(this._map)
-  }
-
-  resetMarker(coords)
-  {
-    this._marker.setLatLng([coords.lat, coords.lng])
-  }
-
-  removeMarker()
-  {
-    this._map.removeLayer(this._marker)
-    this._marker = null
-  }
-
-
-  // ==========================================================================
-  // Handle climate cell on the map (set, reset, remove)
-  // ==========================================================================
-
-  setCell(bounds)
-  {
-    this._cell = new L.rectangle(bounds, main.config.cellSytle)
-    this._cell.addTo(this._map)
-    this._cell.bringToBack()
-  }
-
-  resetCell(bounds)
-  {
-    this._cell.setBounds(bounds)
-  }
-
-  removeCell()
-  {
-    this._map.removeLayer(this._cell)
-    this._cell = null
-  }
-
-  // ==========================================================================
-  // Add / remove layer on map
-  // ==========================================================================
-
-  addLayer(layer)
-  {
-    layer.addTo(this._map)
-  }
-
-  removeLayer(layer)
-  {
-    this._map.removeLayer(layer)
-  }
-
-
-  // ##########################################################################
-  // PRIVATE MEMBERS
-  // ##########################################################################
-
-  _makeCellVisible()
-  {
-    this._cell.bringToBack()
-
-    // Idea: The user should always see the full extent of the climate cell
-    // => determine if the bounds of the cell are fully visible in the viewport
-    let mapBounds = this._map.getBounds()
-    let cellBounds = this._cell.getBounds()
-
-    // If the climate cell is completely in the viewport
-    // i.e. no bound of the cell is visible
-    // => zoom out to fit the bounds
-    if (cellBounds.contains(mapBounds))
-      this._map.fitBounds(cellBounds)
-
-    // If not, check if the cell is partially covered by the map
-    // i.e. the map does not contain the full extent of the cell
-    // => move the map so the cell is completely visible
-    else if (!mapBounds.contains(cellBounds))
-      this._map.fitBounds(cellBounds)
-
-    // otherwise the cell is completely visible, so there is nothing to do
-  }
-
 }
