@@ -48,6 +48,7 @@ class LocationMarkerController
     }
   }
 
+
   // ==========================================================================
   // Cleanup
   // ==========================================================================
@@ -62,9 +63,58 @@ class LocationMarkerController
   }
 
 
+  // ==========================================================================
+  // Get name of current location
+  // ==========================================================================
+
+  getName()
+  {
+    return this._requestGazetteer('N')
+  }
+
+
+  // ==========================================================================
+  // Get elevation of current location
+  // ==========================================================================
+
+  getElevation()
+  {
+    return this._requestGazetteer('E')
+  }
+
+
   // ##########################################################################
   // PRIVATE MEMBERS
   // ##########################################################################
 
+  // ==========================================================================
+  // Request gazetteer for mode 'N' = name or 'E' = elevation
+  // ==========================================================================
+
+  _requestGazetteer(mode)
+  {
+    let url = ENDPOINTS.gazetteer
+    if (mode == 'N')
+      url += "/getName"
+    else if (mode == 'E')
+      url += "/getElevation"
+    else // error
+      return null
+
+    return($.get(url,
+        {
+          lat: this._coords.lat,
+          lng: this._coords.lng
+        }
+      ).fail(function(jqXHR, textStatus, errorThrown)
+        {
+          console.error("No elevation found");
+          console.error(jqXHR);
+          console.error(textStatus);
+          console.error(errorThrown);
+        }
+      )
+    )
+  }
 
 }

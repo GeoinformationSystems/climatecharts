@@ -30,32 +30,31 @@ class ClimateData
   // Constructor
   // ==========================================================================
 
-  constructor()
+  constructor(main)
   {
     // ------------------------------------------------------------------------
     // Metadata
     // ------------------------------------------------------------------------
 
-    this._name =           ["", "", ""]      // city, admin region, country
-    this._coords =         ""                // dd.dd"N|S" dd.dd"E|W"
-    this._elevation =      ""                // d "m"
-    this._climate_class =  ""                // max. three-character class name
-    this._years =          [null, null, ""]  // min year, max year, appendix
+    this._name =           [null, null, null]  // city, admin region, country
+    this._position =       {lat:null,lng:null}
+    this._elevation =      null                // d "m"
+    this._climate_class =  null                // max. three-character class name
+    this._years =          [null, null, null]  // min year, max year, appendix
 
-    this._source =         ""                // data source
-    this._doi =            ""                // document object identifier (link)
-
+    this._source =         null                // data source
+    this._doi =            null                // document object identifier (link)
 
 
     // ------------------------------------------------------------------------
     // Climate data
     // ------------------------------------------------------------------------
 
-    this._prec =       []
-    this._temp =       []
+    this._prec =          []
+    this._temp =          []
 
-    this._temp_mean =  null    // temperature mean
-    this._prec_sum =   null    // precipitation sum
+    this._temp_mean =     null    // temperature mean
+    this._prec_sum =      null    // precipitation sum
 
 
     // ------------------------------------------------------------------------
@@ -139,6 +138,7 @@ class ClimateData
       this._temp_mean = null
   }
 
+
   fillPrec(data)
   {
     let numMonthsWithData = MONTHS_IN_YEAR.length
@@ -181,13 +181,14 @@ class ClimateData
     // For yearly sum: write null instead of 0.0 if no data
     if (numMonthsWithData == 0)
       this._prec_sum = null
-}
+  }
+
 
   // ==========================================================================
   // Calculate number of years
   // ==========================================================================
 
-  calcNumYears(minYear, maxYear)
+  setNumYears(minYear, maxYear)
   {
     let minYearIdx = 0
     let maxYearIdx = maxYear-minYear-1  // N.B: -1 to account for starting at 0
@@ -245,4 +246,165 @@ class ClimateData
     this._years[minYear, maxYear, null]
   }
 
+
+  // ==========================================================================
+  // Handle location name
+  // ==========================================================================
+
+  setName(part1=null, part2=null, part3=null)
+  {
+    this._name = [part1, part2, part3]
+  }
+
+  getName()
+  {
+    // remove empty elements
+    nonNullNameParts = this._name.filter(function(part){return part!=null})
+    // concatenate to final name string, seperate parts by ", "
+    return nonNullNameParts.join(", ")
+  }
+
+
+  // ==========================================================================
+  // Handle GPS location
+  // ==========================================================================
+
+  setPosition(coords)
+  {
+    this._position = coords
+  }
+
+  getPosition()
+  {
+    let ns = this._convertDDtoDMS(coords.lat, "N", "S")
+    let ew = this._convertDDtoDMS(coords.lng, "E", "W")
+    return (ns + " " + ew)
+  }
+
+
+  // ==========================================================================
+  // Handle elevation
+  // ==========================================================================
+
+  setElevation(value)
+  {
+    if (value>0)
+      this._elevation = elevation + " m"
+    else
+      this._elevation = null
+  }
+
+  getElevation()
+  {
+    return this._elevation
+  }
+
+  setClimateClass()
+  {
+    let ccCreator = new ClimateClassCreator(this)
+  	this._climate_class = ccCreator.getClimateClass()
+    console.log(this._climate_class);
+  }
+
+  getClimateClass()
+  {
+    return this._climate_class
+  }
+
+
+  // ==========================================================================
+  // Extract the monthly relevant data points for the visualization
+  // -> for each month: name of month, precipitation sum and temperature mean
+  // ==========================================================================
+
+  getMonthlyData()
+  {
+    let monthlyData = []
+    for (var monthIdx=0; monthIdx<MONTHS_IN_YEAR.length; monthIdx++)
+    {
+      monthlyData[monthIdx] = {
+        monthIdx :  monthIdx,
+        month:      MONTHS_IN_YEAR[monthIdx],
+        temp:       this._temp[monthIdx].mean,
+        prec:       this._prec[monthIdx].sum,
+      }
+    }
+    return monthlyData
+  }
+
+
+  // ==========================================================================
+  // Get total min/max temperature and precipitation
+  // ==========================================================================
+
+  getExtremeData()
+  {
+    let monthlyData = this.getMonthlyData()
+    return {
+        minTemp: d3.min(monthlyData, function(d) { return d.temp; }),
+        maxTemp: d3.max(monthlyData, function(d) { return d.temp; }),
+        minPrec: d3.min(monthlyData, function(d) { return d.prec; }),
+        maxPrec: d3.max(monthlyData, function(d) { return d.prec; }),
+      }
+  }
+
+
+  // ==========================================================================
+  // Get temperature mean / precipitation sum
+  // ==========================================================================
+
+  getTempMean()
+  {
+    return this._temp_mean
+  }
+
+  getPrecSum()
+  {
+    return this._prec_sum
+  }
+
+
+  // ==========================================================================
+  // Get hemisphere ("N" = north, "S" = south)
+  // ==========================================================================
+
+  getHemisphere()
+  {
+    if (this._position.lat >= 0)
+      return "N"
+    else
+      return "S"
+  }
+
+
+  // ##########################################################################
+  // PRIVATE MEMBERS
+  // ##########################################################################
+
+  // ==========================================================================
+  // Decimal Degree (dd.ddd "N|S") -> Degree Minute Second (dd°mm'ss" "N|S")
+  // ==========================================================================
+
+  _convertDDtoDMS(dd, charAboveNull, charBelowNull)
+  {
+    let deg = Math.floor(dd)
+    let minFloat = (dd-deg)*60
+    let min = Math.floor(minFloat)
+    let secFloat = (minFloat-min)*60
+    let sec = Math.round(secFloat)
+    // Eliminate rounding errors
+    if (sec==60)
+    {
+      min++
+      sec=0
+    }
+    if (min==60)
+    {
+      deg++
+      min=0
+    }
+    // Character showing the orientation in cardinal direction
+    let char = dd<0 ? charBelowNull : charAboveNull
+    return deg + "° " + min + "'' " + sec + '" ' + char
+  }
 }

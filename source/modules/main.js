@@ -23,6 +23,7 @@ const MONTHS_IN_YEAR =
   "Jan", "Feb", "Mar", "Apr", "May", "Jun",
   "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
 ]
+const SUMMER_MONTHS = [3, 8]  // April (3) until September (8)
 
 
 // ============================================================================
@@ -144,6 +145,7 @@ main.modules = {}
 // --------------------------------------------------------------------------
 
 main.modules.helpers = new Helpers(main)
+main.modules.serverInterface = new ServerInterface(main)
 
 // --------------------------------------------------------------------------
 // Controller

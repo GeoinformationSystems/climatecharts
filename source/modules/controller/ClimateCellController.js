@@ -71,7 +71,7 @@ class ClimateCellController
     this._cellDimensions.lat = lat
     this._cellDimensions.lng = lng
   }
-  
+
 
   // ##########################################################################
   // PRIVATE MEMBERS
@@ -105,4 +105,53 @@ class ClimateCellController
 
     return([minPoint, maxPoint])
   }
+
+
+  // ==========================================================================
+  // Create complete climate data object for this climate cell
+  // ==========================================================================
+
+  _loadDataForCell(coords)
+  {
+    // collect all necessary climate data to create new dataset
+    $.when(getData(0), getData(1), getName(), getElevation())
+  }
+
+
+  // --------------------------------------------------------------------------
+  // Load climate
+  // --------------------------------------------------------------------------
+
+  _loadClimateData(idx)
+  {
+    let url = "";
+    let variable = "";
+
+    let dataset = this._main.modules.datasetController.getDataset()
+
+    // Detect the climate variable in the netcdf dataset by using the
+    // dimensions as an indicator.
+    for (var name in UI.ncML[idx].variable)
+      if (UI.ncML[idx].variable[name]._shape == "time lat lon")
+        variable = UI.ncML[idx].variable[name]._name;
+
+    url += ""
+        + ENDPOINTS.thredds
+        + "/ncss/"
+        + UI.catalog.dataset[key].dataset[idx]._urlPath
+        + "?var=" +variable
+        + "&latitude=" +  UI.lat
+        + "&longitude=" + UI.lng
+        + "&time_start=" +UI.start   + "-01-01T00:00:00Z"
+        + "&time_end=" +  (UI.end-1) + "-12-30T00:00:00Z";
+
+    return $.get(url)
+      .fail(function(jqXHR, textStatus, errorThrown)
+        {
+          alert("Error occured: " +errorThrown);
+        }
+      );
+  }
+
+
 }

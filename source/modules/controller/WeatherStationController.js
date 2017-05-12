@@ -138,48 +138,45 @@ class WeatherStationController
 
   _loadStations()
   {
-    $.get
-    (''
-      + ENDPOINTS.weatherstations
-      + "/getAllStations",
+    this._main.modules.serverInterface.requestAllWeatherStations(
       (allStationsData) =>
-      {
-        // For each station
-        for (var stationData of allStationsData)
         {
-          var station =           new WeatherStation()
-
-          // fill general data
-          station.id =              stationData.id
-          station.name =            stationData.name
-          station.country =         stationData.country
-          station.position =
+          // For each station
+          for (var stationData of allStationsData)
           {
-              lat:                  stationData.lat,
-              lng:                  stationData.lng,
+            var station =             new WeatherStation()
+
+            // fill general data
+            station.id =              stationData.id
+            station.name =            stationData.name
+            station.country =         stationData.country
+            station.position =
+            {
+                lat:                  stationData.lat,
+                lng:                  stationData.lng,
+            }
+            station.elev =            stationData.elev
+            station.min_year =        stationData.min_year
+            station.max_year =        stationData.max_year
+            station.coverage_rate =   stationData.complete_data_rate
+            station.largest_gap =     stationData.largest_gap
+            station.missing_months =  stationData.missing_months
+
+            // Save station
+            this._stations.push(station)
+
+            // Put markers on the map, if it has data in the current time range
+            if (this._isActiveInTimeRange(station))
+            {
+              this._activate(station)
+              this._activeStations.push(station)
+            }
+
+            // Click on marker => get climate data
+            // using JavaScript anonymous-functions-and-bind-magic :)
+            // credits: http://stackoverflow.com/questions/10000083/javascript-event-handler-with-parameters
           }
-          station.elev =            stationData.elev
-          station.min_year =        stationData.min_year
-          station.max_year =        stationData.max_year
-          station.coverage_rate =   stationData.complete_data_rate
-          station.largest_gap =     stationData.largest_gap
-          station.missing_months =  stationData.missing_months
-
-          // Save station
-          this._stations.push(station)
-
-          // Put markers on the map, if it has data in the current time range
-          if (this._isActiveInTimeRange(station))
-          {
-            this._activate(station)
-            this._activeStations.push(station)
-          }
-
-          // Click on marker => get climate data
-          // using JavaScript anonymous-functions-and-bind-magic :)
-          // credits: http://stackoverflow.com/questions/10000083/javascript-event-handler-with-parameters
         }
-      }
     );
   }
 
@@ -190,32 +187,35 @@ class WeatherStationController
 
   _loadDataForStation(station)
   {
-    // TODO: years
-    $.get(
-      (''
-        + ENDPOINTS.weatherstations
-        + '/getStationData'
-        + '?stationId='
-        + station.id
-        + '&minYear='
-        + this._main.modules.timeController.getMinYear()
-        + '&maxYear='
-        + this._main.modules.timeController.getMaxYear()
-      ),
-      climateData =>
+    this._main.modules.serverInterface.requestDataForWeatherStation(
+      station.id,
+      this._main.modules.timeController.getMinYear(),
+      this._main.modules.timeController.getMaxYear(),
+      (climateData) =>
         {
-          // initialize empty climate data object
           station.climateData = new ClimateData()
 
-          // fill station with climate data
+          // Fill station with climate data
           station.climateData.fillTemp(climateData.temp)
           station.climateData.fillPrec(climateData.prec)
 
-          // calculate number of years
-          // TODO: check for reasonability
+          // Calculate number of years
           let minYear = this._main.modules.timeController.getMinYear()
           let maxYear = this._main.modules.timeController.getMaxYear()
-          station.climateData.calcNumYears(minYear, maxYear)
+          station.climateData.setNumYears(minYear, maxYear)
+
+          // Fill meta information
+          station.climateData.setName(
+            station.name,
+            station.country
+          )
+          station.climateData.setPosition(station.coords)
+          station.climateData.setElevation(station.elevation)
+          station.climateData.setClimateClass()
+
+
+
+          console.log(station.climateData);
         }
     )
   }

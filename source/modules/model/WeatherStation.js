@@ -24,6 +24,7 @@ class WeatherStation
 
     this.id =             null
     this.name =           ""
+    this.country =        ""
     this.coords =
     {
       lat:                0.0,
@@ -34,6 +35,8 @@ class WeatherStation
     this.max_year =       9999
     this.coverage_rate =  1.0
     this.largest_gap =    0
+    this.missing_months = 0
+
     this.climateData =    null
 
 
