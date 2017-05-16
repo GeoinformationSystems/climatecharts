@@ -39,14 +39,17 @@ class ClimateCellController
 
   set(coords)
   {
+    // View
     if (this._cellActive)
       this._main.modules.climateCellOnMap.reset(this._getCellBounds(coords))
     else
-    {
       this._main.modules.climateCellOnMap.set(this._getCellBounds(coords))
-      this._cellActive = true
-    }
+
+    // Controller
+    this._cellActive = true
+    this._main.modules.climateDatasetController.loadClimateData(this._getCellBounds(coords))
   }
+
 
   // ==========================================================================
   // Cleanup
@@ -56,7 +59,10 @@ class ClimateCellController
   {
     if (this._cellActive)
     {
+      // View
       this._main.modules.climateCellOnMap.remove()
+
+      // Controller
       this._cellActive = false
     }
   }

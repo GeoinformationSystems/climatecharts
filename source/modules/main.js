@@ -23,7 +23,9 @@ const MONTHS_IN_YEAR =
   "Jan", "Feb", "Mar", "Apr", "May", "Jun",
   "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
 ]
-const SUMMER_MONTHS = [3, 8]  // April (3) until September (8)
+const SUMMER_MONTHS = [3, 8]    // April (3) until September (8)
+
+const RASTER_SIZE = [0.5, 0.5]  // Raster cell size for simulated climate data
 
 
 // ============================================================================
@@ -104,6 +106,15 @@ main.config =
     weight: 2,          // stroke width
   },
 
+  // Datasets
+  datasets:
+  [
+    {
+
+    },
+
+  ],
+
   // Weather stations (marker: circle)
   station:
   {
@@ -140,32 +151,35 @@ main.config =
 
 main.modules = {}
 
+
 // --------------------------------------------------------------------------
 // Helpers
 // --------------------------------------------------------------------------
 
-main.modules.helpers = new Helpers(main)
-main.modules.serverInterface = new ServerInterface(main)
-
-// --------------------------------------------------------------------------
-// Controller
-// --------------------------------------------------------------------------
-
-main.modules.timeController = new TimeController(main)
-main.modules.mapController = new MapController(main)
-main.modules.locationMarkerController = new LocationMarkerController(main)
-main.modules.climateCellController = new ClimateCellController(main)
-main.modules.weatherStationController = new WeatherStationController(main)
+main.modules.helpers =                    new Helpers(main)
+main.modules.serverInterface =            new ServerInterface(main)
 
 
 // --------------------------------------------------------------------------
 // View
 // --------------------------------------------------------------------------
 
-main.modules.map = new Map(main)
-main.modules.locationMarkerOnMap = new LocationMarkerOnMap(main)
-main.modules.climateCellOnMap = new ClimateCellOnMap(main)
-main.modules.weatherStationsOnMap = new WeatherStationsOnMap(main)
+main.modules.map =                        new Map(main)
+main.modules.locationMarkerOnMap =        new LocationMarkerOnMap(main)
+main.modules.climateCellOnMap =           new ClimateCellOnMap(main)
+main.modules.weatherStationsOnMap =       new WeatherStationsOnMap(main)
+
+
+// --------------------------------------------------------------------------
+// Controller
+// --------------------------------------------------------------------------
+
+main.modules.timeController =             new TimeController(main)
+main.modules.mapController =              new MapController(main)
+main.modules.locationMarkerController =   new LocationMarkerController(main)
+main.modules.climateCellController =      new ClimateCellController(main)
+main.modules.weatherStationController =   new WeatherStationController(main)
+main.modules.climateDatasetController =   new ClimateDatasetController(main)
 
 
 
@@ -173,9 +187,6 @@ main.modules.weatherStationsOnMap = new WeatherStationsOnMap(main)
 
 
 
-// Map.construct();
-// UI.listDatasets();
-//
 // // initially hide plot-wrapper
 // $('#plot-wrapper').css('visibility', 'hidden');
 //
@@ -192,5 +203,3 @@ main.modules.weatherStationsOnMap = new WeatherStationsOnMap(main)
 //     UI.activatePanning();
 //   }
 // );
-//
-// UI.initStuff();

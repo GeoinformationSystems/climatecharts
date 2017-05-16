@@ -63,6 +63,16 @@ class TimeController
     return this._maxYear
   }
 
+  getMinDate()
+  {
+    return (this._minYear + "-01-01T00:00:00Z")
+  }
+
+  getMaxDate()
+  {
+    return ((this._maxYear-1) + "-12-30T00:00:00Z")
+  }
+
   getNumYears()
   {
     return this._maxYear - this._minYear

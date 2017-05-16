@@ -28,25 +28,74 @@ class ServerInterface
   // Gazetteer location information
   // ==========================================================================
 
-  requestNameForLocation(coords)
-  {
+  /*
+    use me like this:
+    -----------------
+      this._main.modules.serverInterface.requestNameForLocation(
+        coords,
+        (d) => {name = ([d.name, d.adminName1, d.countryName])}
+      )
+    }
+  */
 
+  requestNameForLocation(coords, successCallback)
+  {
+    return this._requestGazetteer(coords, "N", successCallback)
   }
 
-  requestElevationForLocation(coords)
+  requestElevationForLocation(coords, successCallback)
   {
-
+    return this._requestGazetteer(coords, "E", successCallback)
   }
 
 
   // ==========================================================================
-  // Climate data for datasets
+  // Simulated climate data for datasets
   // ==========================================================================
 
-  requestClimateDataForCell(bounds)
+  requestAllDatasets(successCallback)
   {
-
+    $.get(
+      ( ""
+        + ENDPOINTS.thredds
+        + "/catalog.xml"
+      ),
+      successCallback
+    )
   }
+
+  requestMetadataForDataset(urlPaths, successCallback)
+  {
+    let url0 = ""
+      + ENDPOINTS.thredds
+      + "/ncml/"
+      + urlPaths[0]
+    let url1 = ""
+      + ENDPOINTS.thredds
+      + "/ncml/"
+      + urlPaths[1]
+
+    $.when($.get(url0), $.get(url1))
+      .done(successCallback)
+  }
+
+
+  requestClimateDataForCell(urls, variables, bounds, dates, successCallback)
+  {
+    $.get(
+      ( ""
+        + ENDPOINTS.thredds
+        + "/ncss/"
+        + urls[0]
+        + "&latitude=" +    bounds[0]
+        + "&longitude=" +   bounds[1]
+        + "&time_start=" +  dates[0]
+        + "&time_end=" +    dates[1]
+      ),
+      successCallback
+    )
+  }
+
 
   // ==========================================================================
   // Weatherstations
@@ -62,6 +111,7 @@ class ServerInterface
       successCallback
     )
   }
+
 
   requestDataForWeatherStation(stationId, minYear, maxYear, successCallback)
   {
@@ -86,6 +136,27 @@ class ServerInterface
   // PRIVATE MEMBERS
   // ##########################################################################
 
+  // ==========================================================================
+  // Request gazetteer for mode 'N' = name or 'E' = elevation
+  // ==========================================================================
 
+  _requestGazetteer(coords, mode, successCallback)
+  {
+    let url = ENDPOINTS.gazetteer
+    if (mode == 'N')
+      url += "/getName"
+    else if (mode == 'E')
+      url += "/getElevation"
+    else // error
+      return null
+
+    $.get(url,
+        {
+          lat: coords.lat,
+          lng: coords.lng
+        },
+        successCallback
+      )
+  }
 
 }

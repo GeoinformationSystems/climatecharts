@@ -44,17 +44,17 @@ class WeatherStationController
   {
     if (station.is_active)
     {
-      // cleanup currently selected station
+      // Cleanup currently selected station
       this.deselect()
 
-      // model
+      // Model
       station.is_selected = true
       this._loadDataForStation(station)
 
-      // view
+      // View
       this._main.modules.weatherStationsOnMap.highlight(station)
 
-      // controller
+      // Controller
       this._selectedStation = station
       this._main.modules.mapController.clickedOnStation()
     }
@@ -64,13 +64,13 @@ class WeatherStationController
   {
     if (this._selectedStation)
     {
-      // model
+      // Model
       this._selectedStation.is_selected = false
 
-      // view
+      // View
       this._main.modules.weatherStationsOnMap.deHighlight(this._selectedStation)
 
-      // controller
+      // Controller
       this._selectedStation = null
     }
   }
@@ -90,7 +90,7 @@ class WeatherStationController
   // Return currently active weather station
   // ==========================================================================
 
-  getActiveStation()
+  getSelectedStation()
   {
     return this._selectedStation
   }
@@ -107,26 +107,27 @@ class WeatherStationController
 
   _activate(station)
   {
-    // model
+    // Model
     station.is_active = true
 
-    // view
+    // View
     this._main.modules.weatherStationsOnMap.show(station)
     // TODO: add coordinates to infobox
 
-    // controller
+    // Controller
     this._activeStations.push(station)
   }
 
   _deactivate(station)
   {
-    // model
+    // Model
     station.is_active = false
 
-    // view
+    // View
     this._main.modules.weatherStationsOnMap.hide(station)
 
-    // controller (remove from list)
+    // Controller
+    // -> remove from list
     listIdx = this._activeStations.indexOf(station)
     this._activeStations.splice(listIdx, 1)
   }
