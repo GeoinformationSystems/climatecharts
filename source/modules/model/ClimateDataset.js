@@ -22,7 +22,7 @@ class ClimateDataset
     this.doi =            ""
 
     this.urlDatasets =    []            // url to temp and prec datasets
-    this.metaDatasets =   []
+    this.metaDatasets =   []            // metadata for temp and prec
 
     this.timePeriod =     [null, null]  // start and end year
     this.rasterSize =     [0.0, 0.0]    // size of raster cell (lat / lng degrees)

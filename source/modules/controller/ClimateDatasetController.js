@@ -54,6 +54,14 @@ class ClimateDatasetController
     console.log(dataset);
   }
 
+  selectByName(name)
+  {
+    // Find name in list of datasets
+    for (let dataset of this._datasets)
+      if (dataset.name == name)
+        this.select(dataset)
+  }
+
   deselect()
   {
     if (this._selectedDataset)
@@ -178,6 +186,9 @@ class ClimateDatasetController
         ]
       }
     )
+
+    // Add to view
+    this._main.modules.climateDatasetsInList.add(dataset)
 
     // Initially select the first dataset in the list
     if (!this._selectedDataset)

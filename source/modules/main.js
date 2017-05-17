@@ -168,6 +168,7 @@ main.modules.map =                        new Map(main)
 main.modules.locationMarkerOnMap =        new LocationMarkerOnMap(main)
 main.modules.climateCellOnMap =           new ClimateCellOnMap(main)
 main.modules.weatherStationsOnMap =       new WeatherStationsOnMap(main)
+main.modules.climateDatasetsInList =      new ClimateDatasetsInList(main)
 
 
 // --------------------------------------------------------------------------
