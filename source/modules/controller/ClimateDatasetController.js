@@ -19,6 +19,7 @@ class ClimateDatasetController
   constructor(main)
   {
     this._main = main
+    this._x2js = new X2JS()
 
     // ------------------------------------------------------------------------
     // Member Variables
@@ -82,27 +83,48 @@ class ClimateDatasetController
   // Load climate data for one raster cell
   // ==========================================================================
 
-  loadClimateData(cellBounds)
+  loadClimateData(coords)
   {
     let variables = []
     for (var idx=0; idx<2; idx++)
       for (var name in this._selectedDataset.metaDatasets[idx].variable)
-        if (this._selectedDataset.tempDataset.variable[name]._shape == "time lat lon")
-          variable.push(this._selectedDataset.tempDataset.variable[name]._name)
+        if (this._selectedDataset.metaDatasets[idx].variable[name]._shape == "time lat lon")
+          variables.push(this._selectedDataset.metaDatasets[idx].variable[name]._name)
 
-    this._main.modules.serverInterface.requestDataForDataset(
+    this._main.modules.serverInterface.requestClimateDataForCell(
       this._selectedDataset.urlDatasets,
       variables,          // ["tmp", "pre"]
-      cellBounds,         // [lat, lng]
+      coords,             // [lat, lng]
       [                   // [minDate, maxDate]
         this._main.modules.timeController.getMinDate(),
         this._main.modules.timeController.getMaxDate(),
       ],
-      (tempData, precData) =>    // success callback
+      (tempDataXml, precDataXml, names, elevation) =>    // success callback
       {
-        console.log("Heureka!");
-        console.log(tempData);
-        console.log(precData);
+        // Load data from server in XML and transform to JSON
+        let tempData = this._x2js.xml2json(tempDataXml[0]).grid
+        let precData = this._x2js.xml2json(precDataXml[0]).grid
+
+        // Transform data structure to climateData
+        let climateData = new ClimateData()
+
+        // Actual climate data
+        climateData.fillTemp(this._gridDataToClimateData(tempData))
+        climateData.fillPrec(this._gridDataToClimateData(precData))
+        climateData.calcClimateClass()
+
+        // Meta data
+        climateData.setName(
+          names[0].name,
+          names[0].adminName1,
+          names[0].countryName,
+        )
+        climateData.setPosition(coords)
+        climateData.setElevation(elevation[0].srtm)
+        climateData.setNumYears(
+          this._main.modules.timeController.getMinYear(),
+          this._main.modules.timeController.getMaxYear()
+        )
       }
     )
   }
@@ -133,8 +155,7 @@ class ClimateDatasetController
       (xmlData) =>
         {
           // Parse data
-          let x2js = new X2JS()
-          let catalog = x2js.xml2json(xmlData).catalog
+          let catalog = this._x2js.xml2json(xmlData).catalog
 
           // For each dataset
           for (var dsIdx in catalog.dataset)
@@ -172,26 +193,76 @@ class ClimateDatasetController
       dataset.urlDatasets,
       (tempDataXml, precDataXml) =>
       {
-        let x2js = new X2JS()
         dataset.metaDatasets =
         [
-          x2js.xml2json(tempDataXml[0]).netcdf,
-          x2js.xml2json(precDataXml[0]).netcdf
+          this._x2js.xml2json(tempDataXml[0]).netcdf,
+          this._x2js.xml2json(precDataXml[0]).netcdf
         ]
-
         dataset.rasterSize =
         [
           parseFloat(dataset.metaDatasets[0].group[0].attribute[6]._value),
           parseFloat(dataset.metaDatasets[0].group[0].attribute[7]._value)
         ]
+
+        // Set the cell dimensions
+        this._main.modules.climateCellController.setCellSize(dataset.rasterSize)
+
+        // Add to view
+        this._main.modules.climateDatasetsInList.add(dataset)
+
+        // Initially select the first dataset in the list
+        if (!this._selectedDataset)
+          this.select(this._datasets[0])
       }
     )
+  }
 
-    // Add to view
-    this._main.modules.climateDatasetsInList.add(dataset)
 
-    // Initially select the first dataset in the list
-    if (!this._selectedDataset)
-      this.select(this._datasets[0])
+  // ==========================================================================
+  // Transform grid data to climate data
+  // ==========================================================================
+
+  _gridDataToClimateData(inData)
+  {
+    // Create basic structure
+    /*
+      [                 // month
+        [               // year
+          val_year1,    // temp/prec value
+          val_year2,
+          ...
+          val_yearn
+        ]
+      ]
+    */
+    let outData = []
+    for (let monthIdx=0; monthIdx<MONTHS_IN_YEAR.length; monthIdx++)
+      outData.push([])
+
+    // Read incoming data object and transform it into outgoing structure
+    let minYear = this._main.modules.timeController.getMinYear()
+    let roundingFactor = Math.pow(10, DECIMAL_PLACES)
+    for (let dataIdx=0; dataIdx<inData.point.length; dataIdx++)
+    {
+      let date = new Date(inData.point[dataIdx].data[0].__text)
+      let monthIdx = date.getMonth()
+      let yearIdx = date.getFullYear()-minYear
+      let unit = inData.point[dataIdx].data[3]._units
+      let value = Math.round(
+        parseFloat(inData.point[dataIdx].data[3].__text)*roundingFactor
+      )/roundingFactor
+
+      // If temperature values are in Kelvin units => convert to Celsius.
+      if (unit == "degK")
+        value -= KELVIN_TO_CELSIUS
+
+      // If precipitation values are in cm => convert to mm
+      if (unit == "cm")
+        value *= CM_TO_MM
+
+      // Put in outgoing array
+      outData[monthIdx][yearIdx] = value
+    }
+    return outData
   }
 }

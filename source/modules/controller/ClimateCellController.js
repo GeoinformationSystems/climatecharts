@@ -25,7 +25,7 @@ class ClimateCellController
     this._cellActive = false
 
     // Dimension of climate cell (extent in lat / lng direction)
-    this._cellDimensions =
+    this._cellSize =
     {
       lat: null,
       lng: null,
@@ -47,7 +47,7 @@ class ClimateCellController
 
     // Controller
     this._cellActive = true
-    this._main.modules.climateDatasetController.loadClimateData(this._getCellBounds(coords))
+    this._main.modules.climateDatasetController.loadClimateData(coords)
   }
 
 
@@ -69,13 +69,13 @@ class ClimateCellController
 
 
   // ==========================================================================
-  // New dataset => reset dimension of climate cells in lat/lng
+  // New dataset => reset size of climate cells in lat/lng
   // ==========================================================================
 
-  setCellDimensions(lat, lng)
+  setCellSize(coordsDim)
   {
-    this._cellDimensions.lat = lat
-    this._cellDimensions.lng = lng
+    this._cellSize.lat = coordsDim[0]
+    this._cellSize.lng = coordsDim[1]
   }
 
 
@@ -90,74 +90,20 @@ class ClimateCellController
 
   _getCellBounds(coords)
   {
-    // XXX
-    this._cellDimensions.lat = 0.5
-    // parseFloat(UI.ncML[0].group[0].attribute[6]._value)
-    this._cellDimensions.lng = 0.5
-    // parseFloat(UI.ncML[0].group[0].attribute[7]._value)
-
-    // determine the cell the current point is in
-    // in array format, not object format!
-    var minPoint =
+    // Determine the cell the current point is in
+    // -> in array format, not object format!
+    let minPoint =
     [
-      Math.floor(coords.lat/this._cellDimensions.lat)*this._cellDimensions.lat,
-      Math.floor(coords.lng/this._cellDimensions.lng)*this._cellDimensions.lng
+      Math.floor(coords.lat/this._cellSize.lat)*this._cellSize.lat,
+      Math.floor(coords.lng/this._cellSize.lng)*this._cellSize.lng
     ]
-    var maxPoint =
+    let maxPoint =
     [
-      minPoint[0] + this._cellDimensions.lat,
-      minPoint[1] + this._cellDimensions.lng
+      minPoint[0] + this._cellSize.lat,
+      minPoint[1] + this._cellSize.lng
     ]
 
     return([minPoint, maxPoint])
   }
-
-
-  // ==========================================================================
-  // Create complete climate data object for this climate cell
-  // ==========================================================================
-
-  _loadDataForCell(coords)
-  {
-    // collect all necessary climate data to create new dataset
-    $.when(getData(0), getData(1), getName(), getElevation())
-  }
-
-
-  // --------------------------------------------------------------------------
-  // Load climate
-  // --------------------------------------------------------------------------
-
-  _loadClimateData(idx)
-  {
-    let url = "";
-    let variable = "";
-
-    let dataset = this._main.modules.datasetController.getDataset()
-
-    // Detect the climate variable in the netcdf dataset by using the
-    // dimensions as an indicator.
-    for (var name in UI.ncML[idx].variable)
-      if (UI.ncML[idx].variable[name]._shape == "time lat lon")
-        variable = UI.ncML[idx].variable[name]._name;
-
-    url += ""
-        + ENDPOINTS.thredds
-        + "/ncss/"
-        + UI.catalog.dataset[key].dataset[idx]._urlPath
-        + "?var=" +variable
-        + "&latitude=" +  UI.lat
-        + "&longitude=" + UI.lng
-        + "&time_start=" +UI.start   + "-01-01T00:00:00Z"
-        + "&time_end=" +  (UI.end-1) + "-12-30T00:00:00Z";
-
-    return $.get(url)
-      .fail(function(jqXHR, textStatus, errorThrown)
-        {
-          alert("Error occured: " +errorThrown);
-        }
-      );
-  }
-
 
 }

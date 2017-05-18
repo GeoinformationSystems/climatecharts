@@ -199,11 +199,7 @@ class WeatherStationController
           // Fill station with climate data
           station.climateData.fillTemp(climateData.temp)
           station.climateData.fillPrec(climateData.prec)
-
-          // Calculate number of years
-          let minYear = this._main.modules.timeController.getMinYear()
-          let maxYear = this._main.modules.timeController.getMaxYear()
-          station.climateData.setNumYears(minYear, maxYear)
+          station.climateData.calcClimateClass()
 
           // Fill meta information
           station.climateData.setName(
@@ -212,11 +208,10 @@ class WeatherStationController
           )
           station.climateData.setPosition(station.coords)
           station.climateData.setElevation(station.elevation)
-          station.climateData.setClimateClass()
 
-
-
-          console.log(station.climateData);
+          let minYear = this._main.modules.timeController.getMinYear()
+          let maxYear = this._main.modules.timeController.getMaxYear()
+          station.climateData.setNumYears(minYear, maxYear)
         }
     )
   }

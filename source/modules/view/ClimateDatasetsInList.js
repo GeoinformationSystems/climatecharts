@@ -54,7 +54,7 @@ class ClimateDatasetsInList
 
   remove(climateDataset)
   {
-    // Find dataset in list
+    $('#'+climateDataset.id).remove()
   }
 
 

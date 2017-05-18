@@ -30,7 +30,7 @@ class ClimateData
   // Constructor
   // ==========================================================================
 
-  constructor(main)
+  constructor()
   {
     // ------------------------------------------------------------------------
     // Metadata
@@ -88,25 +88,27 @@ class ClimateData
   // Calculate yearly mean / sum of monthly data
   // ==========================================================================
 
-  fillTemp(data)
+  fillTemp(inData)
   {
+    console.log(inData);
+
     let numMonthsWithData = MONTHS_IN_YEAR.length
 
     // Get data and calculate mean per month
     for (var monthIdx = 0; monthIdx < MONTHS_IN_YEAR.length; monthIdx++)
     {
       // Get raw data
-      this._temp[monthIdx].raw_data = data[monthIdx]
+      this._temp[monthIdx].raw_data = inData[monthIdx]
 
       // For each year
-      let numYears = data[monthIdx].length
+      let numYears = inData[monthIdx].length
       for (var yearIdx = 0; yearIdx < numYears; yearIdx++)
       {
         // Distinguish: is the value given?
-        let tempValue = data[monthIdx][yearIdx]
+        let tempValue = inData[monthIdx][yearIdx]
         // If yes, account for monthly mean
         if (tempValue != null)
-          this._temp[monthIdx].mean += data[monthIdx][yearIdx]
+          this._temp[monthIdx].mean += inData[monthIdx][yearIdx]
         // If no, do not account for monthly mean and increase number of gaps
         else
           this._temp[monthIdx].num_gaps += 1
@@ -139,7 +141,7 @@ class ClimateData
   }
 
 
-  fillPrec(data)
+  fillPrec(inData)
   {
     let numMonthsWithData = MONTHS_IN_YEAR.length
 
@@ -147,17 +149,17 @@ class ClimateData
     for (var monthIdx = 0; monthIdx < MONTHS_IN_YEAR.length; monthIdx++)
     {
       // Get raw data
-      this._prec[monthIdx].raw_data = data[monthIdx]
+      this._prec[monthIdx].raw_data = inData[monthIdx]
 
       // For each year
-      let numYears = data[monthIdx].length
+      let numYears = inData[monthIdx].length
       for (var yearIdx = 0; yearIdx < numYears; yearIdx++)
       {
         // Distinguish: is the value given?
-        let tempValue = data[monthIdx][yearIdx]
+        let tempValue = inData[monthIdx][yearIdx]
         // If yes, account for monthly sum
         if (tempValue != null)
-          this._prec[monthIdx].sum += data[monthIdx][yearIdx]
+          this._prec[monthIdx].sum += inData[monthIdx][yearIdx]
         // If not, do not account for monthly sum and increase number of gaps
         else
           this._prec[monthIdx].num_gaps += 1
@@ -299,11 +301,10 @@ class ClimateData
     return this._elevation
   }
 
-  setClimateClass()
+  calcClimateClass()
   {
     let ccCreator = new ClimateClassCreator(this)
   	this._climate_class = ccCreator.getClimateClass()
-    console.log(this._climate_class);
   }
 
   getClimateClass()

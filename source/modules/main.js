@@ -25,7 +25,8 @@ const MONTHS_IN_YEAR =
 ]
 const SUMMER_MONTHS = [3, 8]    // April (3) until September (8)
 
-const RASTER_SIZE = [0.5, 0.5]  // Raster cell size for simulated climate data
+const DECIMAL_PLACES = 2        // Number of decimal places for climate data
+const KELVIN_TO_CELSIUS = 273.15
 
 
 // ============================================================================

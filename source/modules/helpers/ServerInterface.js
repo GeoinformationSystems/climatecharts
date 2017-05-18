@@ -38,14 +38,14 @@ class ServerInterface
     }
   */
 
-  requestNameForLocation(coords, successCallback)
+  requestNameForLocation(coords)
   {
-    return this._requestGazetteer(coords, "N", successCallback)
+    return this._requestGazetteer(coords, "N")
   }
 
-  requestElevationForLocation(coords, successCallback)
+  requestElevationForLocation(coords)
   {
-    return this._requestGazetteer(coords, "E", successCallback)
+    return this._requestGazetteer(coords, "E")
   }
 
 
@@ -80,20 +80,30 @@ class ServerInterface
   }
 
 
-  requestClimateDataForCell(urls, variables, bounds, dates, successCallback)
+  requestClimateDataForCell(urls, variables, coords, dates, successCallback)
   {
-    $.get(
-      ( ""
+    let reqUrls = []
+    for (let i=0; i<=1; i++)
+    {
+      reqUrls.push(""
         + ENDPOINTS.thredds
         + "/ncss/"
-        + urls[0]
-        + "&latitude=" +    bounds[0]
-        + "&longitude=" +   bounds[1]
+        + urls[i]
+        + "?var=" +         variables[i]
+        + "&latitude=" +    coords.lat
+        + "&longitude=" +   coords.lng
         + "&time_start=" +  dates[0]
         + "&time_end=" +    dates[1]
-      ),
-      successCallback
+      )
+    }
+
+    $.when(
+      $.get(reqUrls[0]),                    // Temperature
+      $.get(reqUrls[1]),                    // Precipitation
+      this._requestGazetteer(coords, "N"),  // Name
+      this._requestGazetteer(coords, "E"),  // Elevation
     )
+      .done(successCallback)
   }
 
 
@@ -140,7 +150,7 @@ class ServerInterface
   // Request gazetteer for mode 'N' = name or 'E' = elevation
   // ==========================================================================
 
-  _requestGazetteer(coords, mode, successCallback)
+  _requestGazetteer(coords, mode)
   {
     let url = ENDPOINTS.gazetteer
     if (mode == 'N')
@@ -150,12 +160,11 @@ class ServerInterface
     else // error
       return null
 
-    $.get(url,
+    return $.get(url,
         {
           lat: coords.lat,
           lng: coords.lng
-        },
-        successCallback
+        }
       )
   }
 
