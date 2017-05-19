@@ -23,10 +23,11 @@ const MONTHS_IN_YEAR =
   "Jan", "Feb", "Mar", "Apr", "May", "Jun",
   "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
 ]
-const SUMMER_MONTHS = [3, 8]    // April (3) until September (8)
+const SUMMER_MONTHS =     [3, 8]    // April (3) until September (8)
 
-const DECIMAL_PLACES = 2        // Number of decimal places for climate data
+const DECIMAL_PLACES =    2         // Number of decimal places for climate data
 const KELVIN_TO_CELSIUS = 273.15
+const CM_TO_MM =          10
 
 
 // ============================================================================
@@ -75,13 +76,15 @@ let main = {}
 main.config =
 {
   // Time
-  periodLength: 30,         // number of years in time period (default: 30)
-  endYear:      2000,       // initial end year of the period
+  minYear:      1900        // Minimum possible year of climate data
+  maxYear:      2010        // Maximum possible year of climate data
+  periodLength: 30,         // Number of years in time period (default: 30)
+  periodEnd:    2000,       // Initial end year of the period
 
   // Map
   mapContainer: "map",
-  startPos:     [50, 10],   // initial map center [lat, lng]
-  startZoom:    2,          // discrete zoom level [0 .. 12]
+  startPos:     [50, 10],   // Initial map center [lat, lng]
+  startZoom:    2,          // Discrete zoom level [0 .. 12]
   tileLayers:
   [
     L.tileLayer(    // ESRI Online
@@ -165,10 +168,16 @@ main.modules.serverInterface =            new ServerInterface(main)
 // View
 // --------------------------------------------------------------------------
 
+// Map
 main.modules.map =                        new Map(main)
 main.modules.locationMarkerOnMap =        new LocationMarkerOnMap(main)
 main.modules.climateCellOnMap =           new ClimateCellOnMap(main)
 main.modules.weatherStationsOnMap =       new WeatherStationsOnMap(main)
+
+// Timeline
+main.modules.timeline =                   new Timeline(main)
+
+// Misc
 main.modules.climateDatasetsInList =      new ClimateDatasetsInList(main)
 
 

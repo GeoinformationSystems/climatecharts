@@ -41,4 +41,30 @@ class Helpers
   }
 
 
+  // ==========================================================================
+  // Check if Integer
+  // ==========================================================================
+
+  checkIfInt(num)
+  {
+    if (num === parseInt(num, 10))
+      return true
+    else
+      return false
+  }
+
+
+  // ==========================================================================
+  // Swap values
+  // ==========================================================================
+
+  swapValues (valArray)
+  {
+    let tempVal = valArray[0]
+    valArray[0] = valArray[1]
+    valArray[1] = tempVal
+    return valArray
+  }
+
+
 }
