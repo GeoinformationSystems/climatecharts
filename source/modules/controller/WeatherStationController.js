@@ -190,8 +190,8 @@ class WeatherStationController
   {
     this._main.modules.serverInterface.requestDataForWeatherStation(
       station.id,
-      this._main.modules.timeController.getMinYear(),
-      this._main.modules.timeController.getMaxYear(),
+      this._main.modules.timeController.getPeriodStart(),
+      this._main.modules.timeController.getPeriodEnd(),
       (climateData) =>
         {
           station.climateData = new ClimateData()
@@ -209,8 +209,8 @@ class WeatherStationController
           station.climateData.setPosition(station.coords)
           station.climateData.setElevation(station.elevation)
 
-          let minYear = this._main.modules.timeController.getMinYear()
-          let maxYear = this._main.modules.timeController.getMaxYear()
+          let minYear = this._main.modules.timeController.getPeriodStart()
+          let maxYear = this._main.modules.timeController.getPeriodEnd()
           station.climateData.setNumYears(minYear, maxYear)
         }
     )
@@ -226,8 +226,8 @@ class WeatherStationController
   {
     // idea: two time perions (A and B), two time points (0 = start, 1 = end)
     // A and B overlap if A0 < B1 and A1 > B0
-    if ((station.min_year < this._main.modules.timeController.getMaxYear()) &&
-        (station.max_year > this._main.modules.timeController.getMinYear()) )
+    if ((station.min_year < this._main.modules.timeController.getPeriodEnd()) &&
+        (station.max_year > this._main.modules.timeController.getPeriodStart()) )
       return true
     else
       return false

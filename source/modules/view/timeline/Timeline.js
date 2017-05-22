@@ -26,30 +26,197 @@ class Timeline
     // Member Variables
     // ------------------------------------------------------------------------
 
-    this._sliderDiv = $('#slider')
+    this._sliderDiv =       $('#slider')
+    this._periodStartDiv =  $('#period-start')
+    this._periodEndDiv =    $('#period-end')
+    this._clickOnRange =    false
+  }
 
 
+  // ==========================================================================
+  // Init after all controllers are fully loaded
+  // ==========================================================================
+
+  init(minYear, maxYear, periodStart, periodEnd)
+  {
     // ------------------------------------------------------------------------
-    // Setup Slider
+    // Event Handling
     // ------------------------------------------------------------------------
 
-    let currentDatasetPeriod = this._main.modules.climateDatasetController.getSelectedDataset().timePeriod
-    let minYear = this._main.modules.timeController.getMinYear()
-    let maxYear = this._main.modules.timeController.getMaxYear()
-
-    this._slider = this._sliderDiv.slider(
+    this._sliderDiv.slider(
       {
         range:  true,
-        min:    currentDatasetPeriod[0],
-        max:    currentDatasetPeriod[0],
-        values: [minYear, maxYear]
-      }
+        min:    minYear,
+        max:    maxYear,
+        values: [periodStart, periodEnd],
+        slide:  (evt) =>
+          {
+            setTimeout( () =>
+              {
+                let periodStart = this._sliderDiv.slider("values", 0)
+                let periodEnd =   this._sliderDiv.slider("values", 1)
+                this.updatePeriod(periodStart, periodEnd)
+              },10
+            )
+          },
+        change:  (evt) =>
+          {
+            if (!this._clickOnRange)
+            {
+              console.log("CHANGE!")
+              let periodStart = this._sliderDiv.slider("values", 0)
+              let periodEnd =   this._sliderDiv.slider("values", 1)
+              this._main.modules.timeController.setPeriod(
+                (periodEnd-periodStart), periodEnd
+              )
+            }
 
+            // Reset click detection variable
+            this._clickOnRange = false
+            this.updateRangePosition()
+          },
+        create:  (evt) =>
+          {
+            // Click on slider bar -> move it
+            // There is no simple way to stop the current slider impl.
+            // from working with their event handlers
+            // => Create own invisible bar above that can be changed
+            let rangeSlider = $("<div id='range-slider'></div>")
+            $("body").append(rangeSlider)
+            rangeSlider.css(
+              {
+                'position':   'absolute',
+                'background': 'transparent',
+                'z-index':    100
+              }
+            )
+
+            // Determine drag movement of range slider
+            let startDragging = false
+            let xPos = null
+            let leftRangePos = null
+            let rightRangePos = null
+            let yearsPerPx = null
+            let sliderHandles = $('.ui-slider-handle')
+
+            rangeSlider.mousedown( (evt) =>
+              {
+                startDragging = true
+                xPos = evt.clientX
+                yearsPerPx = (maxYear-minYear) / this._sliderDiv.width()
+                leftRangePos =  sliderHandles.first().position().left
+                rightRangePos = sliderHandles.last().position().left
+              }
+            )
+
+            rangeSlider.mousemove( (evt) =>
+              {
+                if (startDragging)
+                {
+                  // Calculate move distance
+                  let newXPos = evt.clientX
+                  let moveDistance = newXPos-xPos
+
+                  // Apply move distance on range slider
+                  let rangeSliderOldXPos = rangeSlider.position().left
+                  rangeSlider.css('left', rangeSliderOldXPos+moveDistance)
+
+                  // Apply move distance on actual slider
+                  let newLeftRangePos = leftRangePos+moveDistance
+                  let leftRangeValue = Math.abs(
+                    yearsPerPx*newLeftRangePos + minYear)
+                  this._sliderDiv.slider("values", 0, leftRangeValue)
+
+                  let newRightRangePos = rightRangePos+moveDistance
+                  let rightRangeValue = Math.abs(
+                    yearsPerPx*newRightRangePos + minYear)
+                  this._sliderDiv.slider("values", 1, rightRangeValue)
+
+                  // Reset variable
+                  xPos = newXPos
+                  leftRangePos = newLeftRangePos
+                  rightRangePos = newRightRangePos
+                }
+              }
+            )
+
+            rangeSlider.mouseup( (evt) =>
+              {
+                // Reset variables
+                startDragging = false
+                xPos = null
+                leftRangePos  = null
+                rightRangePos = null
+              }
+            )
+
+            // Ensure that slider range has always the correct position
+            setTimeout(this.updateRangePosition, 1000)
+            setTimeout(this.updateRangePosition, 2000)
+            setTimeout(this.updateRangePosition, 5000)
+          }
+      }
     )
 
+    this.updateMinMaxYear(minYear, maxYear)
+    this.updatePeriod(periodStart, periodEnd)
 
-
+    // Ensure that slider range has always the correct position
+    $(window).resize(this.updateRangePosition)
   }
+
+
+
+  // ==========================================================================
+  // Update period and min/max years
+  // ==========================================================================
+
+  updatePeriod(start, end)
+  {
+    this._periodStart = start
+    this._periodEnd = end
+    this._periodStartDiv.html(start)
+    this._periodEndDiv.html(end)
+  }
+
+  updateMinMaxYear(min, max)
+  {
+    this._minYear = min
+    this._maxYear = max
+    this._sliderDiv.slider("option", "min", min)
+    this._sliderDiv.slider("option", "max", max)
+  }
+
+  // ==========================================================================
+  // Update position of range slider
+  // ==========================================================================
+
+  updateRangePosition()
+  {
+    let rangeDiv = $('.ui-slider-range')
+    let rangePos =
+    {
+      left:     rangeDiv.offset().left + 5,
+      top:      rangeDiv.offset().top,
+      width:    rangeDiv.width() - 10,
+      height:   rangeDiv.height(),
+    }
+    $('#range-slider').css(
+      {
+        'top':        rangePos.top,
+        'left':       rangePos.left,
+        'width':      rangePos.width,
+        'height':     rangePos.height,
+      }
+    )
+  }
+
+
+  // ##########################################################################
+  // PRIVATE MEMBERS
+  // ##########################################################################
+
+
 
 /*
   // =========================== H E A D E R =========================== //

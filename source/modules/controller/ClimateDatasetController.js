@@ -51,8 +51,9 @@ class ClimateDatasetController
 
     // Controller
     this._selectedDataset = dataset
-
-    console.log(dataset);
+    this._main.modules.timeController.setMinMaxYear(
+      dataset.timePeriod[0], dataset.timePeriod[1]
+    )
   }
 
   selectByName(name)
@@ -122,8 +123,8 @@ class ClimateDatasetController
         climateData.setPosition(coords)
         climateData.setElevation(elevation[0].srtm)
         climateData.setNumYears(
-          this._main.modules.timeController.getMinYear(),
-          this._main.modules.timeController.getMaxYear()
+          this._main.modules.timeController.getPeriodStart(),
+          this._main.modules.timeController.getPeriodEnd()
         )
       }
     )
@@ -240,7 +241,7 @@ class ClimateDatasetController
       outData.push([])
 
     // Read incoming data object and transform it into outgoing structure
-    let minYear = this._main.modules.timeController.getMinYear()
+    let minYear = this._main.modules.timeController.getPeriodStart()
     let roundingFactor = Math.pow(10, DECIMAL_PLACES)
     for (let dataIdx=0; dataIdx<inData.point.length; dataIdx++)
     {

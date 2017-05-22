@@ -76,8 +76,8 @@ let main = {}
 main.config =
 {
   // Time
-  minYear:      1900        // Minimum possible year of climate data
-  maxYear:      2010        // Maximum possible year of climate data
+  minYear:      1900,       // Minimum possible year of climate data
+  maxYear:      2010,       // Maximum possible year of climate data
   periodLength: 30,         // Number of years in time period (default: 30)
   periodEnd:    2000,       // Initial end year of the period
 

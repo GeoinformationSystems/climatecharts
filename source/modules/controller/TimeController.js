@@ -19,6 +19,7 @@ class TimeController
   {
     this._main = main
 
+
     // ------------------------------------------------------------------------
     // Member Variables
     // ------------------------------------------------------------------------
@@ -28,8 +29,17 @@ class TimeController
     this._maxYear = main.config.maxYear
 
     // Selected time period of dataset
-    this._periodStart = main.config.endYear-main.config.periodLength
-    this._periodEnd =   main.config.endYear-1
+    this._periodStart = main.config.periodEnd-main.config.periodLength
+    this._periodEnd =   main.config.periodEnd-1
+
+
+    // ------------------------------------------------------------------------
+    // Setup View
+    // ------------------------------------------------------------------------
+
+    this._main.modules.timeline.init(
+      this._minYear, this._maxYear, this._periodStart, this._periodEnd
+    )
   }
 
 
@@ -47,6 +57,8 @@ class TimeController
     if (year > this._maxYear)
 
     this._minYear = year
+
+    this._onMinMaxChange()
   }
 
   setMaxYear(year)
@@ -56,6 +68,8 @@ class TimeController
       return console.error("The given year is not an integer");
     // - larger than min year?
     this._maxYear = year
+
+    this._onMinMaxChange()
   }
 
   setMinMaxYear(minYear, maxYear)
@@ -71,6 +85,8 @@ class TimeController
 
     this._minYear = minYear
     this._maxYear = maxYear
+
+    this._onMinMaxChange()
   }
 
   getMinYear()
@@ -117,6 +133,8 @@ class TimeController
 
       this._periodStart = year
     }
+
+    this._onPeriodChange()
   }
 
   setPeriodEnd(year)
@@ -143,6 +161,8 @@ class TimeController
 
       this._periodStart = year
     }
+
+    this._onPeriodChange()
   }
 
   setPeriod(length, endYear)
@@ -168,9 +188,11 @@ class TimeController
       this._periodEnd =   endYear-1
       this._periodStart = endYear-length
     }
+
+    this._onPeriodChange()
   }
 
-  getPeriodStartYear()
+  getPeriodStart()
   {
     return this._periodStart
   }
@@ -180,7 +202,7 @@ class TimeController
     return (this._periodStart + "-01-01T00:00:00Z")
   }
 
-  getPeriodEndYear()
+  getPeriodEnd()
   {
     return this._periodEnd
   }
@@ -204,5 +226,24 @@ class TimeController
   // ##########################################################################
   // PRIVATE MEMBERS
   // ##########################################################################
+
+
+  // ==========================================================================
+  // Dummy hardcode listener principle
+  // ==========================================================================
+
+  _onPeriodChange()
+  {
+    this._main.modules.timeline.updatePeriod(
+      this._periodStart, this._periodEnd
+    )
+  }
+
+  _onMinMaxChange()
+  {
+    this._main.modules.timeline.updateMinMaxYear(
+      this._minYear, this._maxYear
+    )
+  }
 
 }
