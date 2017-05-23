@@ -112,7 +112,6 @@ class WeatherStationController
 
     // View
     this._main.modules.weatherStationsOnMap.show(station)
-    // TODO: add coordinates to infobox
 
     // Controller
     this._activeStations.push(station)

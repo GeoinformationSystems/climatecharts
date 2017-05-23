@@ -242,7 +242,8 @@ class ClimateDatasetController
 
     // Read incoming data object and transform it into outgoing structure
     let minYear = this._main.modules.timeController.getPeriodStart()
-    let roundingFactor = Math.pow(10, DECIMAL_PLACES)
+    let roundingFactor = Math.pow(
+      10, this._main.config.decimalPlacesForClimateData)
     for (let dataIdx=0; dataIdx<inData.point.length; dataIdx++)
     {
       let date = new Date(inData.point[dataIdx].data[0].__text)

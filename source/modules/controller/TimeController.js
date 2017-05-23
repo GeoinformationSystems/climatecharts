@@ -25,12 +25,12 @@ class TimeController
     // ------------------------------------------------------------------------
 
     // Possible min/max years of dataset
-    this._minYear = main.config.minYear
-    this._maxYear = main.config.maxYear
+    this._minYear = main.config.time.minYear
+    this._maxYear = main.config.time.maxYear
 
     // Selected time period of dataset
-    this._periodStart = main.config.periodEnd-main.config.periodLength
-    this._periodEnd =   main.config.periodEnd-1
+    this._periodStart = main.config.time.periodEnd-main.config.time.periodLength
+    this._periodEnd =   main.config.time.periodEnd-1
 
 
     // ------------------------------------------------------------------------

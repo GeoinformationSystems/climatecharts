@@ -25,7 +25,7 @@ const MONTHS_IN_YEAR =
 ]
 const SUMMER_MONTHS =     [3, 8]    // April (3) until September (8)
 
-const DECIMAL_PLACES =    2         // Number of decimal places for climate data
+// Conversion factors
 const KELVIN_TO_CELSIUS = 273.15
 const CM_TO_MM =          10
 
@@ -75,33 +75,43 @@ let main = {}
 
 main.config =
 {
-  // Time
-  minYear:      1900,       // Minimum possible year of climate data
-  maxYear:      2010,       // Maximum possible year of climate data
-  periodLength: 30,         // Number of years in time period (default: 30)
-  periodEnd:    2000,       // Initial end year of the period
+  time :
+  {
+    minYear:      1900,       // Minimum possible year of climate data
+    maxYear:      2010,       // Maximum possible year of climate data
+    periodLength: 30,         // Number of years in time period (default: 30)
+    periodEnd:    2000,       // Initial end year of the period
+  },
 
-  // Map
-  mapContainer: "map",
-  startPos:     [50, 10],   // Initial map center [lat, lng]
-  startZoom:    2,          // Discrete zoom level [0 .. 12]
-  tileLayers:
-  [
-    L.tileLayer(    // ESRI Online
-      'https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}',
-      {
-        maxZoom: 20,
-        attribution: 'Tiles &copy; ESRI'
-      }
-    ),
-    L.tileLayer(    // OpenStreetMap
-      'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-      {
-        maxZoom: 19,
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-      }
-    )
-  ],
+  map :
+  {
+    container:    "map",
+    startPos:     [50, 10],   // Initial map center [lat, lng]
+    startZoom:    2,          // Discrete zoom level [0 .. 12]
+    maxBoundsViscosity: 0.75, // Solidity of the bounds when dragging [0 .. 1]
+    tileLayers:
+    {
+      "ESRI": L.tileLayer(    // ESRI Online
+        'https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}',
+        {
+          id:           'ESRI',
+          maxZoom:      20,
+          attribution:  'Tiles &copy; ESRI'
+        }
+      ),
+      "OpenStreepMap": L.tileLayer(    // OpenStreetMap
+        'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+        {
+          id:           'OSM',
+          maxZoom:      19,
+          attribution:  '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+        }
+      )
+    },
+  },
+
+  // Coordinates
+  coordinatesDecimalPlaces: 4,  // Visualized coordinate precision (lat/lng)
 
   // Climate cell
   cellStyle:
@@ -111,13 +121,8 @@ main.config =
   },
 
   // Datasets
-  datasets:
-  [
-    {
-
-    },
-
-  ],
+  decimalPlacesForClimateData: 2, // Decimal precision for climate data
+                                  // -> for both temp /prec
 
   // Weather stations (marker: circle)
   station:
@@ -179,6 +184,7 @@ main.modules.timeline =                   new Timeline(main)
 
 // Misc
 main.modules.climateDatasetsInList =      new ClimateDatasetsInList(main)
+main.modules.coordinatesInInfobox =       new CoordinatesInInfobox(main)
 
 
 // --------------------------------------------------------------------------

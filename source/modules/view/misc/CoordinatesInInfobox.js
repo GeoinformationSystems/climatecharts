@@ -1,11 +1,11 @@
 // ############################################################################
-// LocationMarkerController                                          Controller
+// CoordinatesInInfobox                                                   View
 // ############################################################################
-// Manages the current location marker
-// - Get and set marker and its position
+// This class is responsible simply for showing the currently selected
+// coordinates in the infobox on the right side.
 // ############################################################################
 
-class LocationMarkerController
+class CoordinatesInInfobox
 {
   // ##########################################################################
   // PUBLIC MEMBERS
@@ -22,47 +22,37 @@ class LocationMarkerController
     // ------------------------------------------------------------------------
     // Member Variables
     // ------------------------------------------------------------------------
+    this._latDiv = $('#lat')
+    this._lngDiv = $('#lng')
 
-    this._markerActive = false
+    // ------------------------------------------------------------------------
+    // User Interaction
+    // ------------------------------------------------------------------------
 
+    // TODO: also accept writing coordinates in here?
   }
 
 
   // ==========================================================================
-  // Setup / Move marker
+  // Write the coordinates in the infobox
   // ==========================================================================
 
-  set(coords)
+  update(coords)
   {
-    if (this._markerActive)
-      this._main.modules.locationMarkerOnMap.reset(coords)
-    else
-    {
-      this._main.modules.locationMarkerOnMap.set(coords)
-      this._markerActive = true
-    }
+    this._latDiv.val(this._formatCoordinate(coords.lat))
+    this._lngDiv.val(this._formatCoordinate(coords.lng))
   }
-
-
-  // ==========================================================================
-  // Cleanup
-  // ==========================================================================
-
-  cleanup()
-  {
-    if (this._markerActive)
-    {
-      this._main.modules.locationMarkerOnMap.remove()
-      this._markerActive = false
-    }
-  }
-
 
 
   // ##########################################################################
   // PRIVATE MEMBERS
   // ##########################################################################
 
-
+  _formatCoordinate(val)
+  {
+    let factor = Math.pow(10, this._main.config.coordinatesDecimalPlaces)
+    let rounded = Math.round(val*factor)/factor
+    return rounded.toString()
+  }
 
 }

@@ -157,6 +157,12 @@ select {
 	border-bottom: 1px white solid;
 }
 
+/* leaflet map */
+.leaflet-conntainer
+{
+  background-color: white;
+}
+
 /* latitude and longitude input*/
 .coordinates-label
 {

@@ -42,6 +42,14 @@ class MapController
 
     // Staus variable: currently an active weather station?
     this._stationJustActivated = false
+
+    // Coordinates of currently selected geographic entity
+    // -> either weather station or location marker
+    this._coords =
+    {
+      lat: null,
+      lng: null,
+    }
   }
 
 
@@ -58,6 +66,8 @@ class MapController
 
   setLocation(origCoords)
   {
+    let coords = this._bringCoordsInBounds(origCoords)
+
     // If user has clicked on weather station
     if (this._stationJustActivated)
     {
@@ -84,9 +94,15 @@ class MapController
       this._main.modules.weatherStationController.cleanup()
 
       // Setup marker and cell
-      this._main.modules.locationMarkerController.set(origCoords)
-      this._main.modules.climateCellController.set(origCoords)
+      this._main.modules.locationMarkerController.set(coords)
+      this._main.modules.climateCellController.set(coords)
     }
+
+    // Show coordinates in infobox
+    this._main.modules.coordinatesInInfobox.update(coords)
+
+    // Save coordinates
+    this._coords = coords
   }
 
 
@@ -101,14 +117,20 @@ class MapController
   }
 
 
+  // ==========================================================================
+  // Getter
+  // ==========================================================================
+
+  getLocation()
+  {
+    return this._coords
+  }
+
+
+
   // ##########################################################################
   // PRIVATE MEMBERS
   // ##########################################################################
-
-  // ##########################################################################
-  // XXX
-
-/*
 
   // ==========================================================================
   // Bring clicked coordinates of the user into the bounds of the
@@ -136,21 +158,4 @@ class MapController
     return(realCoords)
   }
 
-
-  _showCoords(coords)
-  {
-    let COORD_PRECISION = 4
-    let factor = Math.pow(10, COORD_PRECISION)
-
-    // visualized value shown in the information box on the right
-    let vizCoords =
-    {
-      lat: (Math.round(coords.lat*factor)/factor),
-      lng: (Math.round(coords.lng*factor)/factor),
-    }
-
-    $("#lat").val(vizCoords.lat.toString());
-    $("#lng").val(vizCoords.lng.toString());
-  },
-*/
 }

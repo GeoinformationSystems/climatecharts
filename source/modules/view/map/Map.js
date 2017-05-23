@@ -26,14 +26,22 @@ class Map
     // ------------------------------------------------------------------------
 
     // Leaflet map with initial position / zoom
-    this._map = new L.Map(main.config.mapContainer)
-    this._map.setView(main.config.startPos, main.config.startZoom)
+    this._map = new L.Map(
+      main.config.map.container,
+      {
+        center:     main.config.map.startPos,
+        zoom:       main.config.map.startZoom,
+        maxBounds:  [[-LAT_EXTENT, -LNG_EXTENT], [LAT_EXTENT, LNG_EXTENT]],
+        maxBoundsViscosity: main.config.map.maxBoundsViscosity,
+      }
+    )
 
     // First base map
-    main.config.tileLayers[0].addTo(this._map)
+    let tileLayers = main.config.map.tileLayers
+    tileLayers[Object.keys(tileLayers)[0]].addTo(this._map)
 
     // Map interaction controls: layer selection and scale
-    L.control.layers(main.config.tileLayers).addTo(this._map)
+    L.control.layers(tileLayers).addTo(this._map)
     L.control.scale().addTo(this._map)
 
     // Problem: for some reason this code only leads tiles from the northern

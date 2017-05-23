@@ -29,17 +29,10 @@ class LocationMarkerOnMap
     this._marker = null
   }
 
+
   // ==========================================================================
   // Handle marker position on the map (set, reset, remove)
   // ==========================================================================
-
-  isActive()
-  {
-    if (this._marker != null)
-      return true
-    else
-      return false
-  }
 
   set(coords)
   {
@@ -58,4 +51,13 @@ class LocationMarkerOnMap
     this._map.removeLayer(this._marker)
     this._marker = null
   }
+
+  isActive()
+  {
+    if (this._marker != null)
+    return true
+    else
+    return false
+  }
+
 }
