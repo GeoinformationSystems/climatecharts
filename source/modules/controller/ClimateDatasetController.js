@@ -97,8 +97,8 @@ class ClimateDatasetController
       variables,          // ["tmp", "pre"]
       coords,             // [lat, lng]
       [                   // [minDate, maxDate]
-        this._main.modules.timeController.getMinDate(),
-        this._main.modules.timeController.getMaxDate(),
+        this._main.modules.timeController.getPeriodStart(),
+        this._main.modules.timeController.getPeriodEnd(),
       ],
       (tempDataXml, precDataXml, names, elevation) =>    // success callback
       {
