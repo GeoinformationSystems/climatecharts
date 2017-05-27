@@ -124,9 +124,10 @@ main.config =
     },
   },
 
-  chart:
+  charts:
   {
     container:    'chart-container',
+    className:    'chart',
     climateChart:
     {
       container:  'climate-chart',
@@ -137,7 +138,7 @@ main.config =
     },
     availabilityChart:
     {
-      container:  'availablility-chart', 
+      container:  'availablility-chart',
     },
   },
 

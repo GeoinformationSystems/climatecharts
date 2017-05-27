@@ -25,19 +25,22 @@ class Chart
     // ------------------------------------------------------------------------
 
     this._main = main
-    this._chartName = chartName
+    this._chartMain = main.config.charts[chartName]
     this._climateData = climateData
+
+    this._domElementCreator = new DOMElementCreator()
 
 
     // ------------------------------------------------------------------------
     // Setup container
     // ------------------------------------------------------------------------
 
-    let parentDiv = $('#' + main.config.chart.container)
+    let parentDiv = document.getElementById(main.config.charts.container)
 
-    console.log("created " + this._chartName);
-
-
+    let wrapperDiv = this._domElementCreator.create(
+      'div', this._chartMain.container, this._main.config.charts.className
+    )
+    parentDiv.appendChild(wrapperDiv)
 
     // ------------------------------------------------------------------------
     // User Interaction
@@ -55,7 +58,7 @@ class Chart
   {
     this._climateData = climateData
 
-    console.log("updated " + this._chartName);
+    console.log("updated " + this._chartMain.container);
   }
 
 
@@ -67,7 +70,7 @@ class Chart
   {
     this._climateData = null
 
-    console.log("removed " + this._chartName);
+    console.log("removed " + this._chartMain.container);
   }
 
 
