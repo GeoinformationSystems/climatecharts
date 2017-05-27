@@ -110,19 +110,29 @@ main.config =
     },
   },
 
-  // Coordinates
-  coordinatesDecimalPlaces: 4,  // Visualized coordinate precision (lat/lng)
-
-  // Climate cell
-  cellStyle:
+  coordinates:
   {
-    color:  '#000099',  // background color
-    weight: 2,          // stroke width
+    decimalPlaces: 3,  // Visualized coordinate precision (lat/lng)
   },
 
-  // Datasets
-  decimalPlacesForClimateData: 2, // Decimal precision for climate data
-                                  // -> for both temp /prec
+  climateCell:
+  {
+    style:
+    {
+      color:  '#000099',  // background color
+      weight: 2,          // stroke width
+    },
+  },
+
+  chart:
+  {
+    container: "chart-container",
+  },
+
+  climateData:
+  {
+    decimalPlaces: 2,     // Decimal precision for both temp /prec
+  },
 
   // Weather stations (marker: circle)
   station:
@@ -148,7 +158,7 @@ main.config =
       {
         color:        '#2e6c97',
         fillColor:    '#2b83cb',
-      }
+      },
     }
   }
 }
@@ -197,6 +207,7 @@ main.modules.locationMarkerController =   new LocationMarkerController(main)
 main.modules.climateCellController =      new ClimateCellController(main)
 main.modules.weatherStationController =   new WeatherStationController(main)
 main.modules.climateDatasetController =   new ClimateDatasetController(main)
+main.modules.climateDataController =      new ClimateDataController(main)
 
 
 

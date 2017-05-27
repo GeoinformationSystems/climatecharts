@@ -1,11 +1,14 @@
 // ############################################################################
-// CoordinatesInInfobox                                                   View
+// Chart                                                                  View
 // ############################################################################
-// This class is responsible simply for showing the currently selected
-// coordinates in the infobox on the right side.
+// Is the base class for all visualization charts
+// - Create the div container
+// - Provide d3 as the visualization library
+// - Provide title, subtitle, data reference
+// - Provide functionality for exporting in SVG and PNG
 // ############################################################################
 
-class CoordinatesInInfobox
+class Chart
 {
   // ##########################################################################
   // PUBLIC MEMBERS
@@ -15,32 +18,30 @@ class CoordinatesInInfobox
   // Constructor
   // ==========================================================================
 
-  constructor(main)
+  constructor(main, climateData)
   {
     this._main = main
 
     // ------------------------------------------------------------------------
     // Member Variables
     // ------------------------------------------------------------------------
-    this._latDiv = $('#lat')
-    this._lngDiv = $('#lng')
+
+    this._climateData = climateData
+
+
+    // ------------------------------------------------------------------------
+    // Setup container
+    // ------------------------------------------------------------------------
+
+    let parentDiv = $('#' + main.config.chart.container)
+    
+
 
     // ------------------------------------------------------------------------
     // User Interaction
     // ------------------------------------------------------------------------
 
-    // TODO: also accept writing coordinates in here?
-  }
 
-
-  // ==========================================================================
-  // Write the coordinates in the infobox
-  // ==========================================================================
-
-  update(coords)
-  {
-    this._latDiv.val(this._formatCoordinate(coords.lat))
-    this._lngDiv.val(this._formatCoordinate(coords.lng))
   }
 
 
@@ -48,11 +49,6 @@ class CoordinatesInInfobox
   // PRIVATE MEMBERS
   // ##########################################################################
 
-  _formatCoordinate(val)
-  {
-    let factor = Math.pow(10, this._main.config.coordinates.decimalPlaces)
-    let rounded = Math.round(val*factor)/factor
-    return rounded.toString()
-  }
+
 
 }

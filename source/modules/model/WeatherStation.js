@@ -27,8 +27,8 @@ class WeatherStation
     this.country =        ""
     this.coords =
     {
-      lat:                0.0,
-      lng:                0.0
+      'lat':              0.0,
+      'lng':              0.0
     }
     this.elev =           0.0
     this.min_year =       0

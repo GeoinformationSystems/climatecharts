@@ -21,6 +21,7 @@ class ClimateDatasetController
     this._main = main
     this._x2js = new X2JS()
 
+
     // ------------------------------------------------------------------------
     // Member Variables
     // ------------------------------------------------------------------------
@@ -44,7 +45,6 @@ class ClimateDatasetController
 
     // Model
     dataset.is_selected = true
-    // this._loadDataForDataset(dataset)
 
     // View
     // Selection in ClimateDatasetsInList automatically
@@ -102,29 +102,25 @@ class ClimateDatasetController
       ],
       (tempDataXml, precDataXml, names, elevation) =>    // success callback
       {
-        // Load data from server in XML and transform to JSON
-        let tempData = this._x2js.xml2json(tempDataXml[0]).grid
-        let precData = this._x2js.xml2json(precDataXml[0]).grid
+        // Load climate data from server in XML and transform to JSON
+        let tempDataOrig = this._x2js.xml2json(tempDataXml[0]).grid
+        let precDataOrig = this._x2js.xml2json(precDataXml[0]).grid
 
         // Transform data structure to climateData
-        let climateData = new ClimateData()
+        let tempData = this._gridDataToClimateData(tempDataOrig)
+        let precData = this._gridDataToClimateData(precDataOrig)
 
-        // Actual climate data
-        climateData.fillTemp(this._gridDataToClimateData(tempData))
-        climateData.fillPrec(this._gridDataToClimateData(precData))
-        climateData.calcClimateClass()
-
-        // Meta data
-        climateData.setName(
+        // Assemble name array
+        let name = [
           names[0].name,
           names[0].adminName1,
           names[0].countryName,
-        )
-        climateData.setPosition(coords)
-        climateData.setElevation(elevation[0].srtm)
-        climateData.setNumYears(
-          this._main.modules.timeController.getPeriodStart(),
-          this._main.modules.timeController.getPeriodEnd()
+        ]
+
+        // Update climate data
+        this._main.modules.climateDataController.update(
+          tempData, precData,                   // Actual climate data
+          name, coords, elevation[0].srtm3     // Meta data
         )
       }
     )
@@ -242,17 +238,16 @@ class ClimateDatasetController
 
     // Read incoming data object and transform it into outgoing structure
     let minYear = this._main.modules.timeController.getPeriodStart()
-    let roundingFactor = Math.pow(
-      10, this._main.config.decimalPlacesForClimateData)
     for (let dataIdx=0; dataIdx<inData.point.length; dataIdx++)
     {
       let date = new Date(inData.point[dataIdx].data[0].__text)
       let monthIdx = date.getMonth()
       let yearIdx = date.getFullYear()-minYear
       let unit = inData.point[dataIdx].data[3]._units
-      let value = Math.round(
-        parseFloat(inData.point[dataIdx].data[3].__text)*roundingFactor
-      )/roundingFactor
+      let value = this._main.modules.helpers.roundToDecimalPlace(
+        parseFloat(inData.point[dataIdx].data[3].__text),
+        this._main.config.climateData.decimalPlaces
+      )
 
       // If temperature values are in Kelvin units => convert to Celsius.
       if (unit == "degK")

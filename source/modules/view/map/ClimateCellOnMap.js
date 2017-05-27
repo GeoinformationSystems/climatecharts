@@ -36,7 +36,7 @@ class ClimateCellOnMap
 
   set(bounds)
   {
-    this._cell = new L.rectangle(bounds, main.config.cellSytle)
+    this._cell = new L.rectangle(bounds, main.config.climateCell.sytle)
     this._cell.addTo(this._map)
     this._cell.bringToBack()
     this._makeCellVisible()

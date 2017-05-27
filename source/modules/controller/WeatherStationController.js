@@ -150,12 +150,12 @@ class WeatherStationController
             station.id =              stationData.id
             station.name =            stationData.name
             station.country =         stationData.country
-            station.position =
+            station.location =
             {
                 lat:                  stationData.lat,
                 lng:                  stationData.lng,
             }
-            station.elev =            stationData.elev
+            station.elevation =       stationData.elev
             station.min_year =        stationData.min_year
             station.max_year =        stationData.max_year
             station.coverage_rate =   stationData.complete_data_rate
@@ -193,24 +193,11 @@ class WeatherStationController
       this._main.modules.timeController.getPeriodEnd(),
       (climateData) =>
         {
-          station.climateData = new ClimateData()
-
-          // Fill station with climate data
-          station.climateData.fillTemp(climateData.temp)
-          station.climateData.fillPrec(climateData.prec)
-          station.climateData.calcClimateClass()
-
-          // Fill meta information
-          station.climateData.setName(
-            station.name,
-            station.country
+          this._main.modules.climateDataController.update(
+            climateData.temp, climateData.prec,   // Actual climate data
+            [station.name, station.country],      // Meta data location name
+            station.location, station.elevation   // Meta data position
           )
-          station.climateData.setPosition(station.coords)
-          station.climateData.setElevation(station.elevation)
-
-          let minYear = this._main.modules.timeController.getPeriodStart()
-          let maxYear = this._main.modules.timeController.getPeriodEnd()
-          station.climateData.setNumYears(minYear, maxYear)
         }
     )
   }

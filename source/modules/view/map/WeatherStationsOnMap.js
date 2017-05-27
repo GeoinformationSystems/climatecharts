@@ -76,7 +76,7 @@ class WeatherStationsOnMap
   {
     // Add to map (in background)
     let stationMarker = L.circleMarker(
-      [station.position.lat, station.position.lng], // position
+      [station.location.lat, station.location.lng],  // location
       this._main.config.station.style.default        // style
     )
     stationMarker.setRadius(this.cropRadius(this._realMarkerRadius))

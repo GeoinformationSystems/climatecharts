@@ -112,7 +112,7 @@
   								<div class="row">
   									<div class="col-lg-9">
   										<div id="map" class="box"></div>
-  										<div id="climate-chart-wrapper" class="box">
+  										<div id="chart-container" class="box">
   											<p id="info" class="info">
   												The ClimateChart application shows the climate,
   												i.e. the temperature and the precipitation, of all
@@ -124,7 +124,6 @@
   												climate data and change the time frame of the data.
   											</p>
   										</div>
-                      <div id="plot-wrapper" class="box"></div>
   									</div>
   									<div class="col-lg-3">
   										<div class="box">
@@ -144,11 +143,17 @@
                           <input id="lng" class="form-control coordinates" type="text">
                           <hr>
   												<p class="period">Period:</p>
-  												<span id="period-start"></span>
+  												<div id="min"></div>
   												<p class="period">to</p>
-  												<span id="period-end"></span>
+  												<div id="max"></div>
   												<p id="amount"></p>
   												<div id="slider"></div>
+  												<label>
+                            <input id="period-checkbox" class="normalText"
+  													type="checkbox">
+                            Choose individual length of the period<br/>
+  													(Default: 30 Years)
+                          </label>
   											</div>
                         <hr>
   											<div class="form-group">
@@ -276,13 +281,11 @@
   		</div>
   	</div>
 
-
     <!-- OWN MODULES -->
 
     <!-- HELPER -->
     <script src="build/modules/helpers/Helpers.js"></script>
     <script src="build/modules/helpers/ServerInterface.js"></script>
-    <script src="build/modules/helpers/ClimateClassCreator.js"></script>
 
     <!-- MODEL -->
     <script src="build/modules/model/ClimateData.js"></script>
@@ -295,6 +298,7 @@
     <script src="build/modules/view/map/ClimateCellOnMap.js"></script>
     <script src="build/modules/view/map/WeatherStationsOnMap.js"></script>
     <script src="build/modules/view/timeline/Timeline.js"></script>
+    <script src="build/modules/view/chart/Chart.js"></script>
     <script src="build/modules/view/misc/ClimateDatasetsInList.js"></script>
     <script src="build/modules/view/misc/CoordinatesInInfobox.js"></script>
 
@@ -305,6 +309,7 @@
     <script src="build/modules/controller/ClimateCellController.js"></script>
     <script src="build/modules/controller/WeatherStationController.js"></script>
     <script src="build/modules/controller/ClimateDatasetController.js"></script>
+    <script src="build/modules/controller/ClimateDataController.js"></script>
 
     <!-- MAIN -->
     <script src="build/modules/main.js"></script>

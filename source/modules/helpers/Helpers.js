@@ -55,6 +55,19 @@ class Helpers
 
 
   // ==========================================================================
+  // Check if String
+  // ==========================================================================
+
+  checkIfString(str)
+  {
+    if ((typeof str) == "string")
+      return true
+    else
+      return false
+  }
+
+
+  // ==========================================================================
   // Swap values
   // ==========================================================================
 
@@ -66,5 +79,43 @@ class Helpers
     return valArray
   }
 
+
+  // ==========================================================================
+  // Decimal Degree (dd.ddd "N|S") -> Degree Minute Second (dd°mm'ss" "N|S")
+  // ==========================================================================
+
+  convertDDtoDMS(dd, charAboveNull, charBelowNull)
+  {
+    let deg = Math.floor(dd)
+    let minFloat = (dd-deg)*60
+    let min = Math.floor(minFloat)
+    let secFloat = (minFloat-min)*60
+    let sec = Math.round(secFloat)
+    // Eliminate rounding errors
+    if (sec==60)
+    {
+      min++
+      sec=0
+    }
+    if (min==60)
+    {
+      deg++
+      min=0
+    }
+    // Character showing the orientation in cardinal direction
+    let char = dd<0 ? charBelowNull : charAboveNull
+    return deg + "°" + min + "'" + sec + '"' + char
+  }
+
+
+  // ==========================================================================
+  // Rounding to decimal places
+  // ==========================================================================
+
+  roundToDecimalPlace(num, decimalPlaces)
+  {
+    let roundingFactor = Math.pow(10, decimalPlaces)
+    return (Math.round(num*roundingFactor) / roundingFactor)
+  }
 
 }
