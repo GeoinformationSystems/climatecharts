@@ -28,6 +28,12 @@ class ClimateDataController
     this._minYear = this._main.modules.timeController.getPeriodStart()
     this._maxYear = this._main.modules.timeController.getPeriodEnd()
 
+    // Climate data charts
+    this._chartsAreActive    = false
+    this._climateChart      = null
+    this._distributionChart = null
+    this._availabilityChart = null
+
   }
 
 
@@ -55,8 +61,39 @@ class ClimateDataController
     this._calcHemisphere(coords)
     this._setElevation(elev)
 
-    // Update the visualization
     console.log(this._climateData);
+
+    // Update the visualization
+    if (!this._chartsAreActive)    // Create new charts
+    {
+      this._climateChart =
+        new ClimateChart(this._main, this._climateData)
+      this._distributionChart =
+        new DistributionChart(this._main, this._climateData)
+      this._availabilityChart =
+        new AvailabilityChart(this._main, this._climateData)
+      this._chartsAreActive = true
+    }
+    else                          // Update existing charts
+    {
+      this._climateChart.update(this._climateData)
+      this._distributionChart.update(this._climateData)
+      this._availabilityChart.update(this._climateData)
+    }
+  }
+
+
+  // ==========================================================================
+  // Clear the current climate data
+  // ==========================================================================
+
+  clear()
+  {
+    this._climateData = new ClimateData()
+    this._climateChart.remove()
+    this._distributionChart.remove()
+    this._availabilityChart.remove()
+    this._chartsAreActive = false
   }
 
 

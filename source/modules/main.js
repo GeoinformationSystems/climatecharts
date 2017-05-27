@@ -126,7 +126,19 @@ main.config =
 
   chart:
   {
-    container: "chart-container",
+    container:    'chart-container',
+    climateChart:
+    {
+      container:  'climate-chart',
+    },
+    distributionChart:
+    {
+      container:  'distribution-chart',
+    },
+    availabilityChart:
+    {
+      container:  'availablility-chart', 
+    },
   },
 
   climateData:
