@@ -34,6 +34,9 @@ class ClimateDataController
     this._distributionChart = null
     this._availabilityChart = null
 
+    // Infobox about climate chart
+    this._chartInfo = $('#chart-info')
+
   }
 
 
@@ -73,6 +76,7 @@ class ClimateDataController
       this._availabilityChart =
         new AvailabilityChart(this._main, this._climateData)
       this._chartsAreActive = true
+      this._chartInfo.hide()
     }
     else                          // Update existing charts
     {
@@ -93,6 +97,7 @@ class ClimateDataController
     this._climateChart.remove()
     this._distributionChart.remove()
     this._availabilityChart.remove()
+    this._chartInfo.show()
     this._chartsAreActive = false
   }
 
@@ -579,13 +584,15 @@ class ClimateDataController
         this._main.config.coordinates.decimalPlaces
       )
     )
+    lat = (lat>=0) ? lat+"E" : lat+"W"
     let lng = new String(
       this._main.modules.helpers.roundToDecimalPlace(
         coords.lng,
         this._main.config.coordinates.decimalPlaces
       )
     )
-    this._climateData.location.DD = ("Lat: " + lat + ", Lng: " + lng)
+    lng = (lng>=0) ? lng+"N" : lng+"S"
+    this._climateData.location.DD = (lat + ", " + lng)
 
     // Coords to DMS
     let ns = this._main.modules.helpers.convertDDtoDMS(coords.lat, "N", "S")

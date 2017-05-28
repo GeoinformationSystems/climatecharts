@@ -126,7 +126,7 @@ main.config =
 
   charts:
   {
-    container:    'chart-container',
+    container:    'main-container',
     className:    'chart',
     climateChart:
     {

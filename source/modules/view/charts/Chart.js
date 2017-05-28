@@ -38,7 +38,8 @@ class Chart
     let parentDiv = document.getElementById(main.config.charts.container)
 
     let wrapperDiv = this._domElementCreator.create(
-      'div', this._chartMain.container, this._main.config.charts.className
+      'div', this._chartMain.container,             // id
+      [this._main.config.charts.className, 'box']   // classes
     )
     parentDiv.appendChild(wrapperDiv)
 
