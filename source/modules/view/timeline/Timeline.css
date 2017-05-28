@@ -1,0 +1,11 @@
+#min, #max, .period
+{
+  display: inline-block;
+}
+
+#slider
+{
+  margin-bottom: 20px;
+  margin-left: 5%;
+  width: 90%;
+}

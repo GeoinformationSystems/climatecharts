@@ -1,0 +1,84 @@
+/* PLOTS *
+*
+* plot-wrapper
+* |-> plots-container   // main svg canvas, contains plots, will be printed
+* |-> plot-options			 // buttons for changing / saving plots, will not be printed
+*     |-> plot-scale-switch   // automatic <-> fixed scale
+*     |-> plot-save-buttons   // save as svg and png
+*
+*/
+
+/* level 0 */
+#plot-wrapper
+{
+  width: 100%;
+  height: 520px;
+}
+
+/* plot options = scale switch and save buttons */
+#plot-options
+{
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 50px;
+}
+
+#plot-scale-switch
+{
+  position: absolute;
+  top: 3px;
+  left: 16px;
+  width: 150px;
+}
+
+/* scale switch */
+#plot-switch-title
+{
+  width: 100%;
+  text-align: center;
+  font-size: 1.1em;
+  margin-bottom: 0.2em;
+}
+
+#plot-switch-options
+{
+  line-height: 2.5em !important;
+  background-color: rgb(128,128,128) !important;
+  border-radius: 4px;
+}
+
+.plot-switch-option
+{
+  color: white !important;
+  text-shadow: none !important;
+  font-weight: normal !important;
+}
+
+#plot-switch-button
+{
+  background-color: rgb(89,131,213) !important;
+}
+
+#save-button-area
+{
+  float: right;
+  margin-right: 10px;
+}
+
+#plots-svg-container
+{
+  background: #ffffff;
+  fill: #ffffff;
+}
+
+#plot-link
+{
+  position: absolute;
+  bottom: 17px;
+  left: 10px;
+  width: 750px;
+  height: 22px;
+  cursor: pointer;
+}

@@ -1,0 +1,24 @@
+#climate-chart
+{
+  margin-bottom: 25px;
+  position: relative;
+  overflow: auto;
+}
+
+.arid
+{
+  color: rgb(237,212,0);
+  font-weight: bold;
+}
+
+.humid
+{
+  color: rgb(89,131,213);
+  font-weight: bold;
+}
+
+.veryhumid
+{
+  color: rgb(4,61,183);
+  font-weight: bold;
+}
