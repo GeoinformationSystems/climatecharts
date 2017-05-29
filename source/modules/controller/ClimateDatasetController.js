@@ -117,10 +117,16 @@ class ClimateDatasetController
           names[0].countryName,
         ]
 
+        // Get elevation
+        let elev = elevation[0].srtm3
+
+        // Get sourcee DOI
+        let source = this._selectedDataset.doi
+
         // Update climate data
         this._main.modules.climateDataController.update(
           tempData, precData,                   // Actual climate data
-          name, coords, elevation[0].srtm3     // Meta data
+          name, coords, elev, source            // Meta data
         )
       }
     )

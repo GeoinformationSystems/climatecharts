@@ -24,9 +24,27 @@ class Chart
     // Member Variables
     // ------------------------------------------------------------------------
 
-    this._main = main
     this._chartMain = main.config.charts[chartName]
     this._climateData = climateData
+
+    // Assemble title and subsitle
+    this._title =     this._climateData.name
+    this._subtitle =  this._climateData.location.DD
+    if (this._climateData.elevation)
+      this._subtitle += " | Elevation: "     + this._climateData.elevation
+    if (this._climateData.climate_class)
+      this._subtitle += " | Climate Class: " + this._climateData.climate_class
+    this._subtitle +=   " | Years: "
+                        + this._climateData.years[0] + "-"
+                        + this._climateData.years[1]
+      // TODO: gap years (appendix in this._climateData.years[2])
+
+    // Get reference URL
+    this._refURL = main.config.charts.refURL
+
+    // ------------------------------------------------------------------------
+    // Helpers
+    // ------------------------------------------------------------------------
 
     this._domElementCreator = new DOMElementCreator()
 
@@ -35,19 +53,17 @@ class Chart
     // Setup container
     // ------------------------------------------------------------------------
 
-    let parentDiv = document.getElementById(main.config.charts.container)
+    let parentDiv = document.getElementById(main.config.charts.parentContainer)
 
     let wrapperDiv = this._domElementCreator.create(
-      'div', this._chartMain.container,             // id
-      [this._main.config.charts.className, 'box']   // classes
+      'div', this._chartMain.container+"-wrapper",  // id
+      [main.config.charts.className, 'box']         // classes
     )
     parentDiv.appendChild(wrapperDiv)
 
-    // ------------------------------------------------------------------------
-    // User Interaction
-    // ------------------------------------------------------------------------
+    this._wrapperDiv = $(wrapperDiv)
 
-
+    console.log("created " + this._chartMain.container);
   }
 
 
@@ -57,7 +73,11 @@ class Chart
 
   update(climateData)
   {
+    // Update model
     this._climateData = climateData
+
+    // Clear current container
+    this._wrapperDiv.empty()
 
     console.log("updated " + this._chartMain.container);
   }

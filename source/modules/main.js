@@ -126,11 +126,41 @@ main.config =
 
   charts:
   {
-    container:    'main-container',
-    className:    'chart',
+    parentContainer:  'main-container',
+    className:        'chart',
+    refURL:           'ClimateCharts.net',
     climateChart:
     {
-      container:  'climate-chart',
+      container:      'climate-chart',
+      width:          728,
+      height:         360,
+      tableHeight:    250,
+      tableWidth:     160,
+      margins:
+      {
+        top:          70,
+        topS:         30,
+    		right:        220,
+        rightS:       30,
+    		bottom:       90,
+        bottomS:      40,
+    		left:         40,
+      },
+      colors:
+      {
+        areaTemp:     d3.rgb(255,233,15  ),
+        areaPrec:     d3.rgb(89, 131,213 ),
+        colPrec:      d3.rgb(4,  61, 183 ),
+        colTemp:      d3.rgb(230,20, 20  ),
+        colGrid:      d3.rgb(211,211,211 ),
+      },
+      fontSizes:      // [px]
+      {
+        tick:         13,
+        info:         15,
+        table:        14,
+        source:       12,
+      }
     },
     distributionChart:
     {

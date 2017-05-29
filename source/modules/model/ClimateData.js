@@ -49,6 +49,7 @@ class ClimateData
     this.years =          [null, null, null]  // min year, max year, appendix
 
     this.source =         null                // data source
+    this.source_link =    null                // link to data source
     this.doi =            null                // document object identifier (link)
 
 

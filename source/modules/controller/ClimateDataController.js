@@ -44,7 +44,7 @@ class ClimateDataController
   // Set new climate data
   // ==========================================================================
 
-  update(tempData, precData, placeName, coords, elev)
+  update(tempData, precData, placeName, coords, elev, source)
   {
     // Fill station with climate data
     this._climateData.temp = this._fillData(tempData, "temp")
@@ -63,12 +63,12 @@ class ClimateDataController
     this._setCoords(coords)
     this._calcHemisphere(coords)
     this._setElevation(elev)
-
-    console.log(this._climateData);
+    this._setSource(source)
 
     // Update the visualization
     if (!this._chartsAreActive)    // Create new charts
     {
+      this._chartInfo.hide()
       this._climateChart =
         new ClimateChart(this._main, this._climateData)
       this._distributionChart =
@@ -76,7 +76,6 @@ class ClimateDataController
       this._availabilityChart =
         new AvailabilityChart(this._main, this._climateData)
       this._chartsAreActive = true
-      this._chartInfo.hide()
     }
     else                          // Update existing charts
     {
@@ -147,15 +146,16 @@ class ClimateDataController
           outData[monthIdx].num_gaps += 1
       }
 
-      // Calculate monthly mean or sum
+      // Calculate monthly value (mean or sum)
       // -> Current sum / number of years with data (years without gap)
       let numYearsWithData = numYears-outData[monthIdx].num_gaps
       // Error handling: Division by 0
       if (numYearsWithData == 0)
         outData[monthIdx][indicator] = null
       else
-        if (indicator == 'mean')
-          outData[monthIdx][indicator] /= numYearsWithData
+        // Calculate mean for both temp and prec
+        // -> for prec: mean of all measured prec values for this month
+        outData[monthIdx][indicator] /= numYearsWithData
 
       // Rounding factor
       outData[monthIdx][indicator] =
@@ -348,7 +348,7 @@ class ClimateDataController
     // Calculate dryness index
     // ------------------------------------------------------------------------
 
-    let precDry = 0;
+    let precDry = 0
 
     let sumSummer = []
     for (var idx=0; idx<precSummer.length; idx++)
@@ -361,11 +361,11 @@ class ClimateDataController
     let precDiff = sumSummer-sumWinter
 
     if (sumSummer >= 2/3*precSum)
-      precDry = 2*tempMean + 28;
+      precDry = 2*tempMean + 28
     else if (sumWinter >= 2/3*precSum)
-      precDry = 2*tempMean;
+      precDry = 2*tempMean
     else
-      precDry = 2*tempMean + 14;
+      precDry = 2*tempMean + 14
 
 
     // ------------------------------------------------------------------------
@@ -625,7 +625,32 @@ class ClimateDataController
   {
     this._climateData.elevation = null
     if (elevation>0)
-      this._climateData.elevation = "Elevation: " + parseInt(elevation) + " m"
+      this._climateData.elevation = parseInt(elevation) + " m"
+  }
+
+
+  // ==========================================================================
+  // Format data source
+  // ==========================================================================
+
+  _setSource(source)
+  {
+    this._climateData.source = source
+
+    let firstPar =  source.indexOf('(')
+    let lastPar =   source.lastIndexOf(')')
+
+    let url = source.slice(firstPar+1, lastPar)
+
+    // take only first url
+    if (url.indexOf(',') > 0)
+      url = url.slice(0,url.indexOf(','))
+
+    // append http protocol, if necessary
+    if (!url.startsWith('http'))
+      url = 'http://' + url
+
+    this._climateData.source_link = url
   }
 
 }
