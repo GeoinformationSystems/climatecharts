@@ -46,6 +46,8 @@ class ClimateDataController
 
   update(tempData, precData, placeName, coords, elev, source)
   {
+    this._climateData = new ClimateData()
+    
     // Fill station with climate data
     this._climateData.temp = this._fillData(tempData, "temp")
     this._climateData.prec = this._fillData(precData, "prec")
