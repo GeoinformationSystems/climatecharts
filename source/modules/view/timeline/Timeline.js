@@ -63,7 +63,6 @@ class Timeline
           {
             if (!this._clickOnRange)
             {
-              console.log("CHANGE!")
               let periodStart = this._sliderDiv.slider("values", 0)
               let periodEnd =   this._sliderDiv.slider("values", 1)
               this._main.modules.timeController.setPeriod(

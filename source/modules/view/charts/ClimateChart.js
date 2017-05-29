@@ -31,6 +31,8 @@ class ClimateChart extends Chart
   update(climateData)
   {
     super.update(climateData)
+    
+    this._drawChart()
   }
 
 
@@ -58,8 +60,7 @@ class ClimateChart extends Chart
       .attr("version", 1.1)
       .attr("xmlns", "http://www.w3.org/2000/svg")
       .attr("preserveAspectRatio", "xMinYMin meet")
-      .attr(
-        "viewBox",
+      .attr("viewBox",
         "0 0 " + this._chartMain.width + " " + this._chartMain.height
       )
       .attr('width', '100%')
@@ -105,9 +106,9 @@ class ClimateChart extends Chart
     this._minY2 = 0
     this._maxY3 = 0
 
-    /*Calculate the stepsize between two axis tick marks based on the standard this._chartMain.height value and the number of ticks,
-    * assuming there aren´t any negative temp values.
-    */
+    // Calculate the stepsize between two axis tick marks based on the
+    // standard height value and the number of ticks
+    // -> assuming there aren´t any negative temp values.
     this._stepSizeY1 = ( 0
       + this._chartMain.height
       - this._chartMain.margins.top
@@ -115,22 +116,6 @@ class ClimateChart extends Chart
     ) /5
 
     this._setTickValues()
-
-    //Change height if precipitation is over 100mm or temperature below 0°C
-    if (this._climateData.extreme.maxPrec > 100 ||
-        this._climateData.extreme.minTemp < 0)
-      this._adjustHeight()
-
-    this._chart.attr(
-      "viewBox",
-      "0 0 " + this._chartMain.width + " " + this._chartMain.height
-    )
-
-    //Adjust height of #wrapper to fit to SVG content.
-    this._wrapperDiv.css(
-      "padding-bottom",
-      100 * (this._chartMain.height/this._chartMain.width) + "%"
-    )
 
     // The ticks for all y axes have to be calculated manually to make sure
     // that they are in alignment and have the correct ratio.
@@ -548,8 +533,7 @@ class ClimateChart extends Chart
       .attr("class", "info")
       .attr("x", this._chartMain.width*2/5)
       .attr("y", this._chartMain.margins.top*1/3+12)
-      .attr(
-        "width",
+      .attr("width",
         this._chartMain.margins.right - this._chartMain.margins.rightS
       )
       .attr("text-anchor", "middle")
@@ -573,16 +557,12 @@ class ClimateChart extends Chart
       .attr("id", "dataSource")
       .attr("width", this._chartMain.width)
       .attr("x", 10)
-      .attr("y",
-        this._chartMain.height + 14 - $('#dataSource')[0].getBBox().height
-      )
+      .attr("y", this._chartMain.height - 5)
       // .attr("link" + this._climateData.source_link)
       .text("Data Source: " + this._climateData.source)
       .call(this._wrap, this._chartMain.width - 100, " ")
       .on("click", () => { window.open(this.link) })
       .style("cursor", "pointer")
-
-      //
 
     this._chart.append("text")
       .attr("id", "url")
@@ -644,7 +624,8 @@ class ClimateChart extends Chart
       .attr('text-anchor', 'middle')
       .call(this._fillColumn,
         this._climateData.monthly_short,
-        this._tableY + (this._chartMain.tableHeight/13),
+        this._tableY,
+        this._chartMain.tableHeight/13,
         "month",
         this._tableX + this._chartMain.tableWidth*1/6
       )
@@ -656,7 +637,8 @@ class ClimateChart extends Chart
       .attr('text-anchor', 'end')
       .call(this._fillColumn,
         this._climateData.monthly_short,
-        this._tableY + (this._chartMain.tableHeight/13),
+        this._tableY,
+        this._chartMain.tableHeight/13,
         "temp",
         this._tableX + this._chartMain.tableWidth*6/10
       )
@@ -668,7 +650,8 @@ class ClimateChart extends Chart
       .attr('text-anchor', 'end')
       .call(this._fillColumn,
         this._climateData.monthly_short,
-        this._tableY + (this._chartMain.tableHeight/13),
+        this._tableY,
+        this._chartMain.tableHeight/13,
         "prec",
         this._tableX + this._chartMain.tableWidth*19/20
       )
@@ -725,6 +708,7 @@ class ClimateChart extends Chart
       .style("stroke-width", 1.5)
 
     this._chart.append("rect")
+      .attr("id", "climate-chart-plot-area")
       .attr("class", "overlay")
       .attr("x", this._chartMain.margins.left)
       .attr("y", this._chartMain.margins.top)
@@ -733,13 +717,19 @@ class ClimateChart extends Chart
       .attr("fill", "none")
       .style("pointer-events", "all")
 
-    .on("mouseover", () =>
+
+    // ------------------------------------------------------------------------
+    // Event Handling
+    // ------------------------------------------------------------------------
+
+    this._wrapperDiv.mouseover( (e) =>
       {
         this._chart.select(".focus")
           .attr("visibility", "visible")
       }
     )
-    .on("mouseout", () =>
+
+    this._wrapperDiv.mouseout( (e) =>
       {
         this._chart.select(".focus")
           .attr("visibility", "hidden")
@@ -751,16 +741,27 @@ class ClimateChart extends Chart
           .style("text-shadow", "none")
       }
     )
-    .on("mousemove", (e) =>
+
+    this._wrapperDiv.mousemove( (e) =>
       {
-        let m = d3.mouse(e)
+        // Get click position inside svg canvas
+        let svg = this._chart[0][0]
+        let clickPtReal = svg.createSVGPoint()
+        clickPtReal.x = e.clientX
+        clickPtReal.y = e.clientY
+        let clickPtSVG = clickPtReal.matrixTransform(
+          svg.getScreenCTM().inverse()
+        )
+
+        // Calculate closest distance between mouse position and tick
+        let posX =    clickPtSVG.x
         let lowDiff = 1e99
-        let xI = null
+        let xI =      null
         let tickPos = xScale.range()
 
-        for (let i = 0; i < tickPos.length; i++)
+        for (let i=0; i<tickPos.length; i++)
         {
-          let diff = Math.abs(m[0] - tickPos[i])
+          let diff = Math.abs(posX - tickPos[i])
           if (diff < lowDiff)
           {
             lowDiff = diff
@@ -768,13 +769,14 @@ class ClimateChart extends Chart
           }
         }
 
-        let c1 = this._chart.select("#c1")
-        let c2 = this._chart.select("#c2")
+        let c1 =    this._chart.select("#c1")
+        let c2 =    this._chart.select("#c2")
         let month = this._chart.select("#month_c" + xI)
-        let temp = this._chart.select("#temp_c" + xI)
-        let prec = this._chart.select("#prec_c" + xI)
-        let rows = this._chart.selectAll(".cell")
+        let temp =  this._chart.select("#temp_c" + xI)
+        let prec =  this._chart.select("#prec_c" + xI)
+        let rows =  this._chart.selectAll(".cell")
 
+        // Highlight closest month in chart and table
         rows.attr("fill", "black")
           .attr("font-weight", "normal")
           .style("text-shadow", "none")
@@ -787,17 +789,15 @@ class ClimateChart extends Chart
           .attr("font-weight", "bold")
           .style("text-shadow", "2px 2px 2px gray")
 
-        c1.attr(
-          "transform",
+        c1.attr("transform",
           "translate("
             + tickPos[xI] + ","
             + yScale1(this._climateData.monthly_short[xI].temp) + ")"
         )
 
-        if (this._climateData[xI].prec <= 100)
+        if (this._climateData.monthly_short[xI].prec <= 100)
         {
-          c2.attr(
-            "transform",
+          c2.attr("transform",
             "translate("
               + tickPos[xI] + ","
               + yScale2(this._climateData.monthly_short[xI].prec) + ")"
@@ -805,8 +805,7 @@ class ClimateChart extends Chart
         }
         if (this._climateData.monthly_short[xI].prec > 100)
         {
-          c2.attr(
-            "transform",
+          c2.attr("transform",
             "translate("
               + tickPos[xI] + ","
               + yScale3(this._climateData.monthly_short[xI].prec) + ")"
@@ -814,6 +813,24 @@ class ClimateChart extends Chart
         }
       }
     )
+
+    // ------------------------------------------------------------------------
+    // Adapt height of svg
+    // ------------------------------------------------------------------------
+
+    this._adjustHeight()
+
+    this._chart.attr("viewBox",
+      "0 0 " + this._chartMain.width + " " + this._chartMain.height
+    )
+
+    //Adjust height of #wrapper to fit to SVG content.
+    this._wrapperDiv.css(
+      "padding-bottom",
+      100 * (this._chartMain.height/this._chartMain.width) + "%"
+    )
+
+
   }
 
 
@@ -881,6 +898,7 @@ class ClimateChart extends Chart
     this._negativeHeightY1 = 0
       + (this._ticksY1.length - 6)
       * this._stepSizeY1
+
     this._heightY3 = 0
       + this._ticksY3.length
       * this._stepSizeY1
@@ -897,7 +915,7 @@ class ClimateChart extends Chart
   }
 
   // Fill table column with values of the variable given as an argument.
-  _fillColumn (col, data, tableHeight, column, x)
+  _fillColumn (col, data, tableOffset, tableHeight, column, x)
   {
     for (let i=0; i<MONTHS_IN_YEAR.length; i++)
     {
@@ -910,12 +928,11 @@ class ClimateChart extends Chart
           if (typeof(obj[key]) === "number")
           {
             let number = obj[key].toFixed(1)
-
             col.append('tspan')
               .attr("id", column + "_c" + i)
               .attr("class", "cell")
               .attr('x', x)
-              .attr('y', tableHeight * (i+1) )
+              .attr('y', (tableHeight * (i+1)) + tableOffset)
               .style("text-align", "right")
               .text(number)
           }
@@ -925,7 +942,7 @@ class ClimateChart extends Chart
               .attr("id", column + "_c" + i)
               .attr("class", "cell")
               .attr('x', x)
-              .attr('y', tableHeight * (i+1) )
+              .attr('y', (tableHeight * (i+1)) + tableOffset)
               .style("text-align", "right")
               .text(obj[key])
           }
