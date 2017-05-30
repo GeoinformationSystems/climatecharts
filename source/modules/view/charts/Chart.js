@@ -26,21 +26,8 @@ class Chart
 
     this._chartMain = main.config.charts[chartName]
     this._climateData = climateData
+    this._setChartMetadata()
 
-    // Assemble title and subsitle
-    this._title =     this._climateData.name
-    this._subtitle =  this._climateData.location.DD
-    if (this._climateData.elevation)
-      this._subtitle += " | Elevation: "     + this._climateData.elevation
-    if (this._climateData.climate_class)
-      this._subtitle += " | Climate Class: " + this._climateData.climate_class
-    this._subtitle +=   " | Years: "
-                        + this._climateData.years[0] + "-"
-                        + this._climateData.years[1]
-      // TODO: gap years (appendix in this._climateData.years[2])
-
-    // Get reference URL
-    this._refURL = main.config.charts.refURL
 
     // ------------------------------------------------------------------------
     // Helpers
@@ -75,6 +62,7 @@ class Chart
   {
     // Update model
     this._climateData = climateData
+    this._setChartMetadata()
 
     // Clear current container
     this._wrapperDiv.empty()
@@ -99,6 +87,24 @@ class Chart
   // PRIVATE MEMBERS
   // ##########################################################################
 
+  _setChartMetadata()
+  {
+    // Set title
+    this._title =     this._climateData.name
 
+    // Assemble Subtitle
+    this._subtitle =  this._climateData.location.DD
+    if (this._climateData.elevation)
+      this._subtitle += " | Elevation: "     + this._climateData.elevation
+    if (this._climateData.climate_class)
+      this._subtitle += " | Climate Class: " + this._climateData.climate_class
+    this._subtitle +=   " | Years: "
+                        + this._climateData.years[0] + "-"
+                        + this._climateData.years[1]
+      // TODO: gap years (appendix in this._climateData.years[2])
+
+    // Get reference URL
+    this._refURL = main.config.charts.refURL
+  }
 
 }

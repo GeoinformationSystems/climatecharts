@@ -31,7 +31,7 @@ class ClimateChart extends Chart
   update(climateData)
   {
     super.update(climateData)
-    
+
     this._drawChart()
   }
 
@@ -817,8 +817,9 @@ class ClimateChart extends Chart
     // ------------------------------------------------------------------------
     // Adapt height of svg
     // ------------------------------------------------------------------------
-
-    this._adjustHeight()
+    if (this._climateData.prec_max > 100 ||
+        this._climateDatatemp_min < 0)
+      this._adjustHeight()
 
     this._chart.attr("viewBox",
       "0 0 " + this._chartMain.width + " " + this._chartMain.height

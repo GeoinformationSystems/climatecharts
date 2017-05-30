@@ -202,7 +202,8 @@ main.config =
         color:        '#2e6c97',
         fillColor:    '#2b83cb',
       },
-    }
+    },
+    source:           "www.ncdc.noaa.gov/ghcnm/"
   }
 }
 
