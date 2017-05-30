@@ -66,7 +66,8 @@ class MapController
 
   setLocation(origCoords)
   {
-    let coords = this._bringCoordsInBounds(origCoords)
+    // Save coordinates
+    this._coords = this._bringCoordsInBounds(origCoords)
 
     // If user has clicked on weather station
     if (this._stationJustActivated)
@@ -94,15 +95,29 @@ class MapController
       this._main.modules.weatherStationController.cleanup()
 
       // Setup marker and cell
-      this._main.modules.locationMarkerController.set(coords)
-      this._main.modules.climateCellController.set(coords)
+      this._main.modules.locationMarkerController.set(this._coords)
+      this._main.modules.climateCellController.set(this._coords)
     }
 
     // Show coordinates in infobox
-    this._main.modules.coordinatesInInfobox.update(coords)
+    this._main.modules.coordinatesInInfobox.update(this._coords)
+  }
 
-    // Save coordinates
-    this._coords = coords
+
+  // ==========================================================================
+  // Clean the status variables if no location selected anymore
+  // TODO: fire from interface
+  // ==========================================================================
+
+  cleanLocation()
+  {
+    this._mode = null
+    this._stationJustActivated = false
+    this._coords =
+    {
+      lat: null,
+      lng: null,
+    }
   }
 
 
@@ -114,6 +129,20 @@ class MapController
   clickedOnStation()
   {
     this._stationJustActivated = true
+  }
+
+
+  // ==========================================================================
+  // Time updated => tell either weather station or climate dataset to reload
+  // ==========================================================================
+
+  // TODO: problem here...
+  updateTime()
+  {
+    if (this._mode == 'S')
+      this._main.weatherStationController.update()
+    else if (this._mode == 'C')
+      this._main.climateDatasetController.update()
   }
 
 

@@ -47,7 +47,7 @@ class ClimateCellController
 
     // Controller
     this._cellActive = true
-    this._main.modules.climateDatasetController.loadClimateData(coords)
+    this._main.modules.climateDatasetController.update()
   }
 
 

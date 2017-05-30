@@ -234,13 +234,18 @@ class TimeController
 
   _onPeriodChange()
   {
+    // Update View
     this._main.modules.timeline.updatePeriod(
       this._periodStart, this._periodEnd
     )
+    // Update Controller
+    // TODO: find a better mechanism for here...
+    this.main.modules.mapController.updateTime()
   }
 
   _onMinMaxChange()
   {
+    // Update View
     this._main.modules.timeline.updateMinMaxYear(
       this._minYear, this._maxYear
     )

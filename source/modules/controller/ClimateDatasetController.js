@@ -84,51 +84,55 @@ class ClimateDatasetController
   // Load climate data for one raster cell
   // ==========================================================================
 
-  loadClimateData(coords)
+  update()
   {
+    // Get request variable from dataset (e.b. 'tmp')
     let variables = []
     for (var idx=0; idx<2; idx++)
       for (var name in this._selectedDataset.metaDatasets[idx].variable)
         if (this._selectedDataset.metaDatasets[idx].variable[name]._shape == "time lat lon")
           variables.push(this._selectedDataset.metaDatasets[idx].variable[name]._name)
 
+    // Get location
+    let coords = this._main.modules.mapController.getLocation()
+
     this._main.modules.serverInterface.requestClimateDataForCell(
       this._selectedDataset.urlDatasets,
-      variables,          // ["tmp", "pre"]
-      coords,             // [lat, lng]
-      [                   // [minDate, maxDate]
+      variables,      // ["tmp", "pre"]
+      coords,         // [lat, lng]
+      [               // [minDate, maxDate]
         this._main.modules.timeController.getPeriodStart(),
         this._main.modules.timeController.getPeriodEnd(),
       ],
       (tempDataXml, precDataXml, names, elevation) =>    // success callback
-      {
-        // Load climate data from server in XML and transform to JSON
-        let tempDataOrig = this._x2js.xml2json(tempDataXml[0]).grid
-        let precDataOrig = this._x2js.xml2json(precDataXml[0]).grid
+        {
+          // Load climate data from server in XML and transform to JSON
+          let tempDataOrig = this._x2js.xml2json(tempDataXml[0]).grid
+          let precDataOrig = this._x2js.xml2json(precDataXml[0]).grid
 
-        // Transform data structure to climateData
-        let tempData = this._gridDataToClimateData(tempDataOrig)
-        let precData = this._gridDataToClimateData(precDataOrig)
+          // Transform data structure to climateData
+          let tempData = this._gridDataToClimateData(tempDataOrig)
+          let precData = this._gridDataToClimateData(precDataOrig)
 
-        // Assemble name array
-        let name = [
-          names[0].name,
-          names[0].adminName1,
-          names[0].countryName,
-        ]
+          // Assemble name array
+          let name = [
+            names[0].name,
+            names[0].adminName1,
+            names[0].countryName,
+          ]
 
-        // Get elevation
-        let elev = elevation[0].srtm3
+          // Get elevation
+          let elev = elevation[0].srtm3
 
-        // Get sourcee DOI
-        let source = this._selectedDataset.doi
+          // Get source DOI
+          let source = this._selectedDataset.doi
 
-        // Update climate data
-        this._main.modules.climateDataController.update(
-          tempData, precData,                   // Actual climate data
-          name, coords, elev, source            // Meta data
-        )
-      }
+          // Update climate data
+          this._main.modules.climateDataController.update(
+            tempData, precData,                   // Actual climate data
+            name, coords, elev, source            // Meta data
+          )
+        }
     )
   }
 

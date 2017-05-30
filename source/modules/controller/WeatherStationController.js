@@ -77,6 +77,17 @@ class WeatherStationController
 
 
   // ==========================================================================
+  // Update data for weather station
+  // ==========================================================================
+
+  update()
+  {
+    if (this._selectedStation)
+      this._loadDataForStation(this._selectedStation)
+  }
+
+
+  // ==========================================================================
   // Cleanup: deselect current station
   // ==========================================================================
 
