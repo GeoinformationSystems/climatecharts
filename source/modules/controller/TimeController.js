@@ -240,7 +240,8 @@ class TimeController
     )
     // Update Controller
     // TODO: find a better mechanism for here...
-    this.main.modules.mapController.updateTime()
+    this._main.modules.mapController.updateTime()
+    console.log("UPDATE");
   }
 
   _onMinMaxChange()

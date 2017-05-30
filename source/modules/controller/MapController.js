@@ -140,9 +140,9 @@ class MapController
   updateTime()
   {
     if (this._mode == 'S')
-      this._main.weatherStationController.update()
+      this._main.modules.weatherStationController.update()
     else if (this._mode == 'C')
-      this._main.climateDatasetController.update()
+      this._main.modules.climateDatasetController.update()
   }
 
 
