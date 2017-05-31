@@ -255,20 +255,65 @@ main.modules.climateDataController =      new ClimateDataController(main)
 
 
 
+// ##########################################################################
+// Main interaction hub between modules
+// ##########################################################################
+
+main.hub = {}
+
+
+// --------------------------------------------------------------------------
+// Location changes
+// --------------------------------------------------------------------------
+
+main.hub.onLocationChange = (coords) =>
+  {
+    console.log("Location changes: ", coords);
+  }
+
+
+// --------------------------------------------------------------------------
+// Time changes
+// --------------------------------------------------------------------------
+
+main.hub.onPeriodChange = (start, end) =>
+  {
+    console.log("Period changes: ", start, end);
+    // // Update View
+    // this._main.modules.timeline.updatePeriod(
+    //   this._periodStart, this._periodEnd
+    // )
+    // // Update Controller
+    // // TODO: find a better mechanism for here...
+    // this._main.modules.mapController.updateTime()
+    // console.log("UPDATE");
+  }
+
+main.hub.onMinMaxYearChange = (min, max) =>
+  {
+    console.log("Min/Max years change: ", min, max);
+    // // Update View
+    // this._main.modules.timeline.updateMinMaxYear(
+    //   this._minYear, this._maxYear
+    // )
+  }
+
+
+// --------------------------------------------------------------------------
+// Dataset changes
+// --------------------------------------------------------------------------
+
+main.hub.onDatasetChange = (dataset) =>
+  {
+    console.log("Dataset changes: ", dataset);
+  }
+
+
+
+
 ///////////////////////////////////////////////////////////////////////////////
+// ARCHIVE
 
-
-
-// // initially hide plot-wrapper
-// $('#plot-wrapper').css('visibility', 'hidden');
-//
-// $('.form-group').trigger("reset");
-// $("#datasets").change(UI.getMetadata);
-// $("#lat").change(UI.createChart);
-// $("#lng").change(UI.createChart);
-// $("#period-checkbox").change(UI.resetSliderHandles);
-// $("#set-diagram-title").click(UI.setDiagramTitle);
-// $(".tab-links a").click(UI.selectTab);
 // $(window).resize(function()
 //   {
 //     UI.setSliderLabels();

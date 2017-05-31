@@ -9,3 +9,10 @@
   margin-left: 5%;
   width: 90%;
 }
+
+#range-slider
+{
+  position:   absolute;
+  background: transparent;
+  z-index:    100;
+}

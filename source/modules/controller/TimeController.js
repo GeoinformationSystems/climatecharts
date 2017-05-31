@@ -58,7 +58,8 @@ class TimeController
 
     this._minYear = year
 
-    this._onMinMaxChange()
+    // Tell everyone
+    this._main.hub.onMinMaxYearChange(this._minYear, this._maxYear)
   }
 
   setMaxYear(year)
@@ -69,7 +70,8 @@ class TimeController
     // - larger than min year?
     this._maxYear = year
 
-    this._onMinMaxChange()
+    // Tell everyone
+    this._main.hub.onMinMaxYearChange(this._minYear, this._maxYear)
   }
 
   setMinMaxYear(minYear, maxYear)
@@ -86,7 +88,8 @@ class TimeController
     this._minYear = minYear
     this._maxYear = maxYear
 
-    this._onMinMaxChange()
+    // Tell everyone
+    this._main.hub.onMinMaxYearChange(this._minYear, this._maxYear)
   }
 
   getMinYear()
@@ -134,7 +137,8 @@ class TimeController
       this._periodStart = year
     }
 
-    this._onPeriodChange()
+    // Tell everyone
+    this._main.hub.onPeriodChange(this._periodStart, this._periodEnd)
   }
 
   setPeriodEnd(year)
@@ -162,7 +166,8 @@ class TimeController
       this._periodStart = year
     }
 
-    this._onPeriodChange()
+    // Tell everyone
+    this._main.hub.onPeriodChange(this._periodStart, this._periodEnd)
   }
 
   setPeriod(length, endYear)
@@ -189,7 +194,8 @@ class TimeController
       this._periodStart = endYear-length
     }
 
-    this._onPeriodChange()
+    // Tell everyone
+    this._main.hub.onPeriodChange(this._periodStart, this._periodEnd)
   }
 
   getPeriodStart()
@@ -219,37 +225,12 @@ class TimeController
 
   getPeriodLength()
   {
-    return this._periodEnd - this._periodStart
+    return (this._periodEnd - this._periodStart)
   }
 
 
   // ##########################################################################
   // PRIVATE MEMBERS
   // ##########################################################################
-
-
-  // ==========================================================================
-  // Dummy hardcode listener principle
-  // ==========================================================================
-
-  _onPeriodChange()
-  {
-    // Update View
-    this._main.modules.timeline.updatePeriod(
-      this._periodStart, this._periodEnd
-    )
-    // Update Controller
-    // TODO: find a better mechanism for here...
-    this._main.modules.mapController.updateTime()
-    console.log("UPDATE");
-  }
-
-  _onMinMaxChange()
-  {
-    // Update View
-    this._main.modules.timeline.updateMinMaxYear(
-      this._minYear, this._maxYear
-    )
-  }
 
 }
