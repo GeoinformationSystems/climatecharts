@@ -36,28 +36,22 @@ class LocationMarkerOnMap
 
   set(coords)
   {
-    this._marker = new L.marker()
-    this._marker.setLatLng([coords.lat, coords.lng])
-    this._marker.addTo(this._map)
-  }
-
-  reset(coords)
-  {
-    this._marker.setLatLng([coords.lat, coords.lng])
+    if (!this._marker)
+    {
+      this._marker = new L.marker([coords.lat, coords.lng])
+      this._marker.addTo(this._map)
+    }
+    else
+      this._marker.setLatLng([coords.lat, coords.lng])
   }
 
   remove()
   {
-    this._map.removeLayer(this._marker)
-    this._marker = null
-  }
-
-  isActive()
-  {
-    if (this._marker != null)
-    return true
-    else
-    return false
+    if (this._marker)
+    {
+      this._map.removeLayer(this._marker)
+      this._marker = null
+    }
   }
 
 }

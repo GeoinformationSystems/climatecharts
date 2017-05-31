@@ -2,9 +2,9 @@
 // TIMELINE                                                               View
 // ############################################################################
 // Manages the timeline in the list
-// - Use jQuery UI Slider
-// - Receive absolute min and max year and set up slider
-// - Manage selected time period (min and max year)
+// - Use jQuery UI Slider and properly set up slider
+// - Receive absolute min and max year (dimension of slider)
+// - Manage selected time period (periodStart and periodEnd) with a time slider
 // ############################################################################
 
 
@@ -156,6 +156,8 @@ class Timeline
           }
       }
     )
+
+    // Initially setup dimension of timeline and initially selected period
     this.updateMinMaxYear(minYear, maxYear)
     this.updatePeriod(periodStart, periodEnd)
 

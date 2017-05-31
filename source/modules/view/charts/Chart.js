@@ -49,8 +49,6 @@ class Chart
     parentDiv.appendChild(wrapperDiv)
 
     this._wrapperDiv = $(wrapperDiv)
-
-    console.log("created " + this._chartMain.container);
   }
 
 
@@ -66,8 +64,6 @@ class Chart
 
     // Clear current container
     this._wrapperDiv.empty()
-
-    console.log("updated " + this._chartMain.container);
   }
 
 
@@ -78,8 +74,6 @@ class Chart
   remove()
   {
     this._climateData = null
-
-    console.log("removed " + this._chartMain.container);
   }
 
 

@@ -25,7 +25,10 @@ class ClimateDataset
     this.metaDatasets =   []            // metadata for temp and prec
 
     this.timePeriod =     [null, null]  // start and end year
-    this.rasterSize =     [0.0, 0.0]    // size of raster cell (lat / lng degrees)
+    this.raster_cell_size = {           // size of raster cell
+      lat: 0.0,
+      lng: 0.0
+    }
 
     this.is_selected =    false         // is the dataset currently selected?
   }

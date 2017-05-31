@@ -30,35 +30,70 @@ class ClimateCellOnMap
     this._cell = null
   }
 
+
   // ==========================================================================
   // Handle climate cell on the map (set, reset, remove)
   // ==========================================================================
 
-  set(bounds)
+  set(coords)
   {
-    this._cell = new L.rectangle(bounds, main.config.climateCell.sytle)
-    this._cell.addTo(this._map)
-    this._cell.bringToBack()
-    this._makeCellVisible()
-  }
+    let bounds = this._getCellBounds(coords)
 
-  reset(bounds)
-  {
-    this._cell.setBounds(bounds)
+    if (!this._cell)
+    {
+      this._cell = new L.rectangle(bounds, main.config.climateCell.sytle)
+      this._cell.addTo(this._map)
+    }
+    else
+    {
+      this._cell.setBounds(bounds)
+    }
     this._cell.bringToBack()
     this._makeCellVisible()
   }
 
   remove()
   {
-    this._map.removeLayer(this._cell)
-    this._cell = null
+    if (this._cell)
+    {
+      this._map.removeLayer(this._cell)
+      this._cell = null
+    }
   }
 
 
   // ##########################################################################
   // PRIVATE MEMBERS
   // ##########################################################################
+
+  // ==========================================================================
+  // Calculate the raster cell in which a clicked point is in
+  // ==========================================================================
+
+  _getCellBounds(coords)
+  {
+    let cellSize = this._main.modules.climateDatasetController.getSelectedDataset().raster_cell_size
+
+    // Determine the cell the current point is in
+    // -> in array format, not object format!
+    let minPoint =
+    [
+      Math.floor(coords.lat/cellSize.lat)*cellSize.lat,
+      Math.floor(coords.lng/cellSize.lng)*cellSize.lng
+    ]
+    let maxPoint =
+    [
+      minPoint[0] + cellSize.lat,
+      minPoint[1] + cellSize.lng
+    ]
+
+    return([minPoint, maxPoint])
+  }
+
+
+  // ==========================================================================
+  // Ensure that the climate cell is fully visible in the viewport
+  // ==========================================================================
 
   _makeCellVisible()
   {

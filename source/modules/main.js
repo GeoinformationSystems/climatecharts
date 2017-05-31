@@ -247,19 +247,52 @@ main.modules.coordinatesInInfobox =       new CoordinatesInInfobox(main)
 
 main.modules.timeController =             new TimeController(main)
 main.modules.mapController =              new MapController(main)
-main.modules.locationMarkerController =   new LocationMarkerController(main)
-main.modules.climateCellController =      new ClimateCellController(main)
 main.modules.weatherStationController =   new WeatherStationController(main)
 main.modules.climateDatasetController =   new ClimateDatasetController(main)
 main.modules.climateDataController =      new ClimateDataController(main)
 
 
 
-// ##########################################################################
+// ############################################################################
 // Main interaction hub between modules
-// ##########################################################################
+// ############################################################################
 
 main.hub = {}
+
+// --------------------------------------------------------------------------
+// Mode changes
+// --------------------------------------------------------------------------
+
+// Interaction Mode:
+//  null: none / no location selected
+//  'C':  ClimateCell     -> data from simulated dataset (raster data)
+//  'S':  WeatherStation  -> data from weather station dataset (point data)
+main.mode = null
+
+main.hub.onModeChange = (newMode) =>
+  {
+    let oldMode = main.mode
+
+    // No mode change: no action
+    if (newMode == oldMode)
+      return
+
+    // Old mode ClimateCell: cleanup location marker and climate cell
+    if (oldMode == 'C')
+    {
+      main.modules.locationMarkerOnMap.remove()
+      main.modules.climateCellOnMap.remove()
+    }
+
+    // Old mode WeatherStation: cleanup weatherstation
+    if (oldMode == 'S')
+    {
+      main.modules.weatherStationController.deselect()
+    }
+
+    // Set new mode
+    main.mode = newMode
+  }
 
 
 // --------------------------------------------------------------------------
@@ -268,7 +301,22 @@ main.hub = {}
 
 main.hub.onLocationChange = (coords) =>
   {
-    console.log("Location changes: ", coords);
+    // In ClimateCell mode
+    if (main.mode == "C")
+    {
+      main.modules.locationMarkerOnMap.set(coords)
+      main.modules.climateCellOnMap.set(coords)
+      main.modules.climateDatasetController.update()
+    }
+
+    // In WeatherStation mode
+    else if (main.mode == "S")
+    {
+      // Handled directly in WeatherStation controller?
+    }
+
+    // Update coordinates in infobox
+    main.modules.coordinatesInInfobox.update(coords)
   }
 
 
@@ -278,24 +326,19 @@ main.hub.onLocationChange = (coords) =>
 
 main.hub.onPeriodChange = (start, end) =>
   {
-    console.log("Period changes: ", start, end);
-    // // Update View
-    // this._main.modules.timeline.updatePeriod(
-    //   this._periodStart, this._periodEnd
-    // )
-    // // Update Controller
-    // // TODO: find a better mechanism for here...
-    // this._main.modules.mapController.updateTime()
-    // console.log("UPDATE");
-  }
+    // Update climate data for ClimateCell
+    if (main.mode == 'C')
+      main.modules.climateDatasetController.update()
 
-main.hub.onMinMaxYearChange = (min, max) =>
-  {
-    console.log("Min/Max years change: ", min, max);
-    // // Update View
-    // this._main.modules.timeline.updateMinMaxYear(
-    //   this._minYear, this._maxYear
-    // )
+    // Update climate data for WeatherStation
+    if (main.mode == 'S')
+      main.modules.weatherStationController.updateDataForStation()
+
+    // Update active weather stations on the map
+    main.modules.weatherStationController.updateStations()
+
+    // Update period data in timeline
+    main.modules.timeline.updatePeriod(start, end)
   }
 
 
@@ -305,7 +348,19 @@ main.hub.onMinMaxYearChange = (min, max) =>
 
 main.hub.onDatasetChange = (dataset) =>
   {
-    console.log("Dataset changes: ", dataset);
+    // Update time bounds (min/max year)
+    main.modules.timeController.setMinMaxYear(
+      dataset.timePeriod[0], dataset.timePeriod[1]
+    )
+
+    // Update climate data for ClimateCell
+    if (main.mode == 'C')
+      main.modules.climateDatasetController.update()
+
+    // Update climate data for WeatherStation
+    if (main.mode == 'S')
+      main.modules.weatherStationController.updateDataForStation()
+
   }
 
 

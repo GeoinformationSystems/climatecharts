@@ -26,7 +26,6 @@ class WeatherStationController
     // ------------------------------------------------------------------------
 
     this._stations = []             // all stations
-    this._activeStations = []       // all stations that currently have data
     this._selectedStation = null    // the one station that is (maybe) selected
 
 
@@ -42,22 +41,19 @@ class WeatherStationController
 
   select(station)
   {
-    if (station.is_active)
-    {
-      // Cleanup currently selected station
-      this.deselect()
+    // Cleanup currently selected station
+    this.deselect()
 
-      // Model
-      station.is_selected = true
-      this._loadDataForStation(station)
+    // Model
+    station.is_selected = true
+    this._loadDataForStation(station)
 
-      // View
-      this._main.modules.weatherStationsOnMap.highlight(station)
+    // View
+    this._main.modules.weatherStationsOnMap.highlight(station)
 
-      // Controller
-      this._selectedStation = station
-      this._main.modules.mapController.clickedOnStation()
-    }
+    // Controller
+    this._selectedStation = station
+    this._main.modules.mapController.clickedOnStation()
   }
 
   deselect()
@@ -77,23 +73,31 @@ class WeatherStationController
 
 
   // ==========================================================================
-  // Update data for weather station
+  // Update active (shown) weather stations on the map
   // ==========================================================================
 
-  update()
+  updateStations()
   {
-    if (this._selectedStation)
-      this._loadDataForStation(this._selectedStation)
+    let numStations = this._stations.length
+    for (let stationIdx=0; stationIdx<numStations; stationIdx++)
+    {
+      let station = this._stations[stationIdx]
+      if (this._isActiveInTimeRange(station))
+        this._activate(station)
+      else
+        this._deactivate(station)
+    }
   }
 
 
   // ==========================================================================
-  // Cleanup: deselect current station
+  // Update data for one weather station
   // ==========================================================================
 
-  cleanup()
+  updateDataForStation()
   {
-    this.deselect()
+    if (this._selectedStation)
+      this._loadDataForStation(this._selectedStation)
   }
 
 
@@ -118,28 +122,24 @@ class WeatherStationController
 
   _activate(station)
   {
-    // Model
-    station.is_active = true
-
-    // View
-    this._main.modules.weatherStationsOnMap.show(station)
-
-    // Controller
-    this._activeStations.push(station)
+    if (!station.is_active)
+    {
+      // Model
+      station.is_active = true
+      // View
+      this._main.modules.weatherStationsOnMap.show(station)
+    }
   }
 
   _deactivate(station)
   {
-    // Model
-    station.is_active = false
-
-    // View
-    this._main.modules.weatherStationsOnMap.hide(station)
-
-    // Controller
-    // -> remove from list
-    listIdx = this._activeStations.indexOf(station)
-    this._activeStations.splice(listIdx, 1)
+    if (station.is_active)
+    {
+      // Model
+      station.is_active = false
+      // View
+      this._main.modules.weatherStationsOnMap.hide(station)
+    }
   }
 
 
@@ -178,10 +178,7 @@ class WeatherStationController
 
             // Put markers on the map, if it has data in the current time range
             if (this._isActiveInTimeRange(station))
-            {
               this._activate(station)
-              this._activeStations.push(station)
-            }
 
             // Click on marker => get climate data
             // using JavaScript anonymous-functions-and-bind-magic :)
@@ -224,8 +221,10 @@ class WeatherStationController
   {
     // idea: two time perions (A and B), two time points (0 = start, 1 = end)
     // A and B overlap if A0 < B1 and A1 > B0
-    if ((station.min_year < this._main.modules.timeController.getPeriodEnd()) &&
-        (station.max_year > this._main.modules.timeController.getPeriodStart()) )
+    if (
+      (station.min_year < this._main.modules.timeController.getPeriodEnd()) &&
+      (station.max_year > this._main.modules.timeController.getPeriodStart())
+    )
       return true
     else
       return false

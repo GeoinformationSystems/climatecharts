@@ -88,8 +88,8 @@ class TimeController
     this._minYear = minYear
     this._maxYear = maxYear
 
-    // Tell everyone
-    this._main.hub.onMinMaxYearChange(this._minYear, this._maxYear)
+    // Update timeline
+    this._main.modules.timeline.updateMinMaxYear(this._minYear, this._maxYear)
   }
 
   getMinYear()

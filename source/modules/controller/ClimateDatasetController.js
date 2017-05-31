@@ -51,9 +51,7 @@ class ClimateDatasetController
 
     // Controller
     this._selectedDataset = dataset
-    this._main.modules.timeController.setMinMaxYear(
-      dataset.timePeriod[0], dataset.timePeriod[1]
-    )
+    this._main.hub.onDatasetChange(dataset);
   }
 
   selectByName(name)
@@ -98,7 +96,7 @@ class ClimateDatasetController
 
     this._main.modules.serverInterface.requestClimateDataForCell(
       this._selectedDataset.urlDatasets,
-      variables,      // ["tmp", "pre"]
+      variables,      // [tmp, pre]
       coords,         // [lat, lng]
       [               // [minDate, maxDate]
         this._main.modules.timeController.getPeriodStart(),
@@ -129,8 +127,8 @@ class ClimateDatasetController
 
           // Update climate data
           this._main.modules.climateDataController.update(
-            tempData, precData,                   // Actual climate data
-            name, coords, elev, source            // Meta data
+            tempData, precData,           // Actual climate data
+            name, coords, elev, source    // Meta data
           )
         }
     )
@@ -205,14 +203,11 @@ class ClimateDatasetController
           this._x2js.xml2json(tempDataXml[0]).netcdf,
           this._x2js.xml2json(precDataXml[0]).netcdf
         ]
-        dataset.rasterSize =
-        [
-          parseFloat(dataset.metaDatasets[0].group[0].attribute[6]._value),
-          parseFloat(dataset.metaDatasets[0].group[0].attribute[7]._value)
-        ]
-
-        // Set the cell dimensions
-        this._main.modules.climateCellController.setCellSize(dataset.rasterSize)
+        dataset.raster_cell_size =
+        {
+          lat: parseFloat(dataset.metaDatasets[0].group[0].attribute[6]._value),
+          lng: parseFloat(dataset.metaDatasets[0].group[0].attribute[7]._value)
+        }
 
         // Add to view
         this._main.modules.climateDatasetsInList.add(dataset)

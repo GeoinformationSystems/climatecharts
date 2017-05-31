@@ -66,58 +66,22 @@ class MapController
 
   setLocation(origCoords)
   {
-    // Save coordinates
-    this._coords = this._bringCoordsInBounds(origCoords)
-
+    // Handle mode
     // If user has clicked on weather station
     if (this._stationJustActivated)
     {
-      // Switch mode
-      this._mode = 'S'
-
-      // Cleanup marker and cell
-      this._main.modules.locationMarkerController.cleanup()
-      this._main.modules.climateCellController.cleanup()
-
+      this._main.hub.onModeChange('S')
       // Reset variable for next click on station
       this._stationJustActivated = false
-
-      // Setup of weatherstation handled in WeatherStationsOnMap...
     }
 
     // If user has clicked on map, setup marker and cell
     else
-    {
-      // Switch mode
-      this._mode = 'C'
+      this._main.hub.onModeChange('C')
 
-      // Cleanup weatherstation
-      this._main.modules.weatherStationController.cleanup()
-
-      // Setup marker and cell
-      this._main.modules.locationMarkerController.set(this._coords)
-      this._main.modules.climateCellController.set(this._coords)
-    }
-
-    // Show coordinates in infobox
-    this._main.modules.coordinatesInInfobox.update(this._coords)
-  }
-
-
-  // ==========================================================================
-  // Clean the status variables if no location selected anymore
-  // TODO: fire from interface
-  // ==========================================================================
-
-  cleanLocation()
-  {
-    this._mode = null
-    this._stationJustActivated = false
-    this._coords =
-    {
-      lat: null,
-      lng: null,
-    }
+    // Handle location
+    this._coords = this._bringCoordsInBounds(origCoords)
+    this._main.hub.onLocationChange(this._coords)
   }
 
 
@@ -133,20 +97,6 @@ class MapController
 
 
   // ==========================================================================
-  // Time updated => tell either weather station or climate dataset to reload
-  // ==========================================================================
-
-  // TODO: problem here...
-  updateTime()
-  {
-    if (this._mode == 'S')
-      this._main.modules.weatherStationController.update()
-    else if (this._mode == 'C')
-      this._main.modules.climateDatasetController.update()
-  }
-
-
-  // ==========================================================================
   // Getter
   // ==========================================================================
 
@@ -154,7 +104,6 @@ class MapController
   {
     return this._coords
   }
-
 
 
   // ##########################################################################

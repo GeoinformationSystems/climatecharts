@@ -110,13 +110,13 @@ class WeatherStationsOnMap
   hide(station)
   {
     // Remove from map
-    this._map.removeLayer(station)
+    this._map.removeLayer(station.marker)
 
     // Remove link model <-> view
     station.marker = null
 
     // Forget station
-    listIdx = this._activeStations.indexOf(station)
+    let listIdx = this._activeStations.indexOf(station)
     this._activeStations.splice(listIdx, 1)
   }
 
