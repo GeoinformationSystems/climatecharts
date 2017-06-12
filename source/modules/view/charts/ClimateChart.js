@@ -28,11 +28,14 @@ class ClimateChart extends Chart
   // Update chart
   // ==========================================================================
 
-  update(climateData)
+  updateClimate(climateData)
   {
-    super.update(climateData)
+    super.updateClimate(climateData)
+  }
 
-    this._drawChart()
+  updateTitle(title)
+  {
+    super.updateTitle(title)
   }
 
 
@@ -719,6 +722,13 @@ class ClimateChart extends Chart
       .attr("height", this._chartHeight)
       .attr("fill", "none")
       .style("pointer-events", "all")
+
+
+    // ------------------------------------------------------------------------
+    // Set member
+    // ------------------------------------------------------------------------
+
+    this._titleDiv = $('#climate-chart-title')
 
 
     // ------------------------------------------------------------------------

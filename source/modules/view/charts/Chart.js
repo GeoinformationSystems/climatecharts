@@ -24,46 +24,72 @@ class Chart
     // Member Variables
     // ------------------------------------------------------------------------
 
+    this._main = main
     this._chartMain = main.config.charts[chartName]
     this._climateData = climateData
-    this._setChartMetadata()
-
-
-    // ------------------------------------------------------------------------
-    // Helpers
-    // ------------------------------------------------------------------------
 
     this._domElementCreator = new DOMElementCreator()
+
+
+    // ------------------------------------------------------------------------
+    // Setup metadata
+    // ------------------------------------------------------------------------
+
+    this._setChartMetadata()
 
 
     // ------------------------------------------------------------------------
     // Setup container
     // ------------------------------------------------------------------------
 
+    // Parent container in which chart is embedded
     let parentDiv = document.getElementById(main.config.charts.parentContainer)
 
+    // Wrapper container which directly contains the chart
     let wrapperDiv = this._domElementCreator.create(
-      'div', this._chartMain.container+"-wrapper",  // id
-      [main.config.charts.className, 'box']         // classes
-    )
+        'div',                                  // element
+        this._chartMain.container+"-wrapper",   // id
+        [main.config.charts.className, 'box']   // classes
+      )
     parentDiv.appendChild(wrapperDiv)
 
     this._wrapperDiv = $(wrapperDiv)
+
+    // Chart title container
+    this._titleDiv = null
+
+    // Reset the diagram title
+    this._main.hub.onDiagramTitleChange(this._title)
   }
 
 
   // ==========================================================================
-  // Update chart
+  // Update climate data of chart
   // ==========================================================================
 
-  update(climateData)
+  updateClimate(climateData)
   {
     // Update model
     this._climateData = climateData
     this._setChartMetadata()
 
-    // Clear current container
+    // Clear current container and redraw
     this._wrapperDiv.empty()
+    this._drawChart()
+
+    // Reset the diagram title
+    this._main.hub.onDiagramTitleChange(this._title)
+  }
+
+
+  // ==========================================================================
+  // Update title of chart
+  // ==========================================================================
+
+  updateTitle(title)
+  {
+    this._title = title
+    this._titleDiv.text(title)
   }
 
 

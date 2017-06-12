@@ -239,6 +239,7 @@ main.modules.timeline =                   new Timeline(main)
 // Misc
 main.modules.climateDatasetsInList =      new ClimateDatasetsInList(main)
 main.modules.coordinatesInInfobox =       new CoordinatesInInfobox(main)
+main.modules.chartTitleSetter =           new ChartTitleSetter(main)
 
 
 // --------------------------------------------------------------------------
@@ -250,6 +251,7 @@ main.modules.mapController =              new MapController(main)
 main.modules.weatherStationController =   new WeatherStationController(main)
 main.modules.climateDatasetController =   new ClimateDatasetController(main)
 main.modules.climateDataController =      new ClimateDataController(main)
+main.modules.chartController =            new ChartController(main)
 
 
 
@@ -363,6 +365,18 @@ main.hub.onDatasetChange = (dataset) =>
 
   }
 
+// --------------------------------------------------------------------------
+// Diagram title changes
+// --------------------------------------------------------------------------
+
+main.hub.onDiagramTitleChange = (title) =>
+  {
+    // Update all diagrams
+    main.modules.chartController.updateTitle(title)
+
+    // Update user defined title
+    main.modules.chartTitleSetter.update(title)
+  }
 
 
 

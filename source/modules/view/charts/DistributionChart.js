@@ -34,10 +34,14 @@ class DistributionChart extends Chart
   // Update chart
   // ==========================================================================
 
-  update(climateData)
+  updateClimate(climateData)
   {
-    super.update(climateData)
+    super.updateClimate(climateData)
+  }
 
+  updateTitle(title)
+  {
+    super.updateTitle(title)
   }
 
 
