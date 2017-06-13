@@ -39,7 +39,7 @@ class Chart
 
 
     // ------------------------------------------------------------------------
-    // Setup container
+    // Setup visualization
     // ------------------------------------------------------------------------
 
     // Parent container in which chart is embedded
@@ -57,6 +57,9 @@ class Chart
 
     // Chart title container
     this._titleDiv = null
+
+    // Finally draw the chart
+    this._drawChart()
 
     // Reset the diagram title
     this._main.hub.onDiagramTitleChange(this._title)
@@ -99,7 +102,11 @@ class Chart
 
   remove()
   {
+    // Clean model
     this._climateData = null
+
+    // Clean view
+    this._wrapperDiv.remove()
   }
 
 

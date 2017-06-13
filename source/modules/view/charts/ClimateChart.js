@@ -19,34 +19,8 @@ class ClimateChart extends Chart
     // Call super class for setting up the div container and climate data
     // ------------------------------------------------------------------------
     super(main, 'climateChart', climateData)
-
-    this._drawChart()
   }
 
-
-  // ==========================================================================
-  // Update chart
-  // ==========================================================================
-
-  updateClimate(climateData)
-  {
-    super.updateClimate(climateData)
-  }
-
-  updateTitle(title)
-  {
-    super.updateTitle(title)
-  }
-
-
-  // ==========================================================================
-  // Remove chart
-  // ==========================================================================
-
-  remove()
-  {
-    super.remove()
-  }
 
 
   // ##########################################################################
