@@ -39,7 +39,7 @@ class Chart
 
 
     // ------------------------------------------------------------------------
-    // Setup visualization
+    // Setup container
     // ------------------------------------------------------------------------
 
     // Parent container in which chart is embedded
@@ -55,14 +55,73 @@ class Chart
 
     this._wrapperDiv = $(wrapperDiv)
 
-    // Chart title container
-    this._titleDiv = null
+    // Append chart element to parent container and set basic styles.
+    // -> check if chart already exists, otherwise create it
+    this._chart = d3.select("#" + this._chartMain.container + "-wrapper")
+      .append("svg")
+      .attr("id", this._chartMain.container)
+      .attr("version", 1.1)
+      .attr("xmlns", "http://www.w3.org/2000/svg")
+      .attr("preserveAspectRatio", "xMinYMin meet")
+      .attr("viewBox",
+        "0 0 " + this._chartMain.width + " " + this._chartMain.height
+      )
+      .attr('width', '100%')
+      .attr('height', '1000px')	// for compatibility with IE, this has to be here. But just forget about the actual number, it is a max value, it does not matter...
+      .classed("svg-container", true) //container class to make it responsive
+      .classed("svg-content-responsive", true)
+      .style("font-size",       "15px")
+      .style("font-family",     "Arial, sans-serif")
+      .style("font-style",      "normal")
+      .style("font-variant",    "normal")
+      .style("font-weight",     "normal")
+      .style("text-rendering",  "optimizeLegibility")
+      .style("shape-rendering", "default")
+      .style("background-color","transparent")
 
-    // Finally draw the chart
+    //Set size and position for the chart drawing area and the table.
+    this._width  = this._chartMain.width
+    this._height = this._chartMain.height
+
+    this._chartWidth = 0
+      - this._chartMain.margins.left
+      + this._width
+      - this._chartMain.margins.right
+    this._chartHeight = 0
+      + this._height
+      - this._chartMain.margins.top
+      - this._chartMain.margins.bottom
+    this._tableX = 0
+      + this._width
+      - this._chartMain.margins.right
+      + 1.6 * this._chartMain.margins.rightS
+    this._tableY = 0
+      + this._chartMain.margins.top
+    this._tableframeY = 0
+      + this._tableY
+      - 10
+
+
+    // ------------------------------------------------------------------------
+    // Write title, subtitle and caption
+    // ------------------------------------------------------------------------
+
+    // Title
+    this._titleDiv = null
+    this._main.hub.onDiagramTitleChange(this._title)
+    // TODO: continue here
+
+    // Subtitle
+
+    // Caption
+
+
+    // ------------------------------------------------------------------------
+    // Draw chart itself
+    // ------------------------------------------------------------------------
+
     this._drawChart()
 
-    // Reset the diagram title
-    this._main.hub.onDiagramTitleChange(this._title)
   }
 
 
@@ -113,6 +172,11 @@ class Chart
   // ##########################################################################
   // PRIVATE MEMBERS
   // ##########################################################################
+
+
+  // ==========================================================================
+  // Remove chart
+  // ==========================================================================
 
   _setChartMetadata()
   {

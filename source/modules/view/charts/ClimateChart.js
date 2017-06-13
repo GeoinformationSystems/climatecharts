@@ -29,49 +29,6 @@ class ClimateChart extends Chart
 
   _drawChart()
   {
-    // Append chart element to parent container and set basic styles.
-    // -> check if chart already exists, otherwise create it
-    this._chart = d3.select("#" + this._chartMain.container + "-wrapper")
-      .append("svg")
-      .attr("id", this._chartMain.container)
-      .attr("version", 1.1)
-      .attr("xmlns", "http://www.w3.org/2000/svg")
-      .attr("preserveAspectRatio", "xMinYMin meet")
-      .attr("viewBox",
-        "0 0 " + this._chartMain.width + " " + this._chartMain.height
-      )
-      .attr('width', '100%')
-      .attr('height', '1000px')	// for compatibility with IE, this has to be here. But just forget about the actual number, it is a max value, it does not matter...
-      .classed("svg-container", true) //container class to make it responsive
-      .classed("svg-content-responsive", true)
-      .style("font-size",       "15px")
-      .style("font-family",     "Arial, sans-serif")
-      .style("font-style",      "normal")
-      .style("font-variant",    "normal")
-      .style("font-weight",     "normal")
-      .style("text-rendering",  "optimizeLegibility")
-      .style("shape-rendering", "default")
-      .style("background-color","transparent")
-
-    //Set size and position for the chart drawing area and the table.
-    this._width  = this._chartMain.width
-    this._height = this._chartMain.height
-
-    this._chartWidth = 0
-      - this._chartMain.margins.left
-      + this._width
-      - this._chartMain.margins.right
-    this._chartHeight = 0
-      + this._height
-      - this._chartMain.margins.top
-      - this._chartMain.margins.bottom
-    this._tableX = 0
-      + this._width
-      - this._chartMain.margins.right
-      + 1.6 * this._chartMain.margins.rightS
-    this._tableY = this._chartMain.margins.top
-    this._tableframeY =  this._tableY - 10
-
     // Placeholder for the specific ticks shown on the vertical axes.
     this._ticksY1 = []
     this._ticksY2 = []
@@ -90,15 +47,16 @@ class ClimateChart extends Chart
     // standard height value and the number of ticks
     // -> assuming there aren´t any negative temp values.
     this._stepSizeY1 = ( 0
-      + this._height
-      - this._chartMain.margins.top
-      - this._chartMain.margins.bottom
-    ) /5
+        + this._height
+        - this._chartMain.margins.top
+        - this._chartMain.margins.bottom
+      ) / 5
 
     this._setTickValues()
 
     // The ticks for all y axes have to be calculated manually to make sure
     // that they are in alignment and have the correct ratio.
+
 
     //-------------------------------------------------------------------------
     // Define features of chart
