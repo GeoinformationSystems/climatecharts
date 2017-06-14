@@ -56,7 +56,7 @@ class ChartController
       this._charts =
         [
           new ClimateChart(this._main, climateData),
-          // new DistributionChart(this._main, climateData),
+          new DistributionChart(this._main, climateData),
           // new AvailabilityChart(this._main, climateData)
         ]
       this._chartsAreActive = true

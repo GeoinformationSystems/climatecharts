@@ -29,6 +29,25 @@ class ClimateChart extends Chart
 
   _drawChart()
   {
+    // Position variables
+    this._chartWidth = 0
+      - this._margins.left
+      + this._width
+      - this._margins.right
+    this._chartHeight = 0
+      + this._height
+      - this._margins.top
+      - this._margins.bottom
+    this._tableX = 0
+      + this._width
+      - this._margins.right
+      + 1.6 * this._margins.rightS
+    this._tableY = 0
+      + this._margins.top
+    this._tableframeY = 0
+      + this._tableY
+      - 10
+
     // Placeholder for the specific ticks shown on the vertical axes.
     this._ticksY1 = []
     this._ticksY2 = []
@@ -48,8 +67,8 @@ class ClimateChart extends Chart
     // -> assuming there aren´t any negative temp values.
     this._stepSizeY1 = ( 0
         + this._height
-        - this._chartMain.margins.top
-        - this._chartMain.margins.bottom
+        - this._margins.top
+        - this._margins.bottom
       ) / 5
 
     this._setTickValues()
@@ -68,8 +87,8 @@ class ClimateChart extends Chart
       .domain(MONTHS_IN_YEAR)
       .rangePoints(
         [
-          this._chartMain.margins.left,
-          this._width - this._chartMain.margins.right
+          this._margins.left,
+          this._width - this._margins.right
         ], 0
       )
 
@@ -77,8 +96,8 @@ class ClimateChart extends Chart
       .linear()
       .range(
         [
-          this._height - this._chartMain.margins.bottom,
-          this._heightY3 + this._chartMain.margins.top
+          this._height - this._margins.bottom,
+          this._heightY3 + this._margins.top
         ]
       )
       .domain([this._minY1, this._maxY1])
@@ -87,8 +106,8 @@ class ClimateChart extends Chart
       .linear()
       .range(
         [
-          this._height - this._chartMain.margins.bottom,
-          this._heightY3 + this._chartMain.margins.top
+          this._height - this._margins.bottom,
+          this._heightY3 + this._margins.top
         ]
       )
       .domain([this._minY2, this._maxY2])
@@ -97,8 +116,8 @@ class ClimateChart extends Chart
       .linear()
       .range(
         [
-          this._heightY3 + this._chartMain.margins.top,
-          this._chartMain.margins.top
+          this._heightY3 + this._margins.top,
+          this._margins.top
         ]
       )
       .domain([100, this._maxY3])
@@ -107,14 +126,14 @@ class ClimateChart extends Chart
       .linear()
       .range(
         [
-          this._height - this._chartMain.margins.bottom,
-          this._chartMain.margins.top
+          this._height - this._margins.bottom,
+          this._margins.top
         ]
       )
       .domain(
         [
-          this._chartMain.margins.bottom,
-          this._height - this._chartMain.margins.top
+          this._margins.bottom,
+          this._height - this._margins.top
         ]
       )
 
@@ -122,8 +141,8 @@ class ClimateChart extends Chart
       .linear()
       .range(
         [
-          this._heightY3 - this._stepSizeY1 + this._chartMain.margins.top,
-          this._chartMain.margins.top
+          this._heightY3 - this._stepSizeY1 + this._margins.top,
+          this._margins.top
         ]
       )
       .domain([300, this._maxY3])
@@ -135,7 +154,7 @@ class ClimateChart extends Chart
       .rangePoints(
         [
           this._tableX,
-          this._tableX + this._chartMain.tableWidth
+          this._tableX + this._dimensions.tableWidth
         ], 0
       )
 
@@ -143,7 +162,7 @@ class ClimateChart extends Chart
       .ordinal()
       .range(
         [
-          this._tableframeY + this._chartMain.tableHeight,
+          this._tableframeY + this._dimensions.tableHeight,
           this._tableframeY
         ]
       )
@@ -151,7 +170,7 @@ class ClimateChart extends Chart
       .rangePoints(
         [
           this._tableframeY,
-          this._tableframeY + this._chartMain.tableHeight
+          this._tableframeY + this._dimensions.tableHeight
         ], 0
       )
 
@@ -193,7 +212,10 @@ class ClimateChart extends Chart
     let gridX = d3.svg
       .axis()
       .scale(xScale)
-      .tickSize(this._chartMain.margins.top + this._chartMain.margins.bottom - this._height)
+      .tickSize(0
+        + this._margins.top
+        + this._margins.bottom
+        - this._height)
       .tickSubdivide(true)
       .tickPadding(5)
       .tickFormat("")
@@ -218,7 +240,7 @@ class ClimateChart extends Chart
       .axis()
       .scale(yScaleTable)
       .tickValues([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13])
-      .tickSize(-this._chartMain.tableWidth)
+      .tickSize(-this._dimensions.tableWidth)
       .orient('left')
       .tickFormat("")
 
@@ -277,9 +299,9 @@ class ClimateChart extends Chart
       .interpolate('linear')
 
 
-    //---------------------------------------------------------------------------
+    //-------------------------------------------------------------------------
     // Append features of chart to the html svg element.
-    //---------------------------------------------------------------------------
+    //-------------------------------------------------------------------------
 
     // Defs contains the paths that are later used for clipping the areas
     // between the temperature and precipitation lines.
@@ -303,25 +325,25 @@ class ClimateChart extends Chart
     defs.append('clipPath')
       .attr('id', 'rect_bottom')
       .append('rect')
-      .attr('x',      this._chartMain.margins.left)
-      .attr('y',      this._chartMain.margins.top + this._heightY3)
+      .attr('x',      this._margins.left)
+      .attr('y',      this._margins.top + this._heightY3)
       .attr('width',  this._width)
       .attr('height', this._height - this._heightY3)
 
     defs.append('clipPath')
-      .attr('id', 'rect_top')
       .append('rect')
-      .attr('x',      this._chartMain.margins.left)
-      .attr('y',      this._chartMain.margins.top)
+      .attr('id',     'rect_top')
+      .attr('x',      this._margins.left)
+      .attr('y',      this._margins.top)
       .attr('width',  this._width)
       .attr('height', this._heightY3)
 
     //BACKGROUND
     this._chart.append("rect")
-      .attr("class", "shadow")
+      .attr("class",  "shadow")
       .attr("width",  this._width)
       .attr("height", this._height)
-      .attr("fill", "transparent")
+      .attr("fill",   "transparent")
 
     //GRID ELEMENTS
     this._chart.append('svg:g')
@@ -329,27 +351,27 @@ class ClimateChart extends Chart
       .attr(
         'transform',
         'translate('
-        + '0,'
-        + (this._height - this._chartMain.margins.bottom)
-        + ')'
+          + '0,'
+          + (this._height - this._margins.bottom)
+          + ')'
       )
       .call(gridX)
 
     this._chart.append('svg:g')
       .attr('class', 'grid')
-      .attr('transform','translate('+ this._chartMain.margins.left + ',0)')
+      .attr('transform','translate('+ this._margins.left + ',0)')
       .call(gridY1)
 
-    //only add the second horizontal gridlines if necessary
+    // Only add the second horizontal gridlines if necessary
     if (this._heightY3 > 0)
     {
       this._chart.append('svg:g')
         .attr('class', 'grid')
-        .attr('transform','translate('+ this._chartMain.margins.left + ',0)')
+        .attr('transform','translate('+ this._margins.left + ',0)')
         .call(gridY2)
     }
 
-    //COLORED AREAS BETWEEN LINES
+    // COLORED AREAS BETWEEN LINES
     this._chart.append('path')
       .data(this._climateData.monthly_short)
       .attr("class", "area")
@@ -373,7 +395,7 @@ class ClimateChart extends Chart
       .attr('fill', this._chartMain.colors.colPrec)
       .attr('stroke', 'none')
 
-    //LINES
+    // LINES
     this._chart.append('svg:path')
       .attr('class', 'line')
       .attr('d', lineTemp(this._climateData.monthly_short))
@@ -397,21 +419,21 @@ class ClimateChart extends Chart
       .attr('stroke-width', 1)
       .attr('fill', 'none')
 
-    //AXES
+    // AXES
     this._chart.append('svg:g')
       .attr('class', 'y axis')
-      .attr('transform','translate(' + this._chartMain.margins.left + ',0)')
+      .attr('transform','translate(' + this._margins.left + ',0)')
       .call(yAxis4)
 
     this._chart.append('svg:g')
       .attr('class', 'x axis')
-      .attr('transform', 'translate(0,' + (this._height - this._chartMain.margins.bottom) + ')')
+      .attr('transform', 'translate(0,' + (this._height - this._margins.bottom) + ')')
       .call(xAxis)
       .style('fill', 'black')
 
     this._chart.append('svg:g')
       .attr('class', 'y axis')
-      .attr('transform','translate(' + this._chartMain.margins.left + ',0)')
+      .attr('transform','translate(' + this._margins.left + ',0)')
       .call(yAxis1)
       .style('fill', this._chartMain.colors.colTemp)
 
@@ -420,8 +442,8 @@ class ClimateChart extends Chart
       .attr(
         'transform',
         'translate('
-        + (this._chartWidth + this._chartMain.margins.left)
-        + ',0)'
+          + (this._chartWidth + this._margins.left)
+          + ',0)'
       )
       .call(yAxis2)
       .style('fill', this._chartMain.colors.colPrec)
@@ -431,7 +453,7 @@ class ClimateChart extends Chart
       .attr(
         'transform',
         'translate('
-        + (this._chartWidth + this._chartMain.margins.left)
+        + (this._chartWidth + this._margins.left)
         + ',0)'
       )
       .call(yAxis3)
@@ -441,90 +463,45 @@ class ClimateChart extends Chart
     this._chart.append("text")
       .attr("class", "tick")
       .attr("text-anchor", "end")
-      .attr("x", this._chartMain.margins.left + 10)
-      .attr("y", this._tableY-10)
-      .text("[°C]")
+      .attr("x",    this._margins.left + 10)
+      .attr("y",    this._tableY-10)
       .attr('fill', this._chartMain.colors.colTemp)
+      .text("[°C]")
 
     this._chart.append("text")
       .attr("class", "tick")
       .attr("text-anchor", "end")
-      .attr("x", this._chartWidth + this._chartMain.margins.left + 20)
-      .attr("y", this._tableY-10)
-      .text("[mm]")
+      .attr("x",    this._chartWidth + this._margins.left + 20)
+      .attr("y",    this._tableY-10)
       .attr('fill', this._chartMain.colors.colPrec)
-
-    this._chart.append("text")
-      .attr("id", "climate-chart-title")
-      .attr("class", "info")
-      .attr("x", this._width*2/5)
-      .attr("y", this._chartMain.margins.top*1/3-5)
-      .attr(
-        "width",
-        this._chartMain.margins.right - this._chartMain.margins.rightS
-      )
-      .attr("text-anchor", "middle")
-      .text(this._title)
-      .call(this._wrap, this._width*2/3)
+      .text("[mm]")
 
     this._chart.append("text")
       .attr("class", "info")
-      .attr("x", this._width*2/5)
-      .attr("y", this._chartMain.margins.top*1/3+12)
-      .attr("width",
-        this._chartMain.margins.right - this._chartMain.margins.rightS
-      )
-      .attr("text-anchor", "middle")
-      .text(this._subtitle)
-      .call(this._wrap, this._width*2/3)
-
-    this._chart.append("text")
-      .attr("class", "info")
-      .attr("x", this._chartMain.margins.left + this._chartWidth/11)
-      .attr("y", this._height - this._chartMain.margins.bottomS)
+      .attr("x", this._margins.left + this._chartWidth/11)
+      .attr("y", this._height - this._margins.bottomS)
       .text("Temperature Mean: " + this._climateData.temp_mean + "°C")
 
     this._chart.append("text")
       .attr("class", "info")
-      .attr("x", this._chartMain.margins.left + this._chartWidth*6/10)
-      .attr("y", this._height - this._chartMain.margins.bottomS)
+      .attr("x", this._margins.left + this._chartWidth*6/10)
+      .attr("y", this._height - this._margins.bottomS)
       .text("Precipitation Sum: " + this._climateData.prec_sum + "mm")
-
-    this._chart.append("text")
-      .attr("class", "source")
-      .attr("id", "dataSource")
-      .attr("width", this._width)
-      .attr("x", 10)
-      .attr("y", this._height - 5)
-      // .attr("link" + this._climateData.source_link)
-      .text("Data Source: " + this._climateData.source)
-      .call(this._wrap, this._width - 100, " ")
-      .on("click", () => { window.open(this.link) })
-      .style("cursor", "pointer")
-
-    this._chart.append("text")
-      .attr("id", "url")
-      .attr("class", "source")
-      .style("text-anchor", "end")
-      .append("tspan")
-      .attr("x", this._width - 10)
-      .attr("y", this._height - 5)
-      .text(this._refURL)
 
     //TABLE ELEMENTS
     this._chart.append("line")
-      .attr("x1", this._tableX + this._chartMain.tableWidth/3)
+      .attr("x1", this._tableX + this._dimensions.tableWidth/3)
       .attr("y1", this._tableY - 15)
-      .attr("x2", this._tableX + this._chartMain.tableWidth/3)
-      .attr("y2", this._tableY + this._chartMain.tableHeight - 10)
+      .attr("x2", this._tableX + this._dimensions.tableWidth/3)
+      .attr("y2", this._tableY + this._dimensions.tableHeight - 10)
       .attr("shape-rendering", "crispEdges")
       .style("stroke", this._chartMain.colors.colGrid)
 
     this._chart.append("line")
-      .attr("x1", this._tableX + this._chartMain.tableWidth*2/3)
+      .attr("x1", this._tableX + this._dimensions.tableWidth*2/3)
       .attr("y1", this._tableY - 15)
-      .attr("x2", this._tableX + this._chartMain.tableWidth*2/3)
-      .attr("y2", this._tableY + this._chartMain.tableHeight - 10)
+      .attr("x2", this._tableX + this._dimensions.tableWidth*2/3)
+      .attr("y2", this._tableY + this._dimensions.tableHeight - 10)
       .attr("shape-rendering", "crispEdges")
       .style("stroke", this._chartMain.colors.colGrid)
 
@@ -532,7 +509,7 @@ class ClimateChart extends Chart
     this._chart.append('text')
       .attr('id', "month")
       .attr("class", "info")
-      .attr('x', this._tableX + this._chartMain.tableWidth*1/6)
+      .attr('x', this._tableX + this._dimensions.tableWidth*1/6)
       .attr('y', this._tableY)
       .attr('text-anchor', 'middle')
       .text("Month")
@@ -540,7 +517,7 @@ class ClimateChart extends Chart
     this._chart.append('text')
       .attr('id', "temp")
       .attr("class", "info")
-      .attr('x', this._tableX + this._chartMain.tableWidth*3/6)
+      .attr('x', this._tableX + this._dimensions.tableWidth*3/6)
       .attr('y', this._tableY)
       .attr('text-anchor', 'middle')
       .text("Temp")
@@ -548,7 +525,7 @@ class ClimateChart extends Chart
     this._chart.append('text')
       .attr('id', "prec")
       .attr("class", "info")
-      .attr('x', this._tableX + this._chartMain.tableWidth*5/6)
+      .attr('x', this._tableX + this._dimensions.tableWidth*5/6)
       .attr('y', this._tableY)
       .attr('text-anchor', 'middle')
       .text("Precip")
@@ -557,41 +534,41 @@ class ClimateChart extends Chart
     this._chart.append('text')
       .attr('id', "month")
       .attr("class", "info")
-      .attr('x', this._tableX + this._chartMain.tableWidth*1/6)
+      .attr('x', this._tableX + this._dimensions.tableWidth*1/6)
       .attr('y', this._tableY)
       .attr('text-anchor', 'middle')
       .call(this._fillColumn,
         this._climateData.monthly_short,
         this._tableY,
-        this._chartMain.tableHeight/13,
+        this._dimensions.tableHeight/13,
         "month",
-        this._tableX + this._chartMain.tableWidth*1/6
+        this._tableX + this._dimensions.tableWidth*1/6
       )
 
     this._chart.append('text')
       .attr("class", "info")
-      .attr('x', this._tableX + this._chartMain.tableWidth*3/6)
+      .attr('x', this._tableX + this._dimensions.tableWidth*3/6)
       .attr('y', this._tableY)
       .attr('text-anchor', 'end')
       .call(this._fillColumn,
         this._climateData.monthly_short,
         this._tableY,
-        this._chartMain.tableHeight/13,
+        this._dimensions.tableHeight/13,
         "temp",
-        this._tableX + this._chartMain.tableWidth*6/10
+        this._tableX + this._dimensions.tableWidth*6/10
       )
 
     this._chart.append('text')
       .attr("class", "info")
-      .attr('x', this._tableX + this._chartMain.tableWidth*5/6)
+      .attr('x', this._tableX + this._dimensions.tableWidth*5/6)
       .attr('y', this._tableY)
       .attr('text-anchor', 'end')
       .call(this._fillColumn,
         this._climateData.monthly_short,
         this._tableY,
-        this._chartMain.tableHeight/13,
+        this._dimensions.tableHeight/13,
         "prec",
-        this._tableX + this._chartMain.tableWidth*19/20
+        this._tableX + this._dimensions.tableWidth*19/20
       )
 
     //SET STYLING FOR DIFFERENT GROUPS OF ELEMENTS
@@ -616,10 +593,6 @@ class ClimateChart extends Chart
 
     this._chart.selectAll(".cell")
       .style("font-size", this._chartMain.fontSizes.table + "px")
-
-    this._chart.selectAll(".source")
-      .style("font-size", this._chartMain.fontSizes.source + "px")
-      .style("opacity", 0.6)
 
     this._chart.selectAll(".area")
       .style("opacity", 0.7)
@@ -648,19 +621,12 @@ class ClimateChart extends Chart
     this._chart.append("rect")
       .attr("id", "climate-chart-plot-area")
       .attr("class", "overlay")
-      .attr("x", this._chartMain.margins.left)
-      .attr("y", this._chartMain.margins.top)
+      .attr("x", this._margins.left)
+      .attr("y", this._margins.top)
       .attr("width", this._chartWidth)
       .attr("height", this._chartHeight)
       .attr("fill", "none")
       .style("pointer-events", "all")
-
-
-    // ------------------------------------------------------------------------
-    // Set member
-    // ------------------------------------------------------------------------
-
-    this._titleDiv = $('#climate-chart-title')
 
 
     // ------------------------------------------------------------------------
@@ -895,47 +861,5 @@ class ClimateChart extends Chart
         }
       }
     }
-  }
-
-  //Wrap text input string and split into multiple lines if necessary.
-  _wrap(text, width, char)
-  {
-    // TODO: fix
-    return null
-
-    text.each( () =>
-      {
-        let text = d3.select(this)
-        let words = text.text().split(char).reverse()
-        let word
-        let line = []
-        let lineNumber = 0
-        let lineHeight = 1.1; // ems
-        let x = text.attr("x")
-        let y = text.attr("y")
-        let dy = 0; //parseFloat(text.attr("dy")),
-        let tspan = text.text(null)
-          .append("tspan")
-          .attr("x", x)
-          .attr("y", y)
-          .attr("dy", dy + "em")
-        while (word = words.pop())
-        {
-          line.push(word)
-          tspan.text(line.join(char))
-          if (tspan.node().getComputedTextLength() > width)
-          {
-            line.pop()
-            tspan.text(line.join(char))
-            line = [word]
-            tspan = text.append("tspan")
-              .attr("x", x)
-              .attr("y", y)
-              .attr("dy", ++lineNumber * lineHeight + dy + "em")
-              .text(word)
-          }
-        }
-      }
-    )
   }
 }

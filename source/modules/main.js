@@ -129,23 +129,32 @@ main.config =
     parentContainer:  'main-container',
     className:        'chart',
     refURL:           'ClimateCharts.net',
+    dimensions:     // [px]
+    {
+      width:        728,
+      height:       360,
+      tableHeight:  250,
+      tableWidth:   160,
+    },
+    margins:        // [px]
+    {
+      top:          70,
+      topS:         30,
+      right:        220,
+      rightS:       30,
+      bottom:       90,
+      bottomS:      40,
+      left:         40,
+    },
+    fontSizes:      // [px]
+    {
+      title:        15,
+      subtitle:     15,
+      source:       12,
+    },
     climateChart:
     {
       container:      'climate-chart',
-      width:          728,
-      height:         360,
-      tableHeight:    250,
-      tableWidth:     160,
-      margins:
-      {
-        top:          70,
-        topS:         30,
-    		right:        220,
-        rightS:       30,
-    		bottom:       90,
-        bottomS:      40,
-    		left:         40,
-      },
       colors:
       {
         areaTemp:     d3.rgb(255,233,15  ),
@@ -159,7 +168,6 @@ main.config =
         tick:         13,
         info:         15,
         table:        14,
-        source:       12,
       }
     },
     distributionChart:

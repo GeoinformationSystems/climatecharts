@@ -25,103 +25,29 @@ class Chart
     // ------------------------------------------------------------------------
 
     this._main = main
-    this._chartMain = main.config.charts[chartName]
+    this._chartName = chartName
+
+    this._dimensions =  main.config.charts.dimensions
+    this._margins =     main.config.charts.margins
+    this._fontSizes =   main.config.charts.fontSizes
+    this._chartMain =   main.config.charts[chartName]
+
+    this._width  =      this._dimensions.width
+    this._height =      this._dimensions.height
+
     this._climateData = climateData
 
     this._domElementCreator = new DOMElementCreator()
 
 
     // ------------------------------------------------------------------------
-    // Setup metadata
+    // Setup chart
     // ------------------------------------------------------------------------
 
     this._setChartMetadata()
-
-
-    // ------------------------------------------------------------------------
-    // Setup container
-    // ------------------------------------------------------------------------
-
-    // Parent container in which chart is embedded
-    let parentDiv = document.getElementById(main.config.charts.parentContainer)
-
-    // Wrapper container which directly contains the chart
-    let wrapperDiv = this._domElementCreator.create(
-        'div',                                  // element
-        this._chartMain.container+"-wrapper",   // id
-        [main.config.charts.className, 'box']   // classes
-      )
-    parentDiv.appendChild(wrapperDiv)
-
-    this._wrapperDiv = $(wrapperDiv)
-
-    // Append chart element to parent container and set basic styles.
-    // -> check if chart already exists, otherwise create it
-    this._chart = d3.select("#" + this._chartMain.container + "-wrapper")
-      .append("svg")
-      .attr("id", this._chartMain.container)
-      .attr("version", 1.1)
-      .attr("xmlns", "http://www.w3.org/2000/svg")
-      .attr("preserveAspectRatio", "xMinYMin meet")
-      .attr("viewBox",
-        "0 0 " + this._chartMain.width + " " + this._chartMain.height
-      )
-      .attr('width', '100%')
-      .attr('height', '1000px')	// for compatibility with IE, this has to be here. But just forget about the actual number, it is a max value, it does not matter...
-      .classed("svg-container", true) //container class to make it responsive
-      .classed("svg-content-responsive", true)
-      .style("font-size",       "15px")
-      .style("font-family",     "Arial, sans-serif")
-      .style("font-style",      "normal")
-      .style("font-variant",    "normal")
-      .style("font-weight",     "normal")
-      .style("text-rendering",  "optimizeLegibility")
-      .style("shape-rendering", "default")
-      .style("background-color","transparent")
-
-    //Set size and position for the chart drawing area and the table.
-    this._width  = this._chartMain.width
-    this._height = this._chartMain.height
-
-    this._chartWidth = 0
-      - this._chartMain.margins.left
-      + this._width
-      - this._chartMain.margins.right
-    this._chartHeight = 0
-      + this._height
-      - this._chartMain.margins.top
-      - this._chartMain.margins.bottom
-    this._tableX = 0
-      + this._width
-      - this._chartMain.margins.right
-      + 1.6 * this._chartMain.margins.rightS
-    this._tableY = 0
-      + this._chartMain.margins.top
-    this._tableframeY = 0
-      + this._tableY
-      - 10
-
-
-    // ------------------------------------------------------------------------
-    // Write title, subtitle and caption
-    // ------------------------------------------------------------------------
-
-    // Title
-    this._titleDiv = null
-    this._main.hub.onDiagramTitleChange(this._title)
-    // TODO: continue here
-
-    // Subtitle
-
-    // Caption
-
-
-    // ------------------------------------------------------------------------
-    // Draw chart itself
-    // ------------------------------------------------------------------------
-
+    this._setupContainer()
+    this._writeMetadata()
     this._drawChart()
-
   }
 
 
@@ -133,14 +59,15 @@ class Chart
   {
     // Update model
     this._climateData = climateData
-    this._setChartMetadata()
 
-    // Clear current container and redraw
+    // Clean view
     this._wrapperDiv.empty()
-    this._drawChart()
 
-    // Reset the diagram title
-    this._main.hub.onDiagramTitleChange(this._title)
+    // Reset view
+    this._setChartMetadata()
+    this._setupContainer()
+    this._writeMetadata()
+    this._drawChart()
   }
 
 
@@ -175,7 +102,7 @@ class Chart
 
 
   // ==========================================================================
-  // Remove chart
+  // Set Metadata
   // ==========================================================================
 
   _setChartMetadata()
@@ -190,12 +117,171 @@ class Chart
     if (this._climateData.climate_class)
       this._subtitle += " | Climate Class: " + this._climateData.climate_class
     this._subtitle +=   " | Years: "
-                        + this._climateData.years[0] + "-"
+                        + this._climateData.years[0]
+                        + "-"
                         + this._climateData.years[1]
       // TODO: gap years (appendix in this._climateData.years[2])
 
     // Get reference URL
     this._refURL = main.config.charts.refURL
   }
+
+
+  // ==========================================================================
+  // Setup chart container
+  // ==========================================================================
+
+  _setupContainer()
+  {
+    // Parent container in which chart is embedded
+    let parentDiv = document.getElementById(main.config.charts.parentContainer)
+
+    // Wrapper container which directly contains the chart
+    let wrapperDiv = this._domElementCreator.create(
+      'div',                                  // element
+      this._chartMain.container+"-wrapper",   // id
+      [main.config.charts.className, 'box']   // classes
+    )
+    parentDiv.appendChild(wrapperDiv)
+
+    this._wrapperDiv = $(wrapperDiv)
+
+    // Append chart element to parent container and set basic styles.
+    // -> check if chart already exists, otherwise create it
+    this._chart = d3.select("#" + this._chartMain.container + "-wrapper")
+      .append("svg")
+      .attr("id", this._chartMain.container)
+      .attr("version", 1.1)
+      .attr("xmlns", "http://www.w3.org/2000/svg")
+      .attr("preserveAspectRatio", "xMinYMin meet")
+      .attr("viewBox", ""
+        + "0 0 "
+        + this._dimensions.width
+        + " "
+        + this._dimensions.height
+    )
+    .attr('width', '100%')
+    .attr('height', '1000px')	// for compatibility with IE, this has to be here. But just forget about the actual number, it is a max value, it does not matter...
+    .classed("svg-container", true) //container class to make it responsive
+    .classed("svg-content-responsive", true)
+    .style("font-size",       "15px")
+    .style("font-family",     "Arial, sans-serif")
+    .style("font-style",      "normal")
+    .style("font-variant",    "normal")
+    .style("font-weight",     "normal")
+    .style("text-rendering",  "optimizeLegibility")
+    .style("shape-rendering", "default")
+    .style("background-color","transparent")
+  }
+
+
+  // ==========================================================================
+  // Write chart-independent meta information
+  // ==========================================================================
+
+  _writeMetadata()
+  {
+    // Title
+    this._chart.append("text")
+      .attr("id", this._chartName + '-title')
+      .attr("class", "info chart-title")
+      .attr("x", this._width*2/5)
+      .attr("y", this._margins.top*1/3-5)
+      .attr("width", 0
+        + this._margins.right
+        - this._margins.rightS
+      )
+      .attr("text-anchor", "middle")
+      .text(this._title)
+      .call(this._wrap, this._width*2/3)
+
+    this._titleDiv = $('#' + this._chartName + '-title')
+    this._main.hub.onDiagramTitleChange(this._title)
+
+    // Subtitle
+    this._chart.append("text")
+      .attr("class", "info chart-subtitle")
+      .attr("x", this._width*2/5)
+      .attr("y", this._margins.top*1/3+12)
+      .attr("width", 0
+        + this._margins.right
+        - this._margins.rightS
+      )
+      .attr("text-anchor", "middle")
+      .text(this._subtitle)
+      .call(this._wrap, this._width*2/3)
+
+    // Caption: Source link
+    this._chart.append("text")
+      .attr("class", "source")
+      .attr("x", 10)
+      .attr("y", this._height - 5)
+      .attr("width", this._width)
+      .style("cursor", "pointer")
+      .style("font-size", this._fontSizes.source + "px")
+      .style("opacity", 0.6)
+      // .attr("link" + this._climateData.source_link)
+      .text("Data Source: " + this._climateData.source)
+      .call(this._wrap, this._width - 100, " ")
+      .on("click", () => { window.open(this.link) })
+
+    // Caption: Reference URL
+    this._chart.append("text")
+      .append("tspan")
+      .attr("class", "source")
+      .attr("x", this._width - 10)
+      .attr("y", this._height - 5)
+      .style("text-anchor", "end")
+      .style("font-size", this._fontSizes.source + "px")
+      .style("opacity", 0.6)
+      .text(this._refURL)
+  }
+
+
+  // ==========================================================================
+  // Wrap text input string and split into multiple lines if necessary
+  // ==========================================================================
+
+  _wrap(text, width, char)
+  {
+    // TODO: fix
+    return null
+
+    text.each( () =>
+      {
+        let text = d3.select(this)
+        let words = text.text().split(char).reverse()
+        let word
+        let line = []
+        let lineNumber = 0
+        let lineHeight = 1.1; // ems
+        let x = text.attr("x")
+        let y = text.attr("y")
+        let dy = 0; //parseFloat(text.attr("dy")),
+        let tspan = text.text(null)
+          .append("tspan")
+          .attr("x", x)
+          .attr("y", y)
+          .attr("dy", dy + "em")
+        while (word = words.pop())
+        {
+          line.push(word)
+          tspan.text(line.join(char))
+          if (tspan.node().getComputedTextLength() > width)
+          {
+            line.pop()
+            tspan.text(line.join(char))
+            line = [word]
+            tspan = text.append("tspan")
+              .attr("x", x)
+              .attr("y", y)
+              .attr("dy", ++lineNumber * lineHeight + dy + "em")
+              .text(word)
+          }
+        }
+      }
+    )
+  }
+
 
 }
