@@ -29,24 +29,66 @@ class ClimateChart extends Chart
 
   _drawChart()
   {
-    // Position variables
-    this._chartWidth = 0
-      - this._margins.left
-      + this._width
-      - this._margins.right
-    this._chartHeight = 0
-      + this._height
-      - this._margins.top
-      - this._margins.bottom
-    this._tableX = 0
-      + this._width
-      - this._margins.right
-      + 1.6 * this._margins.rightS
-    this._tableY = 0
-      + this._margins.top
-    this._tableframeY = 0
-      + this._tableY
-      - 10
+    // Dimensions of climate chart
+    this._chartDimensions = {
+      left: ( 0
+        + this._mainDimensions.left
+        + this._chartsMain.structure.full.padding
+      ),
+      top: ( 0
+        + this._mainDimensions.top
+        + this._chartsMain.structure.full.padding
+      ),
+      right: ( 0
+        + this._mainDimensions.left
+        + Math.round(this._mainDimensions.width
+          * this._chartMain.structure.diagramWidthRatio)
+        - this._chartsMain.structure.full.padding
+      ),
+      bottom: ( 0
+        + this._mainDimensions.bottom
+        - this._chartsMain.structure.full.padding
+      ),
+    }
+
+    this._chartDimensions.width = 0
+      + this._chartDimensions.right
+      - this._chartDimensions.left
+    this._chartDimensions.height = 0
+      + this._chartDimensions.bottom
+      - this._chartDimensions.top
+
+    // Dimensions of table next to climate chart
+    this._tableDimensions = {
+      left: ( 0
+        + this._mainDimensions.left
+        + Math.round(this._mainDimensions.width
+          * this._chartMain.structure.diagramWidthRatio)
+        + this._chartsMain.structure.full.padding
+      ),
+      top: ( 0
+        + this._mainDimensions.top
+        + this._chartsMain.structure.full.padding
+      ),
+      right: ( 0
+        + this._mainDimensions.right
+        - this._chartsMain.structure.full.padding
+      ),
+      bottom: ( 0
+        + this._mainDimensions.bottom
+        - this._chartsMain.structure.full.padding
+      ),
+    }
+
+    this._tableDimensions.width = 0
+      + this._tableDimensions.right
+      - this._tableDimensions.left
+    this._tableDimensions.height = 0
+      + this._tableDimensions.bottom
+      - this._tableDimensions.top
+
+    // TODO: continue from here
+    return null;
 
     // Placeholder for the specific ticks shown on the vertical axes.
     this._ticksY1 = []
@@ -153,8 +195,8 @@ class ClimateChart extends Chart
       .domain([0, 1, 2, 3])
       .rangePoints(
         [
-          this._tableX,
-          this._tableX + this._dimensions.tableWidth
+          this._tableDimensions.left,
+          this._tableDimensions.left + this._dimensions.tableWidth
         ], 0
       )
 
@@ -162,15 +204,15 @@ class ClimateChart extends Chart
       .ordinal()
       .range(
         [
-          this._tableframeY + this._dimensions.tableHeight,
-          this._tableframeY
+          this._tableDimensions.top - 10 + this._dimensions.tableHeight,
+          this._tableDimensions.top - 10
         ]
       )
       .domain([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13])
       .rangePoints(
         [
-          this._tableframeY,
-          this._tableframeY + this._dimensions.tableHeight
+          this._tableDimensions.top - 10,
+          this._tableDimensions.top - 10 + this._dimensions.tableHeight
         ], 0
       )
 
@@ -464,7 +506,7 @@ class ClimateChart extends Chart
       .attr("class", "tick")
       .attr("text-anchor", "end")
       .attr("x",    this._margins.left + 10)
-      .attr("y",    this._tableY-10)
+      .attr("y",    this._tableDimensions.top-10)
       .attr('fill', this._chartMain.colors.colTemp)
       .text("[°C]")
 
@@ -472,7 +514,7 @@ class ClimateChart extends Chart
       .attr("class", "tick")
       .attr("text-anchor", "end")
       .attr("x",    this._chartWidth + this._margins.left + 20)
-      .attr("y",    this._tableY-10)
+      .attr("y",    this._tableDimensions.top-10)
       .attr('fill', this._chartMain.colors.colPrec)
       .text("[mm]")
 
@@ -490,18 +532,18 @@ class ClimateChart extends Chart
 
     //TABLE ELEMENTS
     this._chart.append("line")
-      .attr("x1", this._tableX + this._dimensions.tableWidth/3)
-      .attr("y1", this._tableY - 15)
-      .attr("x2", this._tableX + this._dimensions.tableWidth/3)
-      .attr("y2", this._tableY + this._dimensions.tableHeight - 10)
+      .attr("x1", this._tableDimensions.left + this._dimensions.tableWidth/3)
+      .attr("y1", this._tableDimensions.top - 15)
+      .attr("x2", this._tableDimensions.left + this._dimensions.tableWidth/3)
+      .attr("y2", this._tableDimensions.top + this._dimensions.tableHeight - 10)
       .attr("shape-rendering", "crispEdges")
       .style("stroke", this._chartMain.colors.colGrid)
 
     this._chart.append("line")
-      .attr("x1", this._tableX + this._dimensions.tableWidth*2/3)
-      .attr("y1", this._tableY - 15)
-      .attr("x2", this._tableX + this._dimensions.tableWidth*2/3)
-      .attr("y2", this._tableY + this._dimensions.tableHeight - 10)
+      .attr("x1", this._tableDimensions.left + this._dimensions.tableWidth*2/3)
+      .attr("y1", this._tableDimensions.top - 15)
+      .attr("x2", this._tableDimensions.left + this._dimensions.tableWidth*2/3)
+      .attr("y2", this._tableDimensions.top + this._dimensions.tableHeight - 10)
       .attr("shape-rendering", "crispEdges")
       .style("stroke", this._chartMain.colors.colGrid)
 
@@ -509,24 +551,24 @@ class ClimateChart extends Chart
     this._chart.append('text')
       .attr('id', "month")
       .attr("class", "info")
-      .attr('x', this._tableX + this._dimensions.tableWidth*1/6)
-      .attr('y', this._tableY)
+      .attr('x', this._tableDimensions.left + this._dimensions.tableWidth*1/6)
+      .attr('y', this._tableDimensions.top)
       .attr('text-anchor', 'middle')
       .text("Month")
 
     this._chart.append('text')
       .attr('id', "temp")
       .attr("class", "info")
-      .attr('x', this._tableX + this._dimensions.tableWidth*3/6)
-      .attr('y', this._tableY)
+      .attr('x', this._tableDimensions.left + this._dimensions.tableWidth*3/6)
+      .attr('y', this._tableDimensions.top)
       .attr('text-anchor', 'middle')
       .text("Temp")
 
     this._chart.append('text')
       .attr('id', "prec")
       .attr("class", "info")
-      .attr('x', this._tableX + this._dimensions.tableWidth*5/6)
-      .attr('y', this._tableY)
+      .attr('x', this._tableDimensions.left + this._dimensions.tableWidth*5/6)
+      .attr('y', this._tableDimensions.top)
       .attr('text-anchor', 'middle')
       .text("Precip")
 
@@ -534,41 +576,41 @@ class ClimateChart extends Chart
     this._chart.append('text')
       .attr('id', "month")
       .attr("class", "info")
-      .attr('x', this._tableX + this._dimensions.tableWidth*1/6)
-      .attr('y', this._tableY)
+      .attr('x', this._tableDimensions.left + this._dimensions.tableWidth*1/6)
+      .attr('y', this._tableDimensions.top)
       .attr('text-anchor', 'middle')
       .call(this._fillColumn,
         this._climateData.monthly_short,
-        this._tableY,
+        this._tableDimensions.top,
         this._dimensions.tableHeight/13,
         "month",
-        this._tableX + this._dimensions.tableWidth*1/6
+        this._tableDimensions.left + this._dimensions.tableWidth*1/6
       )
 
     this._chart.append('text')
       .attr("class", "info")
-      .attr('x', this._tableX + this._dimensions.tableWidth*3/6)
-      .attr('y', this._tableY)
+      .attr('x', this._tableDimensions.left + this._dimensions.tableWidth*3/6)
+      .attr('y', this._tableDimensions.top)
       .attr('text-anchor', 'end')
       .call(this._fillColumn,
         this._climateData.monthly_short,
-        this._tableY,
+        this._tableDimensions.top,
         this._dimensions.tableHeight/13,
         "temp",
-        this._tableX + this._dimensions.tableWidth*6/10
+        this._tableDimensions.left + this._dimensions.tableWidth*6/10
       )
 
     this._chart.append('text')
       .attr("class", "info")
-      .attr('x', this._tableX + this._dimensions.tableWidth*5/6)
-      .attr('y', this._tableY)
+      .attr('x', this._tableDimensions.left + this._dimensions.tableWidth*5/6)
+      .attr('y', this._tableDimensions.top)
       .attr('text-anchor', 'end')
       .call(this._fillColumn,
         this._climateData.monthly_short,
-        this._tableY,
+        this._tableDimensions.top,
         this._dimensions.tableHeight/13,
         "prec",
-        this._tableX + this._dimensions.tableWidth*19/20
+        this._tableDimensions.left + this._dimensions.tableWidth*19/20
       )
 
     //SET STYLING FOR DIFFERENT GROUPS OF ELEMENTS

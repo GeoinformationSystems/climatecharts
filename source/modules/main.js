@@ -158,6 +158,7 @@ main.config =
       {
         top:      70,
         left:     0,
+        bottom:   30,
       },
       source:
       {
@@ -190,6 +191,10 @@ main.config =
           colTemp:      d3.rgb(230,20, 20  ),
           colGrid:      d3.rgb(211,211,211 ),
         },
+        structure:
+        {
+          diagramWidthRatio:  0.7,  // % of full width for diagram
+        },                          // rest is for table
         fontSizes:      // [px]
         {
           tick:         13,

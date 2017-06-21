@@ -190,6 +190,31 @@ class Chart
       .style('text-rendering',  'optimizeLegibility')
       .style('shape-rendering', 'default')
       .style('background-color','transparent')
+
+      // Final dimensions of the main chart area
+      this._mainDimensions = {
+        left : ( 0
+          + this._chartsMain.structure.main.left
+        ),
+        top : ( 0
+          + this._chartsMain.structure.main.top
+        ),
+        right : ( 0
+          + this._chartsMain.structure.full.width
+        ),
+        bottom : ( 0
+          + this._chartsMain.structure.full.height
+          - this._chartsMain.structure.main.top
+          - this._chartsMain.structure.main.bottom
+        ),
+      }
+
+      this._mainDimensions.width = 0
+        + this._mainDimensions.right
+        - this._mainDimensions.left
+      this._mainDimensions.height = 0
+        + this._mainDimensions.bottom
+        - this._mainDimensions.top
     }
 
 
