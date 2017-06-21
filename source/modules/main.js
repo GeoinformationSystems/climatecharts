@@ -128,23 +128,48 @@ main.config =
   {
     parentContainer:  'main-container',
     className:        'chart',
-    refURL:           'ClimateCharts.net',
-    dimensions:     // [px]
+    referenceURL:     'ClimateCharts.net',
+    structure:        // all following units: [px]
     {
-      width:        728,
-      height:       360,
-      tableHeight:  250,
-      tableWidth:   160,
-    },
-    margins:        // [px]
-    {
-      top:          70,
-      topS:         30,
-      right:        220,
-      rightS:       30,
-      bottom:       90,
-      bottomS:      40,
-      left:         40,
+      full:
+      {
+        width:    728,
+        height:   480,
+        padding:  5,
+      },
+      title:
+      {
+        top:      15,
+        left:     300,
+        maxWidth: 600,
+      },
+      subtitle:
+      {
+        top:      35,
+        left:     300,
+        maxWidth: 600,
+      },
+      saveButtons:
+      {
+        top:      0,
+        left:     600,
+      },
+      main:
+      {
+        top:      70,
+        left:     0,
+      },
+      source:
+      {
+        top:      290,
+        left:     0,
+        maxWidth: 600,
+      },
+      reference:
+      {
+        top:      290,
+        right:    728,
+      },
     },
     fontSizes:      // [px]
     {
@@ -152,32 +177,33 @@ main.config =
       subtitle:     15,
       source:       12,
     },
-    climateChart:
-    {
-      container:      'climate-chart',
-      colors:
+    footerOpacity:  0.4,
+    charts:
+    [
       {
-        areaTemp:     d3.rgb(255,233,15  ),
-        areaPrec:     d3.rgb(89, 131,213 ),
-        colPrec:      d3.rgb(4,  61, 183 ),
-        colTemp:      d3.rgb(230,20, 20  ),
-        colGrid:      d3.rgb(211,211,211 ),
+        name:           'climate-chart',
+        colors:
+        {
+          areaTemp:     d3.rgb(255,233,15  ),
+          areaPrec:     d3.rgb(89, 131,213 ),
+          colPrec:      d3.rgb(4,  61, 183 ),
+          colTemp:      d3.rgb(230,20, 20  ),
+          colGrid:      d3.rgb(211,211,211 ),
+        },
+        fontSizes:      // [px]
+        {
+          tick:         13,
+          info:         15,
+          table:        14,
+        }
       },
-      fontSizes:      // [px]
       {
-        tick:         13,
-        info:         15,
-        table:        14,
-      }
-    },
-    distributionChart:
-    {
-      container:  'distribution-chart',
-    },
-    availabilityChart:
-    {
-      container:  'availablility-chart',
-    },
+        name:           'distribution-chart',
+      },
+      {
+        name:           'availability-chart',
+      },
+    ]
   },
 
   climateData:

@@ -19,7 +19,7 @@ class DistributionChart extends Chart
     // ------------------------------------------------------------------------
     // Call super class for setting up the div container and climate data
     // ------------------------------------------------------------------------
-    super(main, 'distributionChart', climateData)
+    super(main, 'distribution-chart', climateData)
   }
 
   // ##########################################################################
@@ -28,7 +28,7 @@ class DistributionChart extends Chart
 
   _drawChart()
   {
-    
+
   }
 
 

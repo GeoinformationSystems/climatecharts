@@ -1,0 +1,84 @@
+/*** OLD MAIN
+    dimensions:     // [px]
+    {
+      width:        728,
+      height:       360,
+      tableHeight:  250,
+      tableWidth:   160,
+    },
+    margins:        // [px]
+    {
+      top:          70,
+      topS:         30,
+      right:        220,
+      rightS:       30,
+      bottom:       90,
+      bottomS:      40,
+      left:         40,
+    },
+
+    structure:        // initial dimensions in [px]
+    {
+      className:      'chart-root',   // svg root element
+      width:          728,
+      height:         360,
+      children:
+      [
+          {
+            className:  'chart-header',
+            width:      728,
+            height:     70,
+            children:
+            [
+              {
+                className:  'chart-heading',
+                width:      600,
+                height:     70,
+                children:
+                [
+                  {
+                    className:  'chart-title',
+                    width:      600,
+                    height:     35,
+                  },
+                  {
+                    className:  'chart-subtitle',
+                    width:      600,
+                    height:     35,
+                  },
+                ]
+              },
+              {
+                className:  'chart-buttons',
+                width:      128,
+                height:     70,
+              },
+            ],
+          },
+          {
+            className:  'chart-main',
+            width:      728,
+            height:     240,
+          },
+          {
+            className:  'chart-footer',
+            width:      728,
+            height:     50,
+            children:
+            [
+              {
+                className:  'chart-source',
+                width:      580,
+                height:     50,
+              },
+              {
+                className:  'chart-reference',
+                width:      148,
+                height:     50,
+              }
+            ]
+          },
+      ],
+    }
+
+***/

@@ -18,7 +18,7 @@ class ClimateChart extends Chart
     // ------------------------------------------------------------------------
     // Call super class for setting up the div container and climate data
     // ------------------------------------------------------------------------
-    super(main, 'climateChart', climateData)
+    super(main, 'climate-chart', climateData)
   }
 
 

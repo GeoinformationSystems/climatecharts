@@ -19,7 +19,7 @@ class AvailabilityChart extends Chart
     // ------------------------------------------------------------------------
     // Call super class for setting up the div container and climate data
     // ------------------------------------------------------------------------
-    super(main, 'availabilityChart', climateData)
+    super(main, 'availability-chart', climateData)
 
 
     // ------------------------------------------------------------------------
@@ -33,6 +33,10 @@ class AvailabilityChart extends Chart
   // PRIVATE MEMBERS
   // ##########################################################################
 
+  _drawChart()
+  {
+
+  }
 
 
 }
