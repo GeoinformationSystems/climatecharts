@@ -134,7 +134,7 @@ main.config =
       full:
       {
         width:    728,
-        height:   480,
+        height:   600,
         padding:  5,
       },
       title:
@@ -162,13 +162,13 @@ main.config =
       },
       source:
       {
-        top:      290,
+        top:      420,
         left:     0,
         maxWidth: 600,
       },
       reference:
       {
-        top:      290,
+        top:      420,
         right:    728,
       },
     },
@@ -185,22 +185,38 @@ main.config =
         name:           'climate-chart',
         colors:
         {
-          areaTemp:     d3.rgb(255,233,15  ),
-          areaPrec:     d3.rgb(89, 131,213 ),
-          colPrec:      d3.rgb(4,  61, 183 ),
-          colTemp:      d3.rgb(230,20, 20  ),
-          colGrid:      d3.rgb(211,211,211 ),
+          tempArea:     d3.rgb(255,233,15  ),
+          precArea:     d3.rgb(89, 131,213 ),
+          precLine:     d3.rgb(4,  61, 183 ),
+          tempLine:     d3.rgb(230,20, 20  ),
+          grid:         d3.rgb(211,211,211 ),
         },
-        structure:
+        diagram:
         {
-          diagram:
-          {
-            widthRatio:   0.7,  // % full width for diagram -> rest: table
-          },
-          table:
-          {
+          widthRatio:     0.7,  // % full width for diagram -> rest: table
 
+          margin:               // [px]
+          {
+            left:         30,
+            top:          10,
+            right:        5,
+            bottom:       50,
           },
+          prec:
+          {
+            breakValue:     100,  // [mm] at which prec scale breaks
+            distBelowBreak:  20,  // humid: distance between two ticks
+            distAboveBreak: 200,  // perhumid: distance between two ticks
+          },
+          temp:
+          {
+            maxValue:        50,  // [°C] maximum temperature
+            dist:            10,  // distance between two ticks
+          },
+        },
+        table:
+        {
+
         },
         fontSizes:      // [px]
         {
