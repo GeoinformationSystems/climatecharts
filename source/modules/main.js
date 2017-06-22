@@ -193,8 +193,15 @@ main.config =
         },
         structure:
         {
-          diagramWidthRatio:  0.7,  // % of full width for diagram
-        },                          // rest is for table
+          diagram:
+          {
+            widthRatio:   0.7,  // % full width for diagram -> rest: table
+          },
+          table:
+          {
+
+          },
+        },
         fontSizes:      // [px]
         {
           tick:         13,

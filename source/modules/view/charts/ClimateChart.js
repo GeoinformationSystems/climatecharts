@@ -42,7 +42,7 @@ class ClimateChart extends Chart
       right: ( 0
         + this._mainDimensions.left
         + Math.round(this._mainDimensions.width
-          * this._chartMain.structure.diagramWidthRatio)
+          * this._chartMain.structure.diagram.widthRatio)
         - this._chartsMain.structure.full.padding
       ),
       bottom: ( 0
@@ -63,7 +63,7 @@ class ClimateChart extends Chart
       left: ( 0
         + this._mainDimensions.left
         + Math.round(this._mainDimensions.width
-          * this._chartMain.structure.diagramWidthRatio)
+          * this._chartMain.structure.diagram.widthRatio)
         + this._chartsMain.structure.full.padding
       ),
       top: ( 0
@@ -87,9 +87,6 @@ class ClimateChart extends Chart
       + this._tableDimensions.bottom
       - this._tableDimensions.top
 
-    // TODO: continue from here
-    return null;
-
     // Placeholder for the specific ticks shown on the vertical axes.
     this._ticksY1 = []
     this._ticksY2 = []
@@ -108,9 +105,7 @@ class ClimateChart extends Chart
     // standard height value and the number of ticks
     // -> assuming there aren´t any negative temp values.
     this._stepSizeY1 = ( 0
-        + this._height
-        - this._margins.top
-        - this._margins.bottom
+        + this._chartDimensions.height
       ) / 5
 
     this._setTickValues()
@@ -129,8 +124,8 @@ class ClimateChart extends Chart
       .domain(MONTHS_IN_YEAR)
       .rangePoints(
         [
-          this._margins.left,
-          this._width - this._margins.right
+          this._chartDimensions.left,
+          this._chartDimensions.right
         ], 0
       )
 
@@ -138,7 +133,7 @@ class ClimateChart extends Chart
       .linear()
       .range(
         [
-          this._height - this._margins.bottom,
+          this._chartDimensions.height - this._margins.bottom,
           this._heightY3 + this._margins.top
         ]
       )
@@ -670,6 +665,11 @@ class ClimateChart extends Chart
       .attr("fill", "none")
       .style("pointer-events", "all")
 
+
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
 
     // ------------------------------------------------------------------------
     // Event Handling
