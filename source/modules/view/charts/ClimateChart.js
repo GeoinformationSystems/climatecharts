@@ -97,7 +97,7 @@ class ClimateChart extends Chart
     let breakValue = this._chartMain.diagram.prec.breakValue
     this._isBreakLine = (maxPrec < breakValue) ? false : true
 
-    console.log(this._isBreakLine);
+    // TODO: distinguish case break line yes/no
 
     // Placeholder for the specific ticks shown on the vertical axes.
     this._ticksYTemp = []
@@ -125,8 +125,8 @@ class ClimateChart extends Chart
     this._tempScale =
       [
         this._ticksYTemp[0],
-        this._chartMain.diagram.tempMaxValue,
-        this._chartMain.diagram.tempMaxValue,
+        this._chartMain.diagram.temp.maxValue,
+        this._chartMain.diagram.temp.maxValue,
       ]
     this._precScale =
       [
@@ -984,6 +984,9 @@ class ClimateChart extends Chart
   //If there are any precipitation values over 100mm or temperature values below 0°C, adjust the height of the svg graphic.
   _adjustHeight()
   {
+    // TODO
+    return
+
     this._negativeHeightY1 = 0
       + (this._ticksYTemp.length - 6)
       * this._stepSizeY1

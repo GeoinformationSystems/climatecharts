@@ -50,8 +50,8 @@ class Chart
 
     this._setChartMetadata()
     this._setupContainer()
-    this._writeMetadata()
-    this._drawChart()
+    this._setupHeaderFooter()
+    // this._drawChart()
   }
 
 
@@ -70,8 +70,8 @@ class Chart
     // Reset view
     this._setChartMetadata()
     this._setupContainer()
-    this._writeMetadata()
-    this._drawChart()
+    this._setupHeaderFooter()
+    // this._drawChart()
   }
 
 
@@ -160,7 +160,7 @@ class Chart
     let wrapperDiv = this._domElementCreator.create(
       'div',                              // element
       this._chartMain.name + '-wrapper',  // id
-      [main.config.charts.name, 'box']    // classes
+      [this._chartMain.name, 'box']       // classes
     )
     parentDiv.appendChild(wrapperDiv)
     this._wrapperDiv = $('#' + this._chartMain.name + '-wrapper')
@@ -174,14 +174,15 @@ class Chart
       .attr('version', 1.1)
       .attr('xmlns', "http://www.w3.org/2000/svg")
       .attr('preserveAspectRatio', 'xMinYMin meet')
-      .attr('viewBox', ''
-        + '0 0 '  + this._chartsMain.structure.full.width
-        + ' '     + this._chartsMain.structure.full.height
-      )
-      .attr('width',  '100%')
-      .attr('height', '1000px')	// for compatibility with IE, this has to be here. But just forget about the actual number, it is a max value, it does not matter...
-      .classed('svg-container', true) //container class to make it responsive
-      .classed('svg-content-responsive', true)
+      // .attr('viewBox', ''
+      //   + '0 0 '  + this._chartsMain.structure.full.width
+      //   + ' '     + this._chartsMain.structure.full.height
+      // )
+      .attr('width',  this._chartsMain.structure.full.width)
+      .attr('height', this._chartsMain.structure.full.height)
+      // for compatibility with IE, this has to be here. But just forget about the actual number, it is a max value, it does not matter...
+      // .classed('svg-container', true) //container class to make it responsive
+      // .classed('svg-content-responsive', true)
       .style('font-size',       '15px')
       .style('font-family',     'Arial, sans-serif')
       .style('font-style',      'normal')
@@ -191,38 +192,38 @@ class Chart
       .style('shape-rendering', 'default')
       .style('background-color','transparent')
 
-      // Final dimensions of the main chart area
-      this._mainDimensions = {
-        left : ( 0
-          + this._chartsMain.structure.main.left
-        ),
-        top : ( 0
-          + this._chartsMain.structure.main.top
-        ),
-        right : ( 0
-          + this._chartsMain.structure.full.width
-        ),
-        bottom : ( 0
-          + this._chartsMain.structure.full.height
-          - this._chartsMain.structure.main.top
-          - this._chartsMain.structure.main.bottom
-        ),
-      }
-
-      this._mainDimensions.width = 0
-        + this._mainDimensions.right
-        - this._mainDimensions.left
-      this._mainDimensions.height = 0
-        + this._mainDimensions.bottom
-        - this._mainDimensions.top
+    // Final dimensions of the main chart area
+    this._mainDimensions = {
+      left : ( 0
+        + this._chartsMain.structure.main.left
+      ),
+      top : ( 0
+        + this._chartsMain.structure.main.top
+      ),
+      right : ( 0
+        + this._chartsMain.structure.full.width
+      ),
+      bottom : ( 0
+        + this._chartsMain.structure.full.height
+        - this._chartsMain.structure.main.top
+        - this._chartsMain.structure.main.bottom
+      ),
     }
+
+    this._mainDimensions.width = 0
+      + this._mainDimensions.right
+      - this._mainDimensions.left
+    this._mainDimensions.height = 0
+      + this._mainDimensions.bottom
+      - this._mainDimensions.top
+  }
 
 
   // ==========================================================================
   // Write chart-independent meta information
   // ==========================================================================
 
-  _writeMetadata()
+  _setupHeaderFooter()
   {
     // Title
     this._chart.append("text")
