@@ -128,10 +128,8 @@ select
   width: 100%;
   padding: 15px;
   background-color:white;
-  margin-top: 15px;
-  margin-bottom: 30px;
+  margin-bottom: 15px;
   border: 1px solid #babdb6;
-  font-size: 1.2em;
 }
 
 .box:hover

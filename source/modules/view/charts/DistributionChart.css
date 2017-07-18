@@ -1,84 +1,75 @@
-/* PLOTS *
-*
-* plot-wrapper
-* |-> plots-container   // main svg canvas, contains plots, will be printed
-* |-> plot-options			 // buttons for changing / saving plots, will not be printed
-*     |-> plot-scale-switch   // automatic <-> fixed scale
-*     |-> plot-save-buttons   // save as svg and png
-*
-*/
-
-/* level 0 */
-#plot-wrapper
-{
-  width: 100%;
-  height: 520px;
+.boxplot {
+  font: 10px sans-serif;
 }
 
-/* plot options = scale switch and save buttons */
-#plot-options
+.boxplot-line,
+.boxplot-rect,
+.boxplot-circle
 {
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 50px;
+  stroke: #000;
+  stroke-width: 1px;
 }
 
-#plot-scale-switch
+.boxplot .center {
+  stroke-dasharray: 3,3;
+}
+
+.boxplot .outlier {
+  stroke: #000;
+}
+
+.axis {
+  font: 12px sans-serif;
+}
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.x.axis path {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+/* SCALE SWITCH */
+
+#dc-switch
 {
   position: absolute;
-  top: 3px;
-  left: 16px;
-  width: 150px;
+  top: 12px;
+  left: 5px;
+  width: 135px;
 }
 
 /* scale switch */
-#plot-switch-title
+#dc-switch-title
 {
   width: 100%;
   text-align: center;
-  font-size: 1.1em;
+  font-size: 1.3em;
   margin-bottom: 0.2em;
 }
 
-#plot-switch-options
+#dc-switch-options
 {
+  font-size: 1.0em !important;
   line-height: 2.5em !important;
   background-color: rgb(128,128,128) !important;
   border-radius: 4px;
 }
 
-.plot-switch-option
+.dc-switch-option
 {
   color: white !important;
   text-shadow: none !important;
   font-weight: normal !important;
 }
 
-#plot-switch-button
+#dc-switch-button
 {
   background-color: rgb(89,131,213) !important;
-}
-
-#save-button-area
-{
-  float: right;
-  margin-right: 10px;
-}
-
-#plots-svg-container
-{
-  background: #ffffff;
-  fill: #ffffff;
-}
-
-#plot-link
-{
-  position: absolute;
-  bottom: 17px;
-  left: 10px;
-  width: 750px;
-  height: 22px;
-  cursor: pointer;
 }

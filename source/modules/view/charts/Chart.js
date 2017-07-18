@@ -10,12 +10,8 @@
 
 class Chart
 {
-  // ##########################################################################
-  // PUBLIC MEMBERS
-  // ##########################################################################
-
   // ==========================================================================
-  // Construct chart
+  // Constructor
   // ==========================================================================
 
   constructor(main, chartName, climateData)
@@ -37,72 +33,76 @@ class Chart
       if (chart.name == chartName)
         this._chartMain = chart
 
+    // Copy width and height of the chart, to never override main
+    this._chartWidth =  this._chartsMain.positions.width
+    this._chartHeight = this._chartsMain.positions.height
+
+    // Init members that are not instantiated yet
+    this._chartWrapper = null
+
     // Actual chart data
     this._climateData = climateData
 
     // Helper
     this._domElementCreator = new DOMElementCreator()
 
-
-    // ------------------------------------------------------------------------
-    // Setup chart
-    // ------------------------------------------------------------------------
-
+    // Global setup for all chart types
     this._setChartMetadata()
     this._setupContainer()
     this._setupHeaderFooter()
-    // this._drawChart()
+
+    // Local setup for specific chart types
+    this._initMembers()
+    this._drawChart()
   }
 
+    // ========================================================================
+    // Update climate data of chart
+    // ========================================================================
 
-  // ==========================================================================
-  // Update climate data of chart
-  // ==========================================================================
+    updateClimate(climateData)
+    {
+      // Update model
+      this._climateData = climateData
 
-  updateClimate(climateData)
-  {
-    // Update model
-    this._climateData = climateData
+      // Clean view
+      this._chartWrapper.remove()
 
-    // Clean view
-    this._wrapperDiv.remove()
-
-    // Reset view
-    this._setChartMetadata()
-    this._setupContainer()
-    this._setupHeaderFooter()
-    // this._drawChart()
-  }
-
-
-  // ==========================================================================
-  // Update title of chart
-  // ==========================================================================
-
-  updateTitle(title)
-  {
-    this._title = title
-    this._titleDiv.text(title)
-  }
+      // Reset view
+      this._setChartMetadata()
+      this._setupContainer()
+      this._setupHeaderFooter()
+      this._drawChart()
+    }
 
 
-  // ==========================================================================
-  // Remove chart
-  // ==========================================================================
+    // ========================================================================
+    // Update title of chart
+    // ========================================================================
 
-  remove()
-  {
-    // Clean model
-    this._climateData = null
-    // Clean view
-    this._wrapperDiv.remove()
-  }
+    updateTitle(title)
+    {
+      this._title = title
+      this._titleDiv.text(title)
+    }
+
+
+    // ========================================================================
+    // Remove chart
+    // ========================================================================
+
+    remove()
+    {
+      // Clean model
+      this._climateData = null
+      // Clean view
+      this._chartWrapper.remove()
+    }
 
 
   // ##########################################################################
   // PRIVATE MEMBERS
   // ##########################################################################
-
 
   // ==========================================================================
   // Set Metadata
@@ -116,13 +116,15 @@ class Chart
     // Assemble subtitle (location | elevation | climate class | years)
     this._subtitle = this._climateData.location.DD
     if (this._climateData.elevation)
-      this._subtitle += " | Elevation: "     + this._climateData.elevation
+      this._subtitle += ' | Elevation: '
+        + this._climateData.elevation
     if (this._climateData.climate_class)
-      this._subtitle += " | Climate Class: " + this._climateData.climate_class
-    this._subtitle +=   " | Years: "
-                        + this._climateData.years[0]
-                        + "-"
-                        + this._climateData.years[1]
+      this._subtitle += ' | Climate Class: '
+        + this._climateData.climate_class
+    this._subtitle +=   ' | Years: '
+      + this._climateData.years[0]
+      + '-'
+      + this._climateData.years[1]
       // TODO: gap years (appendix in this._climateData.years[2])
 
     // Get reference URL
@@ -136,193 +138,177 @@ class Chart
 
   _setupContainer()
   {
-    /**
-      STRUCTURE:
-      climate-chart, distribution-chart or availability-chart
-      main-container                    // parent div for all charts
-      |- #climate-chart-wrapper         // div wrapper for climate chart
-        |- #climate-chart .chart-root   // svg root
-          |- .chart-header .chart-title
-          |- .chart-header .chart-subtitle
-          |- .chart-buttons
-          |- .chart-main
-          |- .chart-source
-          |- .chart-reference
-    **/
+    // Get parent container (the one that contains all charts)
+    let parentContainer = $('#' + this._chartsMain.parentContainer)
 
+    // Setup wrapper for all chart elements
+    let chartWrapper = this._domElementCreator.create(
+        'div',                              // Element type
+        this._chartMain.name + '-wrapper',  // ID
+        ['chart-wrapper', 'box']            // Classes
+      )
+    parentContainer.append(chartWrapper)
+    this._chartWrapper = $('#' + this._chartMain.name + '-wrapper')
 
-    // Parent container in which chart wrapper is embedded
-    let parentDiv = document.getElementById(
-      this._chartsMain.parentContainer
+    // Add toolbar container
+    // -> will be placed on top of chart, but will not be printed
+
+    this._toolbar = this._domElementCreator.create(
+      'div', this._chartMain.name+'-toolbar', ['toolbar']
+    )
+    this._chartWrapper[0].appendChild(this._toolbar)
+
+    // Adjust "height" of wrapper
+    this._chartWrapper.css('padding-bottom',
+      100*(this._chartHeight/this._chartWidth) + '%'
     )
 
-    // Wrapper that directly contains the svg root of the chart
-    let wrapperDiv = this._domElementCreator.create(
-      'div',                              // element
-      this._chartMain.name + '-wrapper',  // id
-      [this._chartMain.name, 'box']       // classes
-    )
-    parentDiv.appendChild(wrapperDiv)
-    this._wrapperDiv = $('#' + this._chartMain.name + '-wrapper')
-    this._wrapperDiv.css('height', this._chartsMain.structure.full.height)
-
-    // Append chart element to parent container and set basic styles.
-    // -> check if chart already exists, otherwise create it
-    this._chart = d3.select(wrapperDiv)
+    // Add actual chart -> svg canvas
+    this._chart = d3.select(chartWrapper)
       .append('svg')
       .attr('id', this._chartMain.name)
       .attr('version', 1.1)
-      .attr('xmlns', "http://www.w3.org/2000/svg")
+      .attr('xmlns', 'http://www.w3.org/2000/svg')
+      .attr('width', '100%')
+      .attr('viewBox', ''
+        + '0 0 '  + this._chartWidth
+        + ' '     + this._chartHeight
+      )
       .attr('preserveAspectRatio', 'xMinYMin meet')
-      // .attr('viewBox', ''
-      //   + '0 0 '  + this._chartsMain.structure.full.width
-      //   + ' '     + this._chartsMain.structure.full.height
-      // )
-      .attr('width',  this._chartsMain.structure.full.width)
-      .attr('height', this._chartsMain.structure.full.height)
-      // for compatibility with IE, this has to be here. But just forget about the actual number, it is a max value, it does not matter...
-      // .classed('svg-container', true) //container class to make it responsive
-      // .classed('svg-content-responsive', true)
-      .style('font-size',       '15px')
+      .classed('svg-content-responsive', true)
+      .style('font-size',       this._chartsMain.fontSizes.normal + 'em')
       .style('font-family',     'Arial, sans-serif')
       .style('font-style',      'normal')
       .style('font-variant',    'normal')
       .style('font-weight',     'normal')
-      .style('text-rendering',  'optimizeLegibility')
       .style('shape-rendering', 'default')
+      .style('text-rendering',  'optimizeLegibility')
       .style('background-color','transparent')
 
     // Final dimensions of the main chart area
-    this._mainDimensions = {
-      left : ( 0
-        + this._chartsMain.structure.main.left
-      ),
+    this._mainPos = {
+      left : 0,
       top : ( 0
-        + this._chartsMain.structure.main.top
+        + this._chartsMain.positions.main.top
       ),
       right : ( 0
-        + this._chartsMain.structure.full.width
+        + this._chartWidth
       ),
       bottom : ( 0
-        + this._chartsMain.structure.full.height
-        - this._chartsMain.structure.main.top
-        - this._chartsMain.structure.main.bottom
+        + this._chartHeight
+        - this._chartsMain.positions.main.top
+        - this._chartsMain.positions.main.bottom
       ),
     }
 
-    this._mainDimensions.width = 0
-      + this._mainDimensions.right
-      - this._mainDimensions.left
-    this._mainDimensions.height = 0
-      + this._mainDimensions.bottom
-      - this._mainDimensions.top
+    this._mainPos.width =   this._mainPos.right   - this._mainPos.left
+    this._mainPos.height =  this._mainPos.bottom  - this._mainPos.top
+
   }
 
 
   // ==========================================================================
-  // Write chart-independent meta information
+  // Write chart-independent meta information into chart header / footer
   // ==========================================================================
 
   _setupHeaderFooter()
   {
     // Title
-    this._chart.append("text")
-      .attr("id", this._chartName + '-title')
-      .attr("class", "chart-header chart-title")
-      .attr("x", this._chartsMain.structure.title.left)
-      .attr("y", this._chartsMain.structure.title.top)
-      .attr("text-anchor", "middle")
+    this._chart.append('text')
+      .attr('id', this._chartName + '-title')
+      .attr('class', 'chart-header chart-title')
+      .attr('x', this._chartWidth/2)
+      .attr('y', 0
+        + this._chartsMain.positions.title.top
+        + this._chartsMain.padding
+      )
+      .attr('text-anchor', 'middle')
+      .style('font-size', this._chartsMain.fontSizes.title + 'em')
       .text(this._title)
-      // .call(this._wrap, this._width*2/3)
-
-    this._titleDiv = $('#' + this._chartName + '-title')
-    this._main.hub.onDiagramTitleChange(this._title)
 
     // Subtitle
-    this._chart.append("text")
-      .attr("class", "chart-header chart-subtitle")
-      .attr("x", this._chartsMain.structure.subtitle.left)
-      .attr("y", this._chartsMain.structure.subtitle.top)
-      .attr("text-anchor", "middle")
+    this._chart.append('text')
+      .attr('class', 'chart-header chart-subtitle')
+      .attr('x', this._chartWidth/2)
+      .attr('y', 0
+        + this._chartsMain.positions.subtitle.top
+        + this._chartsMain.padding
+      )
+      .attr('text-anchor', 'middle')
+      .style('font-size', this._chartsMain.fontSizes.large + 'em')
       .text(this._subtitle)
-      // .call(this._wrap, this._width*2/3)
 
-    // Caption: Source link
-    this._chart.append("text")
-      .attr("class", "source")
-      .attr("x", 0
-        + this._chartsMain.structure.source.left
-        + this._chartsMain.structure.full.padding
+    // Footer: Source link
+    this._footerElems = [2]
+    this._footerElems[0] = this._chart.append('text')
+      .attr('class', 'footer source')
+      .attr('x', 0
+        + this._chartsMain.padding
       )
-      .attr("y", this._chartsMain.structure.source.top)
-      .style("cursor", "pointer")
-      .style("font-size", this._chartsMain.fontSizes.source + "px")
-      .style("opacity", this._chartsMain.footerOpacity)
-      // .attr("link" + this._climateData.source_link)
-      .text("Data Source: " + this._climateData.source)
-      // .call(this._wrap, this._width - 100, " ")
-      .on("click", () => { window.open(this.link) })
+      .attr('y', 0
+        + this._chartsMain.positions.footer.top
+        - this._chartsMain.padding
+      )
+      .style('cursor', 'pointer')
+      .style('font-size', this._chartsMain.fontSizes.small + 'em')
+      .style('opacity', this._chartsMain.footerOpacity)
+      // .attr('link' + this._climateData.source_link)
+      .text('Data Source: ' + this._climateData.source)
+      .on('click', () => { window.open(this.link) })
 
-    // Caption: Reference URL
-    this._chart.append("text")
-      .append("tspan")
-      .attr("class", "source")
-      .attr("x", 0
-        + this._chartsMain.structure.reference.right
-        - this._chartsMain.structure.full.padding
+    // Footer: Reference URL
+    this._footerElems[1] = this._chart.append('text')
+      .attr('class', 'footer ref-url')
+      .attr('x', 0
+        + this._chartWidth
+        - this._chartsMain.padding
       )
-      .attr("y", this._chartsMain.structure.reference.top)
-      .style("text-anchor", "end")
-      .style("font-size", this._chartsMain.fontSizes.source + "px")
-      .style("opacity", this._chartsMain.footerOpacity)
+      .attr('y', 0
+        + this._chartsMain.positions.footer.top
+        - this._chartsMain.padding
+      )
+      .style('text-anchor', 'end')
+      .style('font-size', this._chartsMain.fontSizes.small + 'em')
+      .style('opacity', this._chartsMain.footerOpacity)
       .text(this._refURL)
   }
 
 
   // ==========================================================================
-  // Wrap text input string and split into multiple lines if necessary
+  // Resize chart height by x px
   // ==========================================================================
 
-  _wrap(text, width, char)
+  _resizeChartHeight(shiftUp)
   {
-    // TODO: fix
-    return null
+    // Reset model: Shift full height
+    this._chartHeight += shiftUp
+    this._mainPos.bottom += shiftUp
+    this._mainPos.height += shiftUp
 
-    text.each( () =>
-      {
-        let text = d3.select(this)
-        let words = text.text().split(char).reverse()
-        let word
-        let line = []
-        let lineNumber = 0
-        let lineHeight = 1.1; // ems
-        let x = text.attr("x")
-        let y = text.attr("y")
-        let dy = 0; //parseFloat(text.attr("dy")),
-        let tspan = text.text(null)
-          .append("tspan")
-          .attr("x", x)
-          .attr("y", y)
-          .attr("dy", dy + "em")
-        while (word = words.pop())
-        {
-          line.push(word)
-          tspan.text(line.join(char))
-          if (tspan.node().getComputedTextLength() > width)
-          {
-            line.pop()
-            tspan.text(line.join(char))
-            line = [word]
-            tspan = text.append("tspan")
-              .attr("x", x)
-              .attr("y", y)
-              .attr("dy", ++lineNumber * lineHeight + dy + "em")
-              .text(word)
-          }
-        }
-      }
+    // Reset view: svg view box
+    this._chart.attr('viewBox', ''
+      + '0 0 '  + this._chartWidth
+      + ' '     + this._chartHeight
     )
+
+    // Reset view: change height of wrapper
+    this._chartWrapper.css('padding-bottom',
+      100*(this._chartHeight/this._chartWidth) + '%'
+    )
+
+    // Reset footer elements
+    for (let footerElem of this._footerElems)
+    {
+      let oldY = parseFloat(footerElem.attr('y'))
+      footerElem.attr('y', oldY + shiftUp)
+    }
   }
 
 
+  // ==========================================================================
+  // Empty member functions to be implemented in derived classes
+  // ==========================================================================
+
+  _initMembers()  {}
+  _drawChart()    {}
 }

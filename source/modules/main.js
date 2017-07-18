@@ -1,11 +1,7 @@
 /*
  * ClimateCharts (climatecharts.net)
- * Author: Felix Wiemann and Marcus Kossatz
+ * Author: Marcus Kossatz and Felix Wiemann
  *
- * This file contains the user interface object for the website. The variables defined at
- * the beginning are necessary to query the server for temperature and precipitation data
- * and subsequently draw the chart. The UI functions are triggered, if the corresponding
- * html element is clicked or it´s value changes (see file app.js).
  */
 
 
@@ -129,109 +125,170 @@ main.config =
     parentContainer:  'main-container',
     className:        'chart',
     referenceURL:     'ClimateCharts.net',
-    structure:        // all following units: [px]
+    positions:        // [px]
     {
-      full:
-      {
-        width:    728,
-        height:   600,
-        padding:  5,
-      },
+      width:          728,  // Reference: full width
+      height:         440,  // Reference: initial full height
       title:
       {
-        top:      15,
-        left:     300,
-        maxWidth: 600,
+        top:          5,
       },
       subtitle:
       {
-        top:      35,
-        left:     300,
-        maxWidth: 600,
-      },
-      saveButtons:
-      {
-        top:      0,
-        left:     600,
+        top:          20,
       },
       main:
       {
-        top:      70,
-        left:     0,
-        bottom:   30,
+        top:          50,
+        bottom:       -10,
       },
-      source:
+      footer:
       {
-        top:      420,
-        left:     0,
-        maxWidth: 600,
-      },
-      reference:
-      {
-        top:      420,
-        right:    728,
+        top:          440,
       },
     },
-    fontSizes:      // [px]
+    fontSizes:    // [em]
     {
-      title:        15,
-      subtitle:     15,
-      source:       12,
+      title:          1.5,
+      large:          1.1,
+      normal:         1.0,
+      small:          0.9,
+      tiny:           0.7,
     },
-    footerOpacity:  0.4,
+    padding:          10,
+    colors:
+    {
+      temp:           d3.rgb(230,20, 20 ),
+      prec:           d3.rgb(4,  61, 183),
+      arid:           d3.rgb(255,233,15 ),
+      humid:          d3.rgb(89, 131,213),
+      perhumid:       d3.rgb(4,  61, 183),
+      grid:           d3.rgb(211,211,211),
+      axes:           d3.rgb(255,255,255),
+      notAvailable:   d3.rgb(240,240,240),
+    },
+    footerOpacity:    0.4,
     charts:
     [
       {
         name:           'climate-chart',
-        colors:
+        widthRatio:     0.75, // [%] of full width for diagram -> rest: table
+        margin:         // [px]
         {
-          tempArea:     d3.rgb(255,233,15  ),
-          precArea:     d3.rgb(89, 131,213 ),
-          precLine:     d3.rgb(4,  61, 183 ),
-          tempLine:     d3.rgb(230,20, 20  ),
-          grid:         d3.rgb(211,211,211 ),
+          left:         30,
+          top:          10,
+          right:        30,
+          bottom:       50,
         },
-        diagram:
+        style:
         {
-          widthRatio:     0.7,  // % full width for diagram -> rest: table
-
-          margin:               // [px]
-          {
-            left:         30,
-            top:          10,
-            right:        5,
-            bottom:       50,
-          },
-          prec:
-          {
-            breakValue:     100,  // [mm] at which prec scale breaks
-            distBelowBreak:  20,  // humid: distance between two ticks
-            distAboveBreak: 200,  // perhumid: distance between two ticks
-          },
-          temp:
-          {
-            maxValue:        50,  // [°C] maximum temperature
-            dist:            10,  // distance between two ticks
-          },
+          tickSize:       5,
+          gridWidth:      1,
+          axesWidth:      2,
+          lineWidth:      1.5,  // Lines for prec and temp
+          areaOpacity:    0.7,  // For the areas between prec/temp lines
+        },
+        prec:
+        {
+          caption:        "Precipitation Sum",
+          unit:           "mm",
+          breakValue:     100,  // [mm] at which prec scale breaks
+          distBelowBreak:  20,  // Humid: distance between two ticks
+          distAboveBreak: 200,  // Perhumid: distance between two ticks
+        },
+        temp:
+        {
+          caption:        "Temperature Mean",
+          unit:           "°C",
+          dist:            10,  // Distance between two ticks
         },
         table:
         {
-
+          heading:
+          {
+            month:        "Month",
+            temp:         "Temp",
+            prec:         "Precip",
+          },
+          margin:         // [px]
+          {
+            top:          12,   // Downshift from top line
+            right:        10,   // Right margin for right-aligned cell values
+            left:         20,   // Right margin for left-aligned cell values
+          },
+          maxHeight:      220,  // [px]
         },
-        fontSizes:      // [px]
+        captionHeight:    50,   // [px] to place caption underneath chart
+        mouseover:
         {
-          tick:         13,
-          info:         15,
-          table:        14,
+          circleRadius:   5.0,  // [px]
+          strokeWidth:    2.0,  // [px]
         }
       },
+
       {
         name:           'distribution-chart',
+        margin:         // [px]
+        {
+          left :      30,
+          top:        30,
+          right:      30,
+          bottom:     0,
+        },
+        style:
+        {
+          boxOpacity: 0.7,  // For the boxplots
+          axesWidth:  2.0,  // [px]
+          gridWidth:  0.5,  // [px]
+        },
+        minMaxStretchFactor: 0.1,   // How much to stretch min/max values
+        subcharts:
+        [
+          {
+            data:       'temp',
+            title:      "Distribution of Temperature [&deg;C]",
+            color:      'rgb(230, 20, 20)',
+            maxRange:   [-40, +40]
+          },
+          {
+            data:       'prec',
+            title:      "Distribution of Precipitation [mm]",
+            color:      'rgb(4, 61, 186)',
+            maxRange:   [0, +2000]
+          },
+        ],
+        switch:
+        {
+          title:      "Y-Axis Scaling",
+          states:     ['automatic', 'fixed'],
+        },
       },
+
       {
-        name:           'availability-chart',
+        name:         'availability-chart',
+        margin:         // [px]
+        {
+          left:         50,
+          top:          30,
+          right:        20,
+          bottom:       20,
+        },
+        style:
+        {
+          gridWidth:        1,
+          squareWidth:      25,   // Dimension of cell sqares
+          rowHeadWidth:     20,   // Width of row "heading" (year number)
+          colHeadHeight:    12,   // Height of col heading (month / value)
+          cellOpacity:      0.5,  // Opacity value for colored cells
+          emphResizeFactor: 1.7,  // OnHover on cell, resize to
+        },
+        headings:
+        {
+          temp:         "Temp",
+          prec:         "Prec",
+        }
       },
-    ]
+    ],
   },
 
   climateData:
@@ -439,15 +496,3 @@ main.hub.onDiagramTitleChange = (title) =>
     // Update user defined title
     main.modules.chartTitleSetter.update(title)
   }
-
-
-
-///////////////////////////////////////////////////////////////////////////////
-// ARCHIVE
-
-// $(window).resize(function()
-//   {
-//     UI.setSliderLabels();
-//     UI.activatePanning();
-//   }
-// );

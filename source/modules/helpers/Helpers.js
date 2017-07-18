@@ -37,7 +37,17 @@ class Helpers
 
   deepCopy(obj)
   {
-    return JSON.parse(JSON.stringify(obj));
+    return JSON.parse(JSON.stringify(obj))
+  }
+
+
+  // ==========================================================================
+  // Check if Number
+  // ==========================================================================
+
+  checkIfNumber(num)
+  {
+    return (!isNaN(parseFloat(num)) && isFinite(num))
   }
 
 

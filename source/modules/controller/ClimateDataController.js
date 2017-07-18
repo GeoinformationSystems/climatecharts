@@ -48,6 +48,7 @@ class ClimateDataController
     this._calcIndicator("temp")
     this._calcIndicator("prec")
 
+    this._calcTempPrecLong()
     this._calcMonthlyData()
     this._calcExtremeData()
     this._calcClimateClass()
@@ -206,8 +207,25 @@ class ClimateDataController
     // Assign to proper value
     if (dataType == 'prec')
       this._climateData.prec_sum = outIndicator
-    else
+    else // 'temp'
       this._climateData.temp_mean = outIndicator
+  }
+
+
+  // ==========================================================================
+  // Extract the pure data values for temp and prec
+  // -> List of all (30?) monthly temp/prec values
+  // ==========================================================================
+
+  _calcTempPrecLong()
+  {
+    this._climateData.temp_long = []
+    for (let month of this._climateData.temp)
+      this._climateData.temp_long.push(month.raw_data)
+
+    this._climateData.prec_long = []
+    for (let month of this._climateData.prec)
+      this._climateData.prec_long.push(month.raw_data)
   }
 
 
