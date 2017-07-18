@@ -64,6 +64,8 @@ class Chart
     {
       // Update model
       this._climateData = climateData
+      this._chartWidth =  this._chartsMain.positions.width
+      this._chartHeight = this._chartsMain.positions.height      
 
       // Clean view
       this._chartWrapper.remove()
