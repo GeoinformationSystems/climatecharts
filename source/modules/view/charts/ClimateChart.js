@@ -24,14 +24,17 @@ class ClimateChart extends Chart
   // Init local members
   // ==========================================================================
 
-  _initMembers()
+  _initMembers(climateData)
   {
+    super._initMembers(climateData)
+
     // ------------------------------------------------------------------------
     // Preparation: Position values for visualization elements
     // ------------------------------------------------------------------------
 
     // Position values of actual climate chart
-    // Pos from top, bottom, left, right and position of horizontal break bar
+    // -> Horizontal: left, right
+    // -> Vertical: top (=max), break, bottom (=min)
     this._chartPos = {
       left: ( 0
         + this._mainPos.left
@@ -56,9 +59,12 @@ class ClimateChart extends Chart
         - this._chartMain.margin.bottom
       ),
     }
-    this._chartPos.break =  this._chartPos.top
     this._chartPos.width =  this._chartPos.right - this._chartPos.left
     this._chartPos.height = this._chartPos.bottom - this._chartPos.top
+
+    // Init break position value
+    // Adapt later when data requires (if max prec > 100)
+    this._chartPos.break =  this._chartPos.top
 
     // Position values of table next to climate chart
     this._tablePos = {
@@ -167,11 +173,11 @@ class ClimateChart extends Chart
       this._chartMain.prec.distBelowBreak /
       this._chartMain.temp.dist
 
-    // 1) zero: (0 for both)
+    // 1) Zero: (0 for both)
     ticks.temp.zero = 0
     ticks.prec.zero = 0
 
-    // 2) min:
+    // 2) Min:
     // Temp: either (minimum value floored to multiples of 10 °C) or (0 °C)
     // -> avoid min temp above 0°C
     ticks.temp.min = Math.min(
@@ -186,11 +192,11 @@ class ClimateChart extends Chart
     // must be in alignment => adapt
     ticks.prec.min = ticks.temp.min * scaleRatiobelowBreak
 
-    // 3) break: breakValue for prec, in ratio for temp
+    // 3) Break: breakValue for prec, in ratio for temp
     ticks.prec.break = this._chartMain.prec.breakValue
     ticks.temp.break = ticks.prec.break / scaleRatiobelowBreak
 
-    // 4) max:
+    // 4) Max:
     // If prec exceeds the break line
     if (this._climateData.extreme.maxPrec > ticks.prec.break)
     {
@@ -258,6 +264,9 @@ class ClimateChart extends Chart
       ticks.prec.values.aboveBreak.push(tickValue)
 
 
+    console.log(ticks);
+
+
     // ------------------------------------------------------------------------
     // Adapt chart size if there are values above break line
     // ------------------------------------------------------------------------
@@ -266,8 +275,8 @@ class ClimateChart extends Chart
     //  Distance between two ticks below break [px / tick] *
     //  Number of ticks above break line [px]
 
-    let numPxBelowBreak =
-      (this._chartPos.bottom - this._chartPos.break)
+
+    let numPxBelowBreak =    this._chartPos.bottom - this._chartPos.break
     let numTicksBelowBreak = ticks.temp.values.belowBreak.length
     let numTicksAboveBreak = ticks.prec.values.aboveBreak.length
 
@@ -276,12 +285,15 @@ class ClimateChart extends Chart
     if (numTicksAboveBreak > 0)
       numTicksAboveBreak += 1
 
-    let shiftUpAboveBreak =
-      numTicksAboveBreak * numPxBelowBreak / numTicksBelowBreak
+    console.log(this._chartPos.bottom - this._chartPos.break);
+    console.log(numTicksBelowBreak, numTicksAboveBreak);
+    console.log(numPxBelowBreak * numTicksAboveBreak / numTicksBelowBreak);
+    console.log(100*(this._chartHeight/this._chartWidth));
 
-    // Change the total height of the chart
-    this._resizeChartHeight(shiftUpAboveBreak)
-
+    // Change the total height of the chart -> shift up above break line
+    this._resizeChartHeight(0
+      // numPxBelowBreak * numTicksAboveBreak / numTicksBelowBreak
+    )
 
     // ------------------------------------------------------------------------
     // Setup axes
@@ -1094,7 +1106,7 @@ class ClimateChart extends Chart
     super._resizeChartHeight(shiftUp);
 
     // Resize model:
-    this._chartPos.break += shiftUp
+    this._chartPos.break  += shiftUp
     this._chartPos.bottom += shiftUp
   }
 

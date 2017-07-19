@@ -176,9 +176,9 @@ main.config =
         margin:         // [px]
         {
           left:         30,
-          top:          10,
+          top:          0,
           right:        30,
-          bottom:       50,
+          bottom:       0,
         },
         style:
         {

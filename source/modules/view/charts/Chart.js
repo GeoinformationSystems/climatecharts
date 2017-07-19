@@ -16,35 +16,20 @@ class Chart
 
   constructor(main, chartName, climateData)
   {
-    // ------------------------------------------------------------------------
-    // Member Variables
-    // ------------------------------------------------------------------------
-
     this._main = main
 
     // Get charts main -> generic information for all charts
     // get initial dimensions as a deep copy to change them later on
-    this._chartsMain = main.config.charts
+    this._chartsMain = this._main.config.charts
 
     // Get chart main -> specific information for this chart
     this._chartName = chartName
     this._chartMain = null
-    for (let chart of main.config.charts.charts)
+    for (let chart of this._main.config.charts.charts)
       if (chart.name == chartName)
         this._chartMain = chart
 
-    // Copy width and height of the chart, to never override main
-    this._chartWidth =  this._chartsMain.positions.width
-    this._chartHeight = this._chartsMain.positions.height
-
-    // Init members that are not instantiated yet
-    this._chartWrapper = null
-
-    // Actual chart data
-    this._climateData = climateData
-
-    // Helper
-    this._domElementCreator = new DOMElementCreator()
+    this._initMembers(climateData)
 
     // Global setup for all chart types
     this._setChartMetadata()
@@ -52,7 +37,6 @@ class Chart
     this._setupHeaderFooter()
 
     // Local setup for specific chart types
-    this._initMembers()
     this._drawChart()
   }
 
@@ -63,9 +47,7 @@ class Chart
     updateClimate(climateData)
     {
       // Update model
-      this._climateData = climateData
-      this._chartWidth =  this._chartsMain.positions.width
-      this._chartHeight = this._chartsMain.positions.height      
+      this._initMembers(climateData)
 
       // Clean view
       this._chartWrapper.remove()
@@ -105,6 +87,42 @@ class Chart
   // ##########################################################################
   // PRIVATE MEMBERS
   // ##########################################################################
+
+  // ==========================================================================
+  // Set all member variables
+  // ==========================================================================
+
+  _initMembers(climateData)
+  {
+    // Copy width and height of the chart, to never override main
+    this._chartWidth =  this._chartsMain.positions.width
+    this._chartHeight = this._chartsMain.positions.height
+
+    // Final dimensions of the main chart area
+    this._mainPos = {
+      left : 0,
+      top : ( 0
+        + this._chartsMain.positions.main.top
+      ),
+      right : ( 0
+        + this._chartWidth
+      ),
+      bottom : ( 0
+        + this._chartHeight
+        - this._chartsMain.positions.main.top
+        - this._chartsMain.positions.main.bottom
+      ),
+    }
+
+    this._mainPos.width =   this._mainPos.right   - this._mainPos.left
+    this._mainPos.height =  this._mainPos.bottom  - this._mainPos.top
+
+    // Actual chart data
+    this._climateData = climateData
+
+    // Helper
+    this._domElementCreator = new DOMElementCreator()
+  }
 
   // ==========================================================================
   // Set Metadata
@@ -186,26 +204,6 @@ class Chart
       .style('shape-rendering', 'default')
       .style('text-rendering',  'optimizeLegibility')
       .style('background-color','transparent')
-
-    // Final dimensions of the main chart area
-    this._mainPos = {
-      left : 0,
-      top : ( 0
-        + this._chartsMain.positions.main.top
-      ),
-      right : ( 0
-        + this._chartWidth
-      ),
-      bottom : ( 0
-        + this._chartHeight
-        - this._chartsMain.positions.main.top
-        - this._chartsMain.positions.main.bottom
-      ),
-    }
-
-    this._mainPos.width =   this._mainPos.right   - this._mainPos.left
-    this._mainPos.height =  this._mainPos.bottom  - this._mainPos.top
-
   }
 
 
@@ -311,6 +309,5 @@ class Chart
   // Empty member functions to be implemented in derived classes
   // ==========================================================================
 
-  _initMembers()  {}
   _drawChart()    {}
 }

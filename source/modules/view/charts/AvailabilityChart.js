@@ -32,8 +32,10 @@ class AvailabilityChart extends Chart
   // Init local members
   // ==========================================================================
 
-  _initMembers()
+  _initMembers(climateData)
   {
+    super._initMembers(climateData)
+    
     // ------------------------------------------------------------------------
     // Preparation: Position values for visualization elements
     // ------------------------------------------------------------------------

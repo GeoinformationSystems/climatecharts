@@ -34,8 +34,10 @@ class DistributionChart extends Chart
   // Init local members
   // ==========================================================================
 
-  _initMembers()
+  _initMembers(climateData)
   {
+    super._initMembers(climateData)
+
     // Initial switch state -> must be 0 !!!
     this._switchState = 0
 
@@ -91,8 +93,16 @@ class DistributionChart extends Chart
         + this._chartPos[datatypeIdx].bottom
         - this._chartPos[datatypeIdx].top
     }
+  }
 
 
+
+  // ==========================================================================
+  // Draw the whole chart
+  // ==========================================================================
+
+  _drawChart()
+  {
     // ------------------------------------------------------------------------
     // Create structure
     // dc = distribution chart
@@ -175,23 +185,9 @@ class DistributionChart extends Chart
 
 
     // ------------------------------------------------------------------------
-    // Resize graph on window resize
-    // -> this is the brute force method. It would be nicer to plot it only
-    // once and then to resize it, but that did not work cuz I used subcharts.
+    // Setup chart
     // ------------------------------------------------------------------------
 
-    // TODO
-    // $(window).resize(this._drawChart)
-
-  }
-
-
-  // ==========================================================================
-  // Draw the whole chart
-  // ==========================================================================
-
-  _drawChart()
-  {
     // Clean charts
     $('#boxplot-group').remove()
 
