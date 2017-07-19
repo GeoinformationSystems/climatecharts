@@ -176,9 +176,14 @@ main.config =
         margin:         // [px]
         {
           left:         30,
-          top:          0,
+          top:          10,
           right:        30,
-          bottom:       0,
+          bottom:       10,
+        },
+        diagramMargin:  // [px]
+        {
+          max:          10, // vertical distance from top to max line
+          min:          50, // vertical distance from bottom to min line
         },
         style:
         {
@@ -218,7 +223,7 @@ main.config =
           },
           maxHeight:      220,  // [px]
         },
-        captionHeight:    50,   // [px] to place caption underneath chart
+        captionDist:      20,   // [px] distance between caption text fields
         mouseover:
         {
           circleRadius:   5.0,  // [px]

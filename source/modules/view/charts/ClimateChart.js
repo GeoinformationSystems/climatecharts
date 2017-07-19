@@ -34,7 +34,7 @@ class ClimateChart extends Chart
 
     // Position values of actual climate chart
     // -> Horizontal: left, right
-    // -> Vertical: top (=max), break, bottom (=min)
+    // -> Vertical: top, max, break, min, bottom
     this._chartPos = {
       left: ( 0
         + this._mainPos.left
@@ -62,9 +62,10 @@ class ClimateChart extends Chart
     this._chartPos.width =  this._chartPos.right - this._chartPos.left
     this._chartPos.height = this._chartPos.bottom - this._chartPos.top
 
-    // Init break position value
-    // Adapt later when data requires (if max prec > 100)
-    this._chartPos.break =  this._chartPos.top
+    // Init missing vertical position values (will be set later)
+    this._chartPos.max = null
+    this._chartPos.break = null
+    this._chartPos.min = null
 
     // Position values of table next to climate chart
     this._tablePos = {
@@ -264,36 +265,45 @@ class ClimateChart extends Chart
       ticks.prec.values.aboveBreak.push(tickValue)
 
 
-    console.log(ticks);
-
-
     // ------------------------------------------------------------------------
-    // Adapt chart size if there are values above break line
+    // Set vertical position values for climate chart visualization
+    // Additive from top (max) to bottom (min) via min and zero line
     // ------------------------------------------------------------------------
 
-    // Absolute shift upwards for ticks above break [px] =
-    //  Distance between two ticks below break [px / tick] *
-    //  Number of ticks above break line [px]
+    // Save initial bottom position
+    let initBottomPos = this._chartPos.bottom
 
+    // Idea: Make cells quadratic => get horizontal width of one cell
+    let cellWidth = this._chartPos.width / (MONTHS_IN_YEAR.length-1)
 
-    let numPxBelowBreak =    this._chartPos.bottom - this._chartPos.break
-    let numTicksBelowBreak = ticks.temp.values.belowBreak.length
-    let numTicksAboveBreak = ticks.prec.values.aboveBreak.length
+    // Max position: top of diagram + space for diagram heading
+    this._chartPos.max = 0
+      + this._chartPos.top
+      + this._chartMain.diagramMargin.max
 
-    // problem: If there are ticks above the break line, one is omitted
-    // to prevent duplicate tick at break line => add 1 to get correct number
-    if (numTicksAboveBreak > 0)
-      numTicksAboveBreak += 1
+    // Break position: initially same as max value
+    this._chartPos.break = this._chartPos.max
+    // If break value exists: set lower by number of cells above break line
+    // Get Number of ticks (100, 300, 700, ...)
+    // -> one was omitted to prevent duplicate tick at break line
+    // => mentally add 1 to get correct number of ticks
+    // -> cells are in between two ticks => one tick has to be omitted
+    // => mentally subtract one => stay with number of tick values
+    if (breakExists)
+      this._chartPos.break += (cellWidth * ticks.prec.values.aboveBreak.length)
 
-    console.log(this._chartPos.bottom - this._chartPos.break);
-    console.log(numTicksBelowBreak, numTicksAboveBreak);
-    console.log(numPxBelowBreak * numTicksAboveBreak / numTicksBelowBreak);
-    console.log(100*(this._chartHeight/this._chartWidth));
+    // min position: between break and min (>=5 cells)
+    this._chartPos.min = this._chartPos.break
+      + cellWidth * (ticks.temp.values.belowBreak.length-1)
 
-    // Change the total height of the chart -> shift up above break line
-    this._resizeChartHeight(0
-      // numPxBelowBreak * numTicksAboveBreak / numTicksBelowBreak
-    )
+    // bottom position: min position + space for heading
+    this._chartPos.bottom = 0
+      + this._chartPos.min
+      + this._chartMain.diagramMargin.min
+
+    // Adapt chart size: final bottom position - initial bottom position
+    this._resizeChartHeight(this._chartPos.bottom - initBottomPos)
+
 
     // ------------------------------------------------------------------------
     // Setup axes
@@ -324,7 +334,7 @@ class ClimateChart extends Chart
       .attr('transform', 'translate('
         + 0
         + ', '
-        + this._chartPos.bottom
+        + this._chartPos.min
         + ')'
       )
       .call(xAxis)
@@ -342,7 +352,7 @@ class ClimateChart extends Chart
       )
       .range(
         [
-          this._chartPos.bottom,
+          this._chartPos.min,
           this._chartPos.break
         ]
       )
@@ -379,7 +389,7 @@ class ClimateChart extends Chart
       )
       .range(
         [
-          this._chartPos.top,
+          this._chartPos.max,
           this._chartPos.break,
         ]
       )
@@ -415,7 +425,7 @@ class ClimateChart extends Chart
       )
       .range(
         [
-          this._chartPos.bottom,
+          this._chartPos.min,
           this._chartPos.break
         ]
       )
@@ -452,7 +462,7 @@ class ClimateChart extends Chart
       .range(
         [
           this._chartPos.break,
-          this._chartPos.top,
+          this._chartPos.max,
         ]
       )
 
@@ -482,7 +492,7 @@ class ClimateChart extends Chart
       .attr('class', 'tick')
       .attr('text-anchor', 'start')
       .attr('x',    this._chartPos.left)
-      .attr('y',    this._chartPos.top - 10)
+      .attr('y',    this._chartPos.top)
       .attr('fill', this._chartsMain.colors.temp)
       .text('[' + this._chartMain.temp.unit + ']')
 
@@ -490,7 +500,7 @@ class ClimateChart extends Chart
       .attr('class', 'tick')
       .attr('text-anchor', 'end')
       .attr('x',    this._chartPos.right)
-      .attr('y',    this._chartPos.top - 10)
+      .attr('y',    this._chartPos.top)
       .attr('fill', this._chartsMain.colors.prec)
       .text('[' + this._chartMain.prec.unit + ']')
 
@@ -519,7 +529,7 @@ class ClimateChart extends Chart
     let xGrid = d3.svg
     	.axis()
     	.scale(xScale)
-    	.tickSize(this._chartPos.top - this._chartPos.bottom)
+    	.tickSize(this._chartPos.max - this._chartPos.min)
     	.tickSubdivide(true)
     	.tickFormat('')
 
@@ -528,7 +538,7 @@ class ClimateChart extends Chart
       .attr('transform', 'translate('
         + 0
         + ','
-        + this._chartPos.bottom
+        + this._chartPos.min
         + ')'
       )
       .call(xGrid)
@@ -653,7 +663,7 @@ class ClimateChart extends Chart
       .area()
       .x( (d) => {return xScale(d.month)})
       .y0((d) => {return yScaleTempBelowBreak(d.temp)})
-      .y1(this._chartPos.bottom)
+      .y1(this._chartPos.min)
       .interpolate('linear')
 
     this._chart.append('path')
@@ -671,7 +681,7 @@ class ClimateChart extends Chart
       .area()
       .x( (d) => {return xScale(d.month)})
       .y0((d) => {return yScalePrecBelowBreak(d.prec)})
-      .y1(this._chartPos.bottom)
+      .y1(this._chartPos.min)
       .interpolate('linear')
 
     this._chart.append('path')
@@ -746,7 +756,7 @@ class ClimateChart extends Chart
         .attr('x',      this._chartPos.left)
         .attr('y',      this._chartPos.break)
         .attr('width',  this._chartPos.width)
-        .attr('height', (this._chartPos.break - this._chartPos.top))
+        .attr('height', (this._chartPos.break - this._chartPos.max))
 
       defs.append('clipPath')
         .attr('id',     'rect-top')
@@ -754,7 +764,7 @@ class ClimateChart extends Chart
         .attr('x',      this._chartPos.left)
         .attr('y',      this._chartPos.top)
         .attr('width',  this._chartPos.width)
-        .attr('height', (this._chartPos.break - this._chartPos.top))
+        .attr('height', (this._chartPos.break - this._chartPos.max))
     }
 
 
@@ -768,19 +778,15 @@ class ClimateChart extends Chart
     // Caption: prec sum and temp mean
     // ------------------------------------------------------------------------
 
-    // TODO: x and y-position a bit less hacky ;)
     this._chart.append('text')
       .attr('class', 'info')
       .attr('x', 0
         + this._chartPos.left
-        + this._chartPos.width/2
-        - 10
+        + this._chartPos.width / 2
+        - this._chartMain.captionDist / 2
         - this._chartsMain.padding * 2
       )
-      .attr('y', 0
-        + this._chartPos.bottom
-        + this._chartMain.captionHeight
-      )
+      .attr('y', this._chartPos.bottom)
       .attr('text-anchor', 'end')
       .text( ''
         + this._chartMain.temp.caption
@@ -794,14 +800,11 @@ class ClimateChart extends Chart
       .attr('class', 'info')
       .attr('x', 0
         + this._chartPos.left
-        + this._chartPos.width/2
-        - 10
+        + this._chartPos.width / 2
+        - this._chartMain.captionDist / 2
         + this._chartsMain.padding * 2
       )
-      .attr('y', 0
-        + this._chartPos.bottom
-        + this._chartMain.captionHeight
-      )
+      .attr('y', this._chartPos.bottom)
       .attr('text-anchor', 'begin')
       .text( ''
       + this._chartMain.prec.caption
@@ -1104,10 +1107,6 @@ class ClimateChart extends Chart
   {
     // Resize whole container and footer
     super._resizeChartHeight(shiftUp);
-
-    // Resize model:
-    this._chartPos.break  += shiftUp
-    this._chartPos.bottom += shiftUp
   }
 
 
