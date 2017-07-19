@@ -747,7 +747,6 @@ class ClimateChart extends Chart
 
 
     // Cover overlapping prec lines resulting from break value
-
     if (breakExists)
     {
       defs.append('clipPath')
@@ -756,17 +755,16 @@ class ClimateChart extends Chart
         .attr('x',      this._chartPos.left)
         .attr('y',      this._chartPos.break)
         .attr('width',  this._chartPos.width)
-        .attr('height', (this._chartPos.break - this._chartPos.max))
+        .attr('height', (this._chartPos.min-this._chartPos.break))
 
       defs.append('clipPath')
         .attr('id',     'rect-top')
         .append('rect')
         .attr('x',      this._chartPos.left)
-        .attr('y',      this._chartPos.top)
+        .attr('y',      this._chartPos.max)
         .attr('width',  this._chartPos.width)
         .attr('height', (this._chartPos.break - this._chartPos.max))
     }
-
 
     // Styling
 
@@ -807,7 +805,7 @@ class ClimateChart extends Chart
       )
       .attr('y', this._chartPos.bottom)
       .attr('text-anchor', 'begin')
-      .style('font-size', this._chartsMain.fontSizes.huge + 'em')      
+      .style('font-size', this._chartsMain.fontSizes.huge + 'em')
       .text( ''
         + this._chartMain.prec.caption
         + ': '
