@@ -57,13 +57,16 @@ class ClimateData
     // Climate data
     // ------------------------------------------------------------------------
 
-    this.prec =          []
     this.temp =          []
+    this.prec =          []
 
-    this.temp_mean =     null    // temperature mean
-    this.prec_sum =      null    // precipitation sum
+    this.temp_mean =     null   // temperature mean
+    this.prec_sum =      null   // precipitation sum
 
-    this.monthly_short = []      // short form: temp mean / prec sum per month
+    this.temp_long =     []     // list of temp data values for each month
+    this.prec_long =     []     // list of prec data values for each month
+
+    this.monthly_short = []     // short form: temp mean / prec sum per month
     this.extreme =
     {
       minTemp: null, maxTemp: null,

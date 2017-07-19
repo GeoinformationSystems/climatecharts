@@ -203,6 +203,13 @@ class DistributionChart extends Chart
     // Clean charts
     $('#boxplot-group').remove()
 
+    // N.B. Get local copy of climateData
+    // This is veeeeeeeeery important! It drove me nuts, because I spent
+    // more than 1 hour looking for the problem: Why did the global object
+    // this._climateData change? Because it was referenced once instead of
+    // copied properly...
+    let climateData = this._main.modules.helpers.deepCopy(this._climateData)
+
     // Create boxplot group
     let svg = this._chart
       .append('g')
@@ -234,7 +241,7 @@ class DistributionChart extends Chart
         vizData[monthIdx][0] = MONTHS_IN_YEAR[monthIdx]
 
         // Get data values
-        let values = this._climateData
+        let values = climateData
           [this._chartMain.subcharts[datatypeIdx].data + '_long']
           [monthIdx]
         vizData[monthIdx][1] = values

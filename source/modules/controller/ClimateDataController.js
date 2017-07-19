@@ -42,11 +42,11 @@ class ClimateDataController
     this._climateData = new ClimateData()
 
     // Fill station with climate data
-    this._climateData.temp = this._fillData(tempData, "temp")
-    this._climateData.prec = this._fillData(precData, "prec")
+    this._climateData.temp = this._fillData(tempData, 'temp')
+    this._climateData.prec = this._fillData(precData, 'prec')
 
-    this._calcIndicator("temp")
-    this._calcIndicator("prec")
+    this._calcIndicator('temp')
+    this._calcIndicator('prec')
 
     this._calcTempPrecLong()
     this._calcMonthlyData()
@@ -140,7 +140,6 @@ class ClimateDataController
           this._main.config.coordinates.decimalPlaces
         )
     }
-
     return outData
   }
 

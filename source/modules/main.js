@@ -53,7 +53,7 @@ const ENDPOINTS =
   'gazetteer':        (RUN_LOCALLY.gazetteer        ? URL.local : URL.server)
     + "/gazetteer/api",
   'weatherstations':  (RUN_LOCALLY.weatherstations  ? URL.local : URL.server)
-    + "/weatherstations-api_new",
+    + "/weatherstations-api",
 }
 
 

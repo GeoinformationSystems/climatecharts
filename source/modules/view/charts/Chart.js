@@ -47,7 +47,7 @@ class Chart
   {
     // Clean view
     this._chartWrapper.remove()
-    this._toolbar.empty()
+    $(this._toolbar).empty()
 
     // Update model
     this._initMembers(climateData)
@@ -84,7 +84,7 @@ class Chart
     this._climateData = null
     // Clean view
     this._chartWrapper.remove()
-    this._toolbar.empty()
+    $(this._toolbar).empty()
   }
 
 
@@ -229,9 +229,6 @@ class Chart
 
   _setupHeaderFooter()
   {
-    console.log(this._chartName);
-    console.log(this._chartPos);
-
     // Title
     this._chart.append('text')
       .attr('id', this._chartName + '-title')
