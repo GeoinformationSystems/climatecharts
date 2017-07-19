@@ -34,54 +34,58 @@ class Chart
     // Global setup for all chart types
     this._setChartMetadata()
     this._setupContainer()
+    this._setupToolbar()
+    this._setupChart()
     this._setupHeaderFooter()
-
-    // Local setup for specific chart types
-    this._drawChart()
   }
 
-    // ========================================================================
-    // Update climate data of chart
-    // ========================================================================
+  // ========================================================================
+  // Update climate data of chart
+  // ========================================================================
 
-    updateClimate(climateData)
-    {
-      // Update model
-      this._initMembers(climateData)
+  updateClimate(climateData)
+  {
+    // Clean view
+    this._chartWrapper.remove()
+    this._toolbar.empty()
 
-      // Clean view
-      this._chartWrapper.remove()
+    // Update model
+    this._initMembers(climateData)
 
-      // Reset view
-      this._setChartMetadata()
-      this._setupContainer()
-      this._setupHeaderFooter()
-      this._drawChart()
-    }
-
-
-    // ========================================================================
-    // Update title of chart
-    // ========================================================================
-
-    updateTitle(title)
-    {
-      this._title = title
-      this._titleDiv.text(title)
-    }
+    // Update view
+    this._setChartMetadata()
+    this._setupContainer()
+    this._setupToolbar()
+    this._setupChart()
+    this._setupHeaderFooter()
+  }
 
 
-    // ========================================================================
-    // Remove chart
-    // ========================================================================
+  // ========================================================================
+  // Update title of chart
+  // ========================================================================
 
-    remove()
-    {
-      // Clean model
-      this._climateData = null
-      // Clean view
-      this._chartWrapper.remove()
-    }
+  updateTitle(title)
+  {
+    // Update model
+    this._title = title
+    // Update view
+    this._titleDiv.text(title)
+  }
+
+
+  // ========================================================================
+  // Remove chart
+  // ========================================================================
+
+  remove()
+  {
+    // Clean model
+    this._climateData = null
+    // Clean view
+    this._chartWrapper.remove()
+    this._toolbar.empty()
+  }
 
 
   // ##########################################################################
@@ -102,15 +106,14 @@ class Chart
     this._mainPos = {
       left : 0,
       top : ( 0
-        + this._chartsMain.positions.main.top
+        + this._chartsMain.positions.mainTop
       ),
       right : ( 0
         + this._chartWidth
       ),
       bottom : ( 0
         + this._chartHeight
-        - this._chartsMain.positions.main.top
-        - this._chartsMain.positions.main.bottom
+        - this._chartsMain.positions.mainTop
       ),
     }
 
@@ -170,21 +173,34 @@ class Chart
     parentContainer.append(chartWrapper)
     this._chartWrapper = $('#' + this._chartMain.name + '-wrapper')
 
-    // Add toolbar container
-    // -> will be placed on top of chart, but will not be printed
-
-    this._toolbar = this._domElementCreator.create(
-      'div', this._chartMain.name+'-toolbar', ['toolbar']
-    )
-    this._chartWrapper[0].appendChild(this._toolbar)
-
     // Adjust "height" of wrapper
     this._chartWrapper.css('padding-bottom',
       100*(this._chartHeight/this._chartWidth) + '%'
     )
+  }
 
-    // Add actual chart -> svg canvas
-    this._chart = d3.select(chartWrapper)
+
+  // ==========================================================================
+  // Setup toolbar
+  // -> Will be placed on top of chart, but will not be printed
+  // ==========================================================================
+
+  _setupToolbar()
+  {
+    this._toolbar = this._domElementCreator.create(
+      'div', this._chartMain.name+'-toolbar', ['toolbar']
+    )
+    this._chartWrapper[0].appendChild(this._toolbar)
+  }
+
+  // ==========================================================================
+  // Setup chart
+  // -> Use svg-canvas
+  // ==========================================================================
+
+  _setupChart()
+  {
+    this._chart = d3.select(this._chartWrapper[0])
       .append('svg')
       .attr('id', this._chartMain.name)
       .attr('version', 1.1)
@@ -213,13 +229,16 @@ class Chart
 
   _setupHeaderFooter()
   {
+    console.log(this._chartName);
+    console.log(this._chartPos);
+
     // Title
     this._chart.append('text')
       .attr('id', this._chartName + '-title')
       .attr('class', 'chart-header chart-title')
       .attr('x', this._chartWidth/2)
       .attr('y', 0
-        + this._chartsMain.positions.title.top
+        + this._chartsMain.positions.titleTop
         + this._chartsMain.padding
       )
       .attr('text-anchor', 'middle')
@@ -231,7 +250,7 @@ class Chart
       .attr('class', 'chart-header chart-subtitle')
       .attr('x', this._chartWidth/2)
       .attr('y', 0
-        + this._chartsMain.positions.subtitle.top
+        + this._chartsMain.positions.subtitleTop
         + this._chartsMain.padding
       )
       .attr('text-anchor', 'middle')
@@ -246,8 +265,9 @@ class Chart
         + this._chartsMain.padding
       )
       .attr('y', 0
-        + this._chartsMain.positions.footer.top
-        - this._chartsMain.padding
+        + this._chartPos.bottom
+        + this._chartsMain.positions.footerTop
+        + this._chartsMain.padding
       )
       .style('cursor', 'pointer')
       .style('font-size', this._chartsMain.fontSizes.small + 'em')
@@ -264,8 +284,9 @@ class Chart
         - this._chartsMain.padding
       )
       .attr('y', 0
-        + this._chartsMain.positions.footer.top
-        - this._chartsMain.padding
+        + this._chartPos.bottom
+        + this._chartsMain.positions.footerTop
+        + this._chartsMain.padding
       )
       .style('text-anchor', 'end')
       .style('font-size', this._chartsMain.fontSizes.small + 'em')
@@ -295,19 +316,5 @@ class Chart
     this._chartWrapper.css('padding-bottom',
       100*(this._chartHeight/this._chartWidth) + '%'
     )
-
-    // Reset footer elements
-    for (let footerElem of this._footerElems)
-    {
-      let oldY = parseFloat(footerElem.attr('y'))
-      footerElem.attr('y', oldY + shiftUp)
-    }
   }
-
-
-  // ==========================================================================
-  // Empty member functions to be implemented in derived classes
-  // ==========================================================================
-
-  _drawChart()    {}
 }

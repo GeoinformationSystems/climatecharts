@@ -110,8 +110,10 @@ class ClimateChart extends Chart
   // - right side: table
   // ========================================================================
 
-  _drawChart()
+  _setupChart()
   {
+    super._setupChart()
+    
     // ------------------------------------------------------------------------
     // Setup axes (1 x-axis, 2 y-axes for prec and temp and ticks)
     // ------------------------------------------------------------------------

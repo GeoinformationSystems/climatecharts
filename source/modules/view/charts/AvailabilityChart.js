@@ -35,7 +35,7 @@ class AvailabilityChart extends Chart
   _initMembers(climateData)
   {
     super._initMembers(climateData)
-    
+
     // ------------------------------------------------------------------------
     // Preparation: Position values for visualization elements
     // ------------------------------------------------------------------------
@@ -76,8 +76,10 @@ class AvailabilityChart extends Chart
   // Draw the whole chart
   // ==========================================================================
 
-  _drawChart()
+  _setupChart()
   {
+    super._setupChart()
+
     // ------------------------------------------------------------------------
     // Setup grid
     // ------------------------------------------------------------------------
@@ -329,7 +331,7 @@ class AvailabilityChart extends Chart
     super._resizeChartHeight(shiftUp);
 
     // Resize model:
-    // this._chartPos.bottom += shiftUp
+    this._chartPos.bottom += shiftUp
   }
 
 }

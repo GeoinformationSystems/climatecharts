@@ -128,25 +128,13 @@ main.config =
     positions:        // [px]
     {
       width:          728,  // Reference: full width
-      height:         440,  // Reference: initial full height
-      title:
-      {
-        top:          5,
-      },
-      subtitle:
-      {
-        top:          20,
-      },
-      main:
-      {
-        top:          50,
-        bottom:       -10,
-      },
-      footer:
-      {
-        top:          440,
-      },
+      height:         420,  // Reference: initial full height
+      titleTop:       5,    // Top margin for title
+      subtitleTop:    25,   // Top margin for subtitle
+      mainTop:        55,   // Top margin for main (= height of title area)
+      footerTop:      50,   // Margin for footer
     },
+    padding:          10,
     fontSizes:    // [em]
     {
       title:          1.4,
@@ -156,7 +144,6 @@ main.config =
       small:          0.9,
       tiny:           0.8,
     },
-    padding:          10,
     colors:
     {
       temp:           d3.rgb(230,20, 20 ),
@@ -277,7 +264,7 @@ main.config =
           left:         50,
           top:          30,
           right:        20,
-          bottom:       20,
+          bottom:       0,
         },
         style:
         {
