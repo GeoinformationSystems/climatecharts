@@ -35,7 +35,7 @@ body
   width: 100%;
   font-family: Verdana, Geneva, sans-serif;
   /*font-family: Palatino Linotype, Book Antiqua, Palatino, serif;*/
-  font-size: 1.0em;
+  font-size: 12px;
   background: url("../../data/img/earth.svg") no-repeat center center;
   background-size:cover;
   background-attachment: fixed;
@@ -128,6 +128,7 @@ select
   width: 100%;
   padding: 15px;
   background-color:white;
+  margin-top: 15px;
   margin-bottom: 15px;
   border: 1px solid #babdb6;
 }

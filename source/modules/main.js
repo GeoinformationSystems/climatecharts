@@ -149,11 +149,12 @@ main.config =
     },
     fontSizes:    // [em]
     {
-      title:          1.5,
+      title:          1.4,
+      huge:           1.2,
       large:          1.1,
       normal:         1.0,
       small:          0.9,
-      tiny:           0.7,
+      tiny:           0.8,
     },
     padding:          10,
     colors:
@@ -176,9 +177,9 @@ main.config =
         margin:         // [px]
         {
           left:         30,
-          top:          10,
+          top:          0,
           right:        30,
-          bottom:       10,
+          bottom:       0,
         },
         diagramMargin:  // [px]
         {
@@ -219,9 +220,9 @@ main.config =
           {
             top:          12,   // Downshift from top line
             right:        10,   // Right margin for right-aligned cell values
-            left:         20,   // Right margin for left-aligned cell values
+            left:         15,   // Right margin for left-aligned cell values
           },
-          maxHeight:      220,  // [px]
+          maxHeight:      250,  // [px]
         },
         captionDist:      20,   // [px] distance between caption text fields
         mouseover:
@@ -251,7 +252,7 @@ main.config =
         [
           {
             data:       'temp',
-            title:      "Distribution of Temperature [&deg;C]",
+            title:      "Distribution of Temperature [°C]",
             color:      'rgb(230, 20, 20)',
             maxRange:   [-40, +40]
           },

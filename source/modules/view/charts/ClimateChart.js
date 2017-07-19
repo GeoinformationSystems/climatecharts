@@ -788,6 +788,7 @@ class ClimateChart extends Chart
       )
       .attr('y', this._chartPos.bottom)
       .attr('text-anchor', 'end')
+      .style('font-size', this._chartsMain.fontSizes.huge + 'em')
       .text( ''
         + this._chartMain.temp.caption
         + ': '
@@ -806,13 +807,14 @@ class ClimateChart extends Chart
       )
       .attr('y', this._chartPos.bottom)
       .attr('text-anchor', 'begin')
+      .style('font-size', this._chartsMain.fontSizes.huge + 'em')      
       .text( ''
-      + this._chartMain.prec.caption
-      + ': '
-      + this._climateData.prec_sum
-      + ' '
-      + this._chartMain.prec.unit
-    )
+        + this._chartMain.prec.caption
+        + ': '
+        + this._climateData.prec_sum
+        + ' '
+        + this._chartMain.prec.unit
+      )
 
 
     // ------------------------------------------------------------------------
@@ -885,36 +887,30 @@ class ClimateChart extends Chart
 
 
     // Headings
-
     this._chart.append('text')
-      .attr('class', 'info')
       .attr('x', xPos[0])
       .attr('y', this._tablePos.top)
       .attr('text-anchor', 'middle')
+      .style('font-weight', 'bold')
       .text(this._chartMain.table.heading.month)
 
     this._chart.append('text')
-      .attr('class', 'info')
       .attr('x', xPos[2])
       .attr('y', this._tablePos.top)
       .attr('text-anchor', 'middle')
+      .style('font-weight', 'bold')
       .text(this._chartMain.table.heading.temp)
 
     this._chart.append('text')
-      .attr('class', 'info')
       .attr('x', xPos[4])
       .attr('y', this._tablePos.top)
       .attr('text-anchor', 'middle')
+      .style('font-weight', 'bold')
       .text(this._chartMain.table.heading.prec)
-
-    this._chart.selectAll('.info')
-      .attr('font-weight', 'normal')
-      .style('font-size', this._chartsMain.fontSizes.large + 'em')
 
 
     // Cell values: month
     this._chart.append('text')
-      .attr('class', 'info')
       .attr('y', this._tablePos.top)
       .attr('text-anchor', 'start')
       .call(this._fillColumn,
@@ -927,7 +923,6 @@ class ClimateChart extends Chart
 
     // Cell values: temp
     this._chart.append('text')
-      .attr('class', 'info')
       .attr('y', this._tablePos.top)
       .attr('text-anchor', 'end')
       .call(this._fillColumn,
@@ -940,7 +935,6 @@ class ClimateChart extends Chart
 
     // Cell values: prec
     this._chart.append('text')
-      .attr('class', 'info')
       .attr('y', this._tablePos.top)
       .attr('text-anchor', 'end')
       .call(this._fillColumn,
