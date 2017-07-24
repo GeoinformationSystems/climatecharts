@@ -17,12 +17,12 @@ class DistributionChart extends Chart
 
   constructor(main, climateData)
   {
+    // Error handling: Only show chart if either prec or temp are given
+    if (climateData.has_temp || climateData.has_prec)
+      super(main, 'distribution-chart', climateData)
 
-    // ------------------------------------------------------------------------
-    // Call super class for setting up the div container and climate data
-    // ------------------------------------------------------------------------
-
-    super(main, 'distribution-chart', climateData)
+    else
+      super(main, 'distribution-chart', null)
   }
 
 
@@ -218,6 +218,10 @@ class DistributionChart extends Chart
     // For each subchart
     for (let datatypeIdx = 0; datatypeIdx < this._numSubcharts; datatypeIdx++)
     {
+      // Error handling: Only setup the subcharts if there is data available
+      if (!climateData['has_' + this._chartMain.subcharts[datatypeIdx].data])
+        continue
+
       // ----------------------------------------------------------------------
       // Prepare the data
       // Required format: array of arrays with data[m][2]

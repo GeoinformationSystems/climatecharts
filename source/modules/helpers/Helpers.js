@@ -124,6 +124,9 @@ class Helpers
 
   roundToDecimalPlace(num, decimalPlaces)
   {
+    // Error handling: No number -> null
+    if (!this.checkIfNumber(num)) return null
+    
     let roundingFactor = Math.pow(10, decimalPlaces)
     return (Math.round(num*roundingFactor) / roundingFactor)
   }

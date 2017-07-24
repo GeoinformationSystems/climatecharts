@@ -225,10 +225,15 @@ class ClimateDataController
       this._climateData.temp_list[monthIdx] = []
       let dataValues = this._climateData.temp[monthIdx].raw_data
       for (let valueIdx = 0; valueIdx < dataValues.length; valueIdx++)
+      {
         if (this._main.modules.helpers.checkIfNumber(dataValues[valueIdx]))
+        {
           this._climateData.temp_list[monthIdx].push(
             parseFloat(dataValues[valueIdx])
           )
+          this._climateData.has_temp = true
+        }
+      }
     }
 
     this._climateData.prec_list = []
@@ -237,10 +242,15 @@ class ClimateDataController
       this._climateData.prec_list[monthIdx] = []
       let dataValues = this._climateData.prec[monthIdx].raw_data
       for (let valueIdx = 0; valueIdx < dataValues.length; valueIdx++)
+      {
         if (this._main.modules.helpers.checkIfNumber(dataValues[valueIdx]))
+        {
           this._climateData.prec_list[monthIdx].push(
             parseFloat(dataValues[valueIdx])
           )
+          this._climateData.has_prec = true
+        }
+      }
     }
   }
 

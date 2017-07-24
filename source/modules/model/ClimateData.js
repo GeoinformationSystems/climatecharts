@@ -36,7 +36,7 @@ class ClimateData
     // Metadata
     // ------------------------------------------------------------------------
 
-    this.name =           ""                  // city, admin region, country
+    this.name =           ""                  // City, admin region, country
     this.location =
     {
       orig:
@@ -47,30 +47,33 @@ class ClimateData
       DD:                 "",
       DMS:                "",
     }
-    this.hemisphere =     ""                  // either "N" or "S"
-    this.elevation =      null                // d "m"
-    this.climate_class =  null                // max. three-character class name
-    this.years =          [null, null, null]  // min year, max year, appendix
+    this.hemisphere =     ""                  // Either "N" or "S"
+    this.climate_class =  null                // Max. three-character class name
+    this.elevation =      null                // Height in meter
+    this.years =          [null, null, null]  // Min year, Max year, Appendix
 
-    this.source =         null                // data source
-    this.source_link =    null                // link to data source
-    this.doi =            null                // document object identifier (link)
+    this.source =         null                // Data source
+    this.source_link =    null                // Link to data source
+    this.doi =            null                // Link to doc. object identifier
 
 
     // ------------------------------------------------------------------------
     // Climate data
     // ------------------------------------------------------------------------
 
-    this.temp =          []
-    this.prec =          []
+    this.has_temp =       false   // Is there at least one temperature value?
+    this.has_prec =       false   // Is there at least one precipitation value?
 
-    this.temp_mean =     null   // temperature mean
-    this.prec_sum =      null   // precipitation sum
+    this.temp =           []
+    this.prec =           []
 
-    this.temp_list =     []     // list of temp data values for each month
-    this.prec_list =     []     // list of prec data values for each month
+    this.temp_mean =      null   // Temperature mean
+    this.prec_sum =       null   // Precipitation sum
 
-    this.monthly_short = []     // short form: temp mean / prec sum per month
+    this.temp_list =      []     // list of temp data values for each month
+    this.prec_list =      []     // list of prec data values for each month
+
+    this.monthly_short =  []     // short form: temp mean / prec sum per month
     this.extreme =
     {
       minTemp:            null,

@@ -15,11 +15,6 @@ class AvailabilityChart extends Chart
 
   constructor(main, climateData)
   {
-
-    // ------------------------------------------------------------------------
-    // Call super class for setting up the div container and climate data
-    // ------------------------------------------------------------------------
-
     super(main, 'availability-chart', climateData)
   }
 

@@ -9,10 +9,12 @@ class ClimateChart extends Chart
 
   constructor(main, climateData)
   {
-    // ------------------------------------------------------------------------
-    // Call super class for setting up the div container and climate data
-    // ------------------------------------------------------------------------
-    super(main, 'climate-chart', climateData)
+    // Error handling: Only show chart if both prec and temp are given
+    if (climateData.has_temp && climateData.has_prec)
+      super(main, 'climate-chart', climateData)
+
+    else
+      super(main, 'climate-chart', null)
   }
 
 
@@ -113,7 +115,7 @@ class ClimateChart extends Chart
   _setupChart()
   {
     super._setupChart()
-    
+
     // ------------------------------------------------------------------------
     // Setup axes (1 x-axis, 2 y-axes for prec and temp and ticks)
     // ------------------------------------------------------------------------
@@ -488,7 +490,6 @@ class ClimateChart extends Chart
 
 
     // Description of axes: units
-    // TODO: fix deg sign
 
     this._chart.append('text')
       .attr('class', 'tick')

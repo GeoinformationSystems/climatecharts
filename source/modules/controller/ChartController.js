@@ -49,23 +49,22 @@ class ChartController
 
   updateClimate(climateData)
   {
-    // Create new charts
+    // Prepare for creating new charts
     if (!this._chartsAreActive)
-    {
       this._chartInfo.hide()
-      this._charts =
-        [
-          new ClimateChart(this._main, climateData),
-          new DistributionChart(this._main, climateData),
-          new AvailabilityChart(this._main, climateData)
-        ]
-      this._chartsAreActive = true
-    }
-
-    // Update existing charts
-    else
+    // Otherwise cleanup existing charts
+    else (this._chartsAreActive)
       for (let chart of this._charts)
-        chart.updateClimate(climateData)
+        chart.remove()
+
+    // Create charts all over again
+    this._charts =
+      [
+        new ClimateChart(this._main, climateData),
+        new DistributionChart(this._main, climateData),
+        new AvailabilityChart(this._main, climateData),
+      ]
+    this._chartsAreActive = true
 
     // Name has propably changed
     this._main.hub.onDiagramTitleChange(climateData.name)

@@ -18,6 +18,8 @@ class Chart
   {
     this._main = main
 
+    this._chartExists = true
+
     // Get charts main -> generic information for all charts
     // get initial dimensions as a deep copy to change them later on
     this._chartsMain = this._main.config.charts
@@ -29,30 +31,12 @@ class Chart
       if (chart.name == chartName)
         this._chartMain = chart
 
+    // Error handling: if no climateData, chart will not be set up
+    if (!climateData) return this._chartExists = false
+
     this._initMembers(climateData)
 
     // Global setup for all chart types
-    this._setChartMetadata()
-    this._setupContainer()
-    this._setupToolbar()
-    this._setupChart()
-    this._setupHeaderFooter()
-  }
-
-  // ========================================================================
-  // Update climate data of chart
-  // ========================================================================
-
-  updateClimate(climateData)
-  {
-    // Clean view
-    this._chartWrapper.remove()
-    $(this._toolbar).empty()
-
-    // Update model
-    this._initMembers(climateData)
-
-    // Update view
     this._setChartMetadata()
     this._setupContainer()
     this._setupToolbar()
@@ -67,10 +51,13 @@ class Chart
 
   updateTitle(title)
   {
-    // Update model
-    this._title = title
-    // Update view
-    this._titleDiv.text(title)
+    if (this._chartExists)
+    {
+      // Update model
+      this._title = title
+      // Update view
+      this._titleDiv.text(title)
+    }
   }
 
 
@@ -80,11 +67,14 @@ class Chart
 
   remove()
   {
-    // Clean model
-    this._climateData = null
-    // Clean view
-    this._chartWrapper.remove()
-    $(this._toolbar).empty()
+    if (this._chartExists)
+    {
+      // Clean model
+      this._climateData = null
+      // Clean view
+      this._chartWrapper.remove()
+      $(this._toolbar).empty()
+    }
   }
 
 
