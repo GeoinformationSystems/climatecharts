@@ -218,13 +218,25 @@ class ClimateDataController
 
   _calcTempPrecLong()
   {
-    this._climateData.temp_long = []
-    for (let month of this._climateData.temp)
-      this._climateData.temp_long.push(month.raw_data)
+    this._climateData.temp_list = []
+    for (let monthIdx = 0; monthIdx < MONTHS_IN_YEAR.length; monthIdx++)
+    {
+      this._climateData.temp_list[monthIdx] = []
+      let dataValues = this._climateData.temp[monthIdx].raw_data
+      for (let valueIdx = 0; valueIdx < dataValues.length; valueIdx++)
+        if (dataValues[valueIdx])
+          this._climateData.temp_list[monthIdx].push(dataValues[valueIdx])
+    }
 
-    this._climateData.prec_long = []
-    for (let month of this._climateData.prec)
-      this._climateData.prec_long.push(month.raw_data)
+    this._climateData.prec_list = []
+    for (let monthIdx = 0; monthIdx < MONTHS_IN_YEAR.length; monthIdx++)
+    {
+      this._climateData.prec_list[monthIdx] = []
+      let dataValues = this._climateData.prec[monthIdx].raw_data
+      for (let valueIdx = 0; valueIdx < dataValues.length; valueIdx++)
+        if (dataValues[valueIdx])
+          this._climateData.prec_list[monthIdx].push(dataValues[valueIdx])
+    }
   }
 
 

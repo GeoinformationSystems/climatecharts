@@ -237,12 +237,12 @@ class DistributionChart extends Chart
         // Create empty array
         vizData[monthIdx] = []
 
-        // Name month
+        // Name of month
         vizData[monthIdx][0] = MONTHS_IN_YEAR[monthIdx]
 
         // Get data values
         let values = climateData
-          [this._chartMain.subcharts[datatypeIdx].data + '_long']
+          [this._chartMain.subcharts[datatypeIdx].data + '_list']
           [monthIdx]
         vizData[monthIdx][1] = values
 
@@ -254,6 +254,15 @@ class DistributionChart extends Chart
       		if (value < vizMin) vizMin = value
         }
       }
+
+      // Update fixed maxRange, if for some reason it is not enought
+      let maxRange = this._main.modules.helpers.deepCopy(
+        this._chartMain.subcharts[datatypeIdx].maxRange
+      )
+      while (maxRange[0] > vizMin)
+        maxRange[0] *= 2
+      while (maxRange[1] < vizMax)
+        maxRange[1] *= 2
 
       // Manipulation: extend min and max values to make the chart look better
       let stretch = (vizMax - vizMin) * this._chartMain.minMaxStretchFactor
@@ -306,7 +315,7 @@ class DistributionChart extends Chart
       if (this._switchState == 0) //  => automatic
         yDomain = [vizMin, vizMax]
       else // switchState == 1        => fixed
-        yDomain = this._chartMain.subcharts[datatypeIdx].maxRange
+        yDomain = maxRange
 
       let yScale = d3.scale
         .linear()

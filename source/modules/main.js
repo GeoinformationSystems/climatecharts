@@ -247,7 +247,7 @@ main.config =
             data:       'prec',
             title:      "Distribution of Precipitation [mm]",
             color:      'rgb(4, 61, 186)',
-            maxRange:   [0, +2000]
+            maxRange:   [0, +1000]
           },
         ],
         switch:
