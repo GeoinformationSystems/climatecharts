@@ -286,7 +286,7 @@ main.config =
 
   climateData:
   {
-    decimalPlaces: 2,     // Decimal precision for both temp /prec
+    decimalPlaces: 2,     // Decimal precision for both temp / prec
   },
 
   // Weather stations (marker: circle)
@@ -315,7 +315,7 @@ main.config =
         fillColor:    '#2b83cb',
       },
     },
-    source:           "www.ncdc.noaa.gov/ghcnm/"
+    source:           "www.ncdc.noaa.gov/ghcnm/",
   }
 }
 
@@ -391,6 +391,10 @@ main.hub.onModeChange = (newMode) =>
     if (newMode == oldMode)
       return
 
+    // Error handling: Can only be 'C' or 'S'
+    if (!(newMode=="C" || newMode=="S"))
+      newMode = 'C' // Default: cell
+
     // Old mode ClimateCell: cleanup location marker and climate cell
     if (oldMode == 'C')
     {
@@ -403,6 +407,14 @@ main.hub.onModeChange = (newMode) =>
     {
       main.modules.weatherStationController.deselect()
     }
+
+    // New mode ClimateCell: enable selection of climate datasets
+    if (newMode == 'C')
+      main.modules.climateDatasetsInList.enable()
+
+    // New mode WeatherStation: disable selection of climate datasets
+    if (newMode == 'S')
+      main.modules.climateDatasetsInList.disable()
 
     // Set new mode
     main.mode = newMode
