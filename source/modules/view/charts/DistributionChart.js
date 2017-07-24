@@ -241,9 +241,10 @@ class DistributionChart extends Chart
         vizData[monthIdx][0] = MONTHS_IN_YEAR[monthIdx]
 
         // Get data values
-        let values = climateData
+        let values = this._main.modules.helpers.deepCopy(climateData
           [this._chartMain.subcharts[datatypeIdx].data + '_list']
           [monthIdx]
+        )
         vizData[monthIdx][1] = values
 
         // For each value

@@ -39,9 +39,13 @@ class ClimateData
     this.name =           ""                  // city, admin region, country
     this.location =
     {
-      orig: {lat: null, lng: null},
-      DD:   "",
-      DMS:  ""
+      orig:
+      {
+        lat:              null,
+        lng:              null
+      },
+      DD:                 "",
+      DMS:                "",
     }
     this.hemisphere =     ""                  // either "N" or "S"
     this.elevation =      null                // d "m"
@@ -63,14 +67,16 @@ class ClimateData
     this.temp_mean =     null   // temperature mean
     this.prec_sum =      null   // precipitation sum
 
-    this.temp_long =     []     // list of temp data values for each month
-    this.prec_long =     []     // list of prec data values for each month
+    this.temp_list =     []     // list of temp data values for each month
+    this.prec_list =     []     // list of prec data values for each month
 
     this.monthly_short = []     // short form: temp mean / prec sum per month
     this.extreme =
     {
-      minTemp: null, maxTemp: null,
-      minPrec: null, maxPrec: null,
+      minTemp:            null,
+      maxTemp:            null,
+      minPrec:            null,
+      maxPrec:            null,
     }
   }
 }

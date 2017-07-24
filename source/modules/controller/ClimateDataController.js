@@ -48,7 +48,7 @@ class ClimateDataController
     this._calcIndicator('temp')
     this._calcIndicator('prec')
 
-    this._calcTempPrecLong()
+    this._calcDataList()
     this._calcMonthlyData()
     this._calcExtremeData()
     this._calcClimateClass()
@@ -216,7 +216,7 @@ class ClimateDataController
   // -> List of all (30?) monthly temp/prec values
   // ==========================================================================
 
-  _calcTempPrecLong()
+  _calcDataList()
   {
     this._climateData.temp_list = []
     for (let monthIdx = 0; monthIdx < MONTHS_IN_YEAR.length; monthIdx++)
@@ -224,8 +224,10 @@ class ClimateDataController
       this._climateData.temp_list[monthIdx] = []
       let dataValues = this._climateData.temp[monthIdx].raw_data
       for (let valueIdx = 0; valueIdx < dataValues.length; valueIdx++)
-        if (dataValues[valueIdx])
-          this._climateData.temp_list[monthIdx].push(dataValues[valueIdx])
+        if (this._main.modules.helpers.checkIfNumber(dataValues[valueIdx]))
+          this._climateData.temp_list[monthIdx].push(
+            parseFloat(dataValues[valueIdx])
+          )
     }
 
     this._climateData.prec_list = []
@@ -234,9 +236,12 @@ class ClimateDataController
       this._climateData.prec_list[monthIdx] = []
       let dataValues = this._climateData.prec[monthIdx].raw_data
       for (let valueIdx = 0; valueIdx < dataValues.length; valueIdx++)
-        if (dataValues[valueIdx])
-          this._climateData.prec_list[monthIdx].push(dataValues[valueIdx])
+        if (this._main.modules.helpers.checkIfNumber(dataValues[valueIdx]))
+          this._climateData.prec_list[monthIdx].push(
+            parseFloat(dataValues[valueIdx])
+          )
     }
+K
   }
 
 
