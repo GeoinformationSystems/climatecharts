@@ -25,6 +25,11 @@ const SUMMER_MONTHS =     [3, 8]    // April (3) until September (8)
 const KELVIN_TO_CELSIUS = 273.15
 const CM_TO_MM =          10
 
+// Null value for data value in climate dataset
+// -> If this is the value of a temperature cell it means that for this cell
+// there is no data available
+const CLIMATE_DATASET_NULL_VALUE = 9.969209968386869E36
+
 
 // ============================================================================
 // Database connection information

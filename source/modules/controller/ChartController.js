@@ -95,6 +95,8 @@ class ChartController
         chart.remove()
 
     this._chartsAreActive = false
+
+    this._chartInfo.show()
   }
 
 

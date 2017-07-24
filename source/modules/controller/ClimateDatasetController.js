@@ -111,6 +111,10 @@ class ClimateDatasetController
           let tempData = this._gridDataToClimateData(tempDataOrig)
           let precData = this._gridDataToClimateData(precDataOrig)
 
+          // Detect empty dataset: Is it an empty dataset?
+          if (tempData[0][0] == CLIMATE_DATASET_NULL_VALUE)
+            return this._main.modules.climateDataController.clear()
+
           // Assemble name array
           let name = [
             names[0].name,

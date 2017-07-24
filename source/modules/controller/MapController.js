@@ -127,6 +127,4 @@ class MapController
 
     return(realCoords)
   }
-
-
 }

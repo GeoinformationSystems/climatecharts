@@ -241,7 +241,6 @@ class ClimateDataController
             parseFloat(dataValues[valueIdx])
           )
     }
-K
   }
 
 
