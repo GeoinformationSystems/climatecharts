@@ -193,6 +193,7 @@ class Chart
     this._chartWrapper[0].appendChild(this._toolbar)
   }
 
+
   // ==========================================================================
   // Setup chart
   // -> Use svg-canvas
@@ -241,6 +242,8 @@ class Chart
       .attr('text-anchor', 'middle')
       .style('font-size', this._chartsMain.fontSizes.title + 'em')
       .text(this._title)
+
+    this._titleDiv = $('#' + this._chartName + '-title')
 
     // Subtitle
     this._chart.append('text')

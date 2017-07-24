@@ -30,11 +30,11 @@ class ChartController
     // Member Variables
     // ------------------------------------------------------------------------
 
-    // all charts
+    // All charts
     this._charts = []
 
     // Staus variable: charts currently active?
-    this._chartsAreActive   = false
+    this._chartsAreActive = false
 
     // Infobox about climate chart
     // -> only visible if charts are not active
@@ -66,6 +66,9 @@ class ChartController
     else
       for (let chart of this._charts)
         chart.updateClimate(climateData)
+
+    // Name has propably changed
+    this._main.hub.onDiagramTitleChange(climateData.name)
   }
 
 
