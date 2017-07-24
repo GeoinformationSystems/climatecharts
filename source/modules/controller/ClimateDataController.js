@@ -25,11 +25,8 @@ class ClimateDataController
 
     this._climateData = new ClimateData()
 
-    // Temoral Dimension
-    this._minYear = this._main.modules.timeController.getPeriodStart()
-    this._maxYear = this._main.modules.timeController.getPeriodEnd()
-
-
+    this._minYear = this._main.config.time.minYear
+    this._maxYear = this._main.config.time.maxYear
   }
 
 
@@ -39,9 +36,13 @@ class ClimateDataController
 
   update(tempData, precData, placeName, coords, elev, source)
   {
+    // Temoral Dimension
+    this._minYear = this._main.modules.timeController.getPeriodStart()
+    this._maxYear = this._main.modules.timeController.getPeriodEnd()
+
+    // Fill climate data
     this._climateData = new ClimateData()
 
-    // Fill station with climate data
     this._climateData.temp = this._fillData(tempData, 'temp')
     this._climateData.prec = this._fillData(precData, 'prec')
 

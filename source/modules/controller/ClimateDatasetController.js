@@ -92,15 +92,17 @@ class ClimateDatasetController
           variables.push(this._selectedDataset.metaDatasets[idx].variable[name]._name)
 
     let coords = this._main.modules.mapController.getCoordinates()
+    let timePeriod =
+    [
+      this._main.modules.timeController.getPeriodStart(),
+      this._main.modules.timeController.getPeriodEnd(),
+    ]
 
     this._main.modules.serverInterface.requestClimateDataForCell(
       this._selectedDataset.urlDatasets,
       variables,      // [tmp, pre]
       coords,         // [lat, lng]
-      [               // [minDate, maxDate]
-        this._main.modules.timeController.getPeriodStart(),
-        this._main.modules.timeController.getPeriodEnd(),
-      ],
+      timePeriod,     // [minDate, maxDate]
       (tempDataXml, precDataXml, names, elevation) =>    // success callback
         {
           // Load climate data from server in XML and transform to JSON

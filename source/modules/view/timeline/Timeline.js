@@ -87,7 +87,7 @@ class Timeline
             let yearsPerPx = null
             let sliderHandles = $('.ui-slider-handle')
 
-            rangeSlider.mousedown( (evt) =>
+            rangeSlider.on('mousedown touchstart', (evt) =>
               {
                 this._clickedOnRange = true
                 xPos = evt.clientX
@@ -97,10 +97,19 @@ class Timeline
               }
             )
 
-            rangeSlider.mousemove( (evt) =>
+            $(window.document).on('mousemove touchmove', (evt) =>
               {
+                // Peform moving of the range slider
                 if (this._clickedOnRange)
                 {
+                  // Prevent selection of other elements
+                  if (evt.stopPropagation)
+                    evt.stopPropagation()
+                  if (evt.preventDefault)
+                    evt.preventDefault()
+                  evt.cancelBubble = true
+                  evt.returnValue = false
+
                   // Calculate move distance
                   let newXPos = evt.clientX
                   let moveDistance = newXPos-xPos
@@ -122,10 +131,18 @@ class Timeline
                   )
                   this._sliderDiv.slider("values", 1, rightRangeValue)
 
+                  // Clip to min / max year
+                  if (leftRangeValue < minYear)
+                    leftRangeValue = minYear
+                  if (rightRangeValue > maxYear)
+                    rightRangeValue = maxYear
+
+                  // Round to full year
+                  leftRangeValue = Math.round(leftRangeValue)
+                  rightRangeValue = Math.round(rightRangeValue)
+
                   // Update view
-                  this.updatePeriod(
-                    Math.round(leftRangeValue), Math.round(rightRangeValue)
-                  )
+                  this.updatePeriod(leftRangeValue, rightRangeValue)
 
                   // Reset variable
                   xPos = newXPos
@@ -135,7 +152,7 @@ class Timeline
               }
             )
 
-            rangeSlider.mouseup( (evt) =>
+            $(window.document).on('mouseup touchend', (evt) =>
               {
                 // Fire change event
                 if (this._clickedOnRange)
