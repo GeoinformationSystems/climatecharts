@@ -22,14 +22,70 @@ class CoordinatesInInfobox
     // ------------------------------------------------------------------------
     // Member Variables
     // ------------------------------------------------------------------------
+
     this._latDiv = $('#lat')
     this._lngDiv = $('#lng')
 
+    this._setButton = $('#set-coordinates')
+
+    this._parentContainer = $('#coordinates-in-infobox')
+
+    this._isEnabled = true
+
+
     // ------------------------------------------------------------------------
-    // User Interaction
+    // User Interaction: Click on "Set" button
+    // Spread the world: new coordinates
     // ------------------------------------------------------------------------
 
-    // TODO: also accept writing coordinates in here?
+    this._setButton.click( () =>
+      {
+        let coords =
+        {
+          lat : parseFloat(this._latDiv.val()),
+          lng : parseFloat(this._lngDiv.val())
+        }
+        if (coords.lat && coords.lng)
+          this._main.modules.mapController.setLocation(coords)
+      }
+    )
+
+    // Trigger click on "Set" button
+    // by pressing Enter key in either coordinate box
+    this._latDiv.keyup( (evt) =>
+      {
+        if (evt.keyCode == 13)  // Enter
+          this._setButton.click()
+      }
+    )
+    this._lngDiv.keyup( (evt) =>
+      {
+        if (evt.keyCode == 13)  // Enter
+          this._setButton.click()
+      }
+    )
+
+  }
+
+
+  // ==========================================================================
+  // Enable / Disable coordinate selection
+  // ==========================================================================
+
+  enable()
+  {
+    if (!this._isEnabled)
+      this._parentContainer.show()
+
+    this._isEnabled = true
+  }
+
+  disable()
+  {
+    if (this._isEnabled)
+      this._parentContainer.hide()
+
+    this._isEnabled = false
   }
 
 

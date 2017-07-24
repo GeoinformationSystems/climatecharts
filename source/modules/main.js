@@ -408,13 +408,19 @@ main.hub.onModeChange = (newMode) =>
       main.modules.weatherStationController.deselect()
     }
 
-    // New mode ClimateCell: enable selection of climate datasets
+    // New mode ClimateCell: enable climate datasets and coordinates
     if (newMode == 'C')
+    {
       main.modules.climateDatasetsInList.enable()
+      main.modules.coordinatesInInfobox.enable()
+    }
 
-    // New mode WeatherStation: disable selection of climate datasets
+    // New mode WeatherStation: disable climate datasets and coordinates
     if (newMode == 'S')
+    {
       main.modules.climateDatasetsInList.disable()
+      main.modules.coordinatesInInfobox.disable()
+    }
 
     // Set new mode
     main.mode = newMode
@@ -425,6 +431,7 @@ main.hub.onModeChange = (newMode) =>
 // Location changes
 // --------------------------------------------------------------------------
 
+// Coords format: coords = {lat: Float, lng: Float}
 main.hub.onLocationChange = (coords) =>
   {
     // In ClimateCell mode

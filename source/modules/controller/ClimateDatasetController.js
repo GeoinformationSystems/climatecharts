@@ -91,8 +91,7 @@ class ClimateDatasetController
         if (this._selectedDataset.metaDatasets[idx].variable[name]._shape == "time lat lon")
           variables.push(this._selectedDataset.metaDatasets[idx].variable[name]._name)
 
-    // Get location
-    let coords = this._main.modules.mapController.getLocation()
+    let coords = this._main.modules.mapController.getCoordinates()
 
     this._main.modules.serverInterface.requestClimateDataForCell(
       this._selectedDataset.urlDatasets,

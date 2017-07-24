@@ -135,14 +135,17 @@
                             </p>
   												  <select id="datasets" name="datasets" style="width:100%">
   												  </select>
+                            <hr>
   												</div>
-                          <hr>
-  												<label class="coordinates-label" for=lat>Latitude:</label>
-                          <input id="lat" class="form-control coordinates" type="text">
-                          <br/>
-  												<label class="coordinates-label" for=lng>Longitude:</label>
-                          <input id="lng" class="form-control coordinates" type="text">
-                          <hr>
+                          <div id="coordinates-in-infobox">
+                            <label class="coordinates-label" for=lat>Latitude:</label>
+                            <label class="coordinates-label" for=lng>Longitude:</label>
+                            <button id='set-coordinates' class='btn btn-primary'>Set</button>
+                            <br/>
+                            <input id="lat" class="form-control coordinates" type="text">
+                            <input id="lng" class="form-control coordinates" type="text">
+                            <hr>
+                          </div>
   												<p class="period">Period:</p>
   												<span id="period-start"></span>
   												<p class="period">to</p>

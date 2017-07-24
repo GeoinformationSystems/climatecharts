@@ -1,13 +1,15 @@
-.coordinates-label
-{
-  display: inline-block;
-  width: 60px;
-  text-align: right;
-}
-
+.coordinates-label,
 .coordinates
 {
-  margin-left: 10px;
+  width: 80px;
   display: inline-block;
-  width: 140px;
+  text-align: left;
+  margin: 0 20px 0px 0px;
+}
+
+#set-coordinates
+{
+    position: absolute;
+    right: 10px;
+    margin-top: 20px;
 }

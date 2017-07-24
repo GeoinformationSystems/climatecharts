@@ -12,7 +12,6 @@
 //    -> The weatherstation is selected
 //    -> Given climate data for this station is loaded
 // - Receiving selection from the map and the info box
-// - Sending data of current location to the map and the climate visualizations
 // ############################################################################
 
 
@@ -35,20 +34,14 @@ class MapController
     // Member Variables
     // ------------------------------------------------------------------------
 
-    // Current mode: null, 'C' or 'S'
-    // Currently in location mode?
-    // User clicks on map -> climate data from cell
-    this._mode = null
-
     // Staus variable: currently an active weather station?
     this._stationJustActivated = false
 
-    // Coordinates of currently selected geographic entity
-    // -> either weather station or location marker
+    // Current Coordinates: object with 'lat' and 'lng' property
     this._coords =
     {
-      lat: null,
-      lng: null,
+      lat:  null,
+      lng:  null
     }
   }
 
@@ -79,7 +72,7 @@ class MapController
     else
       this._main.hub.onModeChange('C')
 
-    // Handle location
+    // Spread the world: new coordinates
     this._coords = this._bringCoordsInBounds(origCoords)
     this._main.hub.onLocationChange(this._coords)
   }
@@ -97,10 +90,10 @@ class MapController
 
 
   // ==========================================================================
-  // Getter
+  // Getter: Receive current coordinates from map
   // ==========================================================================
 
-  getLocation()
+  getCoordinates()
   {
     return this._coords
   }
@@ -111,8 +104,7 @@ class MapController
   // ##########################################################################
 
   // ==========================================================================
-  // Bring clicked coordinates of the user into the bounds of the
-  // geographic coordinate system (lat 90, lng 180)
+  // Bring coordinates into bounds of geographic coordinate system
   // ==========================================================================
 
   _bringCoordsInBounds(origCoords)
@@ -135,5 +127,6 @@ class MapController
 
     return(realCoords)
   }
+
 
 }
