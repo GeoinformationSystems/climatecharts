@@ -15,7 +15,12 @@ class AvailabilityChart extends Chart
 
   constructor(main, climateData)
   {
-    super(main, 'availability-chart', climateData)
+    // Error handling: Only show chart if either prec or temp are given
+    if (climateData.has_temp || climateData.has_prec)
+      super(main, 'availability-chart', climateData)
+
+    else
+      super(main, 'availability-chart', null)
   }
 
 
