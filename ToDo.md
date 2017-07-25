@@ -1,3 +1,9 @@
+TO DO:
+- Show user that data is loading (loading bar or so)
+- Update climate data (maybe even a script that automates that?)
+
+-------------------------------------------------------------------------------
+
 Hallo Pierre,
 
 vielen Dank für deine vielen Anmerkungen, Fehler und Wünsche. Ich hoffe, dass ich die meisten davon erfüllen kann. Bei manchen habe ich aber noch Fragen. Ich gehe mal Punkt für Punkt durch.
@@ -38,9 +44,21 @@ Ist eingebaut.
 Hier wollte ich einmal besonders schlau sein, war aber besonders doof: Ich wollte automatisch berechnen, in welchem Jahr des ausgewählten Zeitraums das erste und letzte Mal Daten vorliegen und so den ausgewählten Zeitraum anpassen. Das ist mir etwas misslungen. Außerdem habe ich festgestellt, dass das für den/die Nutzer/in recht unübersichtlich sein kann, wenn in der ausgewählten Periode etwas anderes steht als in den Diagrammtiteln und der Datenverfügbarkeitstabelle. Also habe ich jetzt den ganz naiven Ansatz wieder genommen: Für den Zeitraum, der in der Zeitleiste eingestellt ist, werden die Daten angezeigt - egal, ob welche da sind oder nicht. Ist das so in Ordnung? Wünschst du dir hierbei mehr?
 
 
-> 8) Das Umstellen der Rasterdatensätze geht heute Morgen eigentlich recht fix. Wäre es möglich dem Nutzer zu zeigen, dass ein neuer Datensatz geladen wird. Sanduhr oder was vergleichbares modernes
+> 8) Das Umstellen der Rasterdatensätze geht heute Morgen eigentlich recht fix. Wäre es möglich dem Nutzer zu zeigen, dass ein neuer Datensatz geladen wird. Sanduhr oder was vergleichbares modernes?
+
+Ja, das wäre es. Aber das schaffe ich heute nicht mehr. Ich versuche es morgen.
+
+
 > 9) Die Stationsdaten gehen derzeit nur bis Ende 2012. Ist das der aktuellste Datensatz?
+
+Stimmt nicht ganz, die Stationsdaten, z.B. von DD-Klotzsche, reichen momentan bis Ende 2014. Ich habe gerade mal im GHCN geschaut, dort dauert es immer eine Weile, bis neue Daten drin sind. Ich könnte, wenn du magst, die Daten mal aktualisieren. Das kann aber ein bisschen dauern, da ich das lange nicht mehr gemacht habe. Soll ich das mal in Angriff nehmen?
+
+
 > 10) Rasterdatensätze für 50.623/15.331 ... wenn ich vom Cru auf GHCN umstelle geht das schnell... stelle ich weiter auf Delaware um geht das auch noch recht fix... will ich dann zurück zu GHCN passiert nix mehr.
+
+Kann ich leider nicht reproduzieren.
+
+
 > 11) Niederschlagssummen und mittlere Temperaturen bitte nur mit einer Nachkommastelle.
 > Link der Datenquelle zeigt ins nichts!
 > 12) Station Legnica BArto: Wenn ich als Periode 1948.1982 angebe, werden mir Daten bis 1984 angezeigt. Irgendwas scheint zwischen dem Zeitbalken und der Anzeige in den Diagrammen noch nicht richtig zu funktionieren. Hier scheint aber auch keine Systematik erkennbar zu sein. Wichtig ist vor allem auch, dass sichergestellt ist, dass die Rechnungen die im Hintergrund erfolgen richtig sind und nicht nur das die Jahreszahlen die angezeigt werden, stimmen. Im Anhang ein Beispiel einer Station in London.

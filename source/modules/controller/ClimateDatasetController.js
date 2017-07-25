@@ -95,7 +95,7 @@ class ClimateDatasetController
     let timePeriod =
     [
       this._main.modules.timeController.getPeriodStart(),
-      this._main.modules.timeController.getPeriodEnd()+1,
+      this._main.modules.timeController.getPeriodEnd()+1, // TODO
     ]
 
     this._main.modules.serverInterface.requestClimateDataForCell(
@@ -114,8 +114,9 @@ class ClimateDatasetController
           let precData = this._gridDataToClimateData(precDataOrig)
 
           // Detect empty dataset: Is it an empty dataset?
-          if (tempData[0][0] == CLIMATE_DATASET_NULL_VALUE)
-            return this._main.modules.climateDataController.clear()
+          for (let nullValue of CLIMATE_DATASET_NULL_VALUES)
+            if (tempData[0][0] == nullValue)
+              return this._main.modules.climateDataController.clear()
 
           // Assemble name array
           let name = [

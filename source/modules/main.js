@@ -28,7 +28,11 @@ const CM_TO_MM =          10
 // Null value for data value in climate dataset
 // -> If this is the value of a temperature cell it means that for this cell
 // there is no data available
-const CLIMATE_DATASET_NULL_VALUE = 9.969209968386869E36
+const CLIMATE_DATASET_NULL_VALUES =
+  [
+    9.969209968386869E36,
+    -9.969209968386869e+36
+  ]
 
 // Range slider offset: How much does the range slider offset to the left and
 // right to fit on the current range?
