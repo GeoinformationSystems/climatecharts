@@ -29,8 +29,10 @@ class TimeController
     this._maxYear = main.config.time.maxYear
 
     // Selected time period of dataset
-    this._periodStart = main.config.time.periodEnd-main.config.time.periodLength
-    this._periodEnd =   main.config.time.periodEnd-1
+    this._periodStart = 1
+      + main.config.time.periodEnd
+      - main.config.time.periodLength
+    this._periodEnd =   main.config.time.periodEnd
 
 
     // ------------------------------------------------------------------------
@@ -53,10 +55,14 @@ class TimeController
     if (!this._main.modules.helpers.checkIfInt(year))
       return console.error("The given year is not an integer");
 
-    // Consistency check: min year < max year?
-    if (year > this._maxYear)
+    // Ensure that minYear <= maxYear
+    year = Math.min(year, this._maxYear)
 
+    // Set year
     this._minYear = year
+
+    // Adapt the period dates
+    this._clipPeriod()
 
     // Tell everyone
     this._main.hub.onMinMaxYearChange(this._minYear, this._maxYear)
@@ -67,8 +73,15 @@ class TimeController
     // Integrity check: really an integer?
     if (!this._main.modules.helpers.checkIfInt(year))
       return console.error("The given year is not an integer");
-    // - larger than min year?
+
+    // Ensure that minYear <= maxYear
+    year = Math.max(year, this._minYear)
+
+    // Set year
     this._maxYear = year
+
+    // Adapt the period dates
+    this._clipPeriod()
 
     // Tell everyone
     this._main.hub.onMinMaxYearChange(this._minYear, this._maxYear)
@@ -85,11 +98,16 @@ class TimeController
     if (minYear > maxYear)
       [minYear, maxYear] = swapValues([minYear, maxYear])
 
+    // Set years
     this._minYear = minYear
     this._maxYear = maxYear
 
-    // Update timeline
-    this._main.modules.timeline.updateMinMaxYear(this._minYear, this._maxYear)
+    // Adapt the period dates
+    this._clipPeriod()
+
+    // Tell everyone
+    this._main.hub.onMinMaxYearChange(this._minYear, this._maxYear)
+
   }
 
   getMinYear()
@@ -190,7 +208,7 @@ class TimeController
     }
     else
     {
-      this._periodEnd =   endYear-1
+      this._periodEnd =   endYear
       this._periodStart = endYear-length
     }
 
@@ -225,7 +243,7 @@ class TimeController
 
   getPeriodLength()
   {
-    return (this._periodEnd - this._periodStart)
+    return (this._periodEnd - this._periodStart + 1)
   }
 
 
@@ -233,4 +251,24 @@ class TimeController
   // PRIVATE MEMBERS
   // ##########################################################################
 
+  // Clip the period years to min / max years
+  _clipPeriod()
+  {
+    let dist = (this._periodEnd-this._periodStart)
+    let periodStart = Math.max(this._periodStart, this._minYear)
+    let periodEnd =   Math.min(this._periodEnd,   this._maxYear)
+
+    // Maintain period length
+    while ((periodEnd-periodStart) < dist)
+    {
+      if (periodEnd < this._maxYear)
+        periodEnd++
+      else if (periodStart > this._minYear)
+        periodStart--
+      else // There is no space to extend the period any more => keep it
+        break
+    }
+
+    this.setPeriod((periodEnd-periodStart), periodEnd)
+  }
 }

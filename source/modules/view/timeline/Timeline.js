@@ -29,7 +29,7 @@ class Timeline
     this._sliderDiv =       $('#slider')
     this._periodStartDiv =  $('#period-start')
     this._periodEndDiv =    $('#period-end')
-    this._clickedOnRange =  false
+
   }
 
 
@@ -83,7 +83,7 @@ class Timeline
             // Determine drag movement of range slider
             let xPos = null
             let leftRangePos = null
-            let rightRangePos = null
+            let yearDist = null
             let yearsPerPx = null
             let sliderHandles = $('.ui-slider-handle')
 
@@ -93,7 +93,9 @@ class Timeline
                 xPos = evt.clientX
                 yearsPerPx = (maxYear-minYear) / this._sliderDiv.width()
                 leftRangePos =  sliderHandles.first().position().left
-                rightRangePos = sliderHandles.last().position().left
+                yearDist = 1
+                  + this._sliderDiv.slider("values", 1)
+                  - this._sliderDiv.slider("values", 0)
               }
             )
 
@@ -119,16 +121,13 @@ class Timeline
                   rangeSlider.css('left', rangeSliderOldXPos+moveDistance)
 
                   // Apply move distance on actual slider
-                  let newLeftRangePos = leftRangePos+moveDistance
+                  let newLeftRangePos = leftRangePos + moveDistance
                   let leftRangeValue = Math.abs(
                     yearsPerPx*newLeftRangePos + minYear
                   )
                   this._sliderDiv.slider("values", 0, leftRangeValue)
 
-                  let newRightRangePos = rightRangePos+moveDistance
-                  let rightRangeValue = Math.abs(
-                    yearsPerPx*newRightRangePos + minYear
-                  )
+                  let rightRangeValue = leftRangeValue+yearDist
                   this._sliderDiv.slider("values", 1, rightRangeValue)
 
                   // Clip to min / max year
@@ -147,7 +146,6 @@ class Timeline
                   // Reset variable
                   xPos = newXPos
                   leftRangePos = newLeftRangePos
-                  rightRangePos = newRightRangePos
                 }
               }
             )
@@ -162,11 +160,12 @@ class Timeline
                 this._clickedOnRange = false
                 xPos = null
                 leftRangePos  = null
-                rightRangePos = null
+                yearDist = null
               }
             )
 
-            // Ensure that slider range has always the correct position
+
+            // Hack: Ensure that slider range has always the correct position
             setTimeout(this._updateRangeSliderPosition, 1000)
             setTimeout(this._updateRangeSliderPosition, 2000)
             setTimeout(this._updateRangeSliderPosition, 5000)
@@ -212,11 +211,10 @@ class Timeline
 
   _periodChanged()
   {
-    let periodStart = this._sliderDiv.slider("values", 0)
-    let periodEnd =   this._sliderDiv.slider("values", 1)
-    // Update controller
+    let leftYear = this._sliderDiv.slider("values", 0)
+    let rightYear = this._sliderDiv.slider("values", 1)
     this._main.modules.timeController.setPeriod(
-      (periodEnd-periodStart), periodEnd
+      (rightYear-leftYear), rightYear
     )
   }
 
@@ -231,12 +229,11 @@ class Timeline
     $('#range-slider').css(
       {
         'top':        rangeDiv.offset().top,
-        'left':       rangeDiv.offset().left + 5,
-        'width':      rangeDiv.width() - 10,
+        'left':       rangeDiv.offset().left + RANGE_SLIDER_OFFSET,
+        'width':      rangeDiv.width() - RANGE_SLIDER_OFFSET*2,
         'height':     rangeDiv.height(),
       }
     )
   }
-
 
 }

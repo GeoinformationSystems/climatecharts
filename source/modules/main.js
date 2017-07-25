@@ -30,6 +30,10 @@ const CM_TO_MM =          10
 // there is no data available
 const CLIMATE_DATASET_NULL_VALUE = 9.969209968386869E36
 
+// Range slider offset: How much does the range slider offset to the left and
+// right to fit on the current range?
+const RANGE_SLIDER_OFFSET = 5
+
 
 // ============================================================================
 // Database connection information
@@ -62,7 +66,6 @@ const ENDPOINTS =
 }
 
 
-
 // ##########################################################################
 // MAIN OBJECT
 // -> containing all configuration and modules !!!
@@ -79,9 +82,9 @@ main.config =
   time :
   {
     minYear:      1900,       // Minimum possible year of climate data
-    maxYear:      2010,       // Maximum possible year of climate data
+    maxYear:      2014,       // Maximum possible year of climate data
     periodLength: 30,         // Number of years in time period (default: 30)
-    periodEnd:    2000,       // Initial end year of the period
+    periodEnd:    2014,       // Initial end year of the period
   },
 
   map :
@@ -228,16 +231,16 @@ main.config =
         name:           'distribution-chart',
         margin:         // [px]
         {
-          left :      30,
-          top:        30,
-          right:      30,
-          bottom:     0,
+          left :        30,
+          top:          30,
+          right:        30,
+          bottom:       0,
         },
         style:
         {
-          boxOpacity: 0.7,  // For the boxplots
-          axesWidth:  2.0,  // [px]
-          gridWidth:  0.5,  // [px]
+          boxOpacity:   0.7,  // For the boxplots
+          axesWidth:    2.0,  // [px]
+          gridWidth:    0.5,  // [px]
         },
         minMaxStretchFactor: 0.1,   // How much to stretch min/max values
         subcharts:
@@ -461,6 +464,12 @@ main.hub.onLocationChange = (coords) =>
 // --------------------------------------------------------------------------
 // Time changes
 // --------------------------------------------------------------------------
+
+main.hub.onMinMaxYearChange = (min, max) =>
+  {
+    // Update timeline
+    main.modules.timeline.updateMinMaxYear(min, max)
+  }
 
 main.hub.onPeriodChange = (start, end) =>
   {
