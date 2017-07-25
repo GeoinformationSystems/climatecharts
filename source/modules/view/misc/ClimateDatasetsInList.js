@@ -23,7 +23,7 @@ class ClimateDatasetsInList
     // ------------------------------------------------------------------------
 
     this._datasetList = $('#datasets')
-    this._parentContainer = $('#datasets-in-list')
+    this._datasetsTitle = $('#datasets-title')
 
     this._isEnabled = true
 
@@ -48,10 +48,11 @@ class ClimateDatasetsInList
   // Enable / Disable list
   // ==========================================================================
 
+
   enable()
   {
     if (!this._isEnabled)
-      this._parentContainer.show()
+      this._datasetList.show()
 
     this._isEnabled = true
   }
@@ -59,9 +60,29 @@ class ClimateDatasetsInList
   disable()
   {
     if (this._isEnabled)
-      this._parentContainer.hide()
+      this._datasetList.hide()
 
     this._isEnabled = false
+  }
+
+
+  // ==========================================================================
+  // Set / Remove title for WeatherStations mode
+  // ==========================================================================
+
+  setStationsTitle()
+  {
+    let link = $('<a/>')
+    link.attr('href', 'http://' + this._main.config.station.sourceLink)
+    link.attr('target', '_blank')
+    link.text(this._main.config.station.sourceName)
+
+    this._datasetsTitle.html(link)
+  }
+
+  removeStationsTitle()
+  {
+    this._datasetsTitle.html("")
   }
 
 

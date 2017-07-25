@@ -205,7 +205,7 @@ class WeatherStationController
             climateData.temp, climateData.prec,   // Actual climate data
             [station.name, station.country],      // Meta data: location name
             station.location, station.elevation,  // Meta data: geo location
-            this._main.config.station.source      // Meta data: source
+            this._main.config.station.sourceLink  // Meta data: source
           )
         }
     )

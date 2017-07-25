@@ -323,7 +323,8 @@ main.config =
         fillColor:    '#2b83cb',
       },
     },
-    source:           "www.ncdc.noaa.gov/ghcnm/",
+    sourceName:       "Global Historical Climatology Network",
+    sourceLink:       "www.ncdc.noaa.gov/ghcnm/",
   }
 }
 
@@ -416,17 +417,19 @@ main.hub.onModeChange = (newMode) =>
       main.modules.weatherStationController.deselect()
     }
 
-    // New mode ClimateCell: enable climate datasets and coordinates
+    // New mode ClimateCell: restore climate datasets and coordinates
     if (newMode == 'C')
     {
       main.modules.climateDatasetsInList.enable()
+      main.modules.climateDatasetsInList.removeStationsTitle()
       main.modules.coordinatesInInfobox.enable()
     }
 
-    // New mode WeatherStation: disable climate datasets and coordinates
+    // New mode WeatherStation: set datasets title and disable coordinates
     if (newMode == 'S')
     {
       main.modules.climateDatasetsInList.disable()
+      main.modules.climateDatasetsInList.setStationsTitle()
       main.modules.coordinatesInInfobox.disable()
     }
 
