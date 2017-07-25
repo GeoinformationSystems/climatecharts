@@ -29,7 +29,15 @@ Möchtest du das wirklich so haben? Das würde bedeuten, dass bei jedem Klick in
 
 
 > 6 ) Das bei der Auswahl einer Station sich der rechte Frame ändert ist gut. Allerdings sollte sich in dem Frame auch der Titel der Datenquelle befinden (wie zum Beispiel auch beim CRU-Datensatz)
+
+Ist eingebaut.
+
+
 > 7) Wenn ich die Station in Koltzsche auswähle (1942-2013) wird ein Diagramm erzeugt von 1951-2021... incl. Einer Datenverfügbarkeitstabelle, die mir sagt, dass im November 2020 keine Niederschlagsdaten vorliegen werden. Wenn ich dann den Zeitbalken in der Mitte anfasse und verschiebe, werden plötzlich auch die Daten angezeigt, die der eingestellten Periode entsprechen. Dieser Effekt tritt nicht immer auf! Ich habe nicht rausbekommen woran das liegt. Anbei eine Screenshot für die Antarktisstation Molodeznaja (climatecharts_4.png). Es scheint so zu sein, wenn ich bei einer Station die vordere Grenze des Intervalls zeitlich ganz nach vorn verschiebe entsteht dieser Effekt.
+
+Das Problem hier ist die Zeitleiste. Felix Wiemann hat sich damals für eine Version entschieden, die für ein festes minimum / maximum gut funktioniert, aber wenn sich die Dimensionen ändern, funktioinert es nicht mehr so gut. Eigentlich müsste man sich hier eine komplett neue Zeitleiste bauen, die dynamisch funktioniert und z.B. auch anzeigt, in welchen Zeitraum welche Daten vorhanden sind. Da kann man sich schöne Sachen einfallen lassen. Leider wird das bis Freitag nichts ;-) Daher habe ich versucht, das Problem so gut es geht zu lösen und hoffe, dass es halbwegs gut funktioniert.
+
+
 > 8) Das Umstellen der Rasterdatensätze geht heute Morgen eigentlich recht fix. Wäre es möglich dem Nutzer zu zeigen, dass ein neuer Datensatz geladen wird. Sanduhr oder was vergleichbares modernes
 > 9) Die Stationsdaten gehen derzeit nur bis Ende 2012. Ist das der aktuellste Datensatz?
 > 10) Rasterdatensätze für 50.623/15.331 ... wenn ich vom Cru auf GHCN umstelle geht das schnell... stelle ich weiter auf Delaware um geht das auch noch recht fix... will ich dann zurück zu GHCN passiert nix mehr.

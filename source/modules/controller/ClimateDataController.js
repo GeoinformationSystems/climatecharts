@@ -517,6 +517,7 @@ class ClimateDataController
     // TODO: determine if there are data holes in between
     // -> set third return parameter like this
 
+/*  TODO: is this necessary?
     // Determine minYear
     // => Find earliest data entry in temperature and precipiation data
     for (var yearIdx = minYearIdx; yearIdx < maxYearIdx; yearIdx++)
@@ -563,7 +564,7 @@ class ClimateDataController
         break
       }
     }
-
+*/
     // set years
     this._climateData.years = [minYear, maxYear, null]
   }
