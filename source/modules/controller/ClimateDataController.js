@@ -38,8 +38,7 @@ class ClimateDataController
   {
     // Temoral Dimension
     this._startYear = this._main.modules.timeController.getPeriodStart()
-    this._endYear =   this._main.modules.timeController.getPeriodEnd()+1
-    // TODO: +1???
+    this._endYear =   this._main.modules.timeController.getPeriodEnd()
 
     // Fill climate data
     this._climateData = new ClimateData()

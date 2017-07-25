@@ -100,7 +100,7 @@ class Timeline
                 xPos = evt.clientX
                 yearsPerPx = (maxYear-minYear) / this._sliderDiv.width()
                 leftRangePos =  sliderHandles.first().position().left
-                yearDist = 1
+                yearDist = 0
                   + this._sliderDiv.slider("values", 1)
                   - this._sliderDiv.slider("values", 0)
               }
