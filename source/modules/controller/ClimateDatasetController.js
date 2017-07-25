@@ -95,9 +95,8 @@ class ClimateDatasetController
     let timePeriod =
     [
       this._main.modules.timeController.getPeriodStart(),
-      this._main.modules.timeController.getPeriodEnd(),
+      this._main.modules.timeController.getPeriodEnd()+1,
     ]
-    console.log(timePeriod);
 
     this._main.modules.serverInterface.requestClimateDataForCell(
       this._selectedDataset.urlDatasets,

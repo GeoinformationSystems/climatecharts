@@ -98,7 +98,7 @@ class ClimateCellOnMap
     // i.e. the map does not contain the full extent of the cell
     // => move the map so the cell is completely visible
     if (!mapBounds.contains(cellBounds))
-      this._map.fitBounds(coords)
+      this._map.fitBounds(cellBounds)
 
     // TODO: make it sophisticated: distinguish between fitBounds and panTo
 

@@ -198,7 +198,7 @@ class WeatherStationController
     this._main.modules.serverInterface.requestDataForWeatherStation(
       station.id,
       this._main.modules.timeController.getPeriodStart(),
-      this._main.modules.timeController.getPeriodEnd(),
+      this._main.modules.timeController.getPeriodEnd()+1,
       (climateData) =>
         {
           this._main.modules.climateDataController.update(
