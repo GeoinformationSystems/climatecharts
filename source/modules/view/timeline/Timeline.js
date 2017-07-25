@@ -92,6 +92,8 @@ class Timeline
             let yearsPerPx = null
             let sliderHandles = $('.ui-slider-handle')
 
+            this._updateRangeSliderPosition()
+
             rangeSlider.on('mousedown touchstart', (evt) =>
               {
                 this._clickedOnRange = true
