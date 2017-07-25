@@ -30,6 +30,8 @@ class Timeline
     this._periodStartDiv =  $('#period-start')
     this._periodEndDiv =    $('#period-end')
 
+    this._minYear = null
+    this._maxYear = null
   }
 
 
@@ -39,6 +41,9 @@ class Timeline
 
   init(minYear, maxYear, periodStart, periodEnd)
   {
+    this._minYear = minYear
+    this._maxYear = maxYear
+
     // ------------------------------------------------------------------------
     // Event Handling
     // ------------------------------------------------------------------------
@@ -188,12 +193,19 @@ class Timeline
 
   updatePeriod(start, end)
   {
+    // Clip to min/max year
+    start = Math.max(start, this._minYear)
+    start = Math.min(start, this._maxYear)
+    end =   Math.max(end, this._minYear)
+    end =   Math.min(end, this._maxYear)
     this._periodStartDiv.html(start)
     this._periodEndDiv.html(end)
   }
 
   updateMinMaxYear(min, max)
   {
+    this._minYear = min
+    this._maxYear = max
     this._sliderDiv.slider("option", "min", min)
     this._sliderDiv.slider("option", "max", max)
   }

@@ -4,10 +4,30 @@ vielen Dank für deine vielen Anmerkungen, Fehler und Wünsche. Ich hoffe, dass 
 
 
 > 1) Wenn man bei den Rasterdatensätzen zum Beispiel 1970-1999 (30 Jahre) als Zeitraum eingibt, geht die Datenverfügbarkeitstabelle nur bis 1998.
+
+Fehler gefunden und behoben!
+
+
 > 2) Das gleiche gilt für die Überschriften in den Diagrammen. Es stellt sich die Frage welche/wieviele Werte werden dann im Hintergrund zum Rechnen genutzt? Durch wieviel Jahre teilst du bei der Bildung der Mittelwerte?
+
+Es ist ein normales Problem in der Informatik: Nimmt man das letzte Jahr mit in die Rechnung rein oder nicht? Am Ende war es im Quellcode dreimal ein "+1", was die Lösung des Problems war. Ich hoffe, dass jetzt nicht nur die Daten in der Datenverfügbarkeitstabelle und in den Überschriften stimmen, sondern auch die Berechnungen. Kannst du vielleicht mal drei, vier Stichproben bei Klimazellen und bei Wetterstationen ziehen und schauen, ob das rechnerisch richtig ist? Bei mir sieht es so aus, aber es kann sein, dass ich mich vertan habe.
+
+
 > 3) Beim Laden der Seite ist der Timeslider bei 1970-1999... bitte "schiebe" den ganz nach rechts auf den jeweils aktuellsten Teil des Datensatzes.
+
+Erledigt.
+
+
 > 4) wenn ich für einen beliebigen Ort in der Mitte des Timesliders anfasse und an verschiedene Stellen verschiebe, würde ich erwarten, dass das Zeitintervall konstant bleibt... macht es aber nicht! Mit jeder Verschiebung wird das Intervall kleiner
+
+Fehler behoben.
+
+
 > 5) Gab es nicht schonmal eine Funktionalität die automatisch in die Karte gezoomt hat, wenn ich in einem sehr kleinen Maßstab einen Punkt gesetzt habe. Im umgedrehten Fall... wenn der Maßstab sehr groß ist funktioniert das ja schon.
+
+Möchtest du das wirklich so haben? Das würde bedeuten, dass bei jedem Klick in die Karte die aktuelle Klimazelle vergrößert dargestellt wird. Wenn du hin und her klicken möchtest, müsstest du vorher immer noch herauszoomen. Wenn das das gewünscht Verhalten ist, kann ich das gern so einbauen, aber ich bin diesbezüglich etwas unsicher. Wenn ich Donnerstag oder Freitag wieder da bin, können wir uns das ja mal gemeinsam anschauen.
+
+
 > 6 ) Das bei der Auswahl einer Station sich der rechte Frame ändert ist gut. Allerdings sollte sich in dem Frame auch der Titel der Datenquelle befinden (wie zum Beispiel auch beim CRU-Datensatz)
 > 7) Wenn ich die Station in Koltzsche auswähle (1942-2013) wird ein Diagramm erzeugt von 1951-2021... incl. Einer Datenverfügbarkeitstabelle, die mir sagt, dass im November 2020 keine Niederschlagsdaten vorliegen werden. Wenn ich dann den Zeitbalken in der Mitte anfasse und verschiebe, werden plötzlich auch die Daten angezeigt, die der eingestellten Periode entsprechen. Dieser Effekt tritt nicht immer auf! Ich habe nicht rausbekommen woran das liegt. Anbei eine Screenshot für die Antarktisstation Molodeznaja (climatecharts_4.png). Es scheint so zu sein, wenn ich bei einer Station die vordere Grenze des Intervalls zeitlich ganz nach vorn verschiebe entsteht dieser Effekt.
 > 8) Das Umstellen der Rasterdatensätze geht heute Morgen eigentlich recht fix. Wäre es möglich dem Nutzer zu zeigen, dass ein neuer Datensatz geladen wird. Sanduhr oder was vergleichbares modernes
