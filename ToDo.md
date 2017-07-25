@@ -56,10 +56,14 @@ Stimmt nicht ganz, die Stationsdaten, z.B. von DD-Klotzsche, reichen momentan bi
 
 > 10) Rasterdatensätze für 50.623/15.331 ... wenn ich vom Cru auf GHCN umstelle geht das schnell... stelle ich weiter auf Delaware um geht das auch noch recht fix... will ich dann zurück zu GHCN passiert nix mehr.
 
-Kann ich leider nicht reproduzieren.
+Kann ich leider nicht reproduzieren. Bei mir funktioniert es. Ich weiß leider nicht, woran es liegt, aber ich habe das Gefühl. hier ganz tief in die Serverkomponenten reinbohren zu müssen, um zu verstehen, warum es manchmal lange dauert und manchmal nicht. Das wird bis Freitag aber auch eng.
 
 
 > 11) Niederschlagssummen und mittlere Temperaturen bitte nur mit einer Nachkommastelle.
+
+Erledigt.
+
+
 > Link der Datenquelle zeigt ins nichts!
 > 12) Station Legnica BArto: Wenn ich als Periode 1948.1982 angebe, werden mir Daten bis 1984 angezeigt. Irgendwas scheint zwischen dem Zeitbalken und der Anzeige in den Diagrammen noch nicht richtig zu funktionieren. Hier scheint aber auch keine Systematik erkennbar zu sein. Wichtig ist vor allem auch, dass sichergestellt ist, dass die Rechnungen die im Hintergrund erfolgen richtig sind und nicht nur das die Jahreszahlen die angezeigt werden, stimmen. Im Anhang ein Beispiel einer Station in London.
 > 13) Überschriften (Orte) in den Boxplots/Datentabelle fehlen (bei Rasterdaten) --> das Problem tritt aber nicht immer auf. Am Gazetteer kann es eigentlich nicht liegen, da der Ort im Klimadiagramm angezeigt wurde

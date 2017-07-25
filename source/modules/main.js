@@ -298,7 +298,7 @@ main.config =
 
   climateData:
   {
-    decimalPlaces: 2,     // Decimal precision for both temp / prec
+    decimalPlaces: 1,     // Decimal precision for both temp / prec
   },
 
   // Weather stations (marker: circle)
