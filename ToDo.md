@@ -74,7 +74,11 @@ Ich habe den Link an sich funktionstüchtig gemacht. Leider zeigt er bei zwei de
 Müsste jetzt hinhauen.
 
 
-> 13) Überschriften (Orte) in den Boxplots/Datentabelle fehlen (bei Rasterdaten) --> das Problem tritt aber nicht immer auf. Am Gazetteer kann es eigentlich nicht liegen, da der Ort im Klimadiagramm angezeigt wurde
+> 13) Überschriften (Orte) in den Boxplots/Datentabelle fehlen (bei Rasterdaten) --> das Problem tritt aber nicht immer auf. Am Gazetteer kann es eigentlich nicht liegen, da der Ort im Klimadiagramm angezeigt wurde.
+
+Den Fehler kann ich auch nicht reproduzieren. Ich habe es mit zehn Wetterstationen und jeweils fünf zufälligen Klimazellen in allen drei Datensätzen ausprobiert und die Titel waren immer in allen drei Diagrammen gleich. Kannst du beobachten, wann das passiert?
+
+
 > 14) Datenverfügbarkeitstabelle bräuchte noch eine Überschrift (Availability of Data ???) und evtl ganz unten eine Legende (Temperature Available / Precepitation Available / Not Available)
 > 15) lässt es sich noch irgendwie einrichten, dass die Diagramme zum download zur Verfügung stehen. Als einfache Rasterdaten.
 > 16) Die beiden Menüs Dataset und About sind nicht verfügbar.
