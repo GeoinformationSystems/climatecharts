@@ -93,6 +93,10 @@ Theoretisch ja, praktisch bin ich nicht sicher, ob ich das bis Freitag noch scha
 
 
 > 16) Die beiden Menüs Dataset und About sind nicht verfügbar.
+
+Stimmt, da habe ich vom alten Quellkode zu viel aufgeräumt ;-) Geht jetzt wieder.
+
+
 > 17) In der derzeitigen online-Version findet sich rechts immer noch ein frame der kurz auf den jeweils ausgewählten Datensatz hinweist. Das finde ich eigentlich ganz gut und würde es gern beibehalten
 > 18) im Norden von Russland gibt es Orte (climatecharts_3.png) die haben Nordkoordinaten von >90°   ---> sowas gibt’s nicht. Wenn ich das gleiche im Norden Nordamerikas mache, bekomm ich eine Angabe von -73°S ?!?! (climatecharts_5.png) Außerdem ist das Koordinatenpaar verdreht. Erst N/S dann E/W. Ich vermute, dass hier auch der Fehler liegt. Ich vermute es soll -73°E sein, was aber eigentlich 73°W sind.
 >
