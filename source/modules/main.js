@@ -475,7 +475,9 @@ main.hub.onLocationChange = (coords) =>
 main.hub.onMinMaxYearChange = (min, max) =>
   {
     // Update timeline
-    main.modules.timeline.updateMinMaxYear(min, max)
+    let start = main.modules.timeController.getPeriodStart()
+    let end = main.modules.timeController.getPeriodEnd()
+    main.modules.timeline.update(min, max, start, end)
   }
 
 main.hub.onPeriodChange = (start, end) =>

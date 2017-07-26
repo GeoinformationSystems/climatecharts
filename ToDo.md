@@ -65,7 +65,15 @@ Erledigt.
 
 
 > Link der Datenquelle zeigt ins nichts!
+
+Ich habe den Link an sich funktionstüchtig gemacht. Leider zeigt er bei zwei der drei Datenquellen ins Leere:. Wenn man auf den Link im Fuße des Diagramms klickt, kommt man an die Stelle, die der Datenanbieter möchte. Aber die ist leider nicht da... Dafür kann ich aber nichts. Wie ist das jetzt? Sind wir jetzt fein raus?
+
+
 > 12) Station Legnica BArto: Wenn ich als Periode 1948.1982 angebe, werden mir Daten bis 1984 angezeigt. Irgendwas scheint zwischen dem Zeitbalken und der Anzeige in den Diagrammen noch nicht richtig zu funktionieren. Hier scheint aber auch keine Systematik erkennbar zu sein. Wichtig ist vor allem auch, dass sichergestellt ist, dass die Rechnungen die im Hintergrund erfolgen richtig sind und nicht nur das die Jahreszahlen die angezeigt werden, stimmen. Im Anhang ein Beispiel einer Station in London.
+
+Müsste jetzt hinhauen.
+
+
 > 13) Überschriften (Orte) in den Boxplots/Datentabelle fehlen (bei Rasterdaten) --> das Problem tritt aber nicht immer auf. Am Gazetteer kann es eigentlich nicht liegen, da der Ort im Klimadiagramm angezeigt wurde
 > 14) Datenverfügbarkeitstabelle bräuchte noch eine Überschrift (Availability of Data ???) und evtl ganz unten eine Legende (Temperature Available / Precepitation Available / Not Available)
 > 15) lässt es sich noch irgendwie einrichten, dass die Diagramme zum download zur Verfügung stehen. Als einfache Rasterdaten.

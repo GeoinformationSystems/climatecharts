@@ -82,8 +82,8 @@ class Timeline
             // There is no simple way to stop the current slider
             // implementation from working with their event handlers
             // => Create own invisible bar above that can be changed
-            let rangeSlider = $("<div id='range-slider'></div>")
-            $("body").append(rangeSlider)
+            this._rangeSlider = $("<div id='range-slider'></div>")
+            $("body").append(this._rangeSlider)
 
             // Determine drag movement of range slider
             let xPos = null
@@ -94,7 +94,7 @@ class Timeline
 
             this._updateRangeSliderPosition()
 
-            rangeSlider.on('mousedown touchstart', (evt) =>
+            this._rangeSlider.on('mousedown touchstart', (evt) =>
               {
                 this._clickedOnRange = true
                 xPos = evt.clientX
@@ -124,8 +124,10 @@ class Timeline
                   let moveDistance = newXPos-xPos
 
                   // Apply move distance on range slider
-                  let rangeSliderOldXPos = rangeSlider.position().left
-                  rangeSlider.css('left', rangeSliderOldXPos+moveDistance)
+                  let rangeSliderOldXPos = this._rangeSlider.position().left
+                  this._rangeSlider.css('left',
+                    rangeSliderOldXPos + moveDistance
+                  )
 
                   // Apply move distance on actual slider
                   let newLeftRangePos = leftRangePos + moveDistance
@@ -212,6 +214,20 @@ class Timeline
     this._sliderDiv.slider("option", "max", max)
   }
 
+
+  // ==========================================================================
+  // Reinit the whole timeline
+  // ==========================================================================
+
+  update(minYear, maxYear, periodStart, periodEnd)
+  {
+    // Ceanup
+    this._sliderDiv.slider("destroy")
+    this._rangeSlider.remove()
+
+    // Init again
+    this.init(minYear, maxYear, periodStart, periodEnd)
+  }
 
 
   // ##########################################################################

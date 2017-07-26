@@ -262,9 +262,12 @@ class Chart
       .style('cursor', 'pointer')
       .style('font-size', this._chartsMain.fontSizes.small + 'em')
       .style('opacity', this._chartsMain.footerOpacity)
-      // .attr('link' + this._climateData.source_link)
       .text('Data Source: ' + this._climateData.source)
-      .on('click', () => { window.open(this.link) })
+      .on('click', () =>
+        {
+          window.open(this._climateData.source_link)
+        }
+      )
 
     // Footer: Reference URL
     this._footerElems[1] = this._chart.append('text')
