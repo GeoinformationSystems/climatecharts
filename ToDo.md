@@ -103,8 +103,11 @@ In Ordnung, ist wieder eingebaut. Ich habe auch eine Infobox für die Wetterstat
 
 
 > 18) im Norden von Russland gibt es Orte (climatecharts_3.png) die haben Nordkoordinaten von >90°   ---> sowas gibt’s nicht. Wenn ich das gleiche im Norden Nordamerikas mache, bekomm ich eine Angabe von -73°S ?!?! (climatecharts_5.png) Außerdem ist das Koordinatenpaar verdreht. Erst N/S dann E/W. Ich vermute, dass hier auch der Fehler liegt. Ich vermute es soll -73°E sein, was aber eigentlich 73°W sind.
->
-> Soweit erstmal...
->
-> Grüße
-> Pierre
+
+Der übliche Fehler. Schon 100 Mal passiert, dass man lat und lng vertauscht, weil es nirgendwo eine feste Definition gibt, was zuerst kommt. Das ist extrem ärgerlich und auch schweirig zu finden. Aber ich habe die Stlle im Code gefunden, an der es verdreht war ;-)
+
+
+Ich bin morgen wieder im Büro, dann können wir ja noch einmal drüber sprechen, was ich bis Freitagmittag noch fertig machen soll, bevor ich die Doku schreibe und ClimateCharts abgebe.
+
+Liebe Grüße
+Marcus
