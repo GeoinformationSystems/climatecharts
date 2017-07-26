@@ -79,14 +79,12 @@ class ClimateDatasetController
 
 
   // ==========================================================================
-  // Update metadata for existing dataset
+  // Restore climate dataset -> select current dataset again
   // ==========================================================================
 
-  updateMetadata()
+  restore()
   {
-    this._main.modules.timeController.setMinMaxYear(
-      this._selectedDataset.timePeriod[0], this._selectedDataset.timePeriod[1]
-    )
+    this.select(this._selectedDataset)
   }
 
 
