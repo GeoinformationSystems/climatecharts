@@ -265,9 +265,9 @@ class DistributionChart extends Chart
         this._chartMain.subcharts[datatypeIdx].maxRange
       )
       while (maxRange[0] > vizMin)
-        maxRange[0] *= 2
+        maxRange[0] += this._chartMain.subcharts[datatypeIdx].maxRange[0]
       while (maxRange[1] < vizMax)
-        maxRange[1] *= 2
+        maxRange[1] += this._chartMain.subcharts[datatypeIdx].maxRange[1]
 
       // Manipulation: extend min and max values to make the chart look better
       let stretch = (vizMax - vizMin) * this._chartMain.minMaxStretchFactor

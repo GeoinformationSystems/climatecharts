@@ -61,18 +61,16 @@ class MapController
   {
     // Handle mode
     // If user has clicked on weather station
+    // => Do not enter into ClimateCell mode
     if (this._stationJustActivated)
-    {
-      this._main.hub.onModeChange('S')
-      // Reset variable for next click on station
       this._stationJustActivated = false
-    }
 
-    // If user has clicked on map, setup marker and cell
+    // If user has clicked on map
+    // => enter ClimateCell mode => setup marker and cell
     else
       this._main.hub.onModeChange('C')
 
-    // Spread the world: new coordinates
+    // Tell everyone: new coordinates
     this._coords = this._bringCoordsInBounds(origCoords)
     this._main.hub.onLocationChange(this._coords)
   }

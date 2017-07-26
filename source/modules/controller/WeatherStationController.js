@@ -53,6 +53,8 @@ class WeatherStationController
 
     // Controller
     this._selectedStation = station
+
+    this._main.hub.onModeChange('S')
     this._main.hub.onStationChange(station)
   }
 
