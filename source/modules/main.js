@@ -541,3 +541,18 @@ main.hub.onDiagramTitleChange = (title) =>
     // Update user defined title
     main.modules.chartTitleSetter.update(title)
   }
+
+
+// ############################################################################
+// Relicts from old website
+// ############################################################################
+
+// Switch between "Home", "Datasets & Software" and "About" tab.
+$(".tab-links a").click( (e) =>
+  {
+    let currentAttrValue = $(this).attr('href')
+    $('.tabs ' + currentAttrValue).show().siblings().hide()
+    $(this).parent('li').addClass('active').siblings().removeClass('active')
+    e.preventDefault()
+  }
+)
