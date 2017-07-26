@@ -53,6 +53,7 @@ class WeatherStationController
 
     // Controller
     this._selectedStation = station
+    this._main.hub.onModeChange('S')
     this._main.modules.mapController.clickedOnStation()
     this._main.modules.timeController.setMinMaxYear(
       station.min_year, station.max_year
