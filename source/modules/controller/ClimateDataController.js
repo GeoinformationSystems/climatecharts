@@ -326,7 +326,7 @@ class ClimateDataController
     let precSummer = []
     let precWinter = []
 
-    if (hemisphere == 'N')
+    if (hemisphere == LAT_HEMISPHERE[1])
     {
       for (var monthIdx=0; monthIdx<MONTHS_IN_YEAR.length; monthIdx++)
       {
@@ -336,7 +336,7 @@ class ClimateDataController
           precWinter.push(monthlyData[monthIdx].prec)
       }
     }
-    else if (hemisphere == 'S')
+    else if (hemisphere == LAT_HEMISPHERE[0])
     {
       for (var monthIdx=0; monthIdx<MONTHS_IN_YEAR.length; monthIdx++)
       {
