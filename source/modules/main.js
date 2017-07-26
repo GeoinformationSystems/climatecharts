@@ -548,7 +548,7 @@ main.hub.onDiagramTitleChange = (title) =>
 // ############################################################################
 
 // Switch between "Home", "Datasets & Software" and "About" tab.
-$(".tab-links a").click( (e) =>
+$(".tab-links a").click( function (e)
   {
     let currentAttrValue = $(this).attr('href')
     $('.tabs ' + currentAttrValue).show().siblings().hide()
