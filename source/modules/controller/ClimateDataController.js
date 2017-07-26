@@ -635,10 +635,8 @@ class ClimateDataController
 
   _calcHemisphere(coords)
   {
-    if (coords.lat >= 0)
-      this._climateData.hemisphere = "N"
-    else
-      this._climateData.hemisphere = "S"
+    this._climateData.hemisphere =
+      LAT_HEMISPHERE[(coords.lat/Math.abs(coords.lat)+1)/2]
   }
 
 
