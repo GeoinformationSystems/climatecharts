@@ -165,7 +165,7 @@ main.config =
       perhumid:       d3.rgb(4,  61, 183),
       grid:           d3.rgb(211,211,211),
       axes:           d3.rgb(255,255,255),
-      notAvailable:   d3.rgb(240,240,240),
+      noData:         d3.rgb(240,240,240),
     },
     footerOpacity:    0.4,
     charts:
@@ -274,24 +274,33 @@ main.config =
         margin:         // [px]
         {
           left:         50,
-          top:          30,
+          top:          50,
           right:        20,
           bottom:       0,
         },
         style:
         {
-          gridWidth:        1,
+          gridWidth:        1,    // Width of stroke of square
           squareWidth:      25,   // Dimension of cell sqares
           rowHeadWidth:     20,   // Width of row "heading" (year number)
           colHeadHeight:    12,   // Height of col heading (month / value)
+          titleMargin:      45,   // Margin-bottom for title of the chart
+          legendEntryMargin:3,    // Margin-top for entry in legend
           cellOpacity:      0.5,  // Opacity value for colored cells
           emphResizeFactor: 1.7,  // OnHover on cell, resize to
         },
         headings:
         {
+          title:        "Availability of Climate Data",
           temp:         "Temp",
           prec:         "Prec",
-        }
+        },
+        legend:
+        {
+          temp:         "Temperature data available",
+          prec:         "Precipitation data available",
+          noData:       "No data available",
+        },
       },
     ],
   },

@@ -199,7 +199,6 @@ class WeatherStationController
 
   _loadDataForStation(station)
   {
-    console.log(station.min_year, station.max_year);
     this._main.modules.serverInterface.requestDataForWeatherStation(
       station.id,
       station.min_year,

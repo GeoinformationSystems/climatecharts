@@ -114,7 +114,7 @@ class AvailabilityChart extends Chart
         // -> If not: color as 'not availble'
         let tempColor = this._chartsMain.colors.temp
         if (!this._main.modules.helpers.checkIfNumber(tempValue))
-          tempColor = this._chartsMain.colors.notAvailable
+          tempColor = this._chartsMain.colors.noData
 
         // Add new grid data
         gridData[yearIdx].push(
@@ -134,7 +134,7 @@ class AvailabilityChart extends Chart
         let precValue = this._climateData.prec[monthIdx].raw_data[yearIdx]
         let precColor = this._chartsMain.colors.prec
         if (!this._main.modules.helpers.checkIfNumber(precValue))
-          precColor = this._chartsMain.colors.notAvailable
+          precColor = this._chartsMain.colors.noData
 
         gridData[yearIdx].push(
           {
@@ -195,7 +195,7 @@ class AvailabilityChart extends Chart
           inCellOverlay = true
 
           // Error handling: If no data value, no hover effect
-          if (d.color == this._chartsMain.colors.notAvailable) return
+          if (d.color == this._chartsMain.colors.noData) return
 
           // Create overlay rectangle on top of the old one
           this._chart.append('rect')
@@ -206,7 +206,7 @@ class AvailabilityChart extends Chart
             .attr('height',         newWidth)
             .style('fill',          d.color)
             .style('opacity',       1)
-            .style('stroke',        'white')
+            .style('stroke',        this._chartsMain.colors.grid)
             .style('stroke-width',  this._chartMain.style.gridWidth + ' px')
 
             // Interaction: on leave, remove both overlay and text
@@ -225,13 +225,68 @@ class AvailabilityChart extends Chart
             .attr('y',            d.y + this._chartsMain.padding)
             .attr('text-anchor',  'middle')
             .attr('fill',        'white')
-            .text(d.value)
+            .text(this._main.modules.helpers.roundToDecimalPlace(
+                d.value, this._main.config.climateData.decimalPlaces
+              )
+            )
 
         }
       )
 
     // Add height: (final y pos - start y pos - start height)
     this._resizeChartHeight(yPos - startYPos - this._chartPos.height)
+
+
+    // ------------------------------------------------------------------------
+    // Title
+    // ------------------------------------------------------------------------
+
+    this._chart.append('text')
+      .attr('text-anchor', 'middle')
+      .attr('font-size', (this._chartsMain.fontSizes.title + 'em'))
+      .attr('x', (this._mainPos.width/2))
+      .attr('y', 0
+        + this._chartPos.top
+        - this._chartMain.style.titleMargin
+      )
+      .text(this._chartMain.headings.title)
+
+
+    // ------------------------------------------------------------------------
+    // Legend
+    // ------------------------------------------------------------------------
+
+    // Legend entry names (chartMain) must ailgn with color names (chartsMain)
+    for (let legendEntryName of Object.keys(this._chartMain.legend))
+    {
+      this._resizeChartHeight(this._chartMain.style.squareWidth)
+
+      this._chart.append('rect')
+        .attr('class',          'ac-legend-cell')
+        .attr('x',              this._chartPos.left)
+        .attr('y',              this._chartPos.bottom)
+        .attr('width',          this._chartMain.style.squareWidth)
+        .attr('height',         this._chartMain.style.squareWidth)
+        .style('fill',          this._chartsMain.colors[legendEntryName])
+        .style('opacity',       this._chartMain.style.cellOpacity)
+        .style('stroke',        this._chartsMain.colors.grid)
+        .style('stroke-width',  this._chartMain.style.gridWidth + ' px')
+
+      this._chart.append('text')
+        .attr('text-anchor', 'start')
+        .attr('font-size', (this._chartsMain.fontSizes.normal + 'em'))
+        .attr('x', 0
+          + this._chartPos.left
+          + this._chartMain.style.squareWidth
+          + this._chartsMain.padding
+        )
+        .attr('y', 0
+          + this._chartPos.bottom
+          + (this._chartMain.style.squareWidth/2)
+          + this._chartMain.style.legendEntryMargin
+        )
+        .text(this._chartMain.legend[legendEntryName])
+    }
 
 
     // ------------------------------------------------------------------------
@@ -262,7 +317,7 @@ class AvailabilityChart extends Chart
     }
 
 
-    // make column headings:
+    // Make column headings:
     // 1) year (12) 2) data type prec/temp (12*2=24)
     //   Jan     Feb     Mar    ...
     //  T   P   T   P   T   P   ...
