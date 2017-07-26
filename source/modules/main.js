@@ -13,6 +13,10 @@
 const LAT_EXTENT = 90
 const LNG_EXTENT = 180
 
+// Hemispheres for lat and lng (1st entry: coord < 0, 2nd entry: coord > 0)
+const LAT_HEMISPHERE = ["S", "N"]
+const LNG_HEMISPHERE = ["W", "E"]
+
 // Months
 const MONTHS_IN_YEAR =
 [

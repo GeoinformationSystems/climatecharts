@@ -94,7 +94,7 @@ class Helpers
   // Decimal Degree (dd.ddd "N|S") -> Degree Minute Second (dd°mm'ss" "N|S")
   // ==========================================================================
 
-  convertDDtoDMS(dd, charAboveNull, charBelowNull)
+  convertDDtoDMS(dd, charsHemisphere)
   {
     let deg = Math.floor(dd)
     let minFloat = (dd-deg)*60
@@ -113,7 +113,7 @@ class Helpers
       min=0
     }
     // Character showing the orientation in cardinal direction
-    let char = dd<0 ? charBelowNull : charAboveNull
+    let char = dd<0 ? charsHemisphere[0] : charsHemisphere[1]
     return deg + "°" + min + "'" + sec + '"' + char
   }
 

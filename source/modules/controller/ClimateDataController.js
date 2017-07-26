@@ -604,19 +604,24 @@ class ClimateDataController
         this._main.config.coordinates.decimalPlaces
       )
     )
-    lat = (lat>=0) ? lat+"E" : lat+"W"
+    // map coord < 0 -> 0 and coord >= 0 -> 1
+    lat = Math.abs(lat) + LAT_HEMISPHERE[(lat/Math.abs(lat)+1)/2]
     let lng = new String(
       this._main.modules.helpers.roundToDecimalPlace(
         coords.lng,
         this._main.config.coordinates.decimalPlaces
       )
     )
-    lng = (lng>=0) ? lng+"N" : lng+"S"
+    lng = Math.abs(lng) + LNG_HEMISPHERE[(lng/Math.abs(lng)+1)/2]
     this._climateData.location.DD = (lat + ", " + lng)
 
     // Coords to DMS
-    let ns = this._main.modules.helpers.convertDDtoDMS(coords.lat, "N", "S")
-    let ew = this._main.modules.helpers.convertDDtoDMS(coords.lng, "E", "W")
+    let ns = this._main.modules.helpers.convertDDtoDMS(
+      coords.lat, LAT_HEMISPHERE
+    )
+    let ew = this._main.modules.helpers.convertDDtoDMS(
+      coords.lng, LNG_HEMISPHERE
+    )
     this._climateData.location.DMS = ("Position: " + ns + " " + ew)
 
   }

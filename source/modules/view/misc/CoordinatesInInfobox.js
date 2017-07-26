@@ -73,7 +73,11 @@ class CoordinatesInInfobox
   enable()
   {
     if (!this._isEnabled)
+    {
       this._setButton.show()
+      this._latDiv.removeAttr('disabled')
+      this._lngDiv.removeAttr('disabled')
+    }
 
     this._isEnabled = true
   }
@@ -81,7 +85,11 @@ class CoordinatesInInfobox
   disable()
   {
     if (this._isEnabled)
+    {
       this._setButton.hide()
+      this._latDiv.attr('disabled', 'disabled');
+      this._lngDiv.attr('disabled', 'disabled');
+    }
 
     this._isEnabled = false
   }
