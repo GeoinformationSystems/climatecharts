@@ -79,6 +79,18 @@ class ClimateDatasetController
 
 
   // ==========================================================================
+  // Update metadata for existing dataset
+  // ==========================================================================
+
+  updateMetadata()
+  {
+    this._main.modules.timeController.setMinMaxYear(
+      this._selectedDataset.timePeriod[0], this._selectedDataset.timePeriod[1]
+    )
+  }
+
+
+  // ==========================================================================
   // Load climate data for one raster cell
   // ==========================================================================
 
