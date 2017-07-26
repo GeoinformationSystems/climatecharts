@@ -54,6 +54,9 @@ class WeatherStationController
     // Controller
     this._selectedStation = station
     this._main.modules.mapController.clickedOnStation()
+    this._main.modules.timeController.setMinMaxYear(
+      station.min_year, station.max_year
+    )
   }
 
   deselect()
@@ -195,10 +198,11 @@ class WeatherStationController
 
   _loadDataForStation(station)
   {
+    console.log(station.min_year, station.max_year);
     this._main.modules.serverInterface.requestDataForWeatherStation(
       station.id,
-      this._main.modules.timeController.getPeriodStart(),
-      this._main.modules.timeController.getPeriodEnd()+1,
+      station.min_year,
+      station.max_year,
       (climateData) =>
         {
           this._main.modules.climateDataController.update(
