@@ -310,6 +310,18 @@ main.config =
     decimalPlaces: 1,     // Decimal precision for both temp / prec
   },
 
+  datasetsInfobox:
+  {
+    ref:            "Data Reference",
+    metadata:       "Metadata",
+    resolution:     "Spatial Resolution",
+    time:           "Temporal Coverage",
+    station:        "Weather Station",
+    coverage:       "Coverage Rate",
+    gap:            "Largest Gap",
+    missingMonths:  "Missing Months",
+  },
+
   // Weather stations (marker: circle)
   station:
   {
@@ -336,8 +348,13 @@ main.config =
         fillColor:    '#2b83cb',
       },
     },
-    sourceName:       "Global Historical Climatology Network",
-    sourceLink:       "www.ncdc.noaa.gov/ghcnm/",
+    source:
+    {
+      name:       "Global Historical Climatology Network",
+      link:       "www.ncdc.noaa.gov/ghcnm/",
+      description:
+        "GHCN-Monthly provides climatological observations for four elements: monthly mean maximum temperature, minimum temperature, mean temperature, and monthly total precipitation. Since the early 1990s the Global Historical Climatology Network-Monthly (GHCN-M) dataset has been an internationally recognized source of data for the study of observed variability and change in land surface air temperature. It provides monthly mean temperature data for 7280 stations from 226 countries and territories, ongoing monthly updates of more than 2000 stations to support monitoring of current and evolving climate conditions, and homogeneity adjustments to remove non-climatic influences that can bias the observed temperature record.",
+    },
   }
 }
 
@@ -374,6 +391,7 @@ main.modules.timeline =                   new Timeline(main)
 main.modules.climateDatasetsInList =      new ClimateDatasetsInList(main)
 main.modules.coordinatesInInfobox =       new CoordinatesInInfobox(main)
 main.modules.chartTitleSetter =           new ChartTitleSetter(main)
+main.modules.datasetInfobox =             new DatasetInfobox(main)
 
 
 // --------------------------------------------------------------------------
@@ -410,31 +428,31 @@ main.hub.onModeChange = (newMode) =>
     let oldMode = main.mode
 
     // No mode change: no action
-    if (newMode == oldMode)
-      return
+    if (newMode == oldMode) return
 
-    // Error handling: Can only be 'C' or 'S'
-    if (!(newMode=="C" || newMode=="S"))
-      newMode = 'C' // Default: cell
+    // Error handling: Can only be 'C' or 'S' -> Fallback: 'C'
+    if (!(newMode=="C" || newMode=="S")) newMode = 'C'
 
     // Old mode ClimateCell: cleanup location marker and climate cell
     if (oldMode == 'C')
     {
       main.modules.locationMarkerOnMap.remove()
       main.modules.climateCellOnMap.remove()
+      main.modules.coordinatesInInfobox.disable()
+      main.modules.climateDatasetsInList.disable()
     }
 
     // Old mode WeatherStation: cleanup weatherstation
     if (oldMode == 'S')
     {
       main.modules.weatherStationController.deselect()
+      main.modules.climateDatasetsInList.removeStationsTitle()
     }
 
     // New mode ClimateCell: restore climate datasets and coordinates
     if (newMode == 'C')
     {
       main.modules.climateDatasetsInList.enable()
-      main.modules.climateDatasetsInList.removeStationsTitle()
       main.modules.coordinatesInInfobox.enable()
       main.modules.climateDatasetController.restore()
     }
@@ -442,9 +460,7 @@ main.hub.onModeChange = (newMode) =>
     // New mode WeatherStation: set datasets title and disable coordinates
     if (newMode == 'S')
     {
-      main.modules.climateDatasetsInList.disable()
       main.modules.climateDatasetsInList.setStationsTitle()
-      main.modules.coordinatesInInfobox.disable()
     }
 
     // Set new mode
@@ -516,18 +532,40 @@ main.hub.onDatasetChange = (dataset) =>
   {
     // Update time bounds (min/max year)
     main.modules.timeController.setMinMaxYear(
-      dataset.timePeriod[0], dataset.timePeriod[1]
+      dataset.time_period[0], dataset.time_period[1]
     )
+
+    // Update metadata in infobox
+    main.modules.datasetInfobox.updateDatasetInfo(dataset)
 
     // Update climate data for ClimateCell
     if (main.mode == 'C')
       main.modules.climateDatasetController.update()
+  }
+
+
+// --------------------------------------------------------------------------
+// Weatherstation changes
+// --------------------------------------------------------------------------
+
+main.hub.onStationChange = (station) =>
+  {
+    // Tell the map that a station has been selected
+    main.modules.mapController.clickedOnStation()
+
+    // Update time bounds (min/max year)
+    main.modules.timeController.setMinMaxYear(
+      station.min_year, station.max_year
+    )
+
+    // Update metadata in infobox
+    main.modules.datasetInfobox.updateStationInfo(station)
 
     // Update climate data for WeatherStation
     if (main.mode == 'S')
       main.modules.weatherStationController.updateDataForStation()
-
   }
+
 
 // --------------------------------------------------------------------------
 // Diagram title changes

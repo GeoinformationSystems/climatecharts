@@ -126,9 +126,10 @@ class Helpers
   {
     // Error handling: No number -> null
     if (!this.checkIfNumber(num)) return null
-    
-    let roundingFactor = Math.pow(10, decimalPlaces)
-    return (Math.round(num*roundingFactor) / roundingFactor)
+
+    return parseFloat(num.toFixed(decimalPlaces))
+    // let roundingFactor = Math.pow(10, decimalPlaces)
+    // return (Math.round(num*roundingFactor) / roundingFactor)
   }
 
 }

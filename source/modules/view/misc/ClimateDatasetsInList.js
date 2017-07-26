@@ -73,9 +73,9 @@ class ClimateDatasetsInList
   setStationsTitle()
   {
     let link = $('<a/>')
-    link.attr('href', 'http://' + this._main.config.station.sourceLink)
+    link.attr('href', 'http://' + this._main.config.station.source.link)
     link.attr('target', '_blank')
-    link.text(this._main.config.station.sourceName)
+    link.text(this._main.config.station.source.name)
 
     this._datasetsTitle.html(link)
   }

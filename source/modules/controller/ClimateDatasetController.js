@@ -97,9 +97,9 @@ class ClimateDatasetController
     // Get request variable from dataset (e.b. 'tmp')
     let variables = []
     for (var idx=0; idx<2; idx++)
-      for (var name in this._selectedDataset.metaDatasets[idx].variable)
-        if (this._selectedDataset.metaDatasets[idx].variable[name]._shape == "time lat lon")
-          variables.push(this._selectedDataset.metaDatasets[idx].variable[name]._name)
+      for (var name in this._selectedDataset.meta_datasets[idx].variable)
+        if (this._selectedDataset.meta_datasets[idx].variable[name]._shape == "time lat lon")
+          variables.push(this._selectedDataset.meta_datasets[idx].variable[name]._name)
 
     let coords = this._main.modules.mapController.getCoordinates()
     let timePeriod =
@@ -109,7 +109,7 @@ class ClimateDatasetController
     ]
 
     this._main.modules.serverInterface.requestClimateDataForCell(
-      this._selectedDataset.urlDatasets,
+      this._selectedDataset.url_datasets,
       variables,      // [tmp, pre]
       coords,         // [lat, lng]
       timePeriod,     // [minDate, maxDate]
@@ -187,12 +187,12 @@ class ClimateDatasetController
             dataset.name =        catalog.dataset[dsIdx]._name
             dataset.description = catalog.dataset[dsIdx].documentation[0].__text
             dataset.doi =         catalog.dataset[dsIdx].documentation[1].__text
-            dataset.urlDatasets =
+            dataset.url_datasets =
             [
               catalog.dataset[dsIdx].dataset[0]._urlPath,
               catalog.dataset[dsIdx].dataset[1]._urlPath
             ]
-            dataset.timePeriod =
+            dataset.time_period =
             [
               parseInt(catalog.dataset[dsIdx].timeCoverage.start),
               parseInt(catalog.dataset[dsIdx].timeCoverage.end)
@@ -211,18 +211,18 @@ class ClimateDatasetController
   _loadMetadata(dataset)
   {
     this._main.modules.serverInterface.requestMetadataForDataset(
-      dataset.urlDatasets,
+      dataset.url_datasets,
       (tempDataXml, precDataXml) =>
       {
-        dataset.metaDatasets =
+        dataset.meta_datasets =
         [
           this._x2js.xml2json(tempDataXml[0]).netcdf,
           this._x2js.xml2json(precDataXml[0]).netcdf
         ]
         dataset.raster_cell_size =
         {
-          lat: parseFloat(dataset.metaDatasets[0].group[0].attribute[6]._value),
-          lng: parseFloat(dataset.metaDatasets[0].group[0].attribute[7]._value)
+          lat: parseFloat(dataset.meta_datasets[0].group[0].attribute[6]._value),
+          lng: parseFloat(dataset.meta_datasets[0].group[0].attribute[7]._value)
         }
 
         // Add to view

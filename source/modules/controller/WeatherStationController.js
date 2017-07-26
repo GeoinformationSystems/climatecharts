@@ -53,11 +53,7 @@ class WeatherStationController
 
     // Controller
     this._selectedStation = station
-    this._main.hub.onModeChange('S')
-    this._main.modules.mapController.clickedOnStation()
-    this._main.modules.timeController.setMinMaxYear(
-      station.min_year, station.max_year
-    )
+    this._main.hub.onStationChange(station)
   }
 
   deselect()
@@ -209,7 +205,7 @@ class WeatherStationController
             climateData.temp, climateData.prec,   // Actual climate data
             [station.name, station.country],      // Meta data: location name
             station.location, station.elevation,  // Meta data: geo location
-            this._main.config.station.sourceLink  // Meta data: source
+            this._main.config.station.source.link // Meta data: source
           )
         }
     )

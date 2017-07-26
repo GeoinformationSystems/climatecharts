@@ -28,8 +28,6 @@ class CoordinatesInInfobox
 
     this._setButton = $('#set-coordinates')
 
-    this._parentContainer = $('#coordinates-in-infobox')
-
     this._isEnabled = true
 
 
@@ -75,7 +73,7 @@ class CoordinatesInInfobox
   enable()
   {
     if (!this._isEnabled)
-      this._parentContainer.show()
+      this._setButton.show()
 
     this._isEnabled = true
   }
@@ -83,7 +81,7 @@ class CoordinatesInInfobox
   disable()
   {
     if (this._isEnabled)
-      this._parentContainer.hide()
+      this._setButton.hide()
 
     this._isEnabled = false
   }
