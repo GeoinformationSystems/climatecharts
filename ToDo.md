@@ -1,6 +1,7 @@
 TO DO:
 - Show user that data is loading (loading bar or so)
-- Update climate data (maybe even a script that automates that?)
+- Chart download option (png, svg)
+- Update climate data from sources (maybe even a script that automates that?)
 
 -------------------------------------------------------------------------------
 
@@ -51,7 +52,9 @@ Ja, das wäre es. Aber das schaffe ich heute nicht mehr. Ich versuche es morgen.
 
 > 9) Die Stationsdaten gehen derzeit nur bis Ende 2012. Ist das der aktuellste Datensatz?
 
-Stimmt nicht ganz, die Stationsdaten, z.B. von DD-Klotzsche, reichen momentan bis Ende 2014. Ich habe gerade mal im GHCN geschaut, dort dauert es immer eine Weile, bis neue Daten drin sind. Ich könnte, wenn du magst, die Daten mal aktualisieren. Das kann aber ein bisschen dauern, da ich das lange nicht mehr gemacht habe. Soll ich das mal in Angriff nehmen?
+Das stimmt so nicht, denn ich habe einen Fehler gemacht: Ich habe die Zeitleiste nicht aktualisiert, wenn eine Wetterstation ausgewählt wurde. Diesen Fehler habe ich behoben: Bei der Auswahl einer Wetterstation bzw. eines Datensatzes wird nun immer die Zeitleiste an die mögliche Datenperiode angepasst. Das bedeutet: Es sind immer die zeitlichen Daten auswählbar, die auch vorhanden sind.
+
+Ich könnte trotzdem, wenn du magst, die Daten vom GHCN mal aktualisieren. Das kann aber ein bisschen dauern, da ich das lange nicht mehr gemacht habe. Soll ich das mal in Angriff nehmen?
 
 
 > 10) Rasterdatensätze für 50.623/15.331 ... wenn ich vom Cru auf GHCN umstelle geht das schnell... stelle ich weiter auf Delaware um geht das auch noch recht fix... will ich dann zurück zu GHCN passiert nix mehr.
@@ -80,7 +83,15 @@ Den Fehler kann ich auch nicht reproduzieren. Ich habe es mit zehn Wetterstation
 
 
 > 14) Datenverfügbarkeitstabelle bräuchte noch eine Überschrift (Availability of Data ???) und evtl ganz unten eine Legende (Temperature Available / Precepitation Available / Not Available)
+
+Ist eingebaut.
+
+
 > 15) lässt es sich noch irgendwie einrichten, dass die Diagramme zum download zur Verfügung stehen. Als einfache Rasterdaten.
+
+Theoretisch ja, praktisch bin ich nicht sicher, ob ich das bis Freitag noch schaffe. Ich packe es auf die zu-tun Liste ganz hoch.
+
+
 > 16) Die beiden Menüs Dataset und About sind nicht verfügbar.
 > 17) In der derzeitigen online-Version findet sich rechts immer noch ein frame der kurz auf den jeweils ausgewählten Datensatz hinweist. Das finde ich eigentlich ganz gut und würde es gern beibehalten
 > 18) im Norden von Russland gibt es Orte (climatecharts_3.png) die haben Nordkoordinaten von >90°   ---> sowas gibt’s nicht. Wenn ich das gleiche im Norden Nordamerikas mache, bekomm ich eine Angabe von -73°S ?!?! (climatecharts_5.png) Außerdem ist das Koordinatenpaar verdreht. Erst N/S dann E/W. Ich vermute, dass hier auch der Fehler liegt. Ich vermute es soll -73°E sein, was aber eigentlich 73°W sind.
