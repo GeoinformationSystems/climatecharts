@@ -243,7 +243,7 @@ class AvailabilityChart extends Chart
 
     this._chart.append('text')
       .attr('text-anchor', 'middle')
-      .attr('font-size', (this._chartsMain.fontSizes.title + 'em'))
+      .attr('font-size', (this._chartsMain.fontSizes.huge + 'em'))
       .attr('x', (this._mainPos.width/2))
       .attr('y', 0
         + this._chartPos.top
@@ -333,6 +333,7 @@ class AvailabilityChart extends Chart
       this._chart.append('text')
         .attr('class', 'ac-year')
         .attr('text-anchor', 'middle')
+        .attr('font-size', (this._chartsMain.fontSizes.normal + 'em'))
         .attr('x', xPos)
         .attr('y', 0
           + this._chartPos.top
