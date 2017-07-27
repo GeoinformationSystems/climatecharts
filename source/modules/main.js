@@ -172,6 +172,19 @@ main.config =
       noData:         d3.rgb(240,240,240),
     },
     footerOpacity:    0.4,
+    saveOptions:
+    {
+      png:
+      {
+        buttonName:   "PNG",
+        scaleFactor:  3,
+        imageQuality: 0.9,
+      },
+      svg:
+      {
+        buttonName:   "SVG",
+      },
+    },
     charts:
     [
       {

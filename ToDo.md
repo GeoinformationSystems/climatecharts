@@ -1,6 +1,4 @@
 TO DO:
-- Boxplots for precipitation: Cherapunji example
-- Internal calculation: number of years correct
 - Chart download option (png, svg)
 - Show user that data is loading (loading bar or so)
 - Weatehrstations metadata table: cols(temp, prec), rows (miss. months, larg. gap, cov. rate)

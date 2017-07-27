@@ -5,7 +5,7 @@
 // - Create the div container
 // - Provide d3 as the visualization library
 // - Provide title, subtitle, data reference
-// - Provide functionality for exporting in SVG and PNG
+// - Provide functionality for exporting to SVG and PNG
 // ############################################################################
 
 class Chart
@@ -31,12 +31,14 @@ class Chart
       if (chart.name == chartName)
         this._chartMain = chart
 
+    // Get helper: Save chart to PNG or SVG
+    this._chartSaver = new ChartSaver()
+
     // Error handling: if no climateData, chart will not be set up
     if (!climateData) return this._chartExists = false
 
-    this._initMembers(climateData)
-
     // Global setup for all chart types
+    this._initMembers(climateData)
     this._setChartMetadata()
     this._setupContainer()
     this._setupToolbar()
@@ -73,7 +75,7 @@ class Chart
       this._climateData = null
       // Clean view
       this._chartWrapper.remove()
-      $(this._toolbar).empty()
+      this._toolbar.empty()
     }
   }
 
@@ -177,10 +179,44 @@ class Chart
 
   _setupToolbar()
   {
-    this._toolbar = this._domElementCreator.create(
+    // Container
+    let toolbar = this._domElementCreator.create(
       'div', this._chartMain.name+'-toolbar', ['toolbar']
     )
-    this._chartWrapper[0].appendChild(this._toolbar)
+    this._chartWrapper[0].appendChild(toolbar)
+    this._toolbar = $(toolbar)
+
+    // Save options: PNG
+    let pngButton = this._domElementCreator.create(
+      'button', '', ['save-to-png', 'btn', 'btn-primary']
+    )
+    $(pngButton).html(this._chartsMain.saveOptions.png.buttonName)
+    this._toolbar.append(pngButton)
+
+    $(pngButton).click(() =>
+      {
+        let rootDiv =       this._chart[0][0]
+        let fileName =      this._chartName+".png"  // TODO: more sophisticated
+        let scaleFactor =   this._chartsMain.saveOptions.png.scaleFactor
+        let imageQuality =  this._chartsMain.saveOptions.png.imageQuality
+        this._chartSaver.toPNG(rootDiv, fileName, scaleFactor, imageQuality)
+      }
+    )
+
+    // Save options: SVG
+    let svgButton = this._domElementCreator.create(
+      'button', '', ['save-to-svg', 'btn', 'btn-primary']
+    )
+    $(svgButton).html(this._chartsMain.saveOptions.svg.buttonName)
+    // this._toolbar.append(svgButton)
+
+    $(svgButton).click(() =>
+      {
+        let rootDiv =       this._chart[0][0]
+        let fileName =      this._chartName+".svg"  // TODO: more sophisticated
+        this._chartSaver.toSVG(rootDiv, fileName)
+      }
+    )
   }
 
 

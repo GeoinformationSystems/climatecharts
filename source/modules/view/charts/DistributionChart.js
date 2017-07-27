@@ -128,7 +128,7 @@ class DistributionChart extends Chart
 
     // Level 1@_toolbar - dc-switch
     let dcSwitch = this._domElementCreator.create('div', 'dc-switch')
-    this._toolbar.appendChild(dcSwitch)
+    this._toolbar[0].appendChild(dcSwitch)
 
     let switchLabel = this._domElementCreator.create(
       'label', null, ['switch-light', 'switch-candy'], [['onClick', '']]
