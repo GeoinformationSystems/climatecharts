@@ -128,16 +128,6 @@
   									<div class="col-lg-3">
   										<div class="box">
   											<div class="form-group">
-  												<div id="datasets-in-list" class="dropdown">
-  												  <div class="linewrapper"></div>
-  												  <p>
-                              Dataset: &nbsp;
-                              <span id='datasets-title'></span>
-                            </p>
-  												  <select id="datasets" name="datasets" style="width:100%">
-  												  </select>
-                            <hr>
-  												</div>
                           <div id="coordinates-in-infobox">
                             <label class="coordinates-label" for=lat>Latitude:</label>
                             <label class="coordinates-label" for=lng>Longitude:</label>
@@ -147,7 +137,7 @@
                             <input id="lng" class="form-control coordinates" type="text">
                             <hr>
                           </div>
-  												<p class="period">Period:</p>
+  												<p class="period">Time Period:</p>
   												<span id="period-start"></span>
   												<p class="period">to</p>
   												<span id="period-end"></span>
@@ -163,7 +153,19 @@
   												<input id="user-title" type="text" class="form-control" placeholder="Enter title">
   											</div>
   										</div>
-  										<div id="dataset-info" class="box block"></div>
+  										<div id="dataset-infobox" class="box block">
+                        <div id="datasets-in-list" class="dropdown">
+                          <div class="linewrapper"></div>
+                          <p class ="datasets-title">
+                            Dataset &nbsp;
+                            <span id='dataset-name'></span>
+                          </p>
+                          <select id="datasets" name="datasets" style="width:100%">
+                          </select>
+                          <br/>
+                          <div id="dataset-info"></div>
+                        </div>
+                      </div>
   									</div>
   								</div>
   							</div>

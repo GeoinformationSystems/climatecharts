@@ -94,6 +94,9 @@ class ClimateDatasetController
 
   update()
   {
+    // Error handling: ignore if no dataset selected
+    if (!this._selectedDataset) return
+
     // Get request variable from dataset (e.b. 'tmp')
     let variables = []
     for (var idx=0; idx<2; idx++)
@@ -108,6 +111,22 @@ class ClimateDatasetController
       this._main.modules.timeController.getPeriodEnd()+1,
     ]
 
+    // Error handling: Only update if variables, coords and timePeriod given
+    if (variables.length == 0)
+      return console.error(""
+        + "The datset"
+        + this._selectedDataset.name
+        + "could not be loaded correctly"
+      )
+    if (
+      (!this._main.modules.helpers.checkIfNumber(coords.lat)) ||
+      (!this._main.modules.helpers.checkIfNumber(coords.lng)) ||
+      (!this._main.modules.helpers.checkIfNumber(timePeriod[0])) ||
+      (!this._main.modules.helpers.checkIfNumber(timePeriod[1]))
+    )
+      return // No coordinates or time period given
+
+    // Load data for this dataset at this position in this time period
     this._main.modules.serverInterface.requestClimateDataForCell(
       this._selectedDataset.url_datasets,
       variables,      // [tmp, pre]

@@ -321,7 +321,7 @@ main.config =
     resolution:     "Spatial Resolution",
     time:           "Temporal Coverage",
     station:        "Weather Station",
-    coverage:       "Coverage Rate",
+    coverage:       "Data Coverage Rate",
     gap:            "Largest Gap",
     missingMonths:  "Missing Months",
   },
@@ -425,7 +425,7 @@ main.hub = {}
 //  null: none / no location selected
 //  'C':  ClimateCell     -> data from simulated dataset (raster data)
 //  'S':  WeatherStation  -> data from weather station dataset (point data)
-main.mode = null
+main.mode = 'C'   // Default start mode
 
 main.hub.onModeChange = (newMode) =>
   {
@@ -543,8 +543,7 @@ main.hub.onDatasetChange = (dataset) =>
     main.modules.datasetInfobox.updateDatasetInfo(dataset)
 
     // Update climate data for ClimateCell
-    if (main.mode == 'C')
-      main.modules.climateDatasetController.update()
+    main.modules.climateDatasetController.update()
   }
 
 

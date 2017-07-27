@@ -23,7 +23,7 @@ class ClimateDatasetsInList
     // ------------------------------------------------------------------------
 
     this._datasetList = $('#datasets')
-    this._datasetsTitle = $('#datasets-title')
+    this._datasetsTitle = $('#dataset-name')
 
     this._isEnabled = true
 

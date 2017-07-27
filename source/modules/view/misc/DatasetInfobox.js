@@ -108,9 +108,6 @@ class DatasetInfobox
       + this._main.config.datasetsInfobox.ref
       + '</p>'
       + '<p>'
-      + this._main.config.station.source.name
-      + '</p>'
-      + '<p>'
       + this._main.config.station.source.description
       + '</p>'
       + '<p><a href="'
