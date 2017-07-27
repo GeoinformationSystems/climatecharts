@@ -458,7 +458,6 @@ main.hub.onModeChange = (newMode) =>
     {
       main.modules.climateDatasetsInList.enable()
       main.modules.coordinatesInInfobox.enable()
-      main.modules.climateDatasetController.restore()
     }
 
     // New mode WeatherStation: set datasets title and disable coordinates

@@ -31,6 +31,8 @@ class ClimateDatasetController
 
     // Initially load datasets and metadata
     this._loadDatasets()
+
+    this._ctr = 0
   }
 
 
@@ -79,23 +81,14 @@ class ClimateDatasetController
 
 
   // ==========================================================================
-  // Restore climate dataset -> select current dataset again
-  // ==========================================================================
-
-  restore()
-  {
-    this.select(this._selectedDataset)
-  }
-
-
-  // ==========================================================================
   // Load climate data for one raster cell
   // ==========================================================================
 
   update()
   {
-    // Error handling: ignore if no dataset selected
+    // Error handling: ignore if dataset not fully loaded yet
     if (!this._selectedDataset) return
+    if (this._selectedDataset.meta_datasets.length == 0) return
 
     // Get request variable from dataset (e.b. 'tmp')
     let variables = []
