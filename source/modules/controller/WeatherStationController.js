@@ -46,7 +46,6 @@ class WeatherStationController
 
     // Model
     station.is_selected = true
-    this._loadDataForStation(station)
 
     // View
     this._main.modules.weatherStationsOnMap.highlight(station)
@@ -199,8 +198,8 @@ class WeatherStationController
   {
     this._main.modules.serverInterface.requestDataForWeatherStation(
       station.id,
-      station.min_year,
-      station.max_year,
+      this._main.modules.timeController.getPeriodStart(),
+      this._main.modules.timeController.getPeriodEnd()+1, // N.B.!
       (climateData) =>
         {
           this._main.modules.climateDataController.update(

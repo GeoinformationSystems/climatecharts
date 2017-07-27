@@ -132,26 +132,27 @@ class DatasetInfobox
       + ' - '
       + station.max_year
       + '</p>'
-      + '<p>'
-      + this._main.config.datasetsInfobox.coverage
-      + ': '
-      + this._main.modules.helpers.roundToDecimalPlace(
-          station.coverage_rate*100, 1
-        )
-      + ' %'
-      + '</p>'
-      + '<p>'
-      + this._main.config.datasetsInfobox.gap
-      + ': '
-      + station.largest_gap
-      + ' months'
-      + '</p>'
-      + '<p>'
-      + this._main.config.datasetsInfobox.missingMonths
-      + ': '
-      + station.missing_months
-      + ' months'
-      + '</p>'
+      // TODO: make table and distinguish between temp and prec
+      // + '<p>'
+      // + this._main.config.datasetsInfobox.coverage
+      // + ': '
+      // + this._main.modules.helpers.roundToDecimalPlace(
+      //     station.coverage_rate*100, 1
+      //   )
+      // + ' %'
+      // + '</p>'
+      // + '<p>'
+      // + this._main.config.datasetsInfobox.gap
+      // + ': '
+      // + station.largest_gap
+      // + ' months'
+      // + '</p>'
+      // + '<p>'
+      // + this._main.config.datasetsInfobox.missingMonths
+      // + ': '
+      // + station.missing_months
+      // + ' months'
+      // + '</p>'
     )
   }
 

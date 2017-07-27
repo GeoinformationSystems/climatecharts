@@ -564,8 +564,7 @@ main.hub.onStationChange = (station) =>
     main.modules.datasetInfobox.updateStationInfo(station)
 
     // Update climate data for WeatherStation
-    if (main.mode == 'S')
-      main.modules.weatherStationController.updateDataForStation()
+    main.modules.weatherStationController.updateDataForStation()
   }
 
 

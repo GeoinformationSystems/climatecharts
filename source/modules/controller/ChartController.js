@@ -53,7 +53,7 @@ class ChartController
     if (!this._chartsAreActive)
       this._chartInfo.hide()
     // Otherwise cleanup existing charts
-    else (this._chartsAreActive)
+    else // charts are active
       for (let chart of this._charts)
         chart.remove()
 

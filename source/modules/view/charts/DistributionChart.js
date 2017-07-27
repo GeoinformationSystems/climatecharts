@@ -260,7 +260,7 @@ class DistributionChart extends Chart
         }
       }
 
-      // Update fixed maxRange, if for some reason it is not enought
+      // Update fixed maxRange, if for some reason it is not enough
       let maxRange = this._main.modules.helpers.deepCopy(
         this._chartMain.subcharts[datatypeIdx].maxRange
       )
@@ -277,6 +277,11 @@ class DistributionChart extends Chart
       // For prec: clip min to zero
       if (this._chartMain.subcharts[datatypeIdx].data == 'prec')
         vizMin = Math.max(vizMin, 0)
+
+      // Error handling: if empty month arrays, write value 0
+      for (let monthData of vizData)
+        if (monthData[1].length == 0)
+          monthData[1] = [0]
 
 
       // ----------------------------------------------------------------------
