@@ -127,40 +127,42 @@ class DistributionChart extends Chart
     // ------------------------------------------------------------------------
 
     // Level 1@_toolbar - dc-switch
-    let dcSwitch = this._domElementCreator.create('div', 'dc-switch')
+    let dcSwitch = this._main.modules.domElementCreator.create(
+      'div', 'dc-switch'
+    )
     this._toolbar[0].appendChild(dcSwitch)
 
-    let switchLabel = this._domElementCreator.create(
+    let switchLabel = this._main.modules.domElementCreator.create(
       'label', null, ['switch-light', 'switch-candy'], [['onClick', '']]
     )
     dcSwitch.appendChild(switchLabel)
 
-    let switchInput = this._domElementCreator.create(
+    let switchInput = this._main.modules.domElementCreator.create(
       'input', 'dc-switch-input', null, [['type', 'checkbox']]
     )
     switchLabel.appendChild(switchInput)
 
-    let switchTitle = this._domElementCreator.create(
+    let switchTitle = this._main.modules.domElementCreator.create(
       'div', 'dc-switch-title'
     )
     switchLabel.appendChild(switchTitle)
 
-    let switchOptions = this._domElementCreator.create(
+    let switchOptions = this._main.modules.domElementCreator.create(
       'span', 'dc-switch-options'
     )
     switchLabel.appendChild(switchOptions)
 
-    let switchOptionL = this._domElementCreator.create(
+    let switchOptionL = this._main.modules.domElementCreator.create(
       'span', 'dc-switch-option-l', ['dc-switch-option']
     )
     switchOptions.appendChild(switchOptionL)
 
-    let switchOptionR = this._domElementCreator.create(
+    let switchOptionR = this._main.modules.domElementCreator.create(
       'span', 'dc-switch-option-r', ['dc-switch-option']
     )
     switchOptions.appendChild(switchOptionR)
 
-    let switchButton = this._domElementCreator.create(
+    let switchButton = this._main.modules.domElementCreator.create(
       'a', 'dc-switch-button'
     )
     switchOptions.appendChild(switchButton)

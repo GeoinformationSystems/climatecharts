@@ -11,10 +11,7 @@ class Loading
   // PUBLIC MEMBERS
   // ##########################################################################
 
-  constructor(main)
-  {
-    this._main = main
-  }
+  constructor() {}
 
   // ==========================================================================
   // Start loading (put loading dialog on screen)

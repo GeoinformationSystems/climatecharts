@@ -111,9 +111,6 @@ class Chart
 
     // Actual chart data
     this._climateData = climateData
-
-    // Helper
-    this._domElementCreator = new DOMElementCreator()
   }
 
   // ==========================================================================
@@ -154,7 +151,7 @@ class Chart
     let parentContainer = $('#' + this._chartsMain.parentContainer)
 
     // Setup wrapper for all chart elements
-    let chartWrapper = this._domElementCreator.create(
+    let chartWrapper = this._main.modules.domElementCreator.create(
         'div',                              // Element type
         this._chartMain.name + '-wrapper',  // ID
         ['chart-wrapper', 'box']            // Classes
@@ -177,14 +174,14 @@ class Chart
   _setupToolbar()
   {
     // Container
-    let toolbar = this._domElementCreator.create(
+    let toolbar = this._main.modules.domElementCreator.create(
       'div', this._chartMain.name+'-toolbar', ['toolbar']
     )
     this._chartWrapper[0].appendChild(toolbar)
     this._toolbar = $(toolbar)
 
     // Save options: PNG
-    let pngButton = this._domElementCreator.create(
+    let pngButton = this._main.modules.domElementCreator.create(
       'button', '', ['save-to-png']
     )
     $(pngButton).html(this._chartsMain.saveOptions.png.buttonName)
@@ -198,7 +195,7 @@ class Chart
 
     // Save options: SVG
 /* TODO: get to work
-    let svgButton = this._domElementCreator.create(
+    let svgButton = this._main.modules.domElementCreator.create(
       'button', '', ['save-to-svg']
     )
     $(svgButton).html(this._chartsMain.saveOptions.svg.buttonName)

@@ -19,7 +19,6 @@ class WeatherStationsOnMap
   {
     this._main = main
     this._map = this._main.modules.map.getMap()
-    this._helpers = this._main.modules.helpers
 
     // ------------------------------------------------------------------------
     // Member Variables
@@ -36,10 +35,11 @@ class WeatherStationsOnMap
     this._realMarkerRadius = this._main.config.station.initRadius
 
     // mixin style configs (highlight -> default style)
-    this._main.config.station.style.selected = this._helpers.mixin(
-      this._main.config.station.style.selected,
-      this._main.config.station.style.default,
-    )
+    this._main.config.station.style.selected =
+      this._main.modules.helpers.mixin(
+        this._main.config.station.style.selected,
+        this._main.config.station.style.default,
+      )
 
 
     // ------------------------------------------------------------------------
