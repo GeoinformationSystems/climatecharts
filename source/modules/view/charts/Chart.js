@@ -188,7 +188,7 @@ class Chart
 
     // Save options: PNG
     let pngButton = this._domElementCreator.create(
-      'button', '', ['save-to-png', 'btn', 'btn-primary']
+      'button', '', ['save-to-png']
     )
     $(pngButton).html(this._chartsMain.saveOptions.png.buttonName)
     this._toolbar.append(pngButton)
@@ -204,11 +204,12 @@ class Chart
     )
 
     // Save options: SVG
+/* TODO: get to work
     let svgButton = this._domElementCreator.create(
-      'button', '', ['save-to-svg', 'btn', 'btn-primary']
+      'button', '', ['save-to-svg']
     )
     $(svgButton).html(this._chartsMain.saveOptions.svg.buttonName)
-    // this._toolbar.append(svgButton)
+    this._toolbar.append(svgButton)
 
     $(svgButton).click(() =>
       {
@@ -217,6 +218,7 @@ class Chart
         this._chartSaver.toSVG(rootDiv, fileName)
       }
     )
+*/
   }
 
 

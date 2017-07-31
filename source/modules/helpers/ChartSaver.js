@@ -33,31 +33,35 @@ class ChartSaver
 
   toSVG(rootDiv, fileName)
   {
-		let body = $('body')
+    // TODO: get to work
+/*
+    var rootDiv = $('#'+'climate-chart');
+		var body = $('body');
 
-		$(rootDiv).panzoom("reset")
+		rootDiv.panzoom("reset");
 
     try
     {
-      let isFileSaverSupported = !!new Blob()
+      var isFileSaverSupported = !!new Blob();
     }
     catch (e)
     {
-      alert("This function is not supported by your browser!")
+      alert("This function is not supported by your browser!");
     }
 
     // create new temporary div where the to print is copied in
     // -> use like a workbench
-    body.append("<div id=\"temp\">")
-    let workbench = $('#temp')
-    workbench.append($(rootDiv).clone())
+    body.append("<div id=\"temp\">");
+    var workbench = $('#temp');
+    workbench.append(rootDiv.clone());
 
-    let html = workbench.html()
+    var html = workbench.html();
 
-    let blob = new Blob([html], {type: "image/svg+xml"})
-    saveAs(blob, fileName)
+    var blob = new Blob([html], {type: "image/svg+xml"});
+    saveAs(blob, fileName);
 
-    workbench.remove()
+    workbench.remove();
+*/
   }
 
 
