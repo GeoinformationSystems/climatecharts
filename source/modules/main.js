@@ -176,15 +176,16 @@ main.config =
     {
       png:
       {
-        buttonName:   "PNG",
-        fileExtension:".png",
-        scaleFactor:  3,
-        imageQuality: 0.9,
+        buttonName:     "PNG",
+        fileExtension:  ".png",
+        scaleFactor:    3,
+        imageQuality:   0.9,
         fontDecreaseFactor: 0.85,  // To get proper font size for saved image
       },
       svg:
       {
-        buttonName:   "SVG",
+        buttonName:     "SVG",
+        fileExtension:  ".svg",
       },
     },
     charts:
