@@ -123,10 +123,9 @@ let loadHub = (main) =>
 
       // Update climate data for WeatherStation
       if (main.mode == 'S')
-      {
         main.modules.weatherStationController.updateStations()
-        main.modules.weatherStationController.updateDataForStation()
-      }
+
+      main.modules.weatherStationController.updateDataForStation()
 
       // Update timeline completely
       let min = main.modules.timeController.getMinYear()
