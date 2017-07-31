@@ -11,37 +11,34 @@ class ChartSaver
   // PUBLIC MEMBERS
   // ##########################################################################
 
-  constructor(main)
-  {
-    this._saveOptions = main.config.charts.saveOptions
-  }
+  constructor() {}
 
   // ==========================================================================
   // Save to PNG
   // ==========================================================================
 
-  toPNG(rootDiv, fileName)
+  toPNG(rootDiv, fileName, saveOptions)
   {
     // Decrease font size
     this._increaseFontSize(
       rootDiv.id,
-      this._saveOptions.png.fontDecreaseFactor
+      saveOptions.fontDecreaseFactor
     )
 
     // Save it
     saveSvgAsPng(
       rootDiv,
-      fileName + this._saveOptions.png.fileExtension,
+      fileName + saveOptions.fileExtension,
       {
-        scale:          this._saveOptions.png.scaleFactor,
-        encoderOptions: this._saveOptions.png.imageQuality,
+        scale:          saveOptions.scaleFactor,
+        encoderOptions: saveOptions.imageQuality,
       }
     )
 
     // Increase font size again
     this._increaseFontSize(
       rootDiv.id,
-      1/this._saveOptions.png.fontDecreaseFactor
+      1/saveOptions.fontDecreaseFactor
     )
   }
 

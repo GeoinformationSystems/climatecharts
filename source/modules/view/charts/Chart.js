@@ -197,7 +197,9 @@ class Chart
       {
         let rootDiv =       this._chart[0][0]
         let fileName =      this._chartName  // TODO: more sophisticated
-        this._chartSaver.toPNG(rootDiv, fileName)
+        this._chartSaver.toPNG(
+          rootDiv, fileName, this._chartsMain.saveOptions.png
+        )
       }
     )
 
