@@ -56,6 +56,11 @@ class ClimateDatasetController
     this._main.hub.onDatasetChange(dataset);
   }
 
+  reselect()
+  {
+    this.select(this._selectedDataset)
+  }
+
   selectByName(name)
   {
     // Find name in list of datasets
@@ -229,7 +234,7 @@ class ClimateDatasetController
 
   _loadMetadata(dataset)
   {
-    this._main.modules.loading.start("metadata")
+    this._main.modules.loading.start("dataset")
 
     this._main.modules.serverInterface.requestMetadataForDataset(
       dataset.url_datasets,

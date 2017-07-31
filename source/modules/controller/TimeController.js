@@ -32,16 +32,8 @@ class TimeController
     this._periodStart = 1
       + main.config.time.periodEnd
       - main.config.time.periodLength
-    this._periodEnd =   main.config.time.periodEnd
-
-
-    // ------------------------------------------------------------------------
-    // Setup View
-    // ------------------------------------------------------------------------
-
-    this._main.modules.timeline.init(
-      this._minYear, this._maxYear, this._periodStart, this._periodEnd
-    )
+    this._periodEnd = 0
+      + main.config.time.periodEnd
   }
 
 
@@ -110,6 +102,11 @@ class TimeController
 
   }
 
+
+  // ==========================================================================
+  // Get Min/Max year of dataset
+  // ==========================================================================
+
   getMinYear()
   {
     return this._minYear
@@ -127,7 +124,7 @@ class TimeController
 
 
   // ==========================================================================
-  // Start/End year of selected time period
+  // Set Start/End year of selected time period
   // ==========================================================================
 
   setPeriodStart(year)
@@ -215,6 +212,28 @@ class TimeController
     // Tell everyone
     this._main.hub.onPeriodChange(this._periodStart, this._periodEnd)
   }
+
+  resetPeriod()
+  {
+    // Get end date from config and clip with max year
+    this._periodEnd = this._main.config.time.periodEnd
+    this._periodEnd = Math.min(this._periodEnd, this._maxYear)
+
+    // Get start date from end date and clip with min year
+    this._periodStart = 0
+      + this._periodEnd
+      - this._main.config.time.periodLength
+    this._periodStart = Math.max(this._periodStart, this._minYear)
+
+    // Update
+    this._main.hub.onResetPeriod(this._periodStart, this._periodEnd)
+
+  }
+
+
+  // ==========================================================================
+  // Get Start/End year of selected time period
+  // ==========================================================================
 
   getPeriodStart()
   {

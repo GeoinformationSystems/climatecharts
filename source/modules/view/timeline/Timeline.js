@@ -32,6 +32,8 @@ class Timeline
 
     this._minYear = null
     this._maxYear = null
+
+    this._sliderExists = false
   }
 
 
@@ -47,6 +49,8 @@ class Timeline
     // ------------------------------------------------------------------------
     // Event Handling
     // ------------------------------------------------------------------------
+
+    this._sliderExists = true
 
     this._sliderDiv.slider(
       {
@@ -188,6 +192,18 @@ class Timeline
 
     // Ensure that slider range has always the correct position
     $(window).resize(this._updateRangeSliderPosition)
+
+
+    // ------------------------------------------------------------------------
+    // Reset the timeline to the original position
+    // ------------------------------------------------------------------------
+
+    $('#reset-timeline').click( () =>
+      {
+        this._main.modules.timeController.resetPeriod()
+      }
+    )
+
   }
 
 
@@ -221,9 +237,12 @@ class Timeline
 
   update(minYear, maxYear, periodStart, periodEnd)
   {
-    // Ceanup
-    this._sliderDiv.slider("destroy")
-    this._rangeSlider.remove()
+    // Cleanup
+    if (this._sliderExists)
+    {
+      this._sliderDiv.slider("destroy")
+      this._rangeSlider.remove()
+    }
 
     // Init again
     this.init(minYear, maxYear, periodStart, periodEnd)

@@ -46,6 +46,7 @@ let loadHub = (main) =>
       {
         main.modules.climateDatasetsInList.enable()
         main.modules.coordinatesInInfobox.enable()
+        main.modules.climateDatasetController.reselect()
       }
 
       // New mode WeatherStation: set datasets title and disable coordinates
@@ -105,13 +106,32 @@ let loadHub = (main) =>
 
       // Update climate data for WeatherStation
       if (main.mode == 'S')
+      {
+        main.modules.weatherStationController.updateStations()
         main.modules.weatherStationController.updateDataForStation()
-
-      // Update active weather stations on the map
-      main.modules.weatherStationController.updateStations()
+      }
 
       // Update period data in timeline
       main.modules.timeline.updatePeriod(start, end)
+    }
+
+  main.hub.onResetPeriod = (start, end) =>
+    {
+      // Update climate data for ClimateCell
+      if (main.mode == 'C')
+        main.modules.climateDatasetController.update()
+
+      // Update climate data for WeatherStation
+      if (main.mode == 'S')
+      {
+        main.modules.weatherStationController.updateStations()
+        main.modules.weatherStationController.updateDataForStation()
+      }
+
+      // Update timeline completely
+      let min = main.modules.timeController.getMinYear()
+      let max = main.modules.timeController.getMaxYear()
+      main.modules.timeline.update(min, max, start, end)
     }
 
 
