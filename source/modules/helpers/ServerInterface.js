@@ -6,6 +6,17 @@
 // - To gazetteer       (getName, getElevation)
 // - To thredds         (ncss)
 // - To weatherstations (getAllStations, getStationData)
+//
+// Use me like this:
+/*
+  this._main.modules.serverInterface.requestNameForLocation(
+    coords,
+    (d) =>
+      {
+        name = ([d.name, d.adminName1, d.countryName])
+      }
+  )
+*/
 // ############################################################################
 
 class ServerInterface
@@ -14,36 +25,7 @@ class ServerInterface
   // PUBLIC MEMBERS
   // ##########################################################################
 
-  // ==========================================================================
-  // Constructor
-  // ==========================================================================
-
   constructor() {}
-
-
-  // ==========================================================================
-  // Gazetteer location information
-  // ==========================================================================
-
-  /*
-    use me like this:
-    -----------------
-      this._main.modules.serverInterface.requestNameForLocation(
-        coords,
-        (d) => {name = ([d.name, d.adminName1, d.countryName])}
-      )
-    }
-  */
-
-  requestNameForLocation(coords)
-  {
-    return this._requestGazetteer(coords, "N")
-  }
-
-  requestElevationForLocation(coords)
-  {
-    return this._requestGazetteer(coords, "E")
-  }
 
 
   // ==========================================================================

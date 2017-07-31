@@ -119,6 +119,8 @@ class ClimateDatasetController
     )
       return // No coordinates or time period given
 
+    this._main.modules.loading.start("climate data for raster cell")
+
     // Load data for this dataset at this position in this time period
     this._main.modules.serverInterface.requestClimateDataForCell(
       this._selectedDataset.url_datasets,
@@ -158,6 +160,8 @@ class ClimateDatasetController
             tempData, precData,           // Actual climate data
             name, coords, elev, source    // Meta data
           )
+
+          this._main.modules.loading.end("climate data for raster cell")
         }
     )
   }
@@ -184,44 +188,49 @@ class ClimateDatasetController
 
   _loadDatasets()
   {
-    this._main.modules.serverInterface.requestAllDatasets(
-      (xmlData) =>
+    this._main.modules.loading.start("datasets")
+
+    this._main.modules.serverInterface.requestAllDatasets( (xmlData) =>
+      {
+        // Parse data
+        let catalog = this._x2js.xml2json(xmlData).catalog
+
+        // For each dataset
+        for (var dsIdx in catalog.dataset)
         {
-          // Parse data
-          let catalog = this._x2js.xml2json(xmlData).catalog
+          // Create new climate dataset
+          let dataset = new ClimateDataset()
+          dataset.id =          catalog.dataset[dsIdx]._ID
+          dataset.name =        catalog.dataset[dsIdx]._name
+          dataset.description = catalog.dataset[dsIdx].documentation[0].__text
+          dataset.doi =         catalog.dataset[dsIdx].documentation[1].__text
+          dataset.url_datasets =
+          [
+            catalog.dataset[dsIdx].dataset[0]._urlPath,
+            catalog.dataset[dsIdx].dataset[1]._urlPath
+          ]
+          dataset.time_period =
+          [
+            parseInt(catalog.dataset[dsIdx].timeCoverage.start),
+            parseInt(catalog.dataset[dsIdx].timeCoverage.end)
+          ]
 
-          // For each dataset
-          for (var dsIdx in catalog.dataset)
-          {
-            // Create new climate dataset
-            let dataset = new ClimateDataset()
-            dataset.id =          catalog.dataset[dsIdx]._ID
-            dataset.name =        catalog.dataset[dsIdx]._name
-            dataset.description = catalog.dataset[dsIdx].documentation[0].__text
-            dataset.doi =         catalog.dataset[dsIdx].documentation[1].__text
-            dataset.url_datasets =
-            [
-              catalog.dataset[dsIdx].dataset[0]._urlPath,
-              catalog.dataset[dsIdx].dataset[1]._urlPath
-            ]
-            dataset.time_period =
-            [
-              parseInt(catalog.dataset[dsIdx].timeCoverage.start),
-              parseInt(catalog.dataset[dsIdx].timeCoverage.end)
-            ]
+          // Save dataset
+          this._datasets.push(dataset)
 
-            // Save dataset
-            this._datasets.push(dataset)
-
-            // Get metadata
-            this._loadMetadata(dataset)
-          }
+          // Get metadata
+          this._loadMetadata(dataset)
         }
+
+        this._main.modules.loading.end("datasets")
+      }
     )
   }
 
   _loadMetadata(dataset)
   {
+    this._main.modules.loading.start("metadata")
+
     this._main.modules.serverInterface.requestMetadataForDataset(
       dataset.url_datasets,
       (tempDataXml, precDataXml) =>
@@ -243,6 +252,8 @@ class ClimateDatasetController
         // Initially select the first dataset in the list
         if (!this._selectedDataset)
           this.select(this._datasets[0])
+
+        this._main.modules.loading.end("metadata")
       }
     )
   }

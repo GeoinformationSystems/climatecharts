@@ -7,27 +7,35 @@
 
 class Loading
 {
-  // ##########################################################################
-  // PUBLIC MEMBERS
-  // ##########################################################################
-
-  constructor() {}
+  constructor()
+  {
+    this._loadCounter = 0   // How many things are currently loading?
+  }
 
   // ==========================================================================
   // Start loading (put loading dialog on screen)
   // ==========================================================================
 
-  startLoading()
+  start(text)
   {
-
+    this._loadCounter++
+    console.log("Start Loading", text);
   }
 
   // ==========================================================================
   // Finish loading (remove loading dialog from screen)
   // ==========================================================================
 
-  finishLoading()
+  end(text)
   {
+    console.log("Finish Loading", text);
+    this._loadCounter--
+
+    // Only if nothing is loading anymore, remove the loader from the UI
+    if (this._loadCounter == 0)
+    {
+      console.log("!!! DONE !!!");
+    }
   }
 
 

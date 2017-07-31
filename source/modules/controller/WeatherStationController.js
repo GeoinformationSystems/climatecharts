@@ -150,6 +150,8 @@ class WeatherStationController
 
   _loadStations()
   {
+    this._main.modules.loading.start("weather stations")
+
     this._main.modules.serverInterface.requestAllWeatherStations(
       (allStationsData) =>
         {
@@ -185,6 +187,8 @@ class WeatherStationController
             // using JavaScript anonymous-functions-and-bind-magic :)
             // credits: http://stackoverflow.com/questions/10000083/javascript-event-handler-with-parameters
           }
+
+          this._main.modules.loading.end("weather stations")
         }
     );
   }
@@ -196,6 +200,8 @@ class WeatherStationController
 
   _loadDataForStation(station)
   {
+    this._main.modules.loading.start("climate data for weather station")
+
     this._main.modules.serverInterface.requestDataForWeatherStation(
       station.id,
       this._main.modules.timeController.getPeriodStart(),
@@ -208,6 +214,8 @@ class WeatherStationController
             station.location, station.elevation,  // Meta data: geo location
             this._main.config.station.source.link // Meta data: source
           )
+
+          this._main.modules.loading.end("climate data for weather station")
         }
     )
   }
