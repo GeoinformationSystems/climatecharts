@@ -188,7 +188,7 @@ class WeatherStationController
             // credits: http://stackoverflow.com/questions/10000083/javascript-event-handler-with-parameters
           }
 
-          this._main.modules.loading.end("weather stations")
+          this._main.modules.loading.end()
         }
     );
   }
@@ -215,7 +215,7 @@ class WeatherStationController
             this._main.config.station.source.link // Meta data: source
           )
 
-          this._main.modules.loading.end("climate data for weather station")
+          this._main.modules.loading.end()
         }
     )
   }

@@ -311,21 +311,6 @@ button:hover
   font-size: 0.8em;
 }
 
-.loader
-{
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 220px;
-  height: 100px;
-  margin-top: -50px;
-  margin-left: -110px;
-  background-color: white;
-  z-index: 1000;
-  visibility: hidden;
-  border: 1px solid gray;
-  border-radius: 10px;
-}
 
 #metadata
 {

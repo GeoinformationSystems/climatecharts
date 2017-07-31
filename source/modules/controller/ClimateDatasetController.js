@@ -161,7 +161,7 @@ class ClimateDatasetController
             name, coords, elev, source    // Meta data
           )
 
-          this._main.modules.loading.end("climate data for raster cell")
+          this._main.modules.loading.end()
         }
     )
   }
@@ -222,7 +222,7 @@ class ClimateDatasetController
           this._loadMetadata(dataset)
         }
 
-        this._main.modules.loading.end("datasets")
+        this._main.modules.loading.end()
       }
     )
   }
@@ -253,7 +253,7 @@ class ClimateDatasetController
         if (!this._selectedDataset)
           this.select(this._datasets[0])
 
-        this._main.modules.loading.end("metadata")
+        this._main.modules.loading.end()
       }
     )
   }

@@ -7,9 +7,16 @@
 
 class Loading
 {
+  // ==========================================================================
+  // Initialize loader that will be switched between shown/hidden
+  // ==========================================================================
+
   constructor()
   {
     this._loadCounter = 0   // How many things are currently loading?
+
+    // Setup loader div
+    this._loaderDiv = $('#loader')
   }
 
   // ==========================================================================
@@ -19,7 +26,16 @@ class Loading
   start(text)
   {
     this._loadCounter++
-    console.log("Start Loading", text);
+
+    // Put loader on the screen
+    this._loaderDiv.show()
+    this._loaderDiv.waitMe(
+      {
+        effect: 'progressBar',
+        text:   'Load ' + text,
+        color:  'black',
+      }
+    )
   }
 
   // ==========================================================================
@@ -28,13 +44,13 @@ class Loading
 
   end(text)
   {
-    console.log("Finish Loading", text);
     this._loadCounter--
 
     // Only if nothing is loading anymore, remove the loader from the UI
     if (this._loadCounter == 0)
     {
-      console.log("!!! DONE !!!");
+      this._loaderDiv.hide()
+      this._loaderDiv.empty()
     }
   }
 
