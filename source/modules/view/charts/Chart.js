@@ -31,9 +31,6 @@ class Chart
       if (chart.name == chartName)
         this._chartMain = chart
 
-    // Get helper: Save chart to PNG or SVG
-    this._chartSaver = new ChartSaver(main)
-
     // Error handling: if no climateData, chart will not be set up
     if (!climateData) return this._chartExists = false
 
@@ -195,11 +192,7 @@ class Chart
 
     $(pngButton).click(() =>
       {
-        let rootDiv =       this._chart[0][0]
-        let fileName =      this._chartName  // TODO: more sophisticated
-        this._chartSaver.toPNG(
-          rootDiv, fileName, this._chartsMain.saveOptions.png
-        )
+        this._saveToPNG()
       }
     )
 
@@ -215,7 +208,7 @@ class Chart
       {
         let rootDiv =       this._chart[0][0]
         let fileName =      this._chartName  // TODO: more sophisticated
-        this._chartSaver.toSVG(rootDiv, fileName)
+        this._saveToSVG(rootDiv, fileName)
       }
     )
 */
@@ -347,5 +340,48 @@ class Chart
     this._chartWrapper.css('padding-bottom',
       100*(this._chartHeight/this._chartWidth) + '%'
     )
+  }
+
+
+  // ==========================================================================
+  // Save chart to PNG
+  // ==========================================================================
+
+  _saveToPNG()
+  {
+    let rootDiv =   this._chart[0][0]
+    let fileName =  this._chartName  // TODO: more sophisticated
+
+    // Decrease font size
+    this._main.modules.helpers.increaseFontSize(
+      $('#' + rootDiv.id + ' text'),
+      this._chartsMain.saveOptions.png.fontDecreaseFactor
+    )
+
+    // Save it
+    saveSvgAsPng(
+      rootDiv,
+      fileName + this._chartsMain.saveOptions.png.fileExtension,
+      {
+        scale:          this._chartsMain.saveOptions.png.scaleFactor,
+        encoderOptions: this._chartsMain.saveOptions.png.imageQuality,
+      }
+    )
+
+    // Increase font size again
+    this._main.modules.helpers.increaseFontSize(
+      $('#' + rootDiv.id + ' text'),
+      1/this._chartsMain.saveOptions.png.fontDecreaseFactor
+    )
+  }
+
+
+  // ==========================================================================
+  // Save chart to SVG
+  // TODO
+  // ==========================================================================
+
+  _saveToSVG()
+  {
   }
 }

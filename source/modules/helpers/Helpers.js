@@ -132,4 +132,20 @@ class Helpers
     // return (Math.round(num*roundingFactor) / roundingFactor)
   }
 
+
+  // ==========================================================================
+  // Increase font size of a set of jQuery elements
+  // ==========================================================================
+
+  increaseFontSize(nodes, factor)
+  {
+    for (let nodeIdx = 0; nodeIdx < nodes.length; nodeIdx++)
+    {
+      let node = $(nodes[nodeIdx])
+      let oldFontSize = parseFloat(node.css('font-size'))
+      let newFontSize = (oldFontSize * factor)
+      node.css('font-size', newFontSize)
+    }
+  }
+
 }

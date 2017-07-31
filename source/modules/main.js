@@ -393,6 +393,7 @@ main.modules = {}
 main.modules.helpers =                    new Helpers(main)
 main.modules.serverInterface =            new ServerInterface(main)
 main.modules.loading =                    new Loading(main)
+main.modules.domElementCreator =          new DOMElementCreator(main)
 
 
 // --------------------------------------------------------------------------
