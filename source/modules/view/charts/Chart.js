@@ -32,7 +32,7 @@ class Chart
         this._chartMain = chart
 
     // Get helper: Save chart to PNG or SVG
-    this._chartSaver = new ChartSaver()
+    this._chartSaver = new ChartSaver(main)
 
     // Error handling: if no climateData, chart will not be set up
     if (!climateData) return this._chartExists = false
@@ -196,10 +196,8 @@ class Chart
     $(pngButton).click(() =>
       {
         let rootDiv =       this._chart[0][0]
-        let fileName =      this._chartName+".png"  // TODO: more sophisticated
-        let scaleFactor =   this._chartsMain.saveOptions.png.scaleFactor
-        let imageQuality =  this._chartsMain.saveOptions.png.imageQuality
-        this._chartSaver.toPNG(rootDiv, fileName, scaleFactor, imageQuality)
+        let fileName =      this._chartName  // TODO: more sophisticated
+        this._chartSaver.toPNG(rootDiv, fileName)
       }
     )
 
@@ -214,7 +212,7 @@ class Chart
     $(svgButton).click(() =>
       {
         let rootDiv =       this._chart[0][0]
-        let fileName =      this._chartName+".svg"  // TODO: more sophisticated
+        let fileName =      this._chartName  // TODO: more sophisticated
         this._chartSaver.toSVG(rootDiv, fileName)
       }
     )

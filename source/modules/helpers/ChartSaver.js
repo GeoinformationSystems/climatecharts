@@ -11,19 +11,37 @@ class ChartSaver
   // PUBLIC MEMBERS
   // ##########################################################################
 
-  constructor() {}
+  constructor(main)
+  {
+    this._saveOptions = main.config.charts.saveOptions
+  }
 
   // ==========================================================================
   // Save to PNG
   // ==========================================================================
 
-  toPNG(rootDiv, fileName, scaleFactor, imageQuality)
+  toPNG(rootDiv, fileName)
   {
-    saveSvgAsPng(rootDiv, fileName,
+    // Decrease font size
+    this._increaseFontSize(
+      rootDiv.id,
+      this._saveOptions.png.fontDecreaseFactor
+    )
+
+    // Save it
+    saveSvgAsPng(
+      rootDiv,
+      fileName + this._saveOptions.png.fileExtension,
       {
-        scale:          scaleFactor,
-        encoderOptions: imageQuality,
+        scale:          this._saveOptions.png.scaleFactor,
+        encoderOptions: this._saveOptions.png.imageQuality,
       }
+    )
+
+    // Increase font size again
+    this._increaseFontSize(
+      rootDiv.id,
+      1/this._saveOptions.png.fontDecreaseFactor
     )
   }
 
@@ -69,6 +87,15 @@ class ChartSaver
   // PRIVATE MEMBERS
   // ##########################################################################
 
-
-
+  _increaseFontSize(id, factor)
+  {
+    let textNodes = $('#' + id + ' text')
+    for (let textNodeIdx = 0; textNodeIdx < textNodes.length; textNodeIdx++)
+    {
+      let textNode = $(textNodes[textNodeIdx])
+      let oldFontSize = parseFloat(textNode.css('font-size'))
+      let newFontSize = (oldFontSize * factor)
+      textNode.css('font-size', newFontSize)
+    }
+  }
 }
