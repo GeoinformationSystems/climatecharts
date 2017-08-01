@@ -1,4 +1,16 @@
 <!DOCTYPE html>
+
+<!--  CLIMATECHARTS.NET
+  This is the one and only *.html file that defines the document structure. Using bootstrap, this structure is to a certain degree responsive and therefore works ok on mobile devices. It was mainly developed for desktop devices with larger screen resolutions.
+  This file also defines the meta information about the website and includes the stylesheets (*.css) and most importantly the source code of the actual program (*.js). The programming language used is JavaScript ECMA6. Since it is not the de-facto standard in web browsers yet, the *.js-files in the source/-folder have to be converted to state-of-the-art JavaScript ECMA 5 in the build/-folder using a node.js module. The conversion is done in the build.sh script. After each change of the source code in the source/-folder the build script has to be executed again.
+  For deployment, all that is necessary is:
+    build/
+    data/
+    index.html
+  The source/ folder and the other files in the root folder are not necessary to actually run the web service in a web browser.
+-->
+
+
 <html>
   <head>
 
@@ -19,6 +31,8 @@
     <link  href="build/third-party/jquery/jquery-ui.css" rel="stylesheet" />
     <script src="build/third-party/jquery/panzoom.js"></script>
     <script src="build/third-party/jquery/pointertouch.js"></script>
+    <script src="build/third-party/jquery/waitMe.min.js"></script>
+    <link  href="build/third-party/jquery/waitMe.min.css" rel="stylesheet" />
 
     <!-- Bootstrap (requires jQuery) -->
     <script src="build/third-party/bootstrap/bootstrap.min.js"></script>
@@ -37,10 +51,6 @@
 
     <!-- toggle-switch: nice little style for simple toggles -->
     <link  href="build/third-party/toggle-switch/toggle-switch.css" rel="stylesheet" />
-
-    <!-- waitMe: loading ... -->
-    <script src="build/third-party/waitMe/waitMe.min.js"></script>
-    <link  href="build/third-party/waitMe/waitMe.min.css" rel="stylesheet" />
 
     <!-- x2js: conversion XML <-> JSON -->
     <script src="build/third-party/x2js/xml2json.js"></script>
@@ -171,14 +181,57 @@
   											<div class="info">
   												<h3>Datasets</h3>
   												<p id="source" class ="block">
-  												</p>
-  												<p class="block">Please note that the temperature and precipitation values shown in the diagram are based on interpolated data and therefore might differ significantly from real conditions.
-  												</p>
-  												<p>
-  													For the title and elevation value "Geonames" gazetteer is used: <br/> http://www.geonames.org/, Creative Commons Attribution 3.0 License
-  												</p>
+                            ClimateCharts.net uses two different kinds of data sources: interpolated and simulated climate data for raster cells on the map and real measured weather data from weather stations around the world.
+                          </p>
+                          <h4>Climate Data for Raster Cells</h4>
+                          <p class="block">
+                            <a href="dx.doi.org/10.5285/4c7fdfa6-f176-4c58-acee-683d5e9d2ed5" target="_blank">
+                              <b>CRU Time Series v3.23</b>
+                            </a>
+                            <br/>
+                            University of East Anglia Climatic Research Unit; Harris, I.(.; Jones, P.D. (2015): CRU TS3.23: Climatic Research Unit (CRU) Time-Series (TS) Version 3.23 of High Resolution Gridded Data of Month-by-month Variation in Climate (Jan. 1901- Dec. 2014). Centre for Environmental Data Analysis, 09 November 2015.
+                            <br/>
+                            Spatial Resolution: 0.5° x 0.5°
+                            <br/>
+                            Temporal Coverage: 1901 - 2014
+                          </p>
+                          <p class="block">
+                            <a href="http://climate.geog.udel.edu/~climate/html_pages/README.ghcn_ts2.html" target="_blank">
+                              <b>University of Delaware Air Temperature and Precipitation v4.01</b>
+                            </a>
+                            <br/>
+                            Monthly global gridded high resolution station (land) data for air temperature and precipitation from 1901-2014. UDel_AirT_Precip data provided by the NOAA/OAR/ESRL PSD, Boulder, Colorado, USA, from their Web site at http://www.esrl.noaa.gov/psd/ Reference: Willmott, C. J. and K. Matsuura (2001) Terrestrial Air Temperature and Precipitation: Monthly and Annual Time Series (1950 - 1999)
+                            <br/>
+                            Spatial Resolution: 0.5° x 0.5°
+                            <br/>
+                            Temporal Coverage: 1901 - 2014
+                          </p>
+                          <p class="block">
+                            <a href="http://localhost/climatecharts/dx.doi.org/10.1029/2007JD008470,%20dx.doi.org/10.5676/DWD_GPCC/FD_M_V7_050" target="_blank">
+                              <b>GHCN CAMS and GPCC v7</b>
+                            </a>
+                            <br/>
+                            GHCN CAMS is a high resolution (0.5x0.5) analyzed global land surface temperatures from 1948 to near present. GHCN Gridded V2 data provided by the NOAA/OAR/ESRL PSD, Boulder, Colorado, USA, from their Web site at http://www.esrl.noaa.gov/psd/ Reference: Fan, Y., and H. van den Dool (2008), A global monthly land surface air temperature analysis for 1948-present, J. Geophys. Res., 113, D01103. GPCC Global Precipitation Climatology Centre monthly precipitation dataset from 1901-present is calculated from global station data. Reference: Schneider, Udo; Becker, Andreas; Finger, Peter; Meyer-Christoffer, Anja; Rudolf, Bruno; Ziese, Markus (2011): GPCC Full Data Reanalysis Version 6.0 at 0.5°: Monthly Land-Surface Precipitation from Rain-Gauges built on GTS-based and Historic Data.
+                            <br/>
+                            Spatial Resolution: 0.5° x 0.5°
+                            <br/>
+                            Temporal Coverage: 1948 - 2013
+                          </p>
   												<p class="block">
-  													Elevation is based on SRTM data and only available between 60° northern and 58° southern latitude. The climate class is calculated from the temperature and precipitation data according to the
+                            Please note that the temperature and precipitation values shown in the diagram are based on interpolated data and therefore might differ significantly from real conditions.
+  												</p>
+                          <h4>Weather Stations</h4>
+                          <p class="block">
+                            <a href="http://www.ncdc.noaa.gov/ghcnm/" target="_blank">
+                              <b>Global Historical Climatology Network</b>
+                            </a>
+                            <br/>
+                            GHCN-Monthly provides climatological observations for four elements: monthly mean maximum temperature, minimum temperature, mean temperature, and monthly total precipitation. Since the early 1990s the Global Historical Climatology Network-Monthly (GHCN-M) dataset has been an internationally recognized source of data for the study of observed variability and change in land surface air temperature. It provides monthly mean temperature data for 7280 stations from 226 countries and territories, ongoing monthly updates of more than 2000 stations to support monitoring of current and evolving climate conditions, and homogeneity adjustments to remove non-climatic influences that can bias the observed temperature record.
+                          </p>
+                          <h4>Location Names and Elevation data</h4>
+  												<p>
+  													For the title and elevation value the gazetteer from <a href="http://www.geonames.org/" target="_blank">GeoNames</a> is used (Creative Commons Attribution 3.0 License).
+                            Elevation is based on SRTM data and only available between 60° northern and 58° southern latitude. The climate class is calculated from the temperature and precipitation data according to the
   													<a target="_blank" href="https://en.wikipedia.org/wiki/K%C3%B6ppen_climate_classification">Köppen-Geiger climate classification scheme</a>.
   												</p>
   											</div>
@@ -191,20 +244,67 @@
   												Frontend libraries:
   											</p>
   											<ul>
-  											  <li>Data Driven Documents (D3)</li>
-  											  <li>Leaflet</li>
-  											  <li>Bootstrap</li>
-  											  <li>JQuery + JQuery-UI</li>
+                          <li>
+                            <a href="http://getbootstrap.com/" target="_blank">
+                              Bootstrap
+                            </a>
+                          </li>
+  											  <li>
+                            <a href="https://d3js.org/" target="_blank">
+                              Data Driven Documents (D3)
+                            </a>
+                            +
+                            <a href="https://bl.ocks.org/mbostock/4061502" target="_blank">
+                              Box Plots
+                            </a>
+                          </li>
+  											  <li>
+                            <a href="https://github.com/exupero/saveSvgAsPng" target="_blank">
+                              Save SVG As PNG
+                            </a>
+                          </li>
+  											  <li>
+                            <a href="https://jquery.com/" target="_blank">
+                              jQuery
+                            </a>
+                            +
+                            <a href="https://jqueryui.com/" target="_blank">
+                              jQuery UI
+                            </a>
+                          </li>
+                          <li>
+                            <a href="http://leafletjs.com/" target="_blank">
+                              Leaflet
+                            </a>
+                          </li>
+                          <li>
+                            <a href="https://ghinda.net/css-toggle-switch/index.htm" target="_blank">
+                              CSS Toggle Switch
+                            </a>
+                          </li>
+                          <li>
+                            <a href="https://github.com/abdmob/x2js" target="_blank">
+                              x2js
+                            </a>
+                          </li>
   											</ul>
   											<p>
   												Servers and web services:
   											</p>
   											<ul>
-  											  <li>THREDDS Data Server</li>
-  											  <li>GeoNames Webservices</li>
+  											  <li>
+                            <a href="http://www.unidata.ucar.edu/software/thredds/current/tds/" target="_blank">
+                              THREDDS Data Server
+                            </a>
+                          </li>
+  											  <li>
+                            <a href="http://www.geonames.org/" target="_blank">
+                              GeoNames
+                            </a>
+                          </li>
   											</ul>
   											<p> Optimized for Firefox and Chrome. This website uses
-  												the Piwik Analytics Platform to obtain user data.
+  												the <a href="https://piwik.org/Piwik" target="_blank"> Piwik Analytics Platform</a> to obtain user data.
   											</p>
   										</div>
   									</div>
@@ -239,12 +339,12 @@
   											<div class="info">
   												<p>
   													The <a target="_blank" href="http://tu-dresden.de/impressum">
-  													imprint of the Technical University Dresden</a>	is applied
+  													Legal disclaimer of Dresden University of Technology </a> is applied
   													with the following constraint:<br/>
   													<br/>
   													Web design and technical development: <br/>
+                            M.Sc. Marcus Kossatz <br/>
   													M.Sc. Felix Wiemann <br/>
-  													M.Sc. Marcus Kossatz <br/>
   													<br/>
   													Contact: <br/>
   													Prof. Dr. Lars Bernard<br/>

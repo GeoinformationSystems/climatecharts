@@ -1,11 +1,16 @@
 // ############################################################################
-// Main configurations in general and for all modules
+// MAIN CONFIGURATIONS
+// ############################################################################
+// This file contains the configuration data in general and for each modules.
+// In this file the application can be tweaked without changing the actual
+// source code.
 // ############################################################################
 
 let loadConfig = (main) =>
 {
   main.config =
   {
+    // ========================================================================
     time :
     {
       minYear:      1900,       // Minimum possible year of climate data
@@ -14,6 +19,7 @@ let loadConfig = (main) =>
       periodEnd:    2014,       // Initial end year of the period
     },
 
+    // ========================================================================
     map :
     {
       container:    "map",
@@ -41,11 +47,13 @@ let loadConfig = (main) =>
       },
     },
 
+    // ========================================================================
     coordinates:
     {
       decimalPlaces: 3,  // Visualized coordinate precision (lat/lng)
     },
 
+    // ========================================================================
     climateCell:
     {
       style:
@@ -55,6 +63,7 @@ let loadConfig = (main) =>
       },
     },
 
+    // ========================================================================
     charts:
     {
       parentContainer:  'main-container',
@@ -109,6 +118,7 @@ let loadConfig = (main) =>
       },
       charts:
       [
+        // --------------------------------------------------------------------
         {
           name:           'climate-chart',
           widthRatio:     0.75, // [%] of full width for diagram -> rest: table
@@ -170,6 +180,7 @@ let loadConfig = (main) =>
           }
         },
 
+        // --------------------------------------------------------------------
         {
           name:           'distribution-chart',
           margin:         // [px]
@@ -208,6 +219,7 @@ let loadConfig = (main) =>
           },
         },
 
+        // --------------------------------------------------------------------
         {
           name:         'availability-chart',
           margin:         // [px]
@@ -244,11 +256,13 @@ let loadConfig = (main) =>
       ],
     },
 
+    // ========================================================================
     climateData:
     {
       decimalPlaces: 1,     // Decimal precision for both temp / prec
     },
 
+    // ========================================================================
     datasetsInfobox:
     {
       ref:            "Data Reference",
@@ -261,6 +275,7 @@ let loadConfig = (main) =>
       missingMonths:  "Missing Months",
     },
 
+    // ========================================================================
     // Weather stations (marker: circle)
     station:
     {
