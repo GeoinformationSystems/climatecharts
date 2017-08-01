@@ -144,8 +144,13 @@ class ClimateDatasetController
 
           // Detect empty dataset: Is it an empty dataset?
           for (let nullValue of CLIMATE_DATASET_NULL_VALUES)
+          {
             if (tempData[0][0] == nullValue)
+            {
+              this._main.modules.loading.end()
               return this._main.modules.climateDataController.clear()
+            }
+          }
 
           // Assemble name array
           let name = [
