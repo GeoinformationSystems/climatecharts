@@ -1,6 +1,3 @@
-- ClimateCellOnMap:71
-    config.climateCell.style -> correct?
-
 - Put actual values into raster cell
 
 - Weatherstations metadata table
