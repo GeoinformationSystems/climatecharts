@@ -1,15 +1,20 @@
 // ############################################################################
 // LocationMarkerOnMap                                                     View
 // ############################################################################
-// Shows the current location the user selected
-// -> Origin of name and information of current location
+// Shows the current location that the user selected in the ClimateCell mode.
+// This is the origin of the location of the raster cell that determines the
+// climate cell that is loaded from the server.
+// The location is visualized by a leaflet marker.
 // ############################################################################
+
 
 class LocationMarkerOnMap
 {
+
   // ##########################################################################
   // PUBLIC MEMBERS
   // ##########################################################################
+
 
   // ==========================================================================
   // Constructor

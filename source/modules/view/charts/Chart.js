@@ -1,15 +1,22 @@
 // ############################################################################
 // Chart                                                                  View
 // ############################################################################
-// Is the base class for all visualization charts
-// - Create the div container
-// - Provide d3 as the visualization library
-// - Provide title, subtitle, data reference
-// - Provide functionality for exporting to SVG and PNG
+// Base class for all visualization charts using the d3 visualization library.
+// Manages the basic procedures that are the same for each of the charts, e.g:
+// - Creating the div container
+// - Creating title, subtitle and footer (data reference and source)
+// - Providing functionality for exporting to SVG and PNG
 // ############################################################################
+
 
 class Chart
 {
+  
+  // ##########################################################################
+  // PUBLIC MEMBERS
+  // ##########################################################################
+
+
   // ==========================================================================
   // Constructor
   // ==========================================================================
@@ -81,6 +88,7 @@ class Chart
   // PRIVATE MEMBERS
   // ##########################################################################
 
+
   // ==========================================================================
   // Set all member variables
   // ==========================================================================
@@ -112,6 +120,7 @@ class Chart
     // Actual chart data
     this._climateData = climateData
   }
+
 
   // ==========================================================================
   // Set Metadata
@@ -374,11 +383,12 @@ class Chart
 
 
   // ==========================================================================
-  // Save chart to SVG
   // TODO
+  // Save chart to SVG
   // ==========================================================================
 
   _saveToSVG()
   {
   }
+
 }

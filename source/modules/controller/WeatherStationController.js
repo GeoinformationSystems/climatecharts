@@ -1,14 +1,16 @@
 // ############################################################################
-// StationController                                                Controller
+// WeatherStationController                                          Controller
 // ############################################################################
-// Manages all weather stations in the system
-// - Load stations from the database
-// - Manage (in)active weather station based on availability of data in system
-// - Tell StationsOnMap about (de)active weather stations
+// Manages all weather stations in the system:
+// - Initially loading all stations from the database
+// - Handling (de)selection of stations and loading the associated ClimateData
+// - Updating the available stations in the current time period
 // ############################################################################
+
 
 class WeatherStationController
 {
+
   // ##########################################################################
   // PUBLIC MEMBERS
   // ##########################################################################
@@ -238,4 +240,5 @@ class WeatherStationController
     else
       return false
   }
+  
 }

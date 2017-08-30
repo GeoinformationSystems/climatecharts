@@ -1,26 +1,27 @@
 // ############################################################################
 // ServerInterface                                                      Helper
 // ############################################################################
-// This class is the one and only class that handles the connection to the
-// server apps (send requests, return response)
+// Handles all client-server-interactions (send requests and return responses)
 // - To gazetteer       (getName, getElevation)
 // - To thredds         (ncss)
 // - To weatherstations (getAllStations, getStationData)
 //
 // Use me like this:
-/*
-  this._main.modules.serverInterface.requestNameForLocation(
-    coords,
-    (d) =>
-      {
-        name = ([d.name, d.adminName1, d.countryName])
-      }
-  )
-*/
+  /*
+    this._main.modules.serverInterface.requestNameForLocation(
+      coords,
+      (d) =>
+        {
+          name = ([d.name, d.adminName1, d.countryName])
+        }
+    )
+  */
 // ############################################################################
+
 
 class ServerInterface
 {
+
   // ##########################################################################
   // PUBLIC MEMBERS
   // ##########################################################################

@@ -1,15 +1,18 @@
 // ############################################################################
 // ClimateDataController                                            Controller
 // ############################################################################
-// Handles the climate data received from weatherstation or climate cell
-// and sends it to the chart visualization modules
+// Handles the ClimateData received from WeatherStation or ClimateCell and
+// sends it to the view modules for the chart visualizations (ChartControler).
 // ############################################################################
+
 
 class ClimateDataController
 {
+
   // ##########################################################################
   // PUBLIC MEMBERS
   // ##########################################################################
+
 
   // ==========================================================================
   // Constructor

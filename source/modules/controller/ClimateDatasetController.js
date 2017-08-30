@@ -1,13 +1,16 @@
 // ############################################################################
 // ClimateDatasetController                                          Controller
 // ############################################################################
-// Handles the datasets from thre thredds data server
-// - Load datasets
-// - Manage active dataset
+// Handles the ClimateDatasets (from thre thredds data server)
+// - Initially loading all datasets
+// - Loading ClimateData for (de/re)selected dataset
+// - Update ClimateData if time period changes
 // ############################################################################
+
 
 class ClimateDatasetController
 {
+
   // ##########################################################################
   // PUBLIC MEMBERS
   // ##########################################################################
@@ -19,6 +22,7 @@ class ClimateDatasetController
   constructor(main)
   {
     this._main = main
+
     this._x2js = new X2JS()
 
 
@@ -32,7 +36,6 @@ class ClimateDatasetController
     // Initially load datasets and metadata
     this._loadDatasets()
 
-    this._ctr = 0
   }
 
 
@@ -316,4 +319,5 @@ class ClimateDatasetController
     }
     return outData
   }
+  
 }

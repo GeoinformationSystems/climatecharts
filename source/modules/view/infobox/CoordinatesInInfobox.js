@@ -1,15 +1,18 @@
 // ############################################################################
 // CoordinatesInInfobox                                                   View
 // ############################################################################
-// This class is responsible simply for showing the currently selected
-// coordinates in the infobox on the right side.
+// Shows the currently selected coordinates in the infobox on the right side.
+// In the ClimateCell mode the user can also set the coordinates manually.
 // ############################################################################
+
 
 class CoordinatesInInfobox
 {
+
   // ##########################################################################
   // PUBLIC MEMBERS
   // ##########################################################################
+
 
   // ==========================================================================
   // Constructor

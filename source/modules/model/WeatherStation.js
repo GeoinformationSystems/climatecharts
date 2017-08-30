@@ -1,23 +1,16 @@
 // ############################################################################
 // WeatherStation                                                         Model
 // ############################################################################
-// Station represents one single WeatherStation in the system
-// - A bit more detailed
-// - So that everybody understands what this is for
+// Represents one single weather station in the system with a name, location,
+// temporal coverage ofthe data, meta information and Visualization parameters.
 // ############################################################################
 
 class WeatherStation
 {
-  // ##########################################################################
-  // PUBLIC MEMBERS
-  // ##########################################################################
-
-  // ==========================================================================
-  // Constructor
-  // ==========================================================================
 
   constructor()
   {
+
     // ------------------------------------------------------------------------
     // General data
     // ------------------------------------------------------------------------
@@ -26,10 +19,10 @@ class WeatherStation
     this.name =           ""
     this.country =        ""
     this.coords =
-    {
-      'lat':              0.0,
-      'lng':              0.0
-    }
+      {
+        'lat':            0.0,
+        'lng':            0.0
+      }
     this.elev =           0.0
     this.min_year =       0
     this.max_year =       9999

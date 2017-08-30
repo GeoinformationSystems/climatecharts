@@ -1,17 +1,18 @@
 // ############################################################################
-// MAP                                                                     View
+// Map                                                                     View
 // ############################################################################
-// Manages the map in the viewport
-// - Based on Leaflet.js
-// - Dealing with user interaction
+// Manages the map in the main part of the UI using Leaflet.js.
+// Handles with user interactions on the maps.
 // ############################################################################
 
 
 class Map
 {
+  
   // ##########################################################################
   // PUBLIC MEMBERS
   // ##########################################################################
+
 
   // ==========================================================================
   // Constructor
@@ -44,7 +45,7 @@ class Map
     L.control.layers(tileLayers).addTo(this._map)
     L.control.scale().addTo(this._map)
 
-    // Problem: for some reason this code only leads tiles from the northern
+    // Problem: for some reason this code only loads tiles from the northern
     // hemisphere. Only after window resize everything loads
     // Hack: manual resize event :/ -> not nice, but works!
     // TODO: fix it...
@@ -56,11 +57,10 @@ class Map
     // ------------------------------------------------------------------------
 
 		// Handle click event on map
-    // distinguish between click on station or directly on map
+    // -> distinguish between click on station or directly on map
     this._map.on("click", evt =>
       {
-        let coords =
-        this._main.modules.mapController.setLocation(
+        let coords = this._main.modules.mapController.setLocation(
           {
             lat: evt.latlng.lat,
             lng: evt.latlng.lng
@@ -68,6 +68,7 @@ class Map
         )
       }
     )
+
   }
 
   // ==========================================================================

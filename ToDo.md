@@ -1,3 +1,12 @@
-TO DO:
-- Weatehrstations metadata table: cols(temp, prec), rows (miss. months, larg. gap, cov. rate)
+- ClimateCellOnMap:71
+    config.climateCell.style -> correct?
+
+- Put actual values into raster cell
+
+- Weatherstations metadata table
+                    TEMP    PREC
+  Missing Months
+  Largest Gap
+  Coverage Rate
+
 - Update climate data from sources (maybe even a script that automates that?)

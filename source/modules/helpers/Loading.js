@@ -1,12 +1,13 @@
 // ############################################################################
 // Loading                                                              Helper
 // ############################################################################
-// This is a little helper class that puts the loading dialog on screen while
-// data is fetched from the server
+// Handles the loading dialog on screen while data is fetched from the server.
 // ############################################################################
+
 
 class Loading
 {
+  
   // ==========================================================================
   // Initialize loader that will be switched between shown/hidden
   // ==========================================================================
@@ -18,6 +19,7 @@ class Loading
     // Setup loader div
     this._loaderDiv = $('#loader')
   }
+
 
   // ==========================================================================
   // Start loading (put loading dialog on screen)
@@ -38,6 +40,7 @@ class Loading
     )
   }
 
+
   // ==========================================================================
   // Finish loading (remove loading dialog from screen)
   // ==========================================================================
@@ -53,10 +56,5 @@ class Loading
       this._loaderDiv.empty()
     }
   }
-
-
-  // ##########################################################################
-  // PRIVATE MEMBERS
-  // ##########################################################################
 
 }

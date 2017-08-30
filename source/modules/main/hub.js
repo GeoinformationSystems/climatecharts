@@ -8,6 +8,10 @@ let loadHub = (main) =>
 {
   main.hub = {}
 
+  // ==========================================================================
+  // Mode Changes ('C': ClimateCell, 'S': WeatherStation)
+  // ==========================================================================
+
   main.hub.onModeChange = (newMode) =>
     {
       let oldMode = main.mode

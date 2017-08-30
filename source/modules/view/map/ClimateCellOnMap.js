@@ -1,16 +1,19 @@
 // ############################################################################
 // ClimateCellOnMap                                                       View
 // ############################################################################
-// Represents the current climate raster cell on the map
-// -> Origin of simulated climate data from datasets
-// - representation by leaflet circle with station and style
+// Manages the currently selected climate raster cell on the map which is the
+// origin of the current ClimateData from the ClimateDataset.
+// The cell is visualized by a leaflet rectangle.
 // ############################################################################
+
 
 class ClimateCellOnMap
 {
+
   // ##########################################################################
   // PUBLIC MEMBERS
   // ##########################################################################
+
 
   // ==========================================================================
   // Constructor
@@ -68,7 +71,7 @@ class ClimateCellOnMap
     // If cell does not exist yet => create it
     if (!this._cell)
     {
-      this._cell = new L.rectangle(bounds, main.config.climateCell.sytle)
+      this._cell = new L.rectangle(bounds, this._main.config.climateCell.style)
       this._cell.addTo(this._map)
     }
 

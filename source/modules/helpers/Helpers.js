@@ -1,12 +1,15 @@
 // ############################################################################
 // HELPERS
 // ############################################################################
+// Little functions that make the life as a web programmer a bit easier, e.g.
+// - Mixin one JS Object into another
+// - Create a deep copy of a JS Object
+// - Check if a certain value is a string or a number
+// ############################################################################
+
 
 class Helpers
 {
-  // ##########################################################################
-  // PUBLIC MEMBERS
-  // ##########################################################################
 
   constructor() {}
 

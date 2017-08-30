@@ -1,18 +1,21 @@
 // ############################################################################
 // DistributionChart                                                       View
 // ############################################################################
-// Credits to: "Box Plots",Jens Grubert & Mike Bostock, access: 14.07.2017
-// http://bl.ocks.org/jensgrubert/7789216
+// Visualizes the distribution/variation of the temperature and precipitation
+// data for each month in the selected time perion using box plots.
 // ############################################################################
+
 
 class DistributionChart extends Chart
 {
+
   // ##########################################################################
   // PUBLIC MEMBERS
   // ##########################################################################
 
+
   // ==========================================================================
-  // Construct chart
+  // Constructor
   // ==========================================================================
 
   constructor(main, climateData)
@@ -29,6 +32,7 @@ class DistributionChart extends Chart
   // ##########################################################################
   // PRIVATE MEMBERS
   // ##########################################################################
+
 
   // ==========================================================================
   // Init local members

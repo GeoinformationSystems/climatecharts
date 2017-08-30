@@ -1,37 +1,17 @@
 // ############################################################################
 // ClimateData                                                            Model
 // ############################################################################
-// ClimateData represents a dataset containing the relevant data for the
-// climate of one specific location in the following format:
-//  {
-//  	num_years:         number of years
-//  	prec:					     for each dataset
-//  	[                  for each month
-//  		{                month 1 (Jan)
-//  			raw_data: []   data values for each year
-//  			mean:          data mean of all values of this month
-//  			num_gaps:      number of missing years
-//  		},
-//  		{...},           month 2 (Feb) ...
-//  	],
-//  	temp:              same structure as above
-//  }
-//
+// Represents a dataset containing the relevant data for the climate at one
+// specific location in one specific time period.
 // ############################################################################
 
 
 class ClimateData
 {
-  // ##########################################################################
-  // PUBLIC MEMBERS
-  // ##########################################################################
-
-  // ==========================================================================
-  // Constructor
-  // ==========================================================================
-
+  
   constructor()
   {
+
     // ------------------------------------------------------------------------
     // Metadata
     // ------------------------------------------------------------------------
@@ -82,4 +62,5 @@ class ClimateData
       maxPrec:            null,
     }
   }
+
 }

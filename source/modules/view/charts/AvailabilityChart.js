@@ -1,13 +1,19 @@
 // ############################################################################
 // AvailabilityChart                                                       View
 // ############################################################################
+// Visualizes the coverage/availability of the current ClimateData in a table:
+// For each year, for each month show if temperature and/or precipitation data
+// is available by coloring the taable cell gray or with the color.
 // ############################################################################
+
 
 class AvailabilityChart extends Chart
 {
+  
   // ##########################################################################
   // PUBLIC MEMBERS
   // ##########################################################################
+
 
   // ==========================================================================
   // Construct chart

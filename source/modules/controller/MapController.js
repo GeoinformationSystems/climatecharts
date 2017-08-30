@@ -1,17 +1,13 @@
 // ############################################################################
 // MapController                                                    Controller
 // ############################################################################
-// Manages the currently selected location on the map
-// - Two different location modi:
-//  C) ClimateCell mode
-//    The user selects a random location on the map
-//    -> The active climate cell is selected
-//    -> Simulated climate data for this cell is loaded
-//  S) WeatherStation mode
-//    The user selects a given weather station on the map
-//    -> The weatherstation is selected
-//    -> Given climate data for this station is loaded
-// - Receiving selection from the map and the info box
+// Manages the currently selected location on the map for both main modi:
+// - ClimateCell mode:    The user selects a random location on the map
+//    -> Select the ClimateCell
+//    -> Simulated ClimateData for this ClimateCell is loaded
+// - WeatherStation mode: The user selects a weather station on the map
+//    -> Select the WeatherStation
+//    -> Measured ClimateData for this WeatherStation is loaded
 // ############################################################################
 
 
@@ -37,12 +33,12 @@ class MapController
     // Staus variable: currently an active weather station?
     this._stationJustActivated = false
 
-    // Current Coordinates: object with 'lat' and 'lng' property
+    // Current coordinates
     this._coords =
-    {
-      lat:  null,
-      lng:  null
-    }
+      {
+        lat:  null,
+        lng:  null
+      }
   }
 
 
@@ -101,6 +97,7 @@ class MapController
   // PRIVATE MEMBERS
   // ##########################################################################
 
+
   // ==========================================================================
   // Bring coordinates into bounds of geographic coordinate system
   // ==========================================================================
@@ -125,4 +122,5 @@ class MapController
 
     return(realCoords)
   }
+  
 }

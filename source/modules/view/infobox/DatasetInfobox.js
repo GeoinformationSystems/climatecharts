@@ -1,12 +1,14 @@
 // ############################################################################
 // DatasetsInfInfobox                                                     View
 // ############################################################################
-// This class is responsible simply for showing the metadata about the
-// currently selected dataset in the infobox on the right.
+// Shows the metadata of the currently selected dataset or the weather station
+// in the infobox on the right.
 // ############################################################################
+
 
 class DatasetInfobox
 {
+
   // ##########################################################################
   // PUBLIC MEMBERS
   // ##########################################################################
@@ -132,7 +134,8 @@ class DatasetInfobox
       + ' - '
       + station.max_year
       + '</p>'
-      // TODO: make table and distinguish between temp and prec
+
+      // TODO: make table to distinguish between temp and prec
       // + '<p>'
       // + this._main.config.datasetsInfobox.coverage
       // + ': '

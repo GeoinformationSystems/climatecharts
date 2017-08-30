@@ -1,11 +1,14 @@
 // ############################################################################
 // ChartTitleSetter                                                       View
 // ############################################################################
-// Get and Set the title of the visualization charts
+// Manages title of the visualization charts. The title can be set by changing
+// the text in the text field and clicking the 'Write'-Button
 // ############################################################################
+
 
 class ChartTitleSetter
 {
+
   // ##########################################################################
   // PUBLIC MEMBERS
   // ##########################################################################

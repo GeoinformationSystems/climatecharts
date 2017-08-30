@@ -1,13 +1,19 @@
 // ############################################################################
 // DOMElementCreator                                                     Helper
 // ############################################################################
-// Create DOM Element with type, id, class and attributes
+// Creates HTML Document Object Model (DOM) Elements (e.g. <div>, <a>, ...)
+// with the following attributes:
+// - Type       e.g. <div>
+// - ID         e.g. 'chartWrapper'
+// - Classes    e.g. ['button', 'highlight']
+// - Attributes e.g. [['href', 'http://...'], ['target'], ['blank']]
 // ############################################################################
+
 
 class DOMElementCreator
 {
+  
   constructor() {}
-
 
   // ==========================================================================
   // Create and return a new DOM element

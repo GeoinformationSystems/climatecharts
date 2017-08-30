@@ -4,7 +4,7 @@
 // Manages the currently active charts in the visualization. Receives new
 // ClimateData from ClimateDataController or a new chart title from
 // ChartTitleSetter and updates the visualization.
-// Three types of graphs:
+// Currentrly there are three different charts in the system:
 // - ClimateChart
 // - DistributionChart
 // - AvailabilityChart
@@ -97,11 +97,5 @@ class ChartController
 
     this._chartInfo.show()
   }
-
-
-
-  // ##########################################################################
-  // PRIVATE MEMBERS
-  // ##########################################################################
 
 }

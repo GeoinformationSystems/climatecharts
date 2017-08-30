@@ -1,18 +1,19 @@
 // ############################################################################
-// TIMELINE                                                               View
+// Timeline                                                               View
 // ############################################################################
-// Manages the timeline in the list
-// - Use jQuery UI Slider and properly set up slider
-// - Receive absolute min and max year (dimension of slider)
-// - Manage selected time period (periodStart and periodEnd) with a time slider
+// Manages the timeline in the infobox on the right using the jQuery UI Slider.
+// It receives the dimension of the slider (absolute min & max year) and
+// handles the selected time period (periodStart & periodEnd) with the slider.
 // ############################################################################
 
 
 class Timeline
 {
+
   // ##########################################################################
   // PUBLIC MEMBERS
   // ##########################################################################
+
 
   // ==========================================================================
   // Constructor
@@ -38,7 +39,7 @@ class Timeline
 
 
   // ==========================================================================
-  // Init after all controllers are fully loaded
+  // Init timeline (after all controllers are fully loaded)
   // ==========================================================================
 
   init(minYear, maxYear, periodStart, periodEnd)
@@ -67,7 +68,7 @@ class Timeline
                 let periodStart = this._sliderDiv.slider("values", 0)
                 let periodEnd =   this._sliderDiv.slider("values", 1)
                 this.updatePeriod(periodStart, periodEnd)
-              },10
+              }, 10
             )
           },
 

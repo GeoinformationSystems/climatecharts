@@ -1,15 +1,19 @@
 // ############################################################################
 // TimeController                                                   Controller
 // ############################################################################
-// Manages the temporal aspect of the information system
-// - Set and get min and max year
+// Manages all temporal aspects of the application
+// - For the current dataset/station:           min & max year
+// - For the current state of the application:  period start & end year
 // ############################################################################
+
 
 class TimeController
 {
+
   // ##########################################################################
   // PUBLIC MEMBERS
   // ##########################################################################
+
 
   // ==========================================================================
   // Constructor
@@ -24,7 +28,7 @@ class TimeController
     // Member Variables
     // ------------------------------------------------------------------------
 
-    // Possible min/max years of dataset
+    // Possible min/max years of dataset / weather station
     this._minYear = main.config.time.minYear
     this._maxYear = main.config.time.maxYear
 
@@ -270,7 +274,11 @@ class TimeController
   // PRIVATE MEMBERS
   // ##########################################################################
 
+
+  // ==========================================================================
   // Clip the period years to min / max years
+  // ==========================================================================
+
   _clipPeriod()
   {
     let dist = (this._periodEnd-this._periodStart)
@@ -290,4 +298,5 @@ class TimeController
 
     this.setPeriod((periodEnd-periodStart), periodEnd)
   }
+  
 }
