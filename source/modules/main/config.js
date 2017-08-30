@@ -1,15 +1,16 @@
 // ############################################################################
 // MAIN CONFIGURATIONS
 // ############################################################################
-// This file contains the configuration data in general and for each modules.
-// In this file the application can be tweaked without changing the actual
-// source code.
+// Defines configuration data for the modules of the program..
+// Tweak the values here without changing the actual source code.
 // ############################################################################
+
 
 let loadConfig = (main) =>
 {
   main.config =
   {
+
     // ========================================================================
     time :
     {
@@ -118,6 +119,7 @@ let loadConfig = (main) =>
       },
       charts:
       [
+
         // --------------------------------------------------------------------
         {
           name:           'climate-chart',

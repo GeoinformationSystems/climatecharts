@@ -1,38 +1,43 @@
 // ##########################################################################
-// TIME
+// CONSTANTS
+// ##########################################################################
+// Defines constant values that are used throughout the whole program
 // ##########################################################################
 
-// Months
+// ============================================================================
+// Time
+// ============================================================================
+
 const MONTHS_IN_YEAR =
-[
-  "Jan", "Feb", "Mar", "Apr", "May", "Jun",
-  "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
-]
-const SUMMER_MONTHS =     [3, 8]    // April (3) until September (8)
+  [
+    "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+    "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+  ]
+const SUMMER_MONTHS = [3, 8]    // April (3) until September (8)
 
 
-// ##########################################################################
-// SPACE
-// ##########################################################################
+// ============================================================================
+// Space
+// ============================================================================
 
 // Extent of geographic coordinates (in lat/lng)
 const LAT_EXTENT = 90
 const LNG_EXTENT = 180
 
 // Hemispheres for lat and lng (1st entry: coord < 0, 2nd entry: coord > 0)
-const LAT_HEMISPHERE =    ["S", "N"]
-const LNG_HEMISPHERE =    ["W", "E"]
+const LAT_HEMISPHERE = ["S", "N"]
+const LNG_HEMISPHERE = ["W", "E"]
 
 
-// ##########################################################################
-// PHYSICS
-// ##########################################################################
+// ============================================================================
+// Physics
+// ============================================================================
 
 // Conversion factors
 const KELVIN_TO_CELSIUS = 273.15
 const CM_TO_MM =          10
 
-// Null value for data value in climate dataset
+// Poential Null values for data values in climate dataset
 // -> If this is the value of a temperature cell it means that for this cell
 // there is no data available
 const CLIMATE_DATASET_NULL_VALUES =
@@ -42,9 +47,9 @@ const CLIMATE_DATASET_NULL_VALUES =
   ]
 
 
-// ##########################################################################
-// USABILITY
-// ##########################################################################
+// ============================================================================
+// View
+// ============================================================================
 
 // Range slider offset: How much does the range slider offset to the left and
 // right to fit on the current range?
@@ -52,7 +57,7 @@ const RANGE_SLIDER_OFFSET = 5
 
 
 // ============================================================================
-// DATABASE CONNECTION
+// Database Connection
 // ============================================================================
 
 const RUN_LOCALLY =
@@ -62,7 +67,7 @@ const RUN_LOCALLY =
   'weatherstations':  false
 }
 
-// port on which tomcat8 runs on the localhost and / or on the server
+// Port on which tomcat8 runs on the localhost and / or on the server
 const TOMCAT_PORT = 8080
 
 const URL =

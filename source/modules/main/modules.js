@@ -1,10 +1,12 @@
 // ############################################################################
-// All modules that are initialized with the main module
+// Initializes modules (Singletons):
+// - All Helpers that are used throughout the whole program
+// - View modules that define the screen output and user interaction
+// - Controller modules that contain the program logic and instantiates Models
 // ############################################################################
 
 let loadModules = (main) =>
 {
-
   main.modules = {}
 
 

@@ -1,19 +1,12 @@
 // ############################################################################
-// Central interaction hub between modules
+// CENTRAL INTERACTION HUB BEWTEEN MODULES
+// ############################################################################
+// Defines the
 // ############################################################################
 
 let loadHub = (main) =>
 {
   main.hub = {}
-
-  // ==========================================================================
-  // Mode changes
-  //  null: none / no location selected
-  //  'C':  ClimateCell     -> data from simulated dataset (raster data)
-  //  'S':  WeatherStation  -> data from weather station dataset (point data)
-  // ==========================================================================
-
-  main.mode = 'C'   // Default start mode
 
   main.hub.onModeChange = (newMode) =>
     {
