@@ -118,12 +118,15 @@ class Helpers
   // Rounding to decimal places
   // ==========================================================================
 
-  roundToDecimalPlace(num, decimalPlaces)
+  roundToDecimalPlace(num, decimalPlaces, forceDecimal=false)
   {
     // Error handling: No number -> null
     if (!this.checkIfNumber(num)) return null
 
-    return parseFloat(num.toFixed(decimalPlaces))
+    if (forceDecimal)
+      return num.toFixed(decimalPlaces) // returns a tring, not a float!
+    else
+      return parseFloat(num.toFixed(decimalPlaces))
     // let roundingFactor = Math.pow(10, decimalPlaces)
     // return (Math.round(num*roundingFactor) / roundingFactor)
   }

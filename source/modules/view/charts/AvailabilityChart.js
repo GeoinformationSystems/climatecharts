@@ -9,7 +9,7 @@
 
 class AvailabilityChart extends Chart
 {
-  
+
   // ##########################################################################
   // PUBLIC MEMBERS
   // ##########################################################################
@@ -168,76 +168,44 @@ class AvailabilityChart extends Chart
       .append('g')
     	.attr('class', 'row')
 
-    let inCellOverlay = false
-
     let column = row.selectAll('.square')
     	.data((d) => { return d })
     	.enter()
       .append('rect')
-    	.attr('class',   'grid')
-    	.attr('x',       (d) => { return d.x })
-    	.attr('y',       (d) => { return d.y })
-    	.attr('width',   (d) => { return d.width })
-    	.attr('height',  (d) => { return d.width })
-    	.style('fill',   (d) => { return d.color })
-      .style('opacity',this._chartMain.style.cellOpacity)
-      .style('stroke', this._chartsMain.colors.grid)
-      .style('stroke-width', this._chartMain.style.gridWidth + ' px')
-      .attr('shape-rendering', 'crispEdges')
+    	.attr('class',          'grid')
+    	.attr('x',              (d) => { return d.x })
+    	.attr('y',              (d) => { return d.y })
+    	.attr('width',          (d) => { return d.width })
+    	.attr('height',         (d) => { return d.width })
+    	.style('fill',          (d) => { return d.color })
+      .style('opacity',       this._chartMain.style.cellOpacity)
+      .style('stroke',        this._chartsMain.colors.grid)
+      .style('stroke-width',  this._chartMain.style.gridWidth + ' px')
+      .attr('shape-rendering','crispEdges')
 
-      // Interaction: on hover, emphasize and show data value
-      .on('mouseover', (d) =>
+      // Create text containing the actual value
+    let value = row.selectAll('.square')
+    	.data((d) => { return d })
+    	.enter()
+      .append('text')
+      .attr('class',          'ac-active-cell-text')
+      .attr('x',              (d) => { return (d.x + d.width/2) })
+      .attr('y',              (d) => { return (d.y + d.width/2) })
+      .attr('text-anchor',    'middle')
+      .attr('alignment-baseline', 'middle')
+      .attr('fill',           'white')
+      .attr('font-size',      this._main.config.charts.fontSizes.tiny + 'em')
+      .text(                  (d) =>
         {
-          let oldWidth = d.width
-          let newWidth = d.width * this._chartMain.style.emphResizeFactor
-
-          // Error handling: if currently in a cell overlay, remove it
-          if (inCellOverlay)
-          {
-            $('#active-ac-cell').remove()
-            $('#active-ac-cell-text').remove()
-          }
-
-          inCellOverlay = true
-
-          // Error handling: If no data value, no hover effect
-          if (d.color == this._chartsMain.colors.noData) return
-
-          // Create overlay rectangle on top of the old one
-          this._chart.append('rect')
-            .attr('id',             'active-ac-cell')
-            .attr('x',              d.x - (newWidth-oldWidth)/2)
-            .attr('y',              d.y - (newWidth-oldWidth)/2)
-            .attr('width',          newWidth)
-            .attr('height',         newWidth)
-            .style('fill',          d.color)
-            .style('opacity',       1)
-            .style('stroke',        this._chartsMain.colors.grid)
-            .style('stroke-width',  this._chartMain.style.gridWidth + ' px')
-
-            // Interaction: on leave, remove both overlay and text
-            .on('mouseleave', (d) =>
-              {
-                $('#active-ac-cell').remove()
-                $('#active-ac-cell-text').remove()
-                inCellOverlay = false
-              }
+          return (
+            this._main.modules.helpers.roundToDecimalPlace
+            (
+              d.value, this._main.config.climateData.decimalPlaces, true
             )
-
-          // Create text containing the actual value
-          this._chart.append('text')
-            .attr('id',           'active-ac-cell-text')
-            .attr('x',            d.x + d.width/2)
-            .attr('y',            d.y + this._chartsMain.padding)
-            .attr('text-anchor',  'middle')
-            .attr('fill',        'white')
-            .text(this._main.modules.helpers.roundToDecimalPlace(
-                d.value, this._main.config.climateData.decimalPlaces
-              )
-            )
-
+          )
         }
       )
+
 
     // Add height: (final y pos - start y pos - start height)
     this._resizeChartHeight(yPos - startYPos - this._chartPos.height)
@@ -312,6 +280,7 @@ class AvailabilityChart extends Chart
         .attr('class', 'ac-year')
         .attr('text-anchor', 'end')
         .attr('font-size', (this._chartsMain.fontSizes.normal + 'em'))
+        .attr('alignment-baseline', 'middle')
         .attr('x', 0
           + this._chartPos.left
           - this._chartsMain.padding

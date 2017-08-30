@@ -87,7 +87,7 @@ let loadConfig = (main) =>
         large:          1.1,
         normal:         1.0,
         small:          0.9,
-        tiny:           0.8,
+        tiny:           0.75,
       },
       colors:
       {
@@ -240,7 +240,6 @@ let loadConfig = (main) =>
             titleMargin:      45,   // Margin-bottom for title of the chart
             legendEntryMargin:3,    // Margin-top for entry in legend
             cellOpacity:      0.5,  // Opacity value for colored cells
-            emphResizeFactor: 1.7,  // OnHover on cell, resize to
           },
           headings:
           {
