@@ -1,0 +1,329 @@
+@media (max-width: 767px)
+{
+
+  .info
+  {
+    padding: 0;
+  }
+
+  .tab-links > li
+  {
+    padding: 5px;
+    height: 40px;
+  }
+
+  .ui-slider .ui-slider-handle
+  {
+    height: 50px;
+    width: 20px
+  }
+
+  body
+  {
+    background: none !important;;
+  }
+}
+
+a
+{
+  word-wrap: break-word;
+}
+
+body
+{
+  position: absolute;
+  width: 100%;
+  font-family: Verdana, Geneva, sans-serif;
+  /*font-family: Palatino Linotype, Book Antiqua, Palatino, serif;*/
+  font-size: 12px;
+  background: url("../../data/img/earth.svg") no-repeat center center;
+  background-size:cover;
+  background-attachment: fixed;
+  display: inline-block;
+  overflow-y: scroll;
+}
+
+h2
+{
+  display: inline;
+  font-size: 180%;
+}
+
+h2 > a
+{
+  color: white;
+}
+
+h2 > a:hover
+{
+  color: white;
+  text-decoration: none;
+}
+
+h4
+{
+  margin-top: 10px;
+  margin-bottom: 10px;
+  margin-right: 10px;
+  margin-left: 10px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+input
+{
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
+label
+{
+  font-weight: normal !important;
+}
+
+select
+{
+  display: inline-block;
+  margin-bottom: 10px;
+}
+
+.background
+{
+  background-image: url("../../data/img/earth.svg");
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+
+.block
+{
+  text-align: justify;
+  display: inline-block;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+}
+
+
+/* BUTTONS */
+
+button,
+button:active
+{
+  width: 4.5em;
+  height: 2.5em;
+  margin: 5px;
+  display: inline-block;
+  overflow: visible;
+
+  font-size: 1.0em;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: middle;
+  text-transform: none;
+
+  border: 1px solid transparent;
+  border-radius: 5px;
+  border-color: rgb(128,128,128);
+
+  color: rgb(255,255,255);
+  background-image: none;
+  background-color: rgb(128,128,128);
+
+  cursor: pointer;
+
+  touch-action: manipulation;
+  -ms-touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -webkit-appearance: button;
+}
+
+button:hover
+{
+  color: rgb(255,255,255);
+  background-color: #337ab7;
+  border-color: #2e6da4;
+}
+
+
+
+.box
+{
+  position: relative;
+  width: 100%;
+  padding: 15px;
+  background-color:white;
+  margin-top: 15px;
+  margin-bottom: 15px;
+  border: 1px solid #babdb6;
+}
+
+.box:hover
+{
+  box-shadow: 0px 0px 6px #babdb6;
+  transition: 0.2s;
+}
+
+.box-quiet
+{
+  position: relative;
+  width: 100%;
+  margin: 0;
+  border: 0;
+  padding: 0;
+  background: none;
+  font-size: 1.0em;
+}
+
+.col-lg
+{
+  padding-bottom: 30px;
+}
+
+.container-fluid
+{
+  margin-top: -20px;
+  margin-right: auto;
+  margin-left: auto;
+}
+
+.headline
+{
+  position: relative;
+  padding-top: 10px;
+  padding-bottom: 5px;
+  border-bottom: 1px white solid;
+}
+
+.img
+{
+  padding: 10px;
+  width: 100%;
+  background-color: white;
+}
+
+.img#logo
+{
+  max-width: 150px;
+  float: right;
+  margin: -20px;
+  margin-right: 0px;
+  border: none;
+  background-color: transparent;
+}
+
+.info
+{
+  padding: 30px;
+}
+
+.jumbotron
+{
+  position: relative;
+  width: 100%;
+  color: white;
+  top: 40px;
+  /* 	margin-top: 20px; */
+  margin-bottom: 44px;
+  padding-top: 1px;
+  padding-bottom: 5px;
+  background-image: url("https://www.transparenttextures.com/patterns/az-subtle.png"),
+  linear-gradient(to bottom, #407CC9, #043d7b);
+  box-shadow: 0px 3px 6px #888a85;
+}
+.linewrapper
+{
+  margin: 10px;
+}
+
+.normalText
+{
+  font-weight: normal !important;
+}
+
+.popover
+{
+  width: 300px;
+}
+
+.row
+{
+  margin-top:20px;
+  margin-bottom: 20px
+}
+
+.secHeadline
+{
+  float: right;
+  padding-top: 6px;
+  font-size: 110% !important;
+  font-weight: 500 !important;
+  color: white;
+}
+
+.tab
+{
+  display: none;
+}
+
+.tab-links:after
+{
+  display: block;
+  clear: both;
+  content: '';
+}
+
+.tab-links a
+{
+  display: inline-block;
+  box-sizing: border-box;
+  color: white;
+  transition: all linear 0.15s;
+  margin-top: -20px;
+}
+
+.tab-links > li > a:hover
+{
+  text-decoration: none;
+  background-color: transparent;
+  box-shadow: inset 0px 0px 0px 1px white;
+  transition: all linear 0s;
+}
+
+.tab.active
+{
+  display: block;
+  transition: all linear 0.6s;
+}
+.unselectable
+{
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select:none;
+  user-select:none;
+  -o-user-select:none;
+}
+
+.well
+{
+  background-color: #ffffff;
+  font-size: 0.8em;
+}
+
+
+#metadata
+{
+  position: absolute;
+  right: 0px;
+  top: -10px;
+  display: inline-block;
+}
+
+.nodata
+{
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-left: -80px;
+}

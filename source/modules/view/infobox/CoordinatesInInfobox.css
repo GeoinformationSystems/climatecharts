@@ -1,0 +1,15 @@
+.coordinates-label,
+.coordinates
+{
+  width: 90px;
+  display: inline-block;
+  text-align: left;
+  margin: 0 20px 0px 0px;
+}
+
+#set-coordinates
+{
+  position: absolute;
+  right: 10px;
+  top: 28px;
+}

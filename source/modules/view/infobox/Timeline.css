@@ -1,0 +1,24 @@
+#min, #max, .period
+{
+  display: inline-block;
+}
+
+#slider
+{
+  margin-bottom: 20px;
+  width: 100%;
+}
+
+#range-slider
+{
+  position:   absolute;
+  background: transparent;
+  z-index:    100;
+}
+
+#reset-timeline
+{
+  position: absolute;
+  right: 10px;
+  margin-top: -6px;  
+}

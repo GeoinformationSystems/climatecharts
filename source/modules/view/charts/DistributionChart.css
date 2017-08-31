@@ -1,0 +1,75 @@
+.boxplot {
+  font: 10px sans-serif;
+}
+
+.boxplot-line,
+.boxplot-rect,
+.boxplot-circle
+{
+  stroke: #000;
+  stroke-width: 1px;
+}
+
+.boxplot .center {
+  stroke-dasharray: 3,3;
+}
+
+.boxplot .outlier {
+  stroke: #000;
+}
+
+.axis {
+  font: 12px sans-serif;
+}
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.x.axis path {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+/* SCALE SWITCH */
+
+#dc-switch
+{
+  position: absolute;
+  top: 4px;
+  left: 5px;
+  width: 135px;
+}
+
+/* scale switch */
+#dc-switch-title
+{
+  width: 100%;
+  text-align: center;
+  font-size: 1.2em;
+  margin-bottom: 0.2em;
+}
+
+#dc-switch-options
+{
+  font-size: 1.0em !important;
+  line-height: 2.5em !important;
+  background-color: rgb(128,128,128) !important;
+  border-radius: 4px;
+}
+
+.dc-switch-option
+{
+  color: white !important;
+  text-shadow: none !important;
+  font-weight: normal !important;
+}
+
+#dc-switch-button
+{
+  background-color: rgb(89,131,213) !important;
+}

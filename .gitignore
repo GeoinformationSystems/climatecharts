@@ -1,9 +1,13 @@
 /target/
 *target*
 
+/build
+
 .classpath
 .project
 .settings/
 
+*.fodt#
+*.yml
 
-
+.htaccess
