@@ -1,16 +1,17 @@
 # GENERAL DESCRIPTION  
 
-The ClimateCharts project is a typical Web application divided into two parts:  
-1. The client-side webapp called "climatecharts-client", implemented in pure HTML, CSS and JavaScript  
-2. Two server-side applications implemented in Java:  
+The ClimateCharts project is a Web Application divided into two parts:  
+1. The client-side webapp called "climatecharts-client", implemented in HTML, CSS and JavaScript  
+2. Three server-side applications implemented in Java:  
     2.1 "gazetteer": translates a set of GPS coordinates into a location name (e.g. "Weimar, Thüringen, Deutschland")  
-    2.2 "thredds":   the THREDDS Data Server (TDS) provides access to the actual climate data (temperature and precipitation per year)  
+    2.2 "thredds": the THREDDS Data Server (TDS) provides access to the actual climate data (temperature and precipitation per year)  
+    2.3 "weatherstations": provides access to the database of weatherrstations, allows for requesting all at once and the climate data for one station in one time period  
 
 The client-side webapp has two versions:  
 1. The main master version, for everybody accessible and to be promoted:  
-  http:/climatecharts.net  
+  http://climatecharts.net  
 2. The test development version, for the testers, coders and other affiliates, not to be promoted:  
-  http:/climatecharts.net/develop  
+  http://climatecharts.net/develop  
 
 As soon as the develop version is accepted by all affiliates, it replaces the current master version.  
 
@@ -22,12 +23,14 @@ The Client-side webappp can be found here:
   git@github.com:GeoinformationSystems/climatecharts.git  
 
 The Server-side applications can be found here:  
-  https://github.com/GeoinformationSystems/gazetteer  
-  git@github.com:GeoinformationSystems/gazetteer.git  
-
-_thredds: to be done_  
-
-_weatherstations: to be done_
+  2.1. gazetteer  
+    https://github.com/GeoinformationSystems/gazetteer  
+    git@github.com:GeoinformationSystems/gazetteer.git  
+  2.2. thredds  
+    _to do_  
+  2.3. weatherstations  
+    https://github.com/GeoinformationSystems/weatherstations  
+    git@github.com:GeoinformationSystems/weatherstations.git  
 
 
 # SETUP OF THE LOCAL DEVELOPMENT TOOLCHAIN  
@@ -44,7 +47,7 @@ Project folder for the source code:
 
 Development folder for Eclipse workspace, local tomcat instance and other development-related stuff  
   /home/$USER/Development  
-  |- climatecharts_setup  // stuff folder for readme, configuration files, test files, exported war files, archive for last working versions, ...  
+  |- climatecharts_setup  // stuff folder for readme, configuration files, test files, exported *.war files, archive for last working versions, ...  
   |- Eclipse_workspace    // actual workspace for ecplise  
   |- TDS                  // thredds data server  
   |- Tomcat_local         // local Tomcat8 instance  
