@@ -45,44 +45,6 @@ class TimeController
   // Min/Max years of dataset
   // ==========================================================================
 
-  setMinYear(year)
-  {
-    // Integrity check: really an integer?
-    if (!this._main.modules.helpers.checkIfInt(year))
-      return console.error("The given year is not an integer");
-
-    // Ensure that minYear <= maxYear
-    year = Math.min(year, this._maxYear)
-
-    // Set year
-    this._minYear = year
-
-    // Adapt the period dates
-    this._clipPeriod()
-
-    // Tell everyone
-    this._main.hub.onMinMaxYearChange(this._minYear, this._maxYear)
-  }
-
-  setMaxYear(year)
-  {
-    // Integrity check: really an integer?
-    if (!this._main.modules.helpers.checkIfInt(year))
-      return console.error("The given year is not an integer");
-
-    // Ensure that minYear <= maxYear
-    year = Math.max(year, this._minYear)
-
-    // Set year
-    this._maxYear = year
-
-    // Adapt the period dates
-    this._clipPeriod()
-
-    // Tell everyone
-    this._main.hub.onMinMaxYearChange(this._minYear, this._maxYear)
-  }
-
   setMinMaxYear(minYear, maxYear)
   {
     // Integrity check: really an integer?
@@ -130,64 +92,6 @@ class TimeController
   // ==========================================================================
   // Set Start/End year of selected time period
   // ==========================================================================
-
-  setPeriodStart(year)
-  {
-    // Integrity check: really an integer?
-    if (!this._main.modules.helpers.checkIfInt(year))
-      return console.error("The given year is not an integer");
-
-    // Consistency check: periodStart >= minYear?
-    if (year < this._minYear)
-    {
-      // If not, strip to minYear and move periodEnd
-      let yearDiff = Math.abs(year-this._minYear)
-      this._periodStart = this._minYear
-      this._periodEnd += yearDiff
-      // Ensure that periodEnd stays within bounds
-      this._periodEnd = Math.min(this._periodEnd, this._maxYear)
-    }
-    else
-    {
-      // Consistency check: periodStart < periodEnd
-      if (year > periodEnd)
-        year = periodEnd
-
-      this._periodStart = year
-    }
-
-    // Tell everyone
-    this._main.hub.onPeriodChange(this._periodStart, this._periodEnd)
-  }
-
-  setPeriodEnd(year)
-  {
-    // Integrity check: really an integer?
-    if (!this._main.modules.helpers.checkIfInt(year))
-      return console.error("The given year is not an integer");
-
-    // Consistency check: periodEnd <= maxYear?
-    if (year > this._maxYear)
-    {
-      // If not, strip to maxYear and move periodStart
-      let yearDiff = Math.abs(year-this._maxYear)
-      this._periodEnd = this._maxYear
-      this._periodStart -= yearDiff
-      // Ensure that periodStart stays within bounds
-      this._periodStart = Math.max(this._periodStart, this._minYear)
-    }
-    else
-    {
-      // Consistency check: periodStart < periodEnd
-      if (year > periodEnd)
-        year = periodEnd
-
-      this._periodStart = year
-    }
-
-    // Tell everyone
-    this._main.hub.onPeriodChange(this._periodStart, this._periodEnd)
-  }
 
   setPeriod(length, endYear)
   {
@@ -298,5 +202,5 @@ class TimeController
 
     this.setPeriod((periodEnd-periodStart), periodEnd)
   }
-  
+
 }
