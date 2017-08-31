@@ -66,7 +66,7 @@ fi
 
 # ## *.js: compile ECMA6 -> ECMA5 with babel
 js_files=$(find $SOURCE_PATH -name "*.js")
-babel --presets=es2015 $js_files -d $BUILD_PATH
+babel $js_files -d $BUILD_PATH
 
 ## *.css: simply copy
 css_files=$(find $SOURCE_PATH -name "*.css")

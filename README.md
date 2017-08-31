@@ -55,21 +55,47 @@ Development folder for Eclipse workspace, local tomcat instance and other develo
 
 ## Setup of the Local Client-side Webappp "climatecharts"  
 
+Install git and connect over ssh
+  $ sudo apt-get install apache2  
+  follow this instruction: https://help.github.com/articles/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent/  
+
 Install Apache Web Server  
   $ sudo apt-get install apache2  
 
-Get the source code in your home folder  
+Get the source code in your home folder and switch to working branch  
   $ cd ~/Projects/ClimateCharts  
   $ git clone git@github.com:GeoinformationSystems/climatecharts.git  
+  $ git checkout develop  
 
-Create a symbolic link to the directory of the Apaches webappps  
+Create a symbolic link to the directory of the Apaches webapps  
   $ sudo ln -s /home/$USER/Projects/ClimateCharts/climatecharts /var/www/html/  
 
 Access the website through a normal Web Browser through port 80 (default port so it can be omitted):  
   http://localhost/climatecharts/  
 
-If you get the 403 error (Permission denied), that can have several causes. It is most likely a permission problem. It is important to note that when Apache follows symlinks, the path must be accessible all the way down by the calling user. This means you need execute access in the folder you are linking and the parent folders above it:
+If you get the 403 error (Permission denied), that can have several causes. It is most likely a permission problem. It is important to note that when Apache follows symlinks, the path must be accessible all the way down by the calling user. This means you need execute access in the folder you are linking and the parent folders above it:  
   chmod o+x /home/$USER /home/$USER/Projects /home/$USER/Projects/ClimateCharts /home/$USER/Projects/ClimateCharts/climatecharts
+
+# ECMA6 to ECMA5
+
+Currently (status: August 2017) ECMA6 is out there. It is amazing, since it enables class-based object-oriented programming and that just awesome! However, it is not accepted widely among browsers. If that is ever the case, just ingnore this section :-)  
+
+The javascript source code of the program is written in ECMA6. For the browsers to understand it well, it has to be compiled to ECMA5. That needs babel, a node.js module.  
+
+Get node.js and set it up  
+  $ sudo apt-get install npm  
+  $ sudo ln -s /usr/bin/nodejs /usr/bin/node  
+
+Install babel  
+  $ cd /home/$USER/Development  
+  $ sudo npm install --save-dev --global babel-cli  
+
+Now the compilation should work. Test it by executing the build command in the proogram folder  
+  $ cd /home/$USER/Projects/ClimateCharts/climatecharts  
+  $ ./build.sh  
+
+If that executes by printing many lines of compilation from a source/ to a build/ folder and it ends without an error message, everything should be fine from here on.
+
 
 
 ## Setup of the Server-side Applications  
@@ -104,13 +130,12 @@ Copy the following content in it, save and leave
 Install Tomcat8 as the web server on the localhost  
   $ sudo apt-get install tomcat8  
 
-Install a local Tomcat v8.0 instance that can be used by Eclipse
-  https://tomcat.apache.org/download-80.cgi  
+Install a local Tomcat v8.0 instance that can be used by Eclipse. Download Tomcat version 8.0.46 to the Download folder (a newer version fo Tomcat is already available, bvut it works nicely with the old one. And never change a running system :-) last update: August 2017).
   $ cd ~/Downloads  
-  $ wget http://mirror.netcologne.de/apache.org/tomcat/tomcat-8/v8.0.41/bin/apache-tomcat-8.0.41.tar.gz  
-  $ tar xf apache-tomcat-8.0.41.tar.gz  
-  $ rm apache-tomcat-8.0.41.tar.gz  
-  $ mv apache-tomcat-8.0.41/ ~/Development/Tomcat_local
+  $ wget http://mirror.softaculous.com/apache/tomcat/tomcat-8/v8.0.46/bin/apache-tomcat-8.0.46.tar.gz  
+  $ tar xf apache-tomcat-8.0.46.tar.gz  
+  $ rm apache-tomcat-8.0.46.tar.gz  
+  $ mv apache-tomcat-8.0.46/ ~/Development/Tomcat_local
 
 Now there are two different Tomcat servers  
   /usr/share/tomcatX                    -\> system-wide Tomcat installation  
@@ -153,11 +178,13 @@ Setup the Tomcat Server
   Tomcat installation directory:  /home/$USER/Development/Tomcat_local  
   JRE:                            java-8-openjdk-amd64  
 
+# CORS
+
 Make sure apache allows to request data from different web servers (CORS)  
 =\> enable "Cross-Origin Resource Sharing" in the server-side applications.  
 
 Edit the WEB-INF folder of the application:  
-  $ cd /var/lib/tomcat8/webapps/$NAME_OF_WEBAPP/WEB-INF/web.xml  
+  $ gedit /var/lib/tomcat8/webapps/$NAME_OF_WEBAPP/WEB-INF/web.xml  
 
 References:  
   http://enable-cors.org/server_tomcat.html  
