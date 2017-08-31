@@ -76,7 +76,7 @@ Access the website through a normal Web Browser through port 80 (default port so
 If you get the 403 error (Permission denied), that can have several causes. It is most likely a permission problem. It is important to note that when Apache follows symlinks, the path must be accessible all the way down by the calling user. This means you need execute access in the folder you are linking and the parent folders above it:  
   chmod o+x /home/$USER /home/$USER/Projects /home/$USER/Projects/ClimateCharts /home/$USER/Projects/ClimateCharts/climatecharts
 
-# ECMA6 to ECMA5
+### ECMA6 to ECMA5
 
 Currently (status: August 2017) ECMA6 is out there. It is amazing, since it enables class-based object-oriented programming and that just awesome! However, it is not accepted widely among browsers. If that is ever the case, just ingnore this section :-)  
 
@@ -178,7 +178,7 @@ Setup the Tomcat Server
   Tomcat installation directory:  /home/$USER/Development/Tomcat_local  
   JRE:                            java-8-openjdk-amd64  
 
-# CORS
+### CORS
 
 Make sure apache allows to request data from different web servers (CORS)  
 =\> enable "Cross-Origin Resource Sharing" in the server-side applications.  
