@@ -1,5 +1,3 @@
-- Put actual values into raster cell
-
 - Weatherstations metadata table
                     TEMP    PREC
   Missing Months
