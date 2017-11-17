@@ -19,3 +19,47 @@
   color: rgb(4,61,183);
   font-weight: bold;
 }
+
+.bar
+{
+  opacity: 0.9;
+  fill: rgb(4,61,183);
+}
+
+/* PRECIPITATION SWITCH */
+
+#cc-switch
+{
+  position: absolute;
+  top: 4px;
+  left: 5px;
+  width: 135px;
+}
+
+#cc-switch-title
+{
+  width: 100%;
+  text-align: center;
+  font-size: 1.2em;
+  margin-bottom: 0.2em;
+}
+
+#cc-switch-options
+{
+  font-size: 1.0em !important;
+  line-height: 2.5em !important;
+  background-color: rgb(128,128,128) !important;
+  border-radius: 4px;
+}
+
+.cc-switch-option
+{
+  color: white !important;
+  text-shadow: none !important;
+  font-weight: normal !important;
+}
+
+#cc-switch-button
+{
+  background-color: rgb(89,131,213) !important;
+}
