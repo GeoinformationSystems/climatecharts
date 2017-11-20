@@ -45,9 +45,7 @@ class ClimateChart extends Chart
   {
     super._initMembers(climateData)
     
-    // Initial switch state -> must be 0 !!!
-    this._switchState = 0
-
+  
     // ------------------------------------------------------------------------
     // Preparation: Position values for visualization elements
     // ------------------------------------------------------------------------
@@ -124,86 +122,55 @@ class ClimateChart extends Chart
   {
     super._setupToolbar()
 
-    // ------------------------------------------------------------------------
-    // Create structure
-    // cc = climate chart
-    // _wrapperDiv
-    // |-> _chart         // main svg canvas contains charts, printed
-    // _toolbar             // buttons for changing/saving charts, not printed
-    // |-> cc-switch      // switch line <-> bar graph for precipitation
-    // |   |-> label      '.switch-light switch-candy'
-    // |   |-> input      'cc-switch-input'
-    // |   |-> div        'cc-switch-title'
-    // |   |-> span       'cc-switch-options'
-    // |   |   |-> span   'cc-switch-option-l'
-    // |   |   |-> span   'cc-switch-option-r'
-    // |   |   |-> a      'cc-switch-button'
-    // ------------------------------------------------------------------------
-
-    // Level 1@_toolbar - dc-switch
-    let ccSwitch = this._main.modules.domElementCreator.create(
-      'div', 'cc-switch'
+    let graphOptions = this._main.modules.domElementCreator.create(
+      'div', 'cc-graph-options'
     )
-    this._toolbar[0].appendChild(ccSwitch)
+    this._toolbar[0].appendChild(graphOptions)
 
-    let switchLabel = this._main.modules.domElementCreator.create(
-      'label', null, ['switch-light', 'switch-candy'], [['onClick', '']]
+    let graphOptionLine = this._main.modules.domElementCreator.create(
+      'a', 'cc-graph-option-line'
     )
-    ccSwitch.appendChild(switchLabel)
+    graphOptions.appendChild(graphOptionLine)
 
-    let switchInput = this._main.modules.domElementCreator.create(
-      'input', 'cc-switch-input', null, [['type', 'checkbox']]
+    let graphOptionBar = this._main.modules.domElementCreator.create(
+      'a', 'cc-graph-option-bar'
     )
-    switchLabel.appendChild(switchInput)
-
-    let switchTitle = this._main.modules.domElementCreator.create(
-      'div', 'cc-switch-title'
-    )
-    switchLabel.appendChild(switchTitle)
-
-    let switchOptions = this._main.modules.domElementCreator.create(
-      'span', 'cc-switch-options'
-    )
-    switchLabel.appendChild(switchOptions)
-
-    let switchOptionL = this._main.modules.domElementCreator.create(
-      'span', 'cc-switch-option-l', ['cc-switch-option']
-    )
-    switchOptions.appendChild(switchOptionL)
-
-    let switchOptionR = this._main.modules.domElementCreator.create(
-      'span', 'cc-switch-option-r', ['cc-switch-option']
-    )
-    switchOptions.appendChild(switchOptionR)
-
-    let switchButton = this._main.modules.domElementCreator.create(
-      'a', 'cc-switch-button'
-    )
-    switchOptions.appendChild(switchButton)
+    graphOptions.appendChild(graphOptionBar)
 
 
     // ------------------------------------------------------------------------
     // Label switch title and switch states
     // ------------------------------------------------------------------------
-
-    switchTitle.innerHTML = this._chartMain.switch.title
-    switchOptionL.innerHTML = ""
-      + this._chartMain.switch.states[0].charAt(0).toUpperCase()
-      + this._chartMain.switch.states[0].slice(1)
-    switchOptionR.innerHTML = ""
-      + this._chartMain.switch.states[1].charAt(0).toUpperCase()
-      + this._chartMain.switch.states[1].slice(1)
+    graphOptions.childNodes[this._chartMain.switch.activeState].className ='cc-graph-active'
+    graphOptionLine.innerHTML = '<i class="fa fa-area-chart" aria-hidden="true"></i>'
+//      + this._chartMain.switch.states[0].charAt(0).toUpperCase()
+//      + this._chartMain.switch.states[0].slice(1)
+    graphOptionBar.innerHTML = '<i class="fa fa-bar-chart" aria-hidden="true"></i>'
+//      + this._chartMain.switch.states[1].charAt(0).toUpperCase()
+//      + this._chartMain.switch.states[1].slice(1)
 
 
     // ------------------------------------------------------------------------
     // Interaction: click on toggle switch to change the layout
     // ------------------------------------------------------------------------
 
-    $(switchOptions).click((e) =>
+    $(graphOptions.childNodes).click((e) =>
       {
-        this._switchState = (this._switchState+1) % 2
         // clean chart
         $('#climate-chart').remove()
+      
+        //set active state and reset other Options
+        for (let i = 0; i < e.currentTarget.parentNode.childNodes.length; i++)
+        {
+            if(e.currentTarget.parentNode.childNodes[i] === e.currentTarget){
+                this._chartMain.switch.activeState = i
+            }
+            else {
+                e.currentTarget.parentNode.childNodes[i].className=''
+            }    
+        }
+        
+        e.currentTarget.className ='cc-graph-active'
 
         this._setupChart()
         this._setupHeaderFooter()
@@ -714,7 +681,7 @@ class ClimateChart extends Chart
     // ------------------------------------------------------------------------
 
     let curveType = ""
-        if (this._switchState == 0) {
+        if (this._chartMain.switch.activeState == 0) {
             curveType = "linear" 
         }
         else {
@@ -747,7 +714,7 @@ class ClimateChart extends Chart
 
     // Area below temperature line
 
-    if (this._switchState == 0) {
+    if (this._chartMain.switch.activeState == 0) {
  
         let areaTemp = d3.svg
           .area()
@@ -803,7 +770,7 @@ class ClimateChart extends Chart
     // -> Make the relevant parts for the climate chart visible
 
     let areaTempTo100 = null
-    if (this._switchState == 0) {
+    if (this._chartMain.switch.activeState == 0) {
 
         areaTempTo100 = d3.svg.area()
           .x( (d) => {return xScale(d.month)})
@@ -881,8 +848,6 @@ class ClimateChart extends Chart
         .attr('height', (this._chartPos.break - this._chartPos.max))
     }
     
-
-    
     // ------------------------------------------------------------------------
     // Lines for temp and prec
     // ------------------------------------------------------------------------
@@ -902,7 +867,6 @@ class ClimateChart extends Chart
       .attr('stroke', this._chartsMain.colors.temp)
       .attr('stroke-width', this._chartMain.style.lineWidth)
       
-
     // Precipitation line below break
 
     let linePrecBelowBreak = d3.svg

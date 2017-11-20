@@ -182,8 +182,7 @@ let loadConfig = (main) =>
           },
           switch:
           {
-            title:      "Precipitation",
-            states:     ['line', 'bar'],
+            activeState: 0,
           },    
         },
 

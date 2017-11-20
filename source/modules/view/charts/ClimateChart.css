@@ -28,38 +28,47 @@
 
 /* PRECIPITATION SWITCH */
 
-#cc-switch
-{
-  position: absolute;
-  top: 4px;
-  left: 5px;
-  width: 135px;
+#cc-graph-options {
+    position: absolute;
+    top: 21px;
+    left: 10px;
+    width: 60px;
+    height: 30px;  
+    font-size:0px;    
+    text-align: center;
+    margin: 5px;
+    
+    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.65);
+    border-radius: 4px;
 }
 
-#cc-switch-title
-{
-  width: 100%;
-  text-align: center;
-  font-size: 1.2em;
-  margin-bottom: 0.2em;
+#cc-graph-option-line {
+    width: 30px;
+    border-right: 1px solid #ccc;
+    border-top-left-radius: 4px;
+    border-bottom-left-radius: 4px;
+}
+#cc-graph-option-bar {
+    width: 30px;
+    border-top-right-radius: 4px;
+    border-bottom-right-radius: 4px;
 }
 
-#cc-switch-options
-{
-  font-size: 1.0em !important;
-  line-height: 2.5em !important;
-  background-color: rgb(128,128,128) !important;
-  border-radius: 4px;
+[id^="cc-graph-option-"] {
+    display: inline-block;
+    font-size:12px;
+    vertical-align: middle;
+    line-height: 2.5em !important;
+}
+[id^="cc-graph-option-"]:hover {
+    background-color: #ddd;
 }
 
-.cc-switch-option
-{
-  color: white !important;
-  text-shadow: none !important;
-  font-weight: normal !important;
+.cc-graph-active {
+    background-color: #aaa;
+    color: #FFF;
 }
-
-#cc-switch-button
-{
-  background-color: rgb(89,131,213) !important;
+.cc-graph-active:hover {
+    background-color: #aaa;
+    color: #FFF;
 }
