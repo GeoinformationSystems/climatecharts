@@ -57,6 +57,16 @@ class DatasetInfobox
     // Clear content
     this._infobox.empty()
 
+    // Preparing links in case of multiple DOIs for one dataset
+    let doiLinks = ""
+    // Splitting multiple DOIs in catalog by comma 
+    let doiSplit = dataset.doi.split(',')
+    for(var doiIDx in doiSplit){
+        if (!doiSplit[doiIDx].startsWith('http'))
+            doiSplit[doiIDx] = 'http://' + doiSplit[doiIDx].trim()
+        doiLinks += '<a href="' + doiSplit[doiIDx] + '" target="_blank">' + doiSplit[doiIDx] + '</a><br />'
+    }
+
     // Set content
     this._infobox.html(''
       + '<p class="datasets-title">'
@@ -65,11 +75,9 @@ class DatasetInfobox
       + '<p>'
       + dataset.description
       + '</p>'
-      + '<p><a href="'
-      + dataset.doi
-      + '" target="_blank">'
-      + dataset.doi
-      + '</a></p>'
+      + '<p>'
+      + doiLinks
+      + '</p>'
       + '<p class="datasets-title">'
       + this._main.config.datasetsInfobox.metadata
       + '</p>'

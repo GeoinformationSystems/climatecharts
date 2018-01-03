@@ -658,15 +658,15 @@ class ClimateDataController
   {
     this._climateData.source = source
 
-    let firstPar =  source.indexOf('(')
-    let lastPar =   source.lastIndexOf(')')
-
-    let url = source.slice(firstPar+1, lastPar)
+    let url = source
 
     // take only first url
     if (url.indexOf(',') > 0)
       url = url.slice(0,url.indexOf(','))
-
+    
+    //trim potential whitespaces
+    url = url.trim()
+    
     // append http protocol, if necessary
     if (!url.startsWith('http'))
       url = 'http://' + url

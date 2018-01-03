@@ -2,6 +2,7 @@
 *target*
 
 /build
+/nbproject
 
 .classpath
 .project

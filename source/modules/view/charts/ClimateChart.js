@@ -44,7 +44,8 @@ class ClimateChart extends Chart
   _initMembers(climateData)
   {
     super._initMembers(climateData)
-
+    
+  
     // ------------------------------------------------------------------------
     // Preparation: Position values for visualization elements
     // ------------------------------------------------------------------------
@@ -114,6 +115,67 @@ class ClimateChart extends Chart
     )
     this._tablePos.bottom = this._tablePos.top + height
     this._tablePos.height = height
+  }
+
+
+  _setupToolbar()
+  {
+    super._setupToolbar()
+
+    let graphOptions = this._main.modules.domElementCreator.create(
+      'div', 'cc-graph-options'
+    )
+    this._toolbar[0].appendChild(graphOptions)
+
+    let graphOptionLine = this._main.modules.domElementCreator.create(
+      'a', 'cc-graph-option-line'
+    )
+    graphOptions.appendChild(graphOptionLine)
+
+    let graphOptionBar = this._main.modules.domElementCreator.create(
+      'a', 'cc-graph-option-bar'
+    )
+    graphOptions.appendChild(graphOptionBar)
+
+
+    // ------------------------------------------------------------------------
+    // Label switch title and switch states
+    // ------------------------------------------------------------------------
+    graphOptions.childNodes[this._chartMain.switch.activeState].className ='cc-graph-active'
+    graphOptionLine.innerHTML = '<i class="fa fa-area-chart" aria-hidden="true"></i>'
+//      + this._chartMain.switch.states[0].charAt(0).toUpperCase()
+//      + this._chartMain.switch.states[0].slice(1)
+    graphOptionBar.innerHTML = '<i class="fa fa-bar-chart" aria-hidden="true"></i>'
+//      + this._chartMain.switch.states[1].charAt(0).toUpperCase()
+//      + this._chartMain.switch.states[1].slice(1)
+
+
+    // ------------------------------------------------------------------------
+    // Interaction: click on toggle switch to change the layout
+    // ------------------------------------------------------------------------
+
+    $(graphOptions.childNodes).click((e) =>
+      {
+        // clean chart
+        $('#climate-chart').remove()
+      
+        //set active state and reset other Options
+        for (let i = 0; i < e.currentTarget.parentNode.childNodes.length; i++)
+        {
+            if(e.currentTarget.parentNode.childNodes[i] === e.currentTarget){
+                this._chartMain.switch.activeState = i
+            }
+            else {
+                e.currentTarget.parentNode.childNodes[i].className=''
+            }    
+        }
+        
+        e.currentTarget.className ='cc-graph-active'
+
+        this._setupChart()
+        this._setupHeaderFooter()
+      }
+    )
   }
 
 
@@ -614,42 +676,17 @@ class ClimateChart extends Chart
       .style('stroke-width', this._chartMain.style.gridWidth + ' px')
       .attr('shape-rendering', 'crispEdges')
 
-
     // ------------------------------------------------------------------------
-    // Lines for temp and prec
+    // switch curve type for prec
     // ------------------------------------------------------------------------
 
-    // Temperature line
-
-    let lineTemp = d3.svg
-      .line()
-      .x( (d) => {return xScale(d.month)} )
-      .y( (d) => {return yScaleTempBelowBreak(d.temp)} )
-      .interpolate('linear')
-
-    this._chart.append('svg:path')
-      .attr('class', 'line')
-      .attr('d', lineTemp(this._climateData.monthly_short))
-      .attr('fill', 'none')
-      .attr('stroke', this._chartsMain.colors.temp)
-      .attr('stroke-width', this._chartMain.style.lineWidth)
-
-
-    // Precipitation line below break
-
-    let linePrecBelowBreak = d3.svg
-      .line()
-      .x( (d) => {return xScale(d.month)})
-      .y( (d) => {return yScalePrecBelowBreak(d.prec)})
-      .interpolate('linear')
-
-    this._chart.append('svg:path')
-      .attr('class', 'line')
-      .attr('d', linePrecBelowBreak(this._climateData.monthly_short))
-      .attr('clip-path', 'url(#rect-bottom)')
-      .attr('fill', 'none')
-      .attr('stroke', this._chartsMain.colors.prec)
-      .attr('stroke-width', this._chartMain.style.lineWidth)
+    let curveType = ""
+        if (this._chartMain.switch.activeState == 0) {
+            curveType = "linear" 
+        }
+        else {
+            curveType = "step"
+    }   
 
 
     // Precipitation line abovebreak
@@ -659,7 +696,7 @@ class ClimateChart extends Chart
       let linePrecAboveBreak = d3.svg.line()
         .x( (d) => {return xScale(d.month)})
         .y( (d) => {return yScalePrecAboveBreak(d.prec)})
-        .interpolate('linear')
+        .interpolate(curveType)
 
       this._chart.append('svg:path')
         .attr('class', 'line')
@@ -677,21 +714,23 @@ class ClimateChart extends Chart
 
     // Area below temperature line
 
-    let areaTemp = d3.svg
-      .area()
-      .x( (d) => {return xScale(d.month)})
-      .y0((d) => {return yScaleTempBelowBreak(d.temp)})
-      .y1(this._chartPos.min)
-      .interpolate('linear')
+    if (this._chartMain.switch.activeState == 0) {
+ 
+        let areaTemp = d3.svg
+          .area()
+          .x( (d) => {return xScale(d.month)})
+          .y0((d) => {return yScaleTempBelowBreak(d.temp)})
+          .y1(this._chartPos.min)
+          .interpolate('linear')
 
-    this._chart.append('path')
-      .data(this._climateData.monthly_short)
-      .attr('class', 'area')
-      .attr('d', areaTemp(this._climateData.monthly_short))
-      .attr('clip-path', 'url(#clip-prec)')
-      .attr('fill', this._chartsMain.colors.arid)
-      .attr('stroke', 'none')
-
+        this._chart.append('path')
+          .data(this._climateData.monthly_short)
+          .attr('class', 'area')
+          .attr('d', areaTemp(this._climateData.monthly_short))
+          .attr('clip-path', 'url(#clip-prec)')
+          .attr('fill', this._chartsMain.colors.arid)
+          .attr('stroke', 'none')
+    }
 
     // Area below precipitation line
 
@@ -700,7 +739,7 @@ class ClimateChart extends Chart
       .x( (d) => {return xScale(d.month)})
       .y0((d) => {return yScalePrecBelowBreak(d.prec)})
       .y1(this._chartPos.min)
-      .interpolate('linear')
+      .interpolate(curveType)
 
     this._chart.append('path')
       .data(this._climateData.monthly_short)
@@ -715,7 +754,7 @@ class ClimateChart extends Chart
       .x( (d) => {return xScale(d.month)})
       .y0((d) => {return yScalePrecAboveBreak(d.prec)})
       .y1(this._chartPos.break)
-      .interpolate('linear')
+      .interpolate(curveType)
 
     this._chart.append('path')
       .data(this._climateData.monthly_short)
@@ -730,17 +769,42 @@ class ClimateChart extends Chart
     // -> Clip the areas defined above
     // -> Make the relevant parts for the climate chart visible
 
-    let areaTempTo100 = d3.svg.area()
-      .x( (d) => {return xScale(d.month)})
-      .y0((d) => {return yScaleTempBelowBreak(d.temp)})
-      .y1(this._chartPos.break)
-      .interpolate('linear')
+    let areaTempTo100 = null
+    if (this._chartMain.switch.activeState == 0) {
 
+        areaTempTo100 = d3.svg.area()
+          .x( (d) => {return xScale(d.month)})
+          .y0((d) => {return yScaleTempBelowBreak(d.temp)})
+          .y1(this._chartPos.break)
+          .interpolate('linear')
+    }
+    else {
+        areaTempTo100 = d3.svg.area()
+          .x( (d) => {return xScale(d.month)})
+          .y0((d) => {return yScalePrecBelowBreak(0)})
+          .y1(this._chartPos.break)
+          .interpolate('linear')
+
+        // Adding line on zero y
+        
+        let zeroLine = d3.svg.line()
+            .x( (d) => { return d.x })
+            .y( (d) => { return d.y })
+            .interpolate('linear')
+
+        this._chart.append("path")
+            .attr('class', 'line')
+            .attr("d", zeroLine([ { "x": this._chartPos.left,   "y": yScalePrecBelowBreak(0)}, { "x": this._chartPos.right,  "y": yScalePrecBelowBreak(0)} ]))
+            .attr('stroke', d3.rgb("#000"))
+            .attr('stroke-width', this._chartMain.style.gridWidth)
+            .attr('shape-rendering', 'crispEdges')
+    }
+    
     defs.append('clipPath')
       .attr('id', 'clip-temp')
       .append('path')
       .attr('d', areaTempTo100(this._climateData.monthly_short))
-
+    
     let area100ToMax = d3.svg.area()
       .x( (d) => {return xScale(d.month)})
       .y0(yScalePrecAboveBreak(this._chartMain.prec.breakValue))
@@ -756,7 +820,7 @@ class ClimateChart extends Chart
       .x( (d) => {return xScale(d.month)})
       .y0((d) => {return yScalePrecBelowBreak(d.prec)})
       .y1(this._chartPos.break)
-      .interpolate('linear')
+      .interpolate(curveType)
 
     defs.append('clipPath')
       .attr('id', 'clip-prec')
@@ -783,7 +847,42 @@ class ClimateChart extends Chart
         .attr('width',  this._chartPos.width)
         .attr('height', (this._chartPos.break - this._chartPos.max))
     }
+    
+    // ------------------------------------------------------------------------
+    // Lines for temp and prec
+    // ------------------------------------------------------------------------
 
+    // Temperature line
+
+    let lineTemp = d3.svg
+      .line()
+      .x( (d) => {return xScale(d.month)} )
+      .y( (d) => {return yScaleTempBelowBreak(d.temp)} )
+      .interpolate('linear')
+
+    this._chart.append('svg:path')
+      .attr('class', 'line')
+      .attr('d', lineTemp(this._climateData.monthly_short))
+      .attr('fill', 'none')
+      .attr('stroke', this._chartsMain.colors.temp)
+      .attr('stroke-width', this._chartMain.style.lineWidth)
+      
+    // Precipitation line below break
+
+    let linePrecBelowBreak = d3.svg
+      .line()
+      .x( (d) => {return xScale(d.month)})
+      .y( (d) => {return yScalePrecBelowBreak(d.prec)})
+      .interpolate(curveType)
+
+    this._chart.append('svg:path')
+      .attr('class', 'line')
+      .attr('d', linePrecBelowBreak(this._climateData.monthly_short))
+      .attr('clip-path', 'url(#rect-bottom)')
+      .attr('fill', 'none')
+      .attr('stroke', this._chartsMain.colors.prec)
+      .attr('stroke-width', this._chartMain.style.lineWidth)
+  
     // Styling
 
     this._chart.selectAll('.area')

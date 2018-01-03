@@ -321,7 +321,7 @@ class Chart
       .style('text-anchor', 'end')
       .style('font-size', this._chartsMain.fontSizes.small + 'em')
       .style('opacity', this._chartsMain.footerOpacity)
-      .text(this._refURL)
+      .text('\u00A9 ' + this._refURL)
   }
 
 

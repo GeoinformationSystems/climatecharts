@@ -179,7 +179,11 @@ let loadConfig = (main) =>
           {
             circleRadius:   5.0,  // [px]
             strokeWidth:    2.0,  // [px]
-          }
+          },
+          switch:
+          {
+            activeState: 0,
+          },    
         },
 
         // --------------------------------------------------------------------
