@@ -115,6 +115,22 @@ class ClimateChart extends Chart
     )
     this._tablePos.bottom = this._tablePos.top + height
     this._tablePos.height = height
+    
+    this.xScale = null
+    
+    this.yScaleTempAboveBreak = null
+    this.yScaleTempBelowBreak = null
+    
+    this.yScalePrecAboveBreak = null
+    this.yScalePrecBelowBreak = null
+    this.ticks = null
+    this.defs = null  
+    
+    
+    // Status variable: is there a break value at which the chart
+    // switches between the humid and the perhumid zone?
+    this.breakExists = false
+    
   }
 
 
@@ -127,27 +143,34 @@ class ClimateChart extends Chart
     )
     this._toolbar[0].appendChild(graphOptions)
 
+
     let graphOptionLine = this._main.modules.domElementCreator.create(
-      'a', 'cc-graph-option-line'
+      'a', 'cc-graph-option-first',[] , [['title', 'Walter-Lieth Chart']]
     )
     graphOptions.appendChild(graphOptionLine)
 
+
     let graphOptionBar = this._main.modules.domElementCreator.create(
-      'a', 'cc-graph-option-bar'
+      'a', 'cc-graph-option-middle',[] , [['title', 'Bar Chart']]
     )
     graphOptions.appendChild(graphOptionBar)
+    
+    
+    let graphOptionStep = this._main.modules.domElementCreator.create(
+      'a', 'cc-graph-option-last',[] , [['title', 'Step Chart']]
+    )
+    graphOptions.appendChild(graphOptionStep)
 
 
     // ------------------------------------------------------------------------
     // Label switch title and switch states
     // ------------------------------------------------------------------------
     graphOptions.childNodes[this._chartMain.switch.activeState].className ='cc-graph-active'
+    
     graphOptionLine.innerHTML = '<i class="fa fa-area-chart" aria-hidden="true"></i>'
-//      + this._chartMain.switch.states[0].charAt(0).toUpperCase()
-//      + this._chartMain.switch.states[0].slice(1)
     graphOptionBar.innerHTML = '<i class="fa fa-bar-chart" aria-hidden="true"></i>'
-//      + this._chartMain.switch.states[1].charAt(0).toUpperCase()
-//      + this._chartMain.switch.states[1].slice(1)
+    graphOptionStep.innerHTML = '<i class="fa fa-map" aria-hidden="true"></i>'
+
 
 
     // ------------------------------------------------------------------------
@@ -192,7 +215,181 @@ class ClimateChart extends Chart
   _setupChart()
   {
     super._setupChart()
+    
+    
+    this._setupScales()
+    this._drawGrid()    
+    
+   
+    
+    if (this._chartMain.switch.activeState == 0) {
+        this._drawAreas("linear")
+        this._drawPrecLine("linear")
+    }
+    else if(this._chartMain.switch.activeState == 1) {
+        
+    }
+    else if(this._chartMain.switch.activeState == 2) {
+        this._drawAreas("step")
+        this._drawPrecLine("step")
+    }
+    
+    
+    this._drawTempLine() 
+    this._drawAxis()
+ 
+    this._drawCaption()
+    this._drawTable()
 
+    
+    
+
+    // ------------------------------------------------------------------------
+    // Interaction: Mouseover effect
+    // ------------------------------------------------------------------------
+
+    this._chart.append('g')
+      .attr('class', 'focus')
+      .attr('visibility', 'hidden')
+
+    this._chart.select('.focus')
+      .append('circle')
+      .attr('id', 'c1')
+      .attr('r', this._chartMain.mouseover.circleRadius)
+      .attr('fill', 'white')
+      .attr('stroke', this._chartsMain.colors.temp)
+      .style('stroke-width', this._chartMain.mouseover.strokeWidth)
+
+    this._chart.select('.focus')
+      .append('circle')
+      .attr('id', 'c2')
+      .attr('r', this._chartMain.mouseover.circleRadius)
+      .attr('fill', 'white')
+      .attr('stroke', this._chartsMain.colors.prec)
+      .style('stroke-width', this._chartMain.mouseover.strokeWidth)
+
+
+    // Event handling
+    let showCircles = () =>
+      {
+        this._chart.select('.focus')
+          .attr('visibility', 'visible')
+      }
+
+    let hideCircles = () =>
+      {
+        this._chart.select('.focus')
+          .attr('visibility', 'hidden')
+      }
+
+    let defocusMonth = () =>
+      {
+        this._chart.selectAll('.cell')
+          .attr('fill', 'black')
+          .attr('font-weight', 'normal')
+          .style('font-size', this._chartsMain.fontSizes.large + 'em')
+          .style('text-shadow', 'none')
+      }
+
+    //this._chartWrapper.mouseover(hideCircles)
+
+    this._chartWrapper.mouseout(hideCircles)
+    this._chartWrapper.mouseout(defocusMonth)
+
+
+    //Todo: change wording from "click" to "mouse" position 
+    this._chartWrapper.mousemove( (e) =>
+      {
+        // Get click position inside svg canvas
+        let svg = this._chart[0][0]
+        let clickPtReal = svg.createSVGPoint()
+        clickPtReal.x = e.clientX
+        clickPtReal.y = e.clientY
+        let clickPtSVG = clickPtReal.matrixTransform(
+          svg.getScreenCTM().inverse()
+        )
+
+        // Calculate closest distance between mouse position and tick
+        let posX =    clickPtSVG.x
+        let lowDiff = 1e99
+        let xI =      null
+        let tickPos = this.xScale.range()
+
+        for (let i=0; i<tickPos.length; i++)
+        {
+          let diff = Math.abs(posX - tickPos[i])
+          if (diff < lowDiff)
+          {
+            lowDiff = diff
+            xI = i
+          }
+        }
+
+        // Hack: for december, disable hover when far away
+        // faw away = further than half distance between two ticks + a bit more
+        if (lowDiff > ((tickPos[1]-tickPos[0])/2)*1.1)
+        {
+          hideCircles()
+          defocusMonth()
+          return
+        }
+        showCircles()
+
+        let c1 =    this._chart.select('#c1')
+        let c2 =    this._chart.select('#c2')
+        let month = this._chart.select('#month_c' + xI)
+        let temp =  this._chart.select('#temp_c' + xI)
+        let prec =  this._chart.select('#prec_c' + xI)
+        let rows =  this._chart.selectAll('.cell')
+
+        // Highlight closest month in chart and table
+        rows.attr('fill', 'black')
+          .attr('font-weight', 'normal')
+          .style('text-shadow', 'none')
+        month.style('text-shadow', '1px 1px 2px gray')
+          .attr('font-weight', 'bold')
+        temp.attr('fill', this._chartsMain.colors.temp)
+          .attr('font-weight', 'bold')
+          .style('text-shadow', '1px 2px 2px gray')
+        prec.attr('fill', this._chartsMain.colors.prec)
+          .attr('font-weight', 'bold')
+          .style('text-shadow', '2px 2px 2px gray')
+
+        c1.attr('transform',
+          'translate('
+            + tickPos[xI] + ','
+            + this.yScaleTempBelowBreak(this._climateData.monthly_short[xI].temp) + ')'
+        )
+
+        if (
+          this._climateData.monthly_short[xI].prec <=
+          this._chartMain.prec.breakValue
+        )
+        {
+          c2.attr('transform',
+            'translate('
+              + tickPos[xI] + ','
+              + this.yScalePrecBelowBreak(this._climateData.monthly_short[xI].prec) + ')'
+          )
+        }
+        if (
+          this._climateData.monthly_short[xI].prec >
+          this._chartMain.prec.breakValue
+        )
+        {
+          c2.attr('transform',
+            'translate('
+              + tickPos[xI] + ','
+              + this.yScalePrecAboveBreak(this._climateData.monthly_short[xI].prec) + ')'
+          )
+        }
+      }
+    )
+
+  }
+
+  _setupScales()
+  {
     // ------------------------------------------------------------------------
     // Setup axes (1 x-axis, 2 y-axes for prec and temp and ticks)
     // ------------------------------------------------------------------------
@@ -208,7 +405,7 @@ class ClimateChart extends Chart
     //      humid zone between zero and break
     //      perhumid zone between break and max
 
-    let ticks =
+    this.ticks =
     {
       temp:
       {
@@ -236,13 +433,9 @@ class ClimateChart extends Chart
       }
     }
 
-    // Status variable: is there a break value at which the chart
-    // switches between the humid and the perhumid zone?
-    let breakExists = false
-
     // Defs contains the paths that are later used for clipping the areas
     // between the temperature and precipitation lines.
-    let defs = this._chart.append('defs')
+    this.defs = this._chart.append('defs')
 
 
     // ------------------------------------------------------------------------
@@ -256,13 +449,13 @@ class ClimateChart extends Chart
       this._chartMain.temp.dist
 
     // 1) Zero: (0 for both)
-    ticks.temp.zero = 0
-    ticks.prec.zero = 0
+    this.ticks.temp.zero = 0
+    this.ticks.prec.zero = 0
 
     // 2) Min:
     // Temp: either (minimum value floored to multiples of 10 °C) or (0 °C)
     // -> avoid min temp above 0°C
-    ticks.temp.min = Math.min(
+    this.ticks.temp.min = Math.min(
       0,
       Math.floor(
         this._climateData.extreme.minTemp /
@@ -272,43 +465,43 @@ class ClimateChart extends Chart
 
     // Prec: If there are negative temp values, the zeropoints of both y axes
     // must be in alignment => adapt
-    ticks.prec.min = ticks.temp.min * scaleRatiobelowBreak
+    this.ticks.prec.min = this.ticks.temp.min * scaleRatiobelowBreak
 
     // 3) Break: breakValue for prec, in ratio for temp
-    ticks.prec.break = this._chartMain.prec.breakValue
-    ticks.temp.break = ticks.prec.break / scaleRatiobelowBreak
+    this.ticks.prec.break = this._chartMain.prec.breakValue
+    this.ticks.temp.break = this.ticks.prec.break / scaleRatiobelowBreak
 
     // 4) Max:
     // If prec exceeds the break line
-    if (this._climateData.extreme.maxPrec > ticks.prec.break)
+    if (this._climateData.extreme.maxPrec > this.ticks.prec.break)
     {
       // Status: yes, break value exists
-      breakExists = true
+      this.breakExists = true
 
       // Preparation
       let breakValue = this._chartMain.prec.breakValue
       let precDistAbove = this._chartMain.prec.distAboveBreak
       let maxPrec = this._climateData.extreme.maxPrec
       let tempDist = this._chartMain.temp.dist
-      let maxTemp = ticks.temp.break
+      let maxTemp = this.ticks.temp.break
 
       // Calculate max prec tick: Ceiled to distance above break line (200)
       // shifted by breakValue (100)
-      ticks.prec.max = Math.ceil(
+      this.ticks.prec.max = Math.ceil(
         (maxPrec - breakValue) / precDistAbove
       ) * precDistAbove + breakValue
 
       // Calculate max temp tick
-      ticks.temp.max =
-        ((ticks.prec.max - breakValue) / precDistAbove) *
+      this.ticks.temp.max =
+        ((this.ticks.prec.max - breakValue) / precDistAbove) *
         tempDist + maxTemp
     }
 
     // If prec does not exceed the break line, it is also the max line
     else
     {
-      ticks.prec.max = ticks.prec.break
-      ticks.temp.max = ticks.temp.break
+      this.ticks.prec.max = this.ticks.prec.break
+      this.ticks.temp.max = this.ticks.temp.break
     }
 
 
@@ -318,32 +511,32 @@ class ClimateChart extends Chart
 
     // Temp below break: all from min to break value
     for (
-      let tickValue =   ticks.temp.min;
-      tickValue     <=  ticks.temp.break;
+      let tickValue =   this.ticks.temp.min;
+      tickValue     <=  this.ticks.temp.break;
       tickValue     +=  this._chartMain.temp.dist
     )
-      ticks.temp.values.belowBreak.push(tickValue)
+      this.ticks.temp.values.belowBreak.push(tickValue)
 
     // Temp above break: non-existing
 
     // Prec below break: all from zero to break value
     for (
-      let tickValue =   ticks.prec.zero;
-      tickValue     <=  ticks.prec.break;
+      let tickValue =   this.ticks.prec.zero;
+      tickValue     <=  this.ticks.prec.break;
       tickValue     +=  this._chartMain.prec.distBelowBreak
     )
-      ticks.prec.values.belowBreak.push(tickValue)
+      this.ticks.prec.values.belowBreak.push(tickValue)
 
     // Prec above break: all from first after break to max
     // -> do not include the one at the break value since it already exists
     // in the tick values from below the break value
     for (
-      let tickValue =   ticks.prec.break +
+      let tickValue =   this.ticks.prec.break +
                         this._chartMain.prec.distAboveBreak;
-      tickValue     <=  ticks.prec.max;
+      tickValue     <=  this.ticks.prec.max;
       tickValue     +=  this._chartMain.prec.distAboveBreak
     )
-      ticks.prec.values.aboveBreak.push(tickValue)
+      this.ticks.prec.values.aboveBreak.push(tickValue)
 
 
     // ------------------------------------------------------------------------
@@ -370,12 +563,12 @@ class ClimateChart extends Chart
     // => mentally add 1 to get correct number of ticks
     // -> cells are in between two ticks => one tick has to be omitted
     // => mentally subtract one => stay with number of tick values
-    if (breakExists)
-      this._chartPos.break += (cellWidth * ticks.prec.values.aboveBreak.length)
+    if (this.breakExists)
+      this._chartPos.break += (cellWidth * this.ticks.prec.values.aboveBreak.length)
 
     // min position: between break and min (>=5 cells)
     this._chartPos.min = this._chartPos.break
-      + cellWidth * (ticks.temp.values.belowBreak.length-1)
+      + cellWidth * (this.ticks.temp.values.belowBreak.length-1)
 
     // bottom position: min position + space for heading
     this._chartPos.bottom = 0
@@ -384,15 +577,15 @@ class ClimateChart extends Chart
 
     // Adapt chart size: final bottom position - initial bottom position
     this._resizeChartHeight(this._chartPos.bottom - initBottomPos)
-
-
+    
+    
     // ------------------------------------------------------------------------
-    // Setup axes
+    // Setup scales
     // ------------------------------------------------------------------------
 
     // x-Axis
 
-    let xScale = d3.scale
+    this.xScale = d3.scale
       .ordinal()
       .domain(MONTHS_IN_YEAR)
       .range([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12])
@@ -402,10 +595,84 @@ class ClimateChart extends Chart
           this._chartPos.right
         ], 0
       )
+    
+    // y-Axis left: temperature (below break value)
 
+    this.yScaleTempBelowBreak = d3.scale
+      .linear()
+      .domain(
+        [
+          this.ticks.temp.min,
+          this.ticks.temp.break
+        ]
+      )
+      .range(
+        [
+          this._chartPos.min,
+          this._chartPos.break
+        ]
+      )
+    
+    // y-Axis left: temperature (above break value)
+
+    this.yScaleTempAboveBreak = d3.scale
+      .linear()
+      .domain(
+        [
+          this.ticks.temp.break,
+          this.ticks.temp.max
+        ]
+      )
+      .range(
+        [
+          this._chartPos.max,
+          this._chartPos.break,
+        ]
+      )
+    
+    // y-Axis right: precipitation (below break value)
+
+    this.yScalePrecBelowBreak = d3.scale
+      .linear()
+      .domain(
+        [
+          this.ticks.prec.min,
+          this.ticks.prec.break
+        ]
+      )
+      .range(
+        [
+          this._chartPos.min,
+          this._chartPos.break
+        ]
+      )
+    
+    // y-Axis right: precipitation (above break value)
+
+    this.yScalePrecAboveBreak = d3.scale
+      .linear()
+      .domain(
+        [
+          this.ticks.prec.break,
+          this.ticks.prec.max
+        ]
+      )
+      .range(
+        [
+          this._chartPos.break,
+          this._chartPos.max,
+        ]
+      )
+}
+  
+  _drawAxis()
+  {
+    
+    // x-Axis  
+      
     let xAxis = d3.svg
       .axis()
-      .scale(xScale)
+      .scale(this.xScale)
       .tickSize(this._chartMain.style.tickSize)
       .tickSubdivide(true)
       .tickPadding(5)
@@ -420,28 +687,12 @@ class ClimateChart extends Chart
       )
       .call(xAxis)
 
-
     // y-Axis left: temperature (below break value)
-
-    let yScaleTempBelowBreak = d3.scale
-      .linear()
-      .domain(
-        [
-          ticks.temp.min,
-          ticks.temp.break
-        ]
-      )
-      .range(
-        [
-          this._chartPos.min,
-          this._chartPos.break
-        ]
-      )
 
     let yAxisTempBelowBreak = d3.svg
       .axis()
-      .scale(yScaleTempBelowBreak)
-      .tickValues(ticks.temp.values.belowBreak)
+      .scale(this.yScaleTempBelowBreak)
+      .tickValues(this.ticks.temp.values.belowBreak)
       .tickSize(this._chartMain.style.tickSize)
       .orient('left')
 
@@ -460,25 +711,10 @@ class ClimateChart extends Chart
     // y-Axis left: temperature (above break value)
     // -> no ticks, because there are no values above 50 °C
 
-    let yScaleTempAboveBreak = d3.scale
-      .linear()
-      .domain(
-        [
-          ticks.temp.break,
-          ticks.temp.max
-        ]
-      )
-      .range(
-        [
-          this._chartPos.max,
-          this._chartPos.break,
-        ]
-      )
-
     let yAxisTempAboveBreak = d3.svg
       .axis()
-      .scale(yScaleTempAboveBreak)
-      .tickValues(ticks.temp.values.aboveBreak)
+      .scale(this.yScaleTempAboveBreak)
+      .tickValues(this.ticks.temp.values.aboveBreak)
       .tickSize(this._chartMain.style.tickSize)
       .orient('left')
 
@@ -496,25 +732,10 @@ class ClimateChart extends Chart
 
     // y-Axis right: precipitation (below break value)
 
-    let yScalePrecBelowBreak = d3.scale
-      .linear()
-      .domain(
-        [
-          ticks.prec.min,
-          ticks.prec.break
-        ]
-      )
-      .range(
-        [
-          this._chartPos.min,
-          this._chartPos.break
-        ]
-      )
-
     let yAxisPrecBelowBreak = d3.svg
       .axis()
-      .scale(yScalePrecBelowBreak)
-      .tickValues(ticks.prec.values.belowBreak)
+      .scale(this.yScalePrecBelowBreak)
+      .tickValues(this.ticks.prec.values.belowBreak)
       .tickSize(this._chartMain.style.tickSize)
       .orient('right')
 
@@ -532,25 +753,10 @@ class ClimateChart extends Chart
 
     // y-Axis right: precipitation (above break value)
 
-    let yScalePrecAboveBreak = d3.scale
-      .linear()
-      .domain(
-        [
-          ticks.prec.break,
-          ticks.prec.max
-        ]
-      )
-      .range(
-        [
-          this._chartPos.break,
-          this._chartPos.max,
-        ]
-      )
-
     let yAxisPrecAboveBreak = d3.svg
       .axis()
-      .scale(yScalePrecAboveBreak)
-      .tickValues(ticks.prec.values.aboveBreak)
+      .scale(this.yScalePrecAboveBreak)
+      .tickValues(this.ticks.prec.values.aboveBreak)
       .tickSize(this._chartMain.style.tickSize)
       .orient('right')
 
@@ -596,7 +802,13 @@ class ClimateChart extends Chart
     this._chart.selectAll('.tick')
     	.style('font-size', this._chartsMain.fontSizes.small + 'em');
 
+    this._chart.selectAll('.axis .tick line')
+        .style('stroke', 'black')
 
+  }
+
+  _drawGrid()
+  {
     // ------------------------------------------------------------------------
     // Grid lines
     // concept: one line with one tick per value. The size of the tick is the
@@ -608,7 +820,7 @@ class ClimateChart extends Chart
 
     let xGrid = d3.svg
     	.axis()
-    	.scale(xScale)
+    	.scale(this.xScale)
     	.tickSize(this._chartPos.max - this._chartPos.min)
     	.tickSubdivide(true)
     	.tickFormat('')
@@ -628,8 +840,8 @@ class ClimateChart extends Chart
 
     let yGridBelowBreak = d3.svg
     	.axis()
-    	.scale(yScaleTempBelowBreak)
-    	.tickValues(ticks.temp.values.belowBreak)
+    	.scale(this.yScaleTempBelowBreak)
+    	.tickValues(this.ticks.temp.values.belowBreak)
     	.tickSize(-(this._chartPos.width))
     	.orient('left')
     	.tickFormat('')
@@ -647,12 +859,12 @@ class ClimateChart extends Chart
 
     // Grid in y-direction (above break line)
 
-    if (breakExists)
+    if (this.breakExists)
     {
       let yGridAboveBreak = d3.svg
         .axis()
-        .scale(yScalePrecAboveBreak)
-        .tickValues(ticks.prec.values.aboveBreak)
+        .scale(this.yScalePrecAboveBreak)
+        .tickValues(this.ticks.prec.values.aboveBreak)
         .tickSize(-this._chartPos.width)
         .orient('left')
         .tickFormat('')
@@ -675,39 +887,10 @@ class ClimateChart extends Chart
       .style('stroke', this._chartsMain.colors.grid)
       .style('stroke-width', this._chartMain.style.gridWidth + ' px')
       .attr('shape-rendering', 'crispEdges')
+  }
 
-    // ------------------------------------------------------------------------
-    // switch curve type for prec
-    // ------------------------------------------------------------------------
-
-    let curveType = ""
-        if (this._chartMain.switch.activeState == 0) {
-            curveType = "linear" 
-        }
-        else {
-            curveType = "step"
-    }   
-
-
-    // Precipitation line abovebreak
-
-    if (breakExists)
-    {
-      let linePrecAboveBreak = d3.svg.line()
-        .x( (d) => {return xScale(d.month)})
-        .y( (d) => {return yScalePrecAboveBreak(d.prec)})
-        .interpolate(curveType)
-
-      this._chart.append('svg:path')
-        .attr('class', 'line')
-        .attr('d', linePrecAboveBreak(this._climateData.monthly_short))
-        .attr('clip-path', 'url(#rect-top)')
-        .attr('fill', 'none')
-        .attr('stroke', this._chartsMain.colors.prec)
-        .attr('stroke-width', this._chartMain.style.lineWidth)
-    }
-
-
+  _drawAreas(curveType)
+  {
     // ------------------------------------------------------------------------
     // Areas showing temp and prec
     // ------------------------------------------------------------------------
@@ -718,8 +901,8 @@ class ClimateChart extends Chart
  
         let areaTemp = d3.svg
           .area()
-          .x( (d) => {return xScale(d.month)})
-          .y0((d) => {return yScaleTempBelowBreak(d.temp)})
+          .x( (d) => {return this.xScale(d.month)})
+          .y0((d) => {return this.yScaleTempBelowBreak(d.temp)})
           .y1(this._chartPos.min)
           .interpolate('linear')
 
@@ -736,8 +919,8 @@ class ClimateChart extends Chart
 
     let areaPrecBelowBreak = d3.svg
       .area()
-      .x( (d) => {return xScale(d.month)})
-      .y0((d) => {return yScalePrecBelowBreak(d.prec)})
+      .x( (d) => {return this.xScale(d.month)})
+      .y0((d) => {return this.yScalePrecBelowBreak(d.prec)})
       .y1(this._chartPos.min)
       .interpolate(curveType)
 
@@ -751,8 +934,8 @@ class ClimateChart extends Chart
 
     let areaPrecAboveBreak = d3.svg
       .area()
-      .x( (d) => {return xScale(d.month)})
-      .y0((d) => {return yScalePrecAboveBreak(d.prec)})
+      .x( (d) => {return this.xScale(d.month)})
+      .y0((d) => {return this.yScalePrecAboveBreak(d.prec)})
       .y1(this._chartPos.break)
       .interpolate(curveType)
 
@@ -764,8 +947,7 @@ class ClimateChart extends Chart
       .attr('fill', this._chartsMain.colors.perhumid)
       .attr('stroke', 'none')
 
-
-    // Areas functioning as clipping paths
+        // Areas functioning as clipping paths
     // -> Clip the areas defined above
     // -> Make the relevant parts for the climate chart visible
 
@@ -773,15 +955,15 @@ class ClimateChart extends Chart
     if (this._chartMain.switch.activeState == 0) {
 
         areaTempTo100 = d3.svg.area()
-          .x( (d) => {return xScale(d.month)})
-          .y0((d) => {return yScaleTempBelowBreak(d.temp)})
+          .x( (d) => {return this.xScale(d.month)})
+          .y0((d) => {return this.yScaleTempBelowBreak(d.temp)})
           .y1(this._chartPos.break)
           .interpolate('linear')
     }
     else {
         areaTempTo100 = d3.svg.area()
-          .x( (d) => {return xScale(d.month)})
-          .y0((d) => {return yScalePrecBelowBreak(0)})
+          .x( (d) => {return this.xScale(d.month)})
+          .y0((d) => {return this.yScalePrecBelowBreak(0)})
           .y1(this._chartPos.break)
           .interpolate('linear')
 
@@ -794,44 +976,44 @@ class ClimateChart extends Chart
 
         this._chart.append("path")
             .attr('class', 'line')
-            .attr("d", zeroLine([ { "x": this._chartPos.left,   "y": yScalePrecBelowBreak(0)}, { "x": this._chartPos.right,  "y": yScalePrecBelowBreak(0)} ]))
+            .attr("d", zeroLine([ { "x": this._chartPos.left,   "y": this.yScalePrecBelowBreak(0)}, { "x": this._chartPos.right,  "y": this.yScalePrecBelowBreak(0)} ]))
             .attr('stroke', d3.rgb("#000"))
             .attr('stroke-width', this._chartMain.style.gridWidth)
             .attr('shape-rendering', 'crispEdges')
     }
     
-    defs.append('clipPath')
+    this.defs.append('clipPath')
       .attr('id', 'clip-temp')
       .append('path')
       .attr('d', areaTempTo100(this._climateData.monthly_short))
     
     let area100ToMax = d3.svg.area()
-      .x( (d) => {return xScale(d.month)})
-      .y0(yScalePrecAboveBreak(this._chartMain.prec.breakValue))
+      .x( (d) => {return this.xScale(d.month)})
+      .y0(this.yScalePrecAboveBreak(this._chartMain.prec.breakValue))
       .y1(0)
       .interpolate('linear')
 
-    defs.append('clipPath')
+    this.defs.append('clipPath')
       .attr('id', 'clip-temp2')
       .append('path')
       .attr('d', area100ToMax(this._climateData.monthly_short))
 
     let areaAbovePrec = d3.svg.area()
-      .x( (d) => {return xScale(d.month)})
-      .y0((d) => {return yScalePrecBelowBreak(d.prec)})
+      .x( (d) => {return this.xScale(d.month)})
+      .y0((d) => {return this.yScalePrecBelowBreak(d.prec)})
       .y1(this._chartPos.break)
       .interpolate(curveType)
 
-    defs.append('clipPath')
+    this.defs.append('clipPath')
       .attr('id', 'clip-prec')
       .append('path')
       .attr('d', areaAbovePrec(this._climateData.monthly_short))
-
-
+    
     // Cover overlapping prec lines resulting from break value
-    if (breakExists)
+    
+    if (this.breakExists)
     {
-      defs.append('clipPath')
+      this.defs.append('clipPath')
         .attr('id',     'rect-bottom')
         .append('rect')
         .attr('x',      this._chartPos.left)
@@ -839,7 +1021,7 @@ class ClimateChart extends Chart
         .attr('width',  this._chartPos.width)
         .attr('height', (this._chartPos.min-this._chartPos.break))
 
-      defs.append('clipPath')
+      this.defs.append('clipPath')
         .attr('id',     'rect-top')
         .append('rect')
         .attr('x',      this._chartPos.left)
@@ -848,31 +1030,42 @@ class ClimateChart extends Chart
         .attr('height', (this._chartPos.break - this._chartPos.max))
     }
     
-    // ------------------------------------------------------------------------
-    // Lines for temp and prec
-    // ------------------------------------------------------------------------
+    // Styling
 
-    // Temperature line
+    this._chart.selectAll('.area')
+      .style('opacity', this._chartMain.style.areaOpacity)
 
-    let lineTemp = d3.svg
-      .line()
-      .x( (d) => {return xScale(d.month)} )
-      .y( (d) => {return yScaleTempBelowBreak(d.temp)} )
-      .interpolate('linear')
 
-    this._chart.append('svg:path')
-      .attr('class', 'line')
-      .attr('d', lineTemp(this._climateData.monthly_short))
-      .attr('fill', 'none')
-      .attr('stroke', this._chartsMain.colors.temp)
-      .attr('stroke-width', this._chartMain.style.lineWidth)
-      
+
+  }
+
+  _drawPrecLine(curveType)
+  {
+    
+    // Precipitation line abovebreak
+    
+        if (this.breakExists)
+    {
+      let linePrecAboveBreak = d3.svg.line()
+        .x( (d) => {return this.xScale(d.month)})
+        .y( (d) => {return this.yScalePrecAboveBreak(d.prec)})
+        .interpolate(curveType)
+
+      this._chart.append('svg:path')
+        .attr('class', 'line')
+        .attr('d', linePrecAboveBreak(this._climateData.monthly_short))
+        .attr('clip-path', 'url(#rect-top)')
+        .attr('fill', 'none')
+        .attr('stroke', this._chartsMain.colors.prec)
+        .attr('stroke-width', this._chartMain.style.lineWidth)
+    }
+    
     // Precipitation line below break
 
     let linePrecBelowBreak = d3.svg
       .line()
-      .x( (d) => {return xScale(d.month)})
-      .y( (d) => {return yScalePrecBelowBreak(d.prec)})
+      .x( (d) => {return this.xScale(d.month)})
+      .y( (d) => {return this.yScalePrecBelowBreak(d.prec)})
       .interpolate(curveType)
 
     this._chart.append('svg:path')
@@ -882,13 +1075,31 @@ class ClimateChart extends Chart
       .attr('fill', 'none')
       .attr('stroke', this._chartsMain.colors.prec)
       .attr('stroke-width', this._chartMain.style.lineWidth)
-  
-    // Styling
 
-    this._chart.selectAll('.area')
-      .style('opacity', this._chartMain.style.areaOpacity)
+  }
 
+  _drawTempLine()
+  {
+      
+    // Temperature line
 
+    let lineTemp = d3.svg
+      .line()
+      .x( (d) => {return this.xScale(d.month)} )
+      .y( (d) => {return this.yScaleTempBelowBreak(d.temp)} )
+      .interpolate('linear')
+
+    this._chart.append('svg:path')
+      .attr('class', 'line')
+      .attr('d', lineTemp(this._climateData.monthly_short))
+      .attr('fill', 'none')
+      .attr('stroke', this._chartsMain.colors.temp)
+      .attr('stroke-width', this._chartMain.style.lineWidth)
+      
+  }
+
+  _drawCaption()
+  {
     // ------------------------------------------------------------------------
     // Caption: prec sum and temp mean
     // ------------------------------------------------------------------------
@@ -930,8 +1141,10 @@ class ClimateChart extends Chart
         + ' '
         + this._chartMain.prec.unit
       )
+  }
 
-
+  _drawTable()
+  {
     // ------------------------------------------------------------------------
     // Data Table
     // ------------------------------------------------------------------------
@@ -1064,149 +1277,7 @@ class ClimateChart extends Chart
     this._chart.selectAll('.cell')
       .style('font-size', this._chartsMain.fontSizes.large + 'em')
 
-
-    // ------------------------------------------------------------------------
-    // Interaction: Mouseover effect
-    // ------------------------------------------------------------------------
-
-    this._chart.append('g')
-      .attr('class', 'focus')
-      .attr('visibility', 'hidden')
-
-    this._chart.select('.focus')
-      .append('circle')
-      .attr('id', 'c1')
-      .attr('r', this._chartMain.mouseover.circleRadius)
-      .attr('fill', 'white')
-      .attr('stroke', this._chartsMain.colors.temp)
-      .style('stroke-width', this._chartMain.mouseover.strokeWidth)
-
-    this._chart.select('.focus')
-      .append('circle')
-      .attr('id', 'c2')
-      .attr('r', this._chartMain.mouseover.circleRadius)
-      .attr('fill', 'white')
-      .attr('stroke', this._chartsMain.colors.prec)
-      .style('stroke-width', this._chartMain.mouseover.strokeWidth)
-
-
-    // Event handling
-    let showCircles = () =>
-      {
-        this._chart.select('.focus')
-          .attr('visibility', 'visible')
-      }
-
-    let hideCircles = () =>
-      {
-        this._chart.select('.focus')
-          .attr('visibility', 'hidden')
-      }
-
-    let defocusMonth = () =>
-      {
-        this._chart.selectAll('.cell')
-          .attr('fill', 'black')
-          .attr('font-weight', 'normal')
-          .style('font-size', this._chartsMain.fontSizes.large + 'em')
-          .style('text-shadow', 'none')
-      }
-
-    this._chartWrapper.mouseover(hideCircles)
-
-    this._chartWrapper.mouseout(hideCircles)
-    this._chartWrapper.mouseout(defocusMonth)
-
-    this._chartWrapper.mousemove( (e) =>
-      {
-        // Get click position inside svg canvas
-        let svg = this._chart[0][0]
-        let clickPtReal = svg.createSVGPoint()
-        clickPtReal.x = e.clientX
-        clickPtReal.y = e.clientY
-        let clickPtSVG = clickPtReal.matrixTransform(
-          svg.getScreenCTM().inverse()
-        )
-
-        // Calculate closest distance between mouse position and tick
-        let posX =    clickPtSVG.x
-        let lowDiff = 1e99
-        let xI =      null
-        let tickPos = xScale.range()
-
-        for (let i=0; i<tickPos.length; i++)
-        {
-          let diff = Math.abs(posX - tickPos[i])
-          if (diff < lowDiff)
-          {
-            lowDiff = diff
-            xI = i
-          }
-        }
-
-        // Hack: for december, disable hover when far away
-        // faw away = further than half distance between two ticks + a bit more
-        if (lowDiff > ((tickPos[1]-tickPos[0])/2)*1.1)
-        {
-          hideCircles()
-          defocusMonth()
-          return
-        }
-        showCircles()
-
-        let c1 =    this._chart.select('#c1')
-        let c2 =    this._chart.select('#c2')
-        let month = this._chart.select('#month_c' + xI)
-        let temp =  this._chart.select('#temp_c' + xI)
-        let prec =  this._chart.select('#prec_c' + xI)
-        let rows =  this._chart.selectAll('.cell')
-
-        // Highlight closest month in chart and table
-        rows.attr('fill', 'black')
-          .attr('font-weight', 'normal')
-          .style('text-shadow', 'none')
-        month.style('text-shadow', '1px 1px 2px gray')
-          .attr('font-weight', 'bold')
-        temp.attr('fill', this._chartsMain.colors.temp)
-          .attr('font-weight', 'bold')
-          .style('text-shadow', '1px 2px 2px gray')
-        prec.attr('fill', this._chartsMain.colors.prec)
-          .attr('font-weight', 'bold')
-          .style('text-shadow', '2px 2px 2px gray')
-
-        c1.attr('transform',
-          'translate('
-            + tickPos[xI] + ','
-            + yScaleTempBelowBreak(this._climateData.monthly_short[xI].temp) + ')'
-        )
-
-        if (
-          this._climateData.monthly_short[xI].prec <=
-          this._chartMain.prec.breakValue
-        )
-        {
-          c2.attr('transform',
-            'translate('
-              + tickPos[xI] + ','
-              + yScalePrecBelowBreak(this._climateData.monthly_short[xI].prec) + ')'
-          )
-        }
-        if (
-          this._climateData.monthly_short[xI].prec >
-          this._chartMain.prec.breakValue
-        )
-        {
-          c2.attr('transform',
-            'translate('
-              + tickPos[xI] + ','
-              + yScalePrecAboveBreak(this._climateData.monthly_short[xI].prec) + ')'
-          )
-        }
-      }
-    )
-
   }
-
 
   // ========================================================================
   // Helper function: Resize the height of the chart by x px
