@@ -216,33 +216,34 @@ class ClimateChart extends Chart
   {
     super._setupChart()
     
-    
-    this._setupScales()
-    this._drawGrid()    
-    
-   
+    let curveType = ""
+    let paddingXScale = 0
     
     if (this._chartMain.switch.activeState == 0) {
-        this._drawAreas("linear")
-        this._drawPrecLine("linear")
+        curveType = "linear"
     }
     else if(this._chartMain.switch.activeState == 1) {
-        
+        curveType = "bar"
+        paddingXScale = 1
     }
     else if(this._chartMain.switch.activeState == 2) {
-        this._drawAreas("step")
-        this._drawPrecLine("step")
+        curveType = "step"
     }
     
+    this._setupScales(paddingXScale)
+    this._drawGrid()    
     
+    if(this._chartMain.switch.activeState != 1) this._drawAreas(curveType)
+    
+    this._drawPrecLine(curveType)
     this._drawTempLine() 
     this._drawAxis()
- 
+    
+    if(this._chartMain.switch.activeState > 0) this._addZeroLine()
+    
     this._drawCaption()
     this._drawTable()
 
-    
-    
 
     // ------------------------------------------------------------------------
     // Interaction: Mouseover effect
@@ -388,7 +389,7 @@ class ClimateChart extends Chart
 
   }
 
-  _setupScales()
+  _setupScales(paddingOuterTicksXScale)
   {
     // ------------------------------------------------------------------------
     // Setup axes (1 x-axis, 2 y-axes for prec and temp and ticks)
@@ -431,12 +432,8 @@ class ClimateChart extends Chart
           aboveBreak: [],
         },
       }
-    }
-
-    // Defs contains the paths that are later used for clipping the areas
-    // between the temperature and precipitation lines.
-    this.defs = this._chart.append('defs')
-
+    }  
+    
 
     // ------------------------------------------------------------------------
     // Determine characteristic positions for temp and prec scale
@@ -593,7 +590,7 @@ class ClimateChart extends Chart
         [
           this._chartPos.left,
           this._chartPos.right
-        ], 0
+        ], paddingOuterTicksXScale
       )
     
     // y-Axis left: temperature (below break value)
@@ -663,7 +660,30 @@ class ClimateChart extends Chart
           this._chartPos.max,
         ]
       )
-}
+    
+    // Defs contains the paths that are later used for clipping the areas
+    // between the temperature and precipitation lines.
+    this.defs = this._chart.append('defs')
+    
+    // Cover overlapping prec lines resulting from break value
+    
+    this.defs.append('clipPath')
+      .attr('id',     'rect-bottom')
+      .append('rect')
+      .attr('x',      this._chartPos.left)
+      .attr('y',      this._chartPos.break)
+      .attr('width',  this._chartPos.width)
+      .attr('height', (this._chartPos.min-this._chartPos.break))
+
+    this.defs.append('clipPath')
+      .attr('id',     'rect-top')
+      .append('rect')
+      .attr('x',      this._chartPos.left)
+      .attr('y',      this._chartPos.max)
+      .attr('width',  this._chartPos.width)
+      .attr('height', (this._chartPos.break - this._chartPos.max))
+
+  }
   
   _drawAxis()
   {
@@ -966,20 +986,6 @@ class ClimateChart extends Chart
           .y0((d) => {return this.yScalePrecBelowBreak(0)})
           .y1(this._chartPos.break)
           .interpolate('linear')
-
-        // Adding line on zero y
-        
-        let zeroLine = d3.svg.line()
-            .x( (d) => { return d.x })
-            .y( (d) => { return d.y })
-            .interpolate('linear')
-
-        this._chart.append("path")
-            .attr('class', 'line')
-            .attr("d", zeroLine([ { "x": this._chartPos.left,   "y": this.yScalePrecBelowBreak(0)}, { "x": this._chartPos.right,  "y": this.yScalePrecBelowBreak(0)} ]))
-            .attr('stroke', d3.rgb("#000"))
-            .attr('stroke-width', this._chartMain.style.gridWidth)
-            .attr('shape-rendering', 'crispEdges')
     }
     
     this.defs.append('clipPath')
@@ -1009,26 +1015,6 @@ class ClimateChart extends Chart
       .append('path')
       .attr('d', areaAbovePrec(this._climateData.monthly_short))
     
-    // Cover overlapping prec lines resulting from break value
-    
-    if (this.breakExists)
-    {
-      this.defs.append('clipPath')
-        .attr('id',     'rect-bottom')
-        .append('rect')
-        .attr('x',      this._chartPos.left)
-        .attr('y',      this._chartPos.break)
-        .attr('width',  this._chartPos.width)
-        .attr('height', (this._chartPos.min-this._chartPos.break))
-
-      this.defs.append('clipPath')
-        .attr('id',     'rect-top')
-        .append('rect')
-        .attr('x',      this._chartPos.left)
-        .attr('y',      this._chartPos.max)
-        .attr('width',  this._chartPos.width)
-        .attr('height', (this._chartPos.break - this._chartPos.max))
-    }
     
     // Styling
 
@@ -1043,39 +1029,77 @@ class ClimateChart extends Chart
   {
     
     // Precipitation line abovebreak
-    
+    if(curveType == "bar")
+    {            
+        this._chart.append('g')
+            .attr('id', 'bars')
+        
         if (this.breakExists)
-    {
-      let linePrecAboveBreak = d3.svg.line()
-        .x( (d) => {return this.xScale(d.month)})
-        .y( (d) => {return this.yScalePrecAboveBreak(d.prec)})
-        .interpolate(curveType)
+        {
+            let bar = d3.select("#bars").selectAll("g")
+                .data(this._climateData.monthly_short)
+              .enter().append("rect")
+                .attr('x', (d) => { return ( this.xScale(d.month) - 10 ) })
+                .attr('y', (d) => { return this.yScalePrecAboveBreak(d.prec) })
+                .attr('clip-path', 'url(#rect-top)')             
+                .attr('width', 20)
+                .attr('height', (d) => { return this.yScalePrecAboveBreak(0) - this.yScalePrecAboveBreak(d.prec) } )
+                .attr('fill', this._chartsMain.colors.perhumid)
+                .attr('fill-opacity', this._chartMain.style.barOpacity)
+                .attr('stroke', this._chartsMain.colors.prec)
+                .attr('stroke-width', this._chartMain.style.lineWidthBar)
+                .attr('shape-rendering', 'crispEdges')
+        }
+        
+        let bar = d3.select("#bars").selectAll("g")
+            .data(this._climateData.monthly_short)
+          .enter().append("rect")
+            .attr('x', (d) => { return ( this.xScale(d.month) - 10 ) })
+            .attr('y', (d) => { return this.yScalePrecBelowBreak(d.prec) })
+            .attr('clip-path', 'url(#rect-bottom)')             
+            .attr('width', 20)
+            .attr('height', (d) => { return this.yScalePrecBelowBreak(0) - this.yScalePrecBelowBreak(d.prec) } )
+            .attr('fill', this._chartsMain.colors.humid)
+            .attr('fill-opacity', this._chartMain.style.barOpacity)
+            .attr('stroke', this._chartsMain.colors.prec)
+            .attr('stroke-width', this._chartMain.style.lineWidthBar)
+            .attr('shape-rendering', 'crispEdges')
 
-      this._chart.append('svg:path')
-        .attr('class', 'line')
-        .attr('d', linePrecAboveBreak(this._climateData.monthly_short))
-        .attr('clip-path', 'url(#rect-top)')
-        .attr('fill', 'none')
-        .attr('stroke', this._chartsMain.colors.prec)
-        .attr('stroke-width', this._chartMain.style.lineWidth)
     }
-    
-    // Precipitation line below break
+    else 
+    {
+        if (this.breakExists)
+        {
+          let linePrecAboveBreak = d3.svg.line()
+            .x( (d) => {return this.xScale(d.month)})
+            .y( (d) => {return this.yScalePrecAboveBreak(d.prec)})
+            .interpolate(curveType)
 
-    let linePrecBelowBreak = d3.svg
-      .line()
-      .x( (d) => {return this.xScale(d.month)})
-      .y( (d) => {return this.yScalePrecBelowBreak(d.prec)})
-      .interpolate(curveType)
+          this._chart.append('svg:path')
+            .attr('class', 'line')
+            .attr('d', linePrecAboveBreak(this._climateData.monthly_short))
+            .attr('clip-path', 'url(#rect-top)')
+            .attr('fill', 'none')
+            .attr('stroke', this._chartsMain.colors.prec)
+            .attr('stroke-width', this._chartMain.style.lineWidth)
+        }
 
-    this._chart.append('svg:path')
-      .attr('class', 'line')
-      .attr('d', linePrecBelowBreak(this._climateData.monthly_short))
-      .attr('clip-path', 'url(#rect-bottom)')
-      .attr('fill', 'none')
-      .attr('stroke', this._chartsMain.colors.prec)
-      .attr('stroke-width', this._chartMain.style.lineWidth)
+        // Precipitation line below break
 
+        let linePrecBelowBreak = d3.svg
+          .line()
+          .x( (d) => {return this.xScale(d.month)})
+          .y( (d) => {return this.yScalePrecBelowBreak(d.prec)})
+          .interpolate(curveType)
+
+        this._chart.append('svg:path')
+          .attr('class', 'line')
+          .attr('d', linePrecBelowBreak(this._climateData.monthly_short))
+          .attr('clip-path', 'url(#rect-bottom)')
+          .attr('fill', 'none')
+          .attr('stroke', this._chartsMain.colors.prec)
+          .attr('stroke-width', this._chartMain.style.lineWidth)
+    }
   }
 
   _drawTempLine()
@@ -1098,6 +1122,23 @@ class ClimateChart extends Chart
       
   }
 
+  _addZeroLine()
+  {
+      // Adding line on zero y
+        
+    let zeroLine = d3.svg.line()
+        .x( (d) => { return d.x })
+        .y( (d) => { return d.y })
+        .interpolate('linear')
+
+    this._chart.append("path")
+        .attr('class', 'line')
+        .attr("d", zeroLine([ { "x": this._chartPos.left,   "y": this.yScalePrecBelowBreak(0)}, { "x": this._chartPos.right,  "y": this.yScalePrecBelowBreak(0)} ]))
+        .attr('stroke', d3.rgb("#000"))
+        .attr('stroke-width', this._chartMain.style.gridWidth)
+        .attr('shape-rendering', 'crispEdges')
+  }
+  
   _drawCaption()
   {
     // ------------------------------------------------------------------------

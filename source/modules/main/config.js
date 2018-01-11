@@ -142,7 +142,9 @@ let loadConfig = (main) =>
             gridWidth:      1,
             axesWidth:      2,
             lineWidth:      1.5,  // Lines for prec and temp
+            lineWidthBar:   0,
             areaOpacity:    0.7,  // For the areas between prec/temp lines
+            barOpacity:    0.8,  // For the areas between prec/temp lines
           },
           prec:
           {
