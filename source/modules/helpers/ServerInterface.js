@@ -143,7 +143,8 @@ class ServerInterface
     return $.get(url,
         {
           lat: coords.lat,
-          lng: coords.lng
+          lng: coords.lng,
+          rad: GAZETTEER_RADIUS
         }
       )
   }

@@ -28,6 +28,9 @@ const LNG_EXTENT = 180
 const LAT_HEMISPHERE = ["S", "N"]
 const LNG_HEMISPHERE = ["W", "E"]
 
+// Radius for location name search via gazetteer-api in km
+const GAZETTEER_RADIUS = 20
+
 
 // ============================================================================
 // Physics
