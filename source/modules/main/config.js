@@ -144,7 +144,8 @@ let loadConfig = (main) =>
             lineWidth:      1.5,  // Lines for prec and temp
             lineWidthBar:   0,
             areaOpacity:    0.7,  // For the areas between prec/temp lines
-            barOpacity:    0.8,  // For the areas between prec/temp lines
+            barOpacity:    0.8,  // For the areas between prec/temp lines      
+            barWidth: 26,
           },
           prec:
           {
@@ -152,7 +153,7 @@ let loadConfig = (main) =>
             unit:           "mm",
             breakValue:     100,  // [mm] at which prec scale breaks
             distBelowBreak:  20,  // Humid: distance between two ticks
-            distAboveBreak: 200,  // Perhumid: distance between two ticks
+            distAboveBreak: 200,  // Perhumid: distance between two ticks 
           },
           temp:
           {

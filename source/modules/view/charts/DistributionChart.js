@@ -308,16 +308,6 @@ class DistributionChart extends Chart
         .scale(xScale)
         .orient('bottom')
 
-      svg.append('g')
-        .attr('class', 'x axis')
-        .attr('transform', 'translate('
-          + this._chartPos.left[datatypeIdx]
-          + ','
-          + this._chartPos.bottom
-          + ')'
-        )
-        .style('font-size', this._chartsMain.fontSizes.small + 'em')
-        .call(xAxis)
 
 
       // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -348,24 +338,6 @@ class DistributionChart extends Chart
         .scale(yScale)
         .orient('left')
 
-      svg.append('g')
-        .attr('class', 'y axis')
-        .attr('transform', 'translate('
-          + this._chartPos.left[datatypeIdx]
-          + ','
-          + 0
-          + ')'
-        )
-        .call(yAxis)
-
-
-      // Styling
-
-      svg.selectAll('.axis .domain')
-      	.style('fill', 'none')
-      	.style('stroke', 'black')
-      	.style('stroke-width', this._chartMain.style.axesWidth + 'px')
-      	.attr('shape-rendering', 'crispEdges');
 
 
       // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -454,6 +426,42 @@ class DistributionChart extends Chart
         .style('fill', this._chartMain.subcharts[datatypeIdx].color)
         .style('opacity', this._chartMain.style.boxOpacity)
         .call(boxplots.width(xScale.rangeBand()))
+
+
+      // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+      // Draw Scales last 
+      // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+
+      svg.append('g')
+        .attr('class', 'x axis')
+        .attr('transform', 'translate('
+          + this._chartPos.left[datatypeIdx]
+          + ','
+          + this._chartPos.bottom
+          + ')'
+        )
+        .style('font-size', this._chartsMain.fontSizes.small + 'em')
+        .call(xAxis)
+
+      svg.append('g')
+        .attr('class', 'y axis')
+        .attr('transform', 'translate('
+          + this._chartPos.left[datatypeIdx]
+          + ','
+          + 0
+          + ')'
+        )
+        .call(yAxis)
+
+
+      // Styling
+
+      svg.selectAll('.axis .domain')
+      	.style('fill', 'none')
+      	.style('stroke', 'black')
+      	.style('stroke-width', this._chartMain.style.axesWidth + 'px')
+      	.attr('shape-rendering', 'crispEdges');
 
 
       // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
