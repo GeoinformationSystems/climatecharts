@@ -203,7 +203,7 @@ class Chart
     )
 
     // Save options: SVG
-/* TODO: get to work
+// TODO: get to work
     let svgButton = this._main.modules.domElementCreator.create(
       'button', '', ['save-to-svg']
     )
@@ -214,10 +214,10 @@ class Chart
       {
         let rootDiv =       this._chart[0][0]
         let fileName =      this._chartName  // TODO: more sophisticated
-        this._saveToSVG(rootDiv, fileName)
+        this._saveToSVG()
       }
     )
-*/
+
   }
 
 
@@ -389,6 +389,23 @@ class Chart
 
   _saveToSVG()
   {
+    let rootDiv =   this._chart[0][0]
+    let fileName =  this._chartName  // TODO: more sophisticated
+
+    console.log(rootDiv)
+    console.log(fileName)
+
+    rootDiv.setAttribute("xmlns", "http://www.w3.org/2000/svg");
+    var svgData = rootDiv.outerHTML;
+    var preface = '<?xml version="1.0" standalone="no"?>\r\n';
+    var svgBlob = new Blob([preface, svgData], {type:"image/svg+xml;charset=utf-8"});
+    var svgUrl = window.URL.createObjectURL(svgBlob);
+    var downloadLink = document.createElement("a");
+    downloadLink.href = svgUrl;
+    downloadLink.download = fileName + this._chartsMain.saveOptions.svg.fileExtension;
+    document.body.appendChild(downloadLink);
+    downloadLink.click();
+    document.body.removeChild(downloadLink);
   }
 
 }

@@ -180,7 +180,7 @@ let loadConfig = (main) =>
           captionDist:      20,   // [px] distance between caption text fields
           mouseover:
           {
-            circleRadius:   5.0,  // [px]
+            circleRadius:   4.0,  // [px]
             strokeWidth:    2.0,  // [px]
           },
           switch:
