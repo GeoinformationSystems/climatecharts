@@ -151,15 +151,15 @@ class ClimateChart extends Chart
 
 
     let graphOptionBar = this._main.modules.domElementCreator.create(
-      'a', 'cc-graph-option-middle',[] , [['title', 'Bar Chart']]
+      'a', 'cc-graph-option-last',[] , [['title', 'Bar Chart']]
     )
     graphOptions.appendChild(graphOptionBar)
     
-    
-    let graphOptionStep = this._main.modules.domElementCreator.create(
-      'a', 'cc-graph-option-last',[] , [['title', 'Step Chart']]
-    )
-    graphOptions.appendChild(graphOptionStep)
+    //disabled for now
+//    let graphOptionStep = this._main.modules.domElementCreator.create(
+//      'a', 'cc-graph-option-last',[] , [['title', 'Step Chart']]
+//    )
+//    graphOptions.appendChild(graphOptionStep)
 
 
     // ------------------------------------------------------------------------
@@ -169,7 +169,7 @@ class ClimateChart extends Chart
     
     graphOptionLine.innerHTML = '<i class="fa fa-area-chart" aria-hidden="true"></i>'
     graphOptionBar.innerHTML = '<i class="fa fa-bar-chart" aria-hidden="true"></i>'
-    graphOptionStep.innerHTML = '<i class="fa fa-map" aria-hidden="true"></i>'
+    //graphOptionStep.innerHTML = '<i class="fa fa-map" aria-hidden="true"></i>'
 
 
 
