@@ -237,6 +237,9 @@ class ClimateChart extends Chart
     
     this._drawPrecLine(curveType)
     this._drawTempLine() 
+    
+    if(this._chartMain.switch.activeState == 1) this._extendTempLine()
+    
     this._drawAxis()
     
     if(this._chartMain.switch.activeState > 0) this._addZeroLine()
@@ -1104,7 +1107,7 @@ class ClimateChart extends Chart
 
   _drawTempLine()
   {
-      
+       
     // Temperature line
 
     let lineTemp = d3.svg
@@ -1114,12 +1117,30 @@ class ClimateChart extends Chart
       .interpolate('linear')
 
     this._chart.append('svg:path')
+      .attr('id', 'tempLine')
       .attr('class', 'line')
       .attr('d', lineTemp(this._climateData.monthly_short))
       .attr('fill', 'none')
       .attr('stroke', this._chartsMain.colors.temp)
       .attr('stroke-width', this._chartMain.style.lineWidth)
       
+    
+  }
+
+  _extendTempLine()
+  {
+        let yHalfWay = 0
+        let tempLinePath = d3.select('#tempLine').attr('d')
+        
+        yHalfWay = this.yScaleTempBelowBreak ( this._climateData.monthly_short[11].temp + ( (this._climateData.monthly_short[0].temp - this._climateData.monthly_short[11].temp ) / 2) )
+        
+        tempLinePath = "M" + ( this._chartPos.left ) + "," + ( yHalfWay ) 
+                + "L" + tempLinePath.substr(1)
+                + "L" + ( this._chartPos.right ) + "," + ( yHalfWay )
+
+        //console.log(tempLinePath)
+
+        d3.select('#tempLine').attr('d',tempLinePath)
   }
 
   _addZeroLine()
