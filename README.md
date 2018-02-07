@@ -86,9 +86,10 @@ Get node.js and set it up
   $ sudo apt-get install npm  
   $ sudo ln -s /usr/bin/nodejs /usr/bin/node  
 
-Install babel  
+Install babel and preset into your environment 
   $ cd /home/$USER/Development  
-  $ sudo npm install --save-dev --global babel-cli  
+  $ sudo npm install --save-dev babel-cli 
+  $ sudo npm install --save-dev babel-preset-env
 
 Now the compilation should work. Test it by executing the build command in the proogram folder  
   $ cd /home/$USER/Projects/ClimateCharts/climatecharts  
