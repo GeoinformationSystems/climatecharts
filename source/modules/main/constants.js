@@ -73,7 +73,7 @@ const RUN_LOCALLY =
 // Port on which tomcat8 runs on the localhost and / or on the server
 const TOMCAT_PORT = 8080
 
-const URL =
+const myURL =
 {
   'local':      window.location.protocol + "//" + window.location.host + ":" + TOMCAT_PORT,
   'server':     "https://climatecharts.net"
@@ -81,10 +81,10 @@ const URL =
 
 const ENDPOINTS =
 {
-  'thredds':          (RUN_LOCALLY.thredds          ? URL.local : URL.server)
+  'thredds':          (RUN_LOCALLY.thredds          ? myURL.local : myURL.server)
     + "/thredds",
-  'gazetteer':        (RUN_LOCALLY.gazetteer        ? URL.local : URL.server)
+  'gazetteer':        (RUN_LOCALLY.gazetteer        ? myURL.local : myURL.server)
     + "/gazetteer/api",
-  'weatherstations':  (RUN_LOCALLY.weatherstations  ? URL.local : URL.server)
+  'weatherstations':  (RUN_LOCALLY.weatherstations  ? myURL.local : myURL.server)
     + "/weatherstations-api",
 }

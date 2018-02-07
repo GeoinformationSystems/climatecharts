@@ -390,22 +390,32 @@ class Chart
   _saveToSVG()
   {
     let rootDiv =   this._chart[0][0]
-    let fileName =  this._chartName  // TODO: more sophisticated
+    let fileName =  this._chartName + this._chartsMain.saveOptions.svg.fileExtension // TODO: more sophisticated
 
-    console.log(rootDiv)
-    console.log(fileName)
-
-    rootDiv.setAttribute("xmlns", "http://www.w3.org/2000/svg");
-    var svgData = rootDiv.outerHTML;
-    var preface = '<?xml version="1.0" standalone="no"?>\r\n';
-    var svgBlob = new Blob([preface, svgData], {type:"image/svg+xml;charset=utf-8"});
-    var svgUrl = window.URL.createObjectURL(svgBlob);
-    var downloadLink = document.createElement("a");
-    downloadLink.href = svgUrl;
-    downloadLink.download = fileName + this._chartsMain.saveOptions.svg.fileExtension;
-    document.body.appendChild(downloadLink);
-    downloadLink.click();
-    document.body.removeChild(downloadLink);
+    rootDiv.setAttribute("xmlns", "http://www.w3.org/2000/svg")
+    
+    //get svg source.
+    let serializer = new XMLSerializer();
+    let svgData = serializer.serializeToString(rootDiv);
+    
+    let preface = '<?xml version="1.0" standalone="no"?>\r\n'
+    let svgBlob = new Blob([preface, svgData], {type:"image/svg+xml;charset=utf-8"})
+      
+    if (window.navigator && window.navigator.msSaveOrOpenBlob) { 
+        // for IE
+        window.navigator.msSaveOrOpenBlob(svgBlob, fileName) 
+    } 
+    else { 
+        // for Non-IE (chrome, firefox etc.)
+        let svgUrl = URL.createObjectURL(svgBlob)
+        let downloadLink = document.createElement("a")
+        downloadLink.href = svgUrl
+        downloadLink.download = fileName
+        document.body.appendChild(downloadLink)
+        downloadLink.click()
+        document.body.removeChild(downloadLink)
+    }
+     
   }
 
 }
