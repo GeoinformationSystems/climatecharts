@@ -1,0 +1,27 @@
+{
+  "name": "climatecharts_client",
+  "version": "1.0.0",
+  "description": "The ClimateCharts project is a Web Application divided into two parts:   1. The client-side webapp called \"climatecharts-client\", implemented in HTML, CSS and JavaScript   2. Three server-side applications implemented in Java:       2.1 \"gazetteer\": translates a set of GPS coordinates into a location name (e.g. \"Weimar, Thüringen, Deutschland\")       2.2 \"thredds\": the THREDDS Data Server (TDS) provides access to the actual climate data (temperature and precipitation per year)       2.3 \"weatherstations\": provides access to the database of weatherrstations, allows for requesting all at once and the climate data for one station in one time period",
+  "main": "index.html",
+  "dependencies": {},
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-preset-env": "^1.7.0",
+    "watch": "^1.0.2"
+  },
+  "scripts": {
+    "dev": "watch \"npm run build\" source",
+    "build": "build.sh",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/GeoinformationSystems/climatecharts.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/GeoinformationSystems/climatecharts/issues"
+  },
+  "homepage": "https://github.com/GeoinformationSystems/climatecharts#readme"
+}
