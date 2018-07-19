@@ -11,3 +11,4 @@
 *.fodt#
 
 /node-modules
+package-lock.json
