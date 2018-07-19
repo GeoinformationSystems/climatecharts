@@ -9,3 +9,5 @@
 .settings/
 
 *.fodt#
+
+/node-modules
