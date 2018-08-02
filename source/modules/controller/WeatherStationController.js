@@ -21,14 +21,14 @@ class WeatherStationController
 
   constructor(main)
   {
-    this._main = main
+    this._main = main;
 
     // ------------------------------------------------------------------------
     // Member Variables
     // ------------------------------------------------------------------------
 
-    this._stations = []             // all stations
-    this._selectedStation = null    // the one station that is (maybe) selected
+    this._stations = [];             // all stations
+    this._selectedStation = null;    // the one station that is (maybe) selected
 
 
     // initial station loading
@@ -44,18 +44,18 @@ class WeatherStationController
   select(station)
   {
     // Cleanup currently selected station
-    this.deselect()
+    this.deselect();
 
     // Model
-    station.is_selected = true
+    station.is_selected = true;
 
     // View
-    this._main.modules.weatherStationsOnMap.highlight(station)
+    this._main.modules.weatherStationsOnMap.highlight(station);
 
     // Controller
-    this._selectedStation = station
+    this._selectedStation = station;
 
-    this._main.hub.onModeChange('S')
+    this._main.hub.onModeChange('S');
     this._main.hub.onStationChange(station)
   }
 
@@ -64,10 +64,10 @@ class WeatherStationController
     if (this._selectedStation)
     {
       // Model
-      this._selectedStation.is_selected = false
+      this._selectedStation.is_selected = false;
 
       // View
-      this._main.modules.weatherStationsOnMap.deHighlight(this._selectedStation)
+      this._main.modules.weatherStationsOnMap.deHighlight(this._selectedStation);
 
       // Controller
       this._selectedStation = null
@@ -81,12 +81,12 @@ class WeatherStationController
 
   updateStations()
   {
-    let numStations = this._stations.length
+    let numStations = this._stations.length;
     for (let stationIdx=0; stationIdx<numStations; stationIdx++)
     {
-      let station = this._stations[stationIdx]
+      let station = this._stations[stationIdx];
       if (this._isActiveInTimeRange(station))
-        this._activate(station)
+        this._activate(station);
       else
         this._deactivate(station)
     }
@@ -128,7 +128,7 @@ class WeatherStationController
     if (!station.is_active)
     {
       // Model
-      station.is_active = true
+      station.is_active = true;
       // View
       this._main.modules.weatherStationsOnMap.show(station)
     }
@@ -139,7 +139,7 @@ class WeatherStationController
     if (station.is_active)
     {
       // Model
-      station.is_active = false
+      station.is_active = false;
       // View
       this._main.modules.weatherStationsOnMap.hide(station)
     }
@@ -152,7 +152,7 @@ class WeatherStationController
 
   _loadStations()
   {
-    this._main.modules.loading.start("weather stations")
+    this._main.modules.loading.start("weather stations");
 
     this._main.modules.serverInterface.requestAllWeatherStations(
       (allStationsData) =>
@@ -160,26 +160,26 @@ class WeatherStationController
           // For each station
           for (var stationData of allStationsData)
           {
-            var station =             new WeatherStation()
+            var station =             new WeatherStation();
 
             // fill general data
-            station.id =              stationData.id
-            station.name =            stationData.name
-            station.country =         stationData.country
+            station.id =              stationData.id;
+            station.name =            stationData.name;
+            station.country =         stationData.country;
             station.location =
             {
                 lat:                  stationData.lat,
                 lng:                  stationData.lng,
-            }
-            station.elevation =       stationData.elev
-            station.min_year =        stationData.min_year
-            station.max_year =        stationData.max_year
-            station.coverage_rate =   stationData.complete_data_rate
-            station.largest_gap =     stationData.largest_gap
-            station.missing_months =  stationData.missing_months
+            };
+            station.elevation =       stationData.elev;
+            station.min_year =        stationData.min_year;
+            station.max_year =        stationData.max_year;
+            station.coverage_rate =   stationData.complete_data_rate;
+            station.largest_gap =     stationData.largest_gap;
+            station.missing_months =  stationData.missing_months;
 
             // Save station
-            this._stations.push(station)
+            this._stations.push(station);
 
             // Put markers on the map, if it has data in the current time range
             if (this._isActiveInTimeRange(station))
@@ -202,7 +202,7 @@ class WeatherStationController
 
   _loadDataForStation(station)
   {
-    this._main.modules.loading.start("climate data for weather station")
+    this._main.modules.loading.start("climate data for weather station");
 
     this._main.modules.serverInterface.requestDataForWeatherStation(
       station.id,
@@ -215,7 +215,7 @@ class WeatherStationController
             [station.name, station.country],      // Meta data: location name
             station.location, station.elevation,  // Meta data: geo location
             this._main.config.station.source.link // Meta data: source
-          )
+          );
 
           this._main.modules.loading.end()
         }
@@ -236,7 +236,7 @@ class WeatherStationController
       (station.min_year < this._main.modules.timeController.getPeriodEnd()) &&
       (station.max_year > this._main.modules.timeController.getPeriodStart())
     )
-      return true
+      return true;
     else
       return false
   }

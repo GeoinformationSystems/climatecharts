@@ -14,7 +14,7 @@ class Loading
 
   constructor()
   {
-    this._loadCounter = 0   // How many things are currently loading?
+    this._loadCounter = 0;   // How many things are currently loading?
 
     // Setup loader div
     this._loaderDiv = $('#loader')
@@ -27,10 +27,10 @@ class Loading
 
   start(text)
   {
-    this._loadCounter++
+    this._loadCounter++;
 
     // Put loader on the screen
-    this._loaderDiv.show()
+    this._loaderDiv.show();
     this._loaderDiv.waitMe(
       {
         effect: 'progressBar',
@@ -47,12 +47,12 @@ class Loading
 
   end(text)
   {
-    this._loadCounter--
+    this._loadCounter--;
 
     // Only if nothing is loading anymore, remove the loader from the UI
     if (this._loadCounter == 0)
     {
-      this._loaderDiv.hide()
+      this._loaderDiv.hide();
       this._loaderDiv.empty()
     }
   }

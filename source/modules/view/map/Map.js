@@ -20,7 +20,7 @@ class Map
 
   constructor(main)
   {
-    this._main = main
+    this._main = main;
 
     // ------------------------------------------------------------------------
     // Member Variables
@@ -35,21 +35,21 @@ class Map
         maxBounds:  [[-LAT_EXTENT, -LNG_EXTENT], [LAT_EXTENT, LNG_EXTENT]],
         maxBoundsViscosity: main.config.map.maxBoundsViscosity,
       }
-    )
+    );
 
     // First base map
-    let tileLayers = main.config.map.tileLayers
-    tileLayers[Object.keys(tileLayers)[0]].addTo(this._map)
+    let tileLayers = main.config.map.tileLayers;
+    tileLayers[Object.keys(tileLayers)[0]].addTo(this._map);
 
     // Map interaction controls: layer selection and scale
-    L.control.layers(tileLayers).addTo(this._map)
-    L.control.scale().addTo(this._map)
+    L.control.layers(tileLayers).addTo(this._map);
+    L.control.scale().addTo(this._map);
 
     // Problem: for some reason this code only loads tiles from the northern
     // hemisphere. Only after window resize everything loads
     // Hack: manual resize event :/ -> not nice, but works!
     // TODO: fix it...
-    this._map._onResize()
+    this._map._onResize();
 
 
     // ------------------------------------------------------------------------

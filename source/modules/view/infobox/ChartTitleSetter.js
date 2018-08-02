@@ -19,13 +19,13 @@ class ChartTitleSetter
 
   constructor(main)
   {
-    this._main = main
+    this._main = main;
 
     // ------------------------------------------------------------------------
     // Member variables
     // ------------------------------------------------------------------------
 
-    this._chartTitleDiv = $('#user-title')
+    this._chartTitleDiv = $('#user-title');
 
     // ------------------------------------------------------------------------
     // Event handling

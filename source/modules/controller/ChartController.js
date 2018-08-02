@@ -24,17 +24,17 @@ class ChartController
 
   constructor(main)
   {
-    this._main = main
+    this._main = main;
 
     // ------------------------------------------------------------------------
     // Member Variables
     // ------------------------------------------------------------------------
 
     // All charts
-    this._charts = []
+    this._charts = [];
 
     // Staus variable: charts currently active?
-    this._chartsAreActive = false
+    this._chartsAreActive = false;
 
     // Infobox about climate chart
     // -> only visible if charts are not active
@@ -51,7 +51,7 @@ class ChartController
   {
     // Prepare for creating new charts
     if (!this._chartsAreActive)
-      this._chartInfo.hide()
+      this._chartInfo.hide();
     // Otherwise cleanup existing charts
     else // charts are active
       for (let chart of this._charts)
@@ -63,8 +63,8 @@ class ChartController
         new ClimateChart(this._main, climateData),
         new DistributionChart(this._main, climateData),
         new AvailabilityChart(this._main, climateData),
-      ]
-    this._chartsAreActive = true
+      ];
+    this._chartsAreActive = true;
 
     // Name has propably changed
     this._main.hub.onDiagramTitleChange(climateData.name)
@@ -93,7 +93,7 @@ class ChartController
       for (let chart of this._charts)
         chart.remove()
 
-    this._chartsAreActive = false
+    this._chartsAreActive = false;
 
     this._chartInfo.show()
   }

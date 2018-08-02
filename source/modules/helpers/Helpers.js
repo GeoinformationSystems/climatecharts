@@ -20,7 +20,7 @@ class Helpers
 
   mixin(objA, objB)
   {
-    let objMixin = this.deepCopy(objB)
+    let objMixin = this.deepCopy(objB);
     for (var key in objA)
       objMixin[key] = objA[key]
     return objMixin
@@ -54,7 +54,7 @@ class Helpers
   checkIfInt(num)
   {
     if (num === parseInt(num, 10))
-      return true
+      return true;
     else
       return false
   }
@@ -67,7 +67,7 @@ class Helpers
   checkIfString(str)
   {
     if ((typeof str) == "string")
-      return true
+      return true;
     else
       return false
   }
@@ -79,9 +79,9 @@ class Helpers
 
   swapValues (valArray)
   {
-    let tempVal = valArray[0]
-    valArray[0] = valArray[1]
-    valArray[1] = tempVal
+    let tempVal = valArray[0];
+    valArray[0] = valArray[1];
+    valArray[1] = tempVal;
     return valArray
   }
 
@@ -92,24 +92,24 @@ class Helpers
 
   convertDDtoDMS(dd, charsHemisphere)
   {
-    let deg = Math.floor(dd)
-    let minFloat = (dd-deg)*60
-    let min = Math.floor(minFloat)
-    let secFloat = (minFloat-min)*60
-    let sec = Math.round(secFloat)
+    let deg = Math.floor(dd);
+    let minFloat = (dd-deg)*60;
+    let min = Math.floor(minFloat);
+    let secFloat = (minFloat-min)*60;
+    let sec = Math.round(secFloat);
     // Eliminate rounding errors
     if (sec==60)
     {
-      min++
+      min++;
       sec=0
     }
     if (min==60)
     {
-      deg++
+      deg++;
       min=0
     }
     // Character showing the orientation in cardinal direction
-    let char = dd<0 ? charsHemisphere[0] : charsHemisphere[1]
+    let char = dd<0 ? charsHemisphere[0] : charsHemisphere[1];
     return deg + "°" + min + "'" + sec + '"' + char
   }
 
@@ -121,10 +121,10 @@ class Helpers
   roundToDecimalPlace(num, decimalPlaces, forceDecimal=false)
   {
     // Error handling: No number -> null
-    if (!this.checkIfNumber(num)) return null
+    if (!this.checkIfNumber(num)) return null;
 
     if (forceDecimal)
-      return num.toFixed(decimalPlaces) // returns a tring, not a float!
+      return num.toFixed(decimalPlaces); // returns a tring, not a float!
     else
       return parseFloat(num.toFixed(decimalPlaces))
     // let roundingFactor = Math.pow(10, decimalPlaces)
@@ -140,9 +140,9 @@ class Helpers
   {
     for (let nodeIdx = 0; nodeIdx < nodes.length; nodeIdx++)
     {
-      let node = $(nodes[nodeIdx])
-      let oldFontSize = parseFloat(node.css('font-size'))
-      let newFontSize = (oldFontSize * factor)
+      let node = $(nodes[nodeIdx]);
+      let oldFontSize = parseFloat(node.css('font-size'));
+      let newFontSize = (oldFontSize * factor);
       node.css('font-size', newFontSize)
     }
   }

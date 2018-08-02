@@ -49,11 +49,11 @@ class ServerInterface
     let url0 = ""
       + ENDPOINTS.thredds
       + "/ncml/"
-      + urlPaths[0]
+      + urlPaths[0];
     let url1 = ""
       + ENDPOINTS.thredds
       + "/ncml/"
-      + urlPaths[1]
+      + urlPaths[1];
 
     $.when($.get(url0), $.get(url1))
       .done(successCallback)
@@ -62,7 +62,7 @@ class ServerInterface
 
   requestClimateDataForCell(urls, variables, coords, dates, successCallback)
   {
-    let reqUrls = []
+    let reqUrls = [];
     for (let i=0; i<=1; i++)
     {
       reqUrls.push(""
@@ -132,13 +132,13 @@ class ServerInterface
 
   _requestGazetteer(coords, mode)
   {
-    let url = ENDPOINTS.gazetteer
+    let url = ENDPOINTS.gazetteer;
     if (mode == 'N')
-      url += "/getName"
+      url += "/getName";
     else if (mode == 'E')
-      url += "/getElevation"
+      url += "/getElevation";
     else // error
-      return null
+      return null;
 
     return $.get(url,
         {

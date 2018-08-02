@@ -21,18 +21,18 @@ class Timeline
 
   constructor(main)
   {
-    this._main = main
+    this._main = main;
 
     // ------------------------------------------------------------------------
     // Member Variables
     // ------------------------------------------------------------------------
 
-    this._sliderDiv =       $('#slider')
-    this._periodStartDiv =  $('#period-start')
-    this._periodEndDiv =    $('#period-end')
+    this._sliderDiv =       $('#slider');
+    this._periodStartDiv =  $('#period-start');
+    this._periodEndDiv =    $('#period-end');
 
-    this._minYear = null
-    this._maxYear = null
+    this._minYear = null;
+    this._maxYear = null;
 
     this._sliderExists = false
   }
@@ -44,14 +44,14 @@ class Timeline
 
   init(minYear, maxYear, periodStart, periodEnd)
   {
-    this._minYear = minYear
-    this._maxYear = maxYear
+    this._minYear = minYear;
+    this._maxYear = maxYear;
 
     // ------------------------------------------------------------------------
     // Event Handling
     // ------------------------------------------------------------------------
 
-    this._sliderExists = true
+    this._sliderExists = true;
 
     this._sliderDiv.slider(
       {
@@ -65,8 +65,8 @@ class Timeline
           {
             setTimeout( () =>
               {
-                let periodStart = this._sliderDiv.slider("values", 0)
-                let periodEnd =   this._sliderDiv.slider("values", 1)
+                let periodStart = this._sliderDiv.slider("values", 0);
+                let periodEnd =   this._sliderDiv.slider("values", 1);
                 this.updatePeriod(periodStart, periodEnd)
               }, 10
             )
@@ -76,7 +76,7 @@ class Timeline
         change: (evt) =>
           {
             if (!this._clickedOnRange)
-              this._periodChanged()
+              this._periodChanged();
             this._updateRangeSliderPosition()
           },
 
@@ -87,29 +87,29 @@ class Timeline
             // There is no simple way to stop the current slider
             // implementation from working with their event handlers
             // => Create own invisible bar above that can be changed
-            this._rangeSlider = $("<div id='range-slider'></div>")
-            $("body").append(this._rangeSlider)
+            this._rangeSlider = $("<div id='range-slider'></div>");
+            $("body").append(this._rangeSlider);
 
             // Determine drag movement of range slider
-            let xPos = null
-            let leftRangePos = null
-            let yearDist = null
-            let yearsPerPx = null
-            let sliderHandles = $('.ui-slider-handle')
+            let xPos = null;
+            let leftRangePos = null;
+            let yearDist = null;
+            let yearsPerPx = null;
+            let sliderHandles = $('.ui-slider-handle');
 
-            this._updateRangeSliderPosition()
+            this._updateRangeSliderPosition();
 
             this._rangeSlider.on('mousedown touchstart', (evt) =>
               {
-                this._clickedOnRange = true
-                xPos = evt.clientX
-                yearsPerPx = (maxYear-minYear) / this._sliderDiv.width()
-                leftRangePos =  sliderHandles.first().position().left
+                this._clickedOnRange = true;
+                xPos = evt.clientX;
+                yearsPerPx = (maxYear-minYear) / this._sliderDiv.width();
+                leftRangePos =  sliderHandles.first().position().left;
                 yearDist = 0
                   + this._sliderDiv.slider("values", 1)
                   - this._sliderDiv.slider("values", 0)
               }
-            )
+            );
 
             $(window.document).on('mousemove touchmove', (evt) =>
               {
@@ -118,81 +118,81 @@ class Timeline
                 {
                   // Prevent selection of other elements
                   if (evt.stopPropagation)
-                    evt.stopPropagation()
+                    evt.stopPropagation();
                   if (evt.preventDefault)
-                    evt.preventDefault()
-                  evt.cancelBubble = true
-                  evt.returnValue = false
+                    evt.preventDefault();
+                  evt.cancelBubble = true;
+                  evt.returnValue = false;
 
                   // Calculate move distance
-                  let newXPos = evt.clientX
-                  let moveDistance = newXPos-xPos
+                  let newXPos = evt.clientX;
+                  let moveDistance = newXPos-xPos;
 
                   // Apply move distance on range slider
-                  let rangeSliderOldXPos = this._rangeSlider.position().left
+                  let rangeSliderOldXPos = this._rangeSlider.position().left;
                   this._rangeSlider.css('left',
                     rangeSliderOldXPos + moveDistance
-                  )
+                  );
 
                   // Apply move distance on actual slider
-                  let newLeftRangePos = leftRangePos + moveDistance
+                  let newLeftRangePos = leftRangePos + moveDistance;
                   let leftRangeValue = Math.abs(
                     yearsPerPx*newLeftRangePos + minYear
-                  )
-                  this._sliderDiv.slider("values", 0, leftRangeValue)
+                  );
+                  this._sliderDiv.slider("values", 0, leftRangeValue);
 
-                  let rightRangeValue = leftRangeValue+yearDist
-                  this._sliderDiv.slider("values", 1, rightRangeValue)
+                  let rightRangeValue = leftRangeValue+yearDist;
+                  this._sliderDiv.slider("values", 1, rightRangeValue);
 
                   // Clip to min / max year
                   if (leftRangeValue < minYear)
-                    leftRangeValue = minYear
+                    leftRangeValue = minYear;
                   if (rightRangeValue > maxYear)
-                    rightRangeValue = maxYear
+                    rightRangeValue = maxYear;
 
                   // Round to full year
-                  leftRangeValue = Math.round(leftRangeValue)
-                  rightRangeValue = Math.round(rightRangeValue)
+                  leftRangeValue = Math.round(leftRangeValue);
+                  rightRangeValue = Math.round(rightRangeValue);
 
                   // Update view
-                  this.updatePeriod(leftRangeValue, rightRangeValue)
+                  this.updatePeriod(leftRangeValue, rightRangeValue);
 
                   // Reset variable
-                  xPos = newXPos
+                  xPos = newXPos;
                   leftRangePos = newLeftRangePos
                 }
               }
-            )
+            );
 
             $(window.document).on('mouseup touchend', (evt) =>
               {
                 // Fire change event
                 if (this._clickedOnRange)
-                  this._periodChanged()
+                  this._periodChanged();
 
                 // Reset variables
-                this._clickedOnRange = false
-                xPos = null
-                leftRangePos  = null
+                this._clickedOnRange = false;
+                xPos = null;
+                leftRangePos  = null;
                 yearDist = null
               }
-            )
+            );
 
 
             // Hack: Ensure that slider range has always the correct position
-            setTimeout(this._updateRangeSliderPosition, 1000)
-            setTimeout(this._updateRangeSliderPosition, 2000)
+            setTimeout(this._updateRangeSliderPosition, 1000);
+            setTimeout(this._updateRangeSliderPosition, 2000);
             setTimeout(this._updateRangeSliderPosition, 5000)
           }
       }
-    )
+    );
 
     // Initially setup dimension of timeline and initially selected period
-    this.updateMinMaxYear(minYear, maxYear)
-    this.updatePeriod(periodStart, periodEnd)
+    this.updateMinMaxYear(minYear, maxYear);
+    this.updatePeriod(periodStart, periodEnd);
 
     // Ensure that slider range has always the correct position
-    $(window).resize(this._updateRangeSliderPosition)
+    $(window).resize(this._updateRangeSliderPosition);
 
 
     // ------------------------------------------------------------------------
@@ -215,19 +215,19 @@ class Timeline
   updatePeriod(start, end)
   {
     // Clip to min/max year
-    start = Math.max(start, this._minYear)
-    start = Math.min(start, this._maxYear)
-    end =   Math.max(end, this._minYear)
-    end =   Math.min(end, this._maxYear)
-    this._periodStartDiv.html(start)
+    start = Math.max(start, this._minYear);
+    start = Math.min(start, this._maxYear);
+    end =   Math.max(end, this._minYear);
+    end =   Math.min(end, this._maxYear);
+    this._periodStartDiv.html(start);
     this._periodEndDiv.html(end)
   }
 
   updateMinMaxYear(min, max)
   {
-    this._minYear = min
-    this._maxYear = max
-    this._sliderDiv.slider("option", "min", min)
+    this._minYear = min;
+    this._maxYear = max;
+    this._sliderDiv.slider("option", "min", min);
     this._sliderDiv.slider("option", "max", max)
   }
 
@@ -241,7 +241,7 @@ class Timeline
     // Cleanup
     if (this._sliderExists)
     {
-      this._sliderDiv.slider("destroy")
+      this._sliderDiv.slider("destroy");
       this._rangeSlider.remove()
     }
 
@@ -261,8 +261,8 @@ class Timeline
 
   _periodChanged()
   {
-    let leftYear = this._sliderDiv.slider("values", 0)
-    let rightYear = this._sliderDiv.slider("values", 1)
+    let leftYear = this._sliderDiv.slider("values", 0);
+    let rightYear = this._sliderDiv.slider("values", 1);
     this._main.modules.timeController.setPeriod(
       (rightYear-leftYear), rightYear
     )
@@ -275,7 +275,7 @@ class Timeline
 
   _updateRangeSliderPosition()
   {
-    let rangeDiv = $('.ui-slider-range')
+    let rangeDiv = $('.ui-slider-range');
     $('#range-slider').css(
       {
         'top':        rangeDiv.offset().top,

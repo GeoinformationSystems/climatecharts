@@ -22,8 +22,8 @@ class LocationMarkerOnMap
 
   constructor(main)
   {
-    this._main = main
-    this._map = this._main.modules.map.getMap()
+    this._main = main;
+    this._map = this._main.modules.map.getMap();
 
     // ------------------------------------------------------------------------
     // Member Variables
@@ -43,7 +43,7 @@ class LocationMarkerOnMap
   {
     if (!this._marker)
     {
-      this._marker = new L.marker([coords.lat, coords.lng])
+      this._marker = new L.marker([coords.lat, coords.lng]);
       this._marker.addTo(this._map)
     }
     else
@@ -54,7 +54,7 @@ class LocationMarkerOnMap
   {
     if (this._marker)
     {
-      this._map.removeLayer(this._marker)
+      this._map.removeLayer(this._marker);
       this._marker = null
     }
   }

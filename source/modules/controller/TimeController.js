@@ -21,7 +21,7 @@ class TimeController
 
   constructor(main)
   {
-    this._main = main
+    this._main = main;
 
 
     // ------------------------------------------------------------------------
@@ -29,13 +29,13 @@ class TimeController
     // ------------------------------------------------------------------------
 
     // Possible min/max years of dataset / weather station
-    this._minYear = main.config.time.minYear
-    this._maxYear = main.config.time.maxYear
+    this._minYear = main.config.time.minYear;
+    this._maxYear = main.config.time.maxYear;
 
     // Selected time period of dataset
     this._periodStart = 1
       + main.config.time.periodEnd
-      - main.config.time.periodLength
+      - main.config.time.periodLength;
     this._periodEnd = 0
       + main.config.time.periodEnd
   }
@@ -54,14 +54,14 @@ class TimeController
 
     // Consistency check: minYear < maxYear?
     if (minYear > maxYear)
-      [minYear, maxYear] = swapValues([minYear, maxYear])
+      [minYear, maxYear] = swapValues([minYear, maxYear]);
 
     // Set years
-    this._minYear = minYear
-    this._maxYear = maxYear
+    this._minYear = minYear;
+    this._maxYear = maxYear;
 
     // Adapt the period dates
-    this._clipPeriod()
+    this._clipPeriod();
 
     // Tell everyone
     this._main.hub.onMinMaxYearChange(this._minYear, this._maxYear)
@@ -104,16 +104,16 @@ class TimeController
     if ((endYear-1) > this._maxYear)
     {
       // If not, strip to maxYear and move periodStart
-      let yearDiff = Math.abs((endYear-1)-this._maxYear)
-      this._periodEnd   =   this._maxYear
-      this._periodStart -=  yearDiff
+      let yearDiff = Math.abs((endYear-1)-this._maxYear);
+      this._periodEnd   =   this._maxYear;
+      this._periodStart -=  yearDiff;
       // TODO: something missing here?
       // Ensure that periodStart stays within bounds
       this._periodStart = Math.max(this._periodStart, this._minYear)
     }
     else
     {
-      this._periodEnd =   endYear
+      this._periodEnd =   endYear;
       this._periodStart = endYear-length
     }
 
@@ -124,14 +124,14 @@ class TimeController
   resetPeriod()
   {
     // Get end date from config and clip with max year
-    this._periodEnd = this._main.config.time.periodEnd
-    this._periodEnd = Math.min(this._periodEnd, this._maxYear)
+    this._periodEnd = this._main.config.time.periodEnd;
+    this._periodEnd = Math.min(this._periodEnd, this._maxYear);
 
     // Get start date from end date and clip with min year
     this._periodStart = 0
       + this._periodEnd
-      - this._main.config.time.periodLength
-    this._periodStart = Math.max(this._periodStart, this._minYear)
+      - this._main.config.time.periodLength;
+    this._periodStart = Math.max(this._periodStart, this._minYear);
 
     // Update
     this._main.hub.onResetPeriod(this._periodStart, this._periodEnd)
@@ -185,17 +185,17 @@ class TimeController
 
   _clipPeriod()
   {
-    let dist = (this._periodEnd-this._periodStart)
-    let periodStart = Math.max(this._periodStart, this._minYear)
-    let periodEnd =   Math.min(this._periodEnd,   this._maxYear)
+    let dist = (this._periodEnd-this._periodStart);
+    let periodStart = Math.max(this._periodStart, this._minYear);
+    let periodEnd =   Math.min(this._periodEnd,   this._maxYear);
 
     // Maintain period length
     while ((periodEnd-periodStart) < dist)
     {
       if (periodEnd < this._maxYear)
-        periodEnd++
+        periodEnd++;
       else if (periodStart > this._minYear)
-        periodStart--
+        periodStart--;
       else // There is no space to extend the period any more => keep it
         break
     }

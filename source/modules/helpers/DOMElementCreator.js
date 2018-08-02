@@ -23,26 +23,26 @@ class DOMElementCreator
   {
     // Error handling: element type must be given
     if (!elemType)
-      return null
+      return null;
 
     // Error handling: if only one class as string given, make it an array
     if (typeof classes == 'string')
-      classes = [classes]
+      classes = [classes];
 
     // Error handling: if classes are null, make empty array
     if (!classes)
-      classes = []
+      classes = [];
 
     // Error handling: if attributes are null, make empty array
     if (!attributes)
-      attributes = []
+      attributes = [];
 
     // Create element
-    let elem = document.createElement(elemType)
+    let elem = document.createElement(elemType);
 
     // Set id
     if (id != null)
-      elem.id = id
+      elem.id = id;
 
     // Set classes
     for (let idx=0; idx<classes.length; idx++)

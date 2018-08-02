@@ -20,29 +20,29 @@ class WeatherStationsOnMap
 
   constructor(main)
   {
-    this._main = main
-    this._map = this._main.modules.map.getMap()
+    this._main = main;
+    this._map = this._main.modules.map.getMap();
 
     // ------------------------------------------------------------------------
     // Member Variables
     // ------------------------------------------------------------------------
 
-    this._activeStations = []
+    this._activeStations = [];
 
     this._zoom =
     {
       start:  this._map.getZoom(),
       end:    this._map.getZoom()
-    }
+    };
 
-    this._realMarkerRadius = this._main.config.station.initRadius
+    this._realMarkerRadius = this._main.config.station.initRadius;
 
     // mixin style configs (highlight -> default style)
     this._main.config.station.style.selected =
       this._main.modules.helpers.mixin(
         this._main.config.station.style.selected,
         this._main.config.station.style.default,
-      )
+      );
 
 
     // ------------------------------------------------------------------------
@@ -52,16 +52,16 @@ class WeatherStationsOnMap
     // Map zoom => scale circles with zoom level
     this._map.on('zoomstart', (evt) =>
         this._zoom.start = this._map.getZoom()
-    )
+    );
 
     this._map.on('zoomend', (evt) =>
       {
-        this._zoom.end = this._map.getZoom()
-        let diff = this._zoom.end - this._zoom.start
+        this._zoom.end = this._map.getZoom();
+        let diff = this._zoom.end - this._zoom.start;
 
         // actual mathematical radius of the marker, depending on zoom level
         this._realMarkerRadius *=
-          Math.pow(this._main.config.station.scaleFactor, diff)
+          Math.pow(this._main.config.station.scaleFactor, diff);
 
         // Actually resize circles
         for (var station of this._activeStations)
@@ -81,16 +81,16 @@ class WeatherStationsOnMap
     let stationMarker = L.circleMarker(
       [station.location.lat, station.location.lng],  // location
       this._main.config.station.style.default        // style
-    )
-    stationMarker.setRadius(this.cropRadius(this._realMarkerRadius))
-    stationMarker.addTo(this._map)
+    );
+    stationMarker.setRadius(this.cropRadius(this._realMarkerRadius));
+    stationMarker.addTo(this._map);
 
     // Establish link model <-> view
-    station.marker = stationMarker
-    stationMarker.station = station
+    station.marker = stationMarker;
+    stationMarker.station = station;
 
     // remember station
-    this._activeStations.push(station)
+    this._activeStations.push(station);
 
 
     // ------------------------------------------------------------------------
@@ -113,13 +113,13 @@ class WeatherStationsOnMap
   hide(station)
   {
     // Remove from map
-    this._map.removeLayer(station.marker)
+    this._map.removeLayer(station.marker);
 
     // Remove link model <-> view
-    station.marker = null
+    station.marker = null;
 
     // Forget station
-    let listIdx = this._activeStations.indexOf(station)
+    let listIdx = this._activeStations.indexOf(station);
     this._activeStations.splice(listIdx, 1)
   }
 
@@ -151,15 +151,15 @@ class WeatherStationsOnMap
   {
     // visible radius of the marker, always in between min and max radius
     // have to be distinguished to maintain mapping zoom level <-> radius
-    let croppedRadius = inRadius
+    let croppedRadius = inRadius;
     croppedRadius = Math.min(
       this._main.config.station.maxRadius,
       croppedRadius
-    )
+    );
     croppedRadius = Math.max(
       this._main.config.station.minRadius,
       croppedRadius
-    )
+    );
     return croppedRadius
   }
 }

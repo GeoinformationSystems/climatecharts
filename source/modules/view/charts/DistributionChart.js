@@ -22,7 +22,7 @@ class DistributionChart extends Chart
   {
     // Error handling: Only show chart if either prec or temp are given
     if (climateData.has_temp || climateData.has_prec)
-      super(main, 'distribution-chart', climateData)
+      super(main, 'distribution-chart', climateData);
 
     else
       super(main, 'distribution-chart', null)
@@ -40,13 +40,13 @@ class DistributionChart extends Chart
 
   _initMembers(climateData)
   {
-    super._initMembers(climateData)
+    super._initMembers(climateData);
 
     // Initial switch state -> must be 0 !!!
-    this._switchState = 0
+    this._switchState = 0;
 
     // Number of subcharts (should be 2 -> temp and prec)
-    this._numSubcharts = this._chartMain.subcharts.length
+    this._numSubcharts = this._chartMain.subcharts.length;
 
 
     // ------------------------------------------------------------------------
@@ -60,7 +60,7 @@ class DistributionChart extends Chart
     let subplotWidth = (0
         + this._mainPos.right
         - this._mainPos.left
-      ) / this._numSubcharts
+      ) / this._numSubcharts;
 
     this._chartPos =
     {
@@ -78,7 +78,7 @@ class DistributionChart extends Chart
         ),
         width:  [],
         height: null,
-    }
+    };
 
     for (let datatypeIdx = 0; datatypeIdx < this._numSubcharts; datatypeIdx++)
     {
@@ -86,13 +86,13 @@ class DistributionChart extends Chart
         + this._mainPos.left
         + this._chartMain.margin.left
         + (datatypeIdx * subplotWidth)
-        + this._chartsMain.padding
+        + this._chartsMain.padding;
 
       this._chartPos.right[datatypeIdx] = 0
         + this._mainPos.right
         - this._chartMain.margin.right
         - (((this._numSubcharts-1)-datatypeIdx) * subplotWidth)
-        - this._chartsMain.padding
+        - this._chartsMain.padding;
 
       this._chartPos.width[datatypeIdx] = 0
         + this._chartPos.right[datatypeIdx]
@@ -112,7 +112,7 @@ class DistributionChart extends Chart
 
   _setupToolbar()
   {
-    super._setupToolbar()
+    super._setupToolbar();
 
     // ------------------------------------------------------------------------
     // Create structure
@@ -133,56 +133,56 @@ class DistributionChart extends Chart
     // Level 1@_toolbar - dc-switch
     let dcSwitch = this._main.modules.domElementCreator.create(
       'div', 'dc-switch'
-    )
-    this._toolbar[0].appendChild(dcSwitch)
+    );
+    this._toolbar[0].appendChild(dcSwitch);
 
     let switchLabel = this._main.modules.domElementCreator.create(
       'label', null, ['switch-light', 'switch-candy'], [['onClick', '']]
-    )
-    dcSwitch.appendChild(switchLabel)
+    );
+    dcSwitch.appendChild(switchLabel);
 
     let switchInput = this._main.modules.domElementCreator.create(
       'input', 'dc-switch-input', null, [['type', 'checkbox']]
-    )
-    switchLabel.appendChild(switchInput)
+    );
+    switchLabel.appendChild(switchInput);
 
     let switchTitle = this._main.modules.domElementCreator.create(
       'div', 'dc-switch-title'
-    )
-    switchLabel.appendChild(switchTitle)
+    );
+    switchLabel.appendChild(switchTitle);
 
     let switchOptions = this._main.modules.domElementCreator.create(
       'span', 'dc-switch-options'
-    )
-    switchLabel.appendChild(switchOptions)
+    );
+    switchLabel.appendChild(switchOptions);
 
     let switchOptionL = this._main.modules.domElementCreator.create(
       'span', 'dc-switch-option-l', ['dc-switch-option']
-    )
-    switchOptions.appendChild(switchOptionL)
+    );
+    switchOptions.appendChild(switchOptionL);
 
     let switchOptionR = this._main.modules.domElementCreator.create(
       'span', 'dc-switch-option-r', ['dc-switch-option']
-    )
-    switchOptions.appendChild(switchOptionR)
+    );
+    switchOptions.appendChild(switchOptionR);
 
     let switchButton = this._main.modules.domElementCreator.create(
       'a', 'dc-switch-button'
-    )
-    switchOptions.appendChild(switchButton)
+    );
+    switchOptions.appendChild(switchButton);
 
 
     // ------------------------------------------------------------------------
     // Label switch title and switch states
     // ------------------------------------------------------------------------
 
-    switchTitle.innerHTML = this._chartMain.switch.title
+    switchTitle.innerHTML = this._chartMain.switch.title;
     switchOptionL.innerHTML = ""
       + this._chartMain.switch.states[0].charAt(0).toUpperCase()
-      + this._chartMain.switch.states[0].slice(1)
+      + this._chartMain.switch.states[0].slice(1);
     switchOptionR.innerHTML = ""
       + this._chartMain.switch.states[1].charAt(0).toUpperCase()
-      + this._chartMain.switch.states[1].slice(1)
+      + this._chartMain.switch.states[1].slice(1);
 
 
     // ------------------------------------------------------------------------
@@ -191,7 +191,7 @@ class DistributionChart extends Chart
 
     $(switchOptions).click((e) =>
       {
-        this._switchState = (this._switchState+1) % 2
+        this._switchState = (this._switchState+1) % 2;
         this._setupChart()
       }
     )
@@ -204,29 +204,29 @@ class DistributionChart extends Chart
 
   _setupChart()
   {
-    super._setupChart()
+    super._setupChart();
 
     // Clean charts
-    $('#boxplot-group').remove()
+    $('#boxplot-group').remove();
 
     // N.B. Get local copy of climateData
     // This is veeeeeeeeery important! It drove me nuts, because I spent
     // more than 1 hour looking for the problem: Why did the global object
     // this._climateData change? Because it was referenced once instead of
     // copied properly...
-    let climateData = this._main.modules.helpers.deepCopy(this._climateData)
+    let climateData = this._main.modules.helpers.deepCopy(this._climateData);
 
     // Create boxplot group
     let svg = this._chart
       .append('g')
-      .attr('id', 'boxplot-group')
+      .attr('id', 'boxplot-group');
 
     // For each subchart
     for (let datatypeIdx = 0; datatypeIdx < this._numSubcharts; datatypeIdx++)
     {
       // Error handling: Only setup the subcharts if there is data available
       if (!climateData['has_' + this._chartMain.subcharts[datatypeIdx].data])
-        continue
+        continue;
 
       // ----------------------------------------------------------------------
       // Prepare the data
@@ -237,31 +237,31 @@ class DistributionChart extends Chart
       // ----------------------------------------------------------------------
 
       // Get climate data and min/max values (0: temp, 1: prec)
-      let vizData = []
-      let vizMin = +Infinity
-      let vizMax = -Infinity
+      let vizData = [];
+      let vizMin = +Infinity;
+      let vizMax = -Infinity;
 
       // For each month
       for (let monthIdx = 0; monthIdx < MONTHS_IN_YEAR.length; monthIdx++)
       {
         // Create empty array
-        vizData[monthIdx] = []
+        vizData[monthIdx] = [];
 
         // Name of month
-        vizData[monthIdx][0] = MONTHS_IN_YEAR[monthIdx]
+        vizData[monthIdx][0] = MONTHS_IN_YEAR[monthIdx];
 
         // Get data values
         let values = this._main.modules.helpers.deepCopy(climateData
           [this._chartMain.subcharts[datatypeIdx].data + '_list']
           [monthIdx]
-        )
-        vizData[monthIdx][1] = values
+        );
+        vizData[monthIdx][1] = values;
 
         // For each value
         for (let valueIdx = 0; valueIdx < values.length; valueIdx++)
         {
-          let value = values[valueIdx]
-          if (value > vizMax) vizMax = value
+          let value = values[valueIdx];
+          if (value > vizMax) vizMax = value;
       		if (value < vizMin) vizMin = value
         }
       }
@@ -269,25 +269,25 @@ class DistributionChart extends Chart
       // Update fixed maxRange, if for some reason it is not enough
       let maxRange = this._main.modules.helpers.deepCopy(
         this._chartMain.subcharts[datatypeIdx].maxRange
-      )
+      );
       while (maxRange[0] > vizMin)
-        maxRange[0] += this._chartMain.subcharts[datatypeIdx].maxRange[0]
+        maxRange[0] += this._chartMain.subcharts[datatypeIdx].maxRange[0];
       while (maxRange[1] < vizMax)
-        maxRange[1] += this._chartMain.subcharts[datatypeIdx].maxRange[1]
+        maxRange[1] += this._chartMain.subcharts[datatypeIdx].maxRange[1];
 
       // Manipulation: extend min and max values to make the chart look better
-      let stretch = (vizMax - vizMin) * this._chartMain.minMaxStretchFactor
-      vizMin -= stretch
-      vizMax += stretch
+      let stretch = (vizMax - vizMin) * this._chartMain.minMaxStretchFactor;
+      vizMin -= stretch;
+      vizMax += stretch;
 
       // For prec: clip min to zero
       if (this._chartMain.subcharts[datatypeIdx].data == 'prec')
-        vizMin = Math.max(vizMin, 0)
+        vizMin = Math.max(vizMin, 0);
 
       // Error handling: if empty month arrays, write value 0
       for (let monthData of vizData)
         if (monthData[1].length == 0)
-          monthData[1] = [0]
+          monthData[1] = [0];
 
 
       // ----------------------------------------------------------------------
@@ -301,12 +301,12 @@ class DistributionChart extends Chart
       let xScale = d3.scale
         .ordinal()
         .domain(MONTHS_IN_YEAR)
-        .rangeRoundBands([0 , this._chartPos.width[datatypeIdx]], 0.7, 0.3)
+        .rangeRoundBands([0 , this._chartPos.width[datatypeIdx]], 0.7, 0.3);
 
       let xAxis = d3.svg
         .axis()
         .scale(xScale)
-        .orient('bottom')
+        .orient('bottom');
 
 
 
@@ -317,11 +317,11 @@ class DistributionChart extends Chart
       //  1: fixed      - always the same scale to make charts comparable
       // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-      let yDomain = null
+      let yDomain = null;
       if (this._switchState == 0) //  => automatic
-        yDomain = [vizMin, vizMax]
+        yDomain = [vizMin, vizMax];
       else // switchState == 1        => fixed
-        yDomain = maxRange
+        yDomain = maxRange;
 
       let yScale = d3.scale
         .linear()
@@ -331,12 +331,12 @@ class DistributionChart extends Chart
             this._chartPos.bottom,
             this._chartPos.top
           ]
-        )
+        );
 
       let yAxis = d3.svg
         .axis()
         .scale(yScale)
-        .orient('left')
+        .orient('left');
 
 
 
@@ -355,7 +355,7 @@ class DistributionChart extends Chart
         )
       	.tickSubdivide(true)
       	.tickPadding(5)
-      	.tickFormat('')
+      	.tickFormat('');
 
       svg.append('svg:g')
         .attr('class', 'grid')
@@ -365,7 +365,7 @@ class DistributionChart extends Chart
           + this._chartPos.bottom
           + ')'
         )
-        .call(xGrid)
+        .call(xGrid);
 
       // y-Direction
 
@@ -376,7 +376,7 @@ class DistributionChart extends Chart
           - this._chartPos.width[datatypeIdx]
         )
       	.orient('left')
-      	.tickFormat('')
+      	.tickFormat('');
 
       svg.append('svg:g')
         .attr('class', 'grid')
@@ -386,7 +386,7 @@ class DistributionChart extends Chart
           + 0
           + ')'
         )
-        .call(yGrid)
+        .call(yGrid);
 
 
       // Styling
@@ -395,7 +395,7 @@ class DistributionChart extends Chart
         .style('fill', 'none')
         .style('stroke', this._chartsMain.colors.grid)
         .style('stroke-width', this._chartMain.style.gridWidth + ' px')
-        .attr('shape-rendering', 'crispEdges')
+        .attr('shape-rendering', 'crispEdges');
 
 
       // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -406,7 +406,7 @@ class DistributionChart extends Chart
         .whiskers(this._iqr(1.5))
         .height(this._chartPos.height)
         .domain(yDomain)
-        .showLabels(false)
+        .showLabels(false);
 
       svg.selectAll('.boxplot')
         .data(vizData)
@@ -425,7 +425,7 @@ class DistributionChart extends Chart
         .style('font-size', this._chartsMain.fontSizes.large + 'em')
         .style('fill', this._chartMain.subcharts[datatypeIdx].color)
         .style('opacity', this._chartMain.style.boxOpacity)
-        .call(boxplots.width(xScale.rangeBand()))
+        .call(boxplots.width(xScale.rangeBand()));
 
 
       // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -442,7 +442,7 @@ class DistributionChart extends Chart
           + ')'
         )
         .style('font-size', this._chartsMain.fontSizes.small + 'em')
-        .call(xAxis)
+        .call(xAxis);
 
       svg.append('g')
         .attr('class', 'y axis')
@@ -452,7 +452,7 @@ class DistributionChart extends Chart
           + 0
           + ')'
         )
-        .call(yAxis)
+        .call(yAxis);
 
 
       // Styling
@@ -493,11 +493,11 @@ class DistributionChart extends Chart
   {
     return (d) =>
       {
-        let q1 = d.quartiles[0]
-        let q3 = d.quartiles[2]
-        let iqr = (q3 - q1) * k
-        let i = -1
-        let j = d.length
+        let q1 = d.quartiles[0];
+        let q3 = d.quartiles[2];
+        let iqr = (q3 - q1) * k;
+        let i = -1;
+        let j = d.length;
         while (d[++i] < q1 - iqr);
         while (d[--j] > q3 + iqr);
         return [i, j]

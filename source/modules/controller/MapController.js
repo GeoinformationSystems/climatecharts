@@ -24,14 +24,14 @@ class MapController
 
   constructor(main)
   {
-    this._main = main
+    this._main = main;
 
     // ------------------------------------------------------------------------
     // Member Variables
     // ------------------------------------------------------------------------
 
     // Staus variable: currently an active weather station?
-    this._stationJustActivated = false
+    this._stationJustActivated = false;
 
     // Current coordinates
     this._coords =
@@ -59,15 +59,15 @@ class MapController
     // If user has clicked on weather station
     // => Do not enter into ClimateCell mode
     if (this._stationJustActivated)
-      this._stationJustActivated = false
+      this._stationJustActivated = false;
 
     // If user has clicked on map
     // => enter ClimateCell mode => setup marker and cell
     else
-      this._main.hub.onModeChange('C')
+      this._main.hub.onModeChange('C');
 
     // Tell everyone: new coordinates
-    this._coords = this._bringCoordsInBounds(origCoords)
+    this._coords = this._bringCoordsInBounds(origCoords);
     this._main.hub.onLocationChange(this._coords)
   }
 
@@ -108,17 +108,17 @@ class MapController
     {
       lat: origCoords.lat,
       lng: origCoords.lng
-    }
+    };
 
     while (realCoords.lat < -LAT_EXTENT)
-      realCoords.lat += LAT_EXTENT*2
+      realCoords.lat += LAT_EXTENT*2;
     while (realCoords.lat > LAT_EXTENT)
-      realCoords.lat -= LAT_EXTENT*2
+      realCoords.lat -= LAT_EXTENT*2;
 
     while (realCoords.lng < -LNG_EXTENT)
-      realCoords.lng += LNG_EXTENT*2
+      realCoords.lng += LNG_EXTENT*2;
     while (realCoords.lng > LNG_EXTENT)
-      realCoords.lng -= LNG_EXTENT*2
+      realCoords.lng -= LNG_EXTENT*2;
 
     return(realCoords)
   }

@@ -20,16 +20,16 @@ class ClimateDatasetsInList
 
   constructor(main)
   {
-    this._main = main
+    this._main = main;
 
     // ------------------------------------------------------------------------
     // Member Variables
     // ------------------------------------------------------------------------
 
-    this._datasetList = $('#datasets')
-    this._datasetsTitle = $('#dataset-name')
+    this._datasetList = $('#datasets');
+    this._datasetsTitle = $('#dataset-name');
 
-    this._isEnabled = true
+    this._isEnabled = true;
 
 
     // ------------------------------------------------------------------------
@@ -55,7 +55,7 @@ class ClimateDatasetsInList
   enable()
   {
     if (!this._isEnabled)
-      this._datasetList.show()
+      this._datasetList.show();
 
     this._isEnabled = true
   }
@@ -63,7 +63,7 @@ class ClimateDatasetsInList
   disable()
   {
     if (this._isEnabled)
-      this._datasetList.hide()
+      this._datasetList.hide();
 
     this._isEnabled = false
   }
@@ -75,10 +75,10 @@ class ClimateDatasetsInList
 
   setStationsTitle()
   {
-    let link = $('<a/>')
-    link.attr('href', 'http://' + this._main.config.station.source.link)
-    link.attr('target', '_blank')
-    link.text(this._main.config.station.source.name)
+    let link = $('<a/>');
+    link.attr('href', 'http://' + this._main.config.station.source.link);
+    link.attr('target', '_blank');
+    link.text(this._main.config.station.source.name);
 
     this._datasetsTitle.html(link)
   }

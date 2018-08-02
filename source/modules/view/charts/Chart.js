@@ -11,7 +11,7 @@
 
 class Chart
 {
-  
+
   // ##########################################################################
   // PUBLIC MEMBERS
   // ##########################################################################
@@ -23,30 +23,30 @@ class Chart
 
   constructor(main, chartName, climateData)
   {
-    this._main = main
+    this._main = main;
 
-    this._chartExists = true
+    this._chartExists = true;
 
     // Get charts main -> generic information for all charts
     // get initial dimensions as a deep copy to change them later on
-    this._chartsMain = this._main.config.charts
+    this._chartsMain = this._main.config.charts;
 
     // Get chart main -> specific information for this chart
-    this._chartName = chartName
-    this._chartMain = null
+    this._chartName = chartName;
+    this._chartMain = null;
     for (let chart of this._main.config.charts.charts)
-      if (chart.name == chartName)
-        this._chartMain = chart
+      if (chart.name === chartName)
+        this._chartMain = chart;
 
     // Error handling: if no climateData, chart will not be set up
-    if (!climateData) return this._chartExists = false
+    if (!climateData) return this._chartExists = false;
 
     // Global setup for all chart types
-    this._initMembers(climateData)
-    this._setChartMetadata()
-    this._setupContainer()
-    this._setupToolbar()
-    this._setupChart()
+    this._initMembers(climateData);
+    this._setChartMetadata();
+    this._setupContainer();
+    this._setupToolbar();
+    this._setupChart();
     this._setupHeaderFooter()
   }
 
@@ -60,7 +60,7 @@ class Chart
     if (this._chartExists)
     {
       // Update model
-      this._title = title
+      this._title = title;
       // Update view
       this._titleDiv.text(title)
     }
@@ -76,9 +76,9 @@ class Chart
     if (this._chartExists)
     {
       // Clean model
-      this._climateData = null
+      this._climateData = null;
       // Clean view
-      this._chartWrapper.remove()
+      this._chartWrapper.remove();
       this._toolbar.empty()
     }
   }
@@ -96,8 +96,8 @@ class Chart
   _initMembers(climateData)
   {
     // Copy width and height of the chart, to never override main
-    this._chartWidth =  this._chartsMain.positions.width
-    this._chartHeight = this._chartsMain.positions.height
+    this._chartWidth =  this._chartsMain.positions.width;
+    this._chartHeight = this._chartsMain.positions.height;
 
     // Final dimensions of the main chart area
     this._mainPos = {
@@ -112,10 +112,10 @@ class Chart
         + this._chartHeight
         - this._chartsMain.positions.mainTop
       ),
-    }
+    };
 
-    this._mainPos.width =   this._mainPos.right   - this._mainPos.left
-    this._mainPos.height =  this._mainPos.bottom  - this._mainPos.top
+    this._mainPos.width =   this._mainPos.right   - this._mainPos.left;
+    this._mainPos.height =  this._mainPos.bottom  - this._mainPos.top;
 
     // Actual chart data
     this._climateData = climateData
@@ -129,20 +129,20 @@ class Chart
   _setChartMetadata()
   {
     // Set title
-    this._title = this._climateData.name
+    this._title = this._climateData.name;
 
     // Assemble subtitle (location | elevation | climate class | years)
-    this._subtitle = this._climateData.location.DD
+    this._subtitle = this._climateData.location.DD;
     if (this._climateData.elevation)
       this._subtitle += ' | Elevation: '
-        + this._climateData.elevation
+        + this._climateData.elevation;
     if (this._climateData.climate_class)
       this._subtitle += ' | Climate Class: '
-        + this._climateData.climate_class
+        + this._climateData.climate_class;
     this._subtitle +=   ' | Years: '
       + this._climateData.years[0]
       + '-'
-      + this._climateData.years[1]
+      + this._climateData.years[1];
       // TODO: gap years (appendix in this._climateData.years[2])
 
     // Get reference URL
@@ -157,16 +157,16 @@ class Chart
   _setupContainer()
   {
     // Get parent container (the one that contains all charts)
-    let parentContainer = $('#' + this._chartsMain.parentContainer)
+    let parentContainer = $('#' + this._chartsMain.parentContainer);
 
     // Setup wrapper for all chart elements
     let chartWrapper = this._main.modules.domElementCreator.create(
         'div',                              // Element type
         this._chartMain.name + '-wrapper',  // ID
         ['chart-wrapper', 'box']            // Classes
-      )
-    parentContainer.append(chartWrapper)
-    this._chartWrapper = $('#' + this._chartMain.name + '-wrapper')
+      );
+    parentContainer.append(chartWrapper);
+    this._chartWrapper = $('#' + this._chartMain.name + '-wrapper');
 
     // Adjust "height" of wrapper
     this._chartWrapper.css('padding-bottom',
@@ -185,35 +185,35 @@ class Chart
     // Container
     let toolbar = this._main.modules.domElementCreator.create(
       'div', this._chartMain.name+'-toolbar', ['toolbar']
-    )
-    this._chartWrapper[0].appendChild(toolbar)
-    this._toolbar = $(toolbar)
+    );
+    this._chartWrapper[0].appendChild(toolbar);
+    this._toolbar = $(toolbar);
 
     // Save options: PNG
     let pngButton = this._main.modules.domElementCreator.create(
       'button', '', ['save-to-png']
-    )
-    $(pngButton).html(this._chartsMain.saveOptions.png.buttonName)
-    this._toolbar.append(pngButton)
+    );
+    $(pngButton).html(this._chartsMain.saveOptions.png.buttonName);
+    this._toolbar.append(pngButton);
 
     $(pngButton).click(() =>
       {
         this._saveToPNG()
       }
-    )
+    );
 
     // Save options: SVG
 // TODO: get to work
     let svgButton = this._main.modules.domElementCreator.create(
       'button', '', ['save-to-svg']
-    )
-    $(svgButton).html(this._chartsMain.saveOptions.svg.buttonName)
-    this._toolbar.append(svgButton)
+    );
+    $(svgButton).html(this._chartsMain.saveOptions.svg.buttonName);
+    this._toolbar.append(svgButton);
 
     $(svgButton).click(() =>
       {
-        let rootDiv =       this._chart[0][0]
-        let fileName =      this._chartName  // TODO: more sophisticated
+        let rootDiv =       this._chart[0][0];
+        let fileName =      this._chartName;  // TODO: more sophisticated
         this._saveToSVG()
       }
     )
@@ -268,9 +268,9 @@ class Chart
       )
       .attr('text-anchor', 'middle')
       .style('font-size', this._chartsMain.fontSizes.title + 'em')
-      .text(this._title)
+      .text(this._title);
 
-    this._titleDiv = $('#' + this._chartName + '-title')
+    this._titleDiv = $('#' + this._chartName + '-title');
 
     // Subtitle
     this._chart.append('text')
@@ -282,10 +282,10 @@ class Chart
       )
       .attr('text-anchor', 'middle')
       .style('font-size', this._chartsMain.fontSizes.large + 'em')
-      .text(this._subtitle)
+      .text(this._subtitle);
 
     // Footer: Source link
-    this._footerElems = [2]
+    this._footerElems = [2];
     this._footerElems[0] = this._chart.append('text')
       .attr('class', 'footer source')
       .attr('x', 0
@@ -304,7 +304,7 @@ class Chart
         {
           window.open(this._climateData.source_link)
         }
-      )
+      );
 
     // Footer: Reference URL
     this._footerElems[1] = this._chart.append('text')
@@ -332,15 +332,15 @@ class Chart
   _resizeChartHeight(shiftUp)
   {
     // Reset model: Shift full height
-    this._chartHeight += shiftUp
-    this._mainPos.bottom += shiftUp
-    this._mainPos.height += shiftUp
+    this._chartHeight += shiftUp;
+    this._mainPos.bottom += shiftUp;
+    this._mainPos.height += shiftUp;
 
     // Reset view: svg view box
     this._chart.attr('viewBox', ''
       + '0 0 '  + this._chartWidth
       + ' '     + this._chartHeight
-    )
+    );
 
     // Reset view: change height of wrapper
     this._chartWrapper.css('padding-bottom',
@@ -355,14 +355,14 @@ class Chart
 
   _saveToPNG()
   {
-    let rootDiv =   this._chart[0][0]
-    let fileName =  this._chartName  // TODO: more sophisticated
+    let rootDiv =   this._chart[0][0];
+    let fileName =  this._chartName;  // TODO: more sophisticated
 
     // Decrease font size
     this._main.modules.helpers.increaseFontSize(
       $('#' + rootDiv.id + ' text'),
       this._chartsMain.saveOptions.png.fontDecreaseFactor
-    )
+    );
 
     // Save it
     saveSvgAsPng(
@@ -372,7 +372,7 @@ class Chart
         scale:          this._chartsMain.saveOptions.png.scaleFactor,
         encoderOptions: this._chartsMain.saveOptions.png.imageQuality,
       }
-    )
+    );
 
     // Increase font size again
     this._main.modules.helpers.increaseFontSize(
@@ -389,33 +389,33 @@ class Chart
 
   _saveToSVG()
   {
-    let rootDiv =   this._chart[0][0]
-    let fileName =  this._chartName + this._chartsMain.saveOptions.svg.fileExtension // TODO: more sophisticated
+    let rootDiv =   this._chart[0][0];
+    let fileName =  this._chartName + this._chartsMain.saveOptions.svg.fileExtension; // TODO: more sophisticated
 
-    rootDiv.setAttribute("xmlns", "http://www.w3.org/2000/svg")
-    
+    rootDiv.setAttribute("xmlns", "http://www.w3.org/2000/svg");
+
     //get svg source.
     let serializer = new XMLSerializer();
     let svgData = serializer.serializeToString(rootDiv);
-    
-    let preface = '<?xml version="1.0" standalone="no"?>\r\n'
-    let svgBlob = new Blob([preface, svgData], {type:"image/svg+xml;charset=utf-8"})
-      
-    if (window.navigator && window.navigator.msSaveOrOpenBlob) { 
+
+    let preface = '<?xml version="1.0" standalone="no"?>\r\n';
+    let svgBlob = new Blob([preface, svgData], {type:"image/svg+xml;charset=utf-8"});
+
+    if (window.navigator && window.navigator.msSaveOrOpenBlob) {
         // for IE
-        window.navigator.msSaveOrOpenBlob(svgBlob, fileName) 
-    } 
-    else { 
+        window.navigator.msSaveOrOpenBlob(svgBlob, fileName)
+    }
+    else {
         // for Non-IE (chrome, firefox etc.)
-        let svgUrl = URL.createObjectURL(svgBlob)
-        let downloadLink = document.createElement("a")
-        downloadLink.href = svgUrl
-        downloadLink.download = fileName
-        document.body.appendChild(downloadLink)
-        downloadLink.click()
+        let svgUrl = URL.createObjectURL(svgBlob);
+        let downloadLink = document.createElement("a");
+        downloadLink.href = svgUrl;
+        downloadLink.download = fileName;
+        document.body.appendChild(downloadLink);
+        downloadLink.click();
         document.body.removeChild(downloadLink)
     }
-     
+
   }
 
 }

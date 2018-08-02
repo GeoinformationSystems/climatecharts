@@ -15,7 +15,7 @@
 // ############################################################################
 
 
-let main = {}
+let main = {};
 
 
 // ==========================================================================
@@ -24,14 +24,14 @@ let main = {}
 //  'S':  WeatherStation  -> data from weather station dataset (point data)
 // ==========================================================================
 
-main.mode = 'C'
+main.mode = 'C';
 
 
 // Load configuration, modules and hub
 
-loadConfig(main)    // Source in: source/modules/main/config.js
-loadModules(main)   // Source in: source/modules/main/modules.js
-loadHub(main)       // Source in: source/modules/main/hub.js
+loadConfig(main);    // Source in: source/modules/main/config.js
+loadModules(main);   // Source in: source/modules/main/modules.js
+loadHub(main);       // Source in: source/modules/main/hub.js
 
 
 // ############################################################################
@@ -41,9 +41,9 @@ loadHub(main)       // Source in: source/modules/main/hub.js
 // Switch between "Home", "Datasets & Software" and "About" tab.
 $(".tab-links a").click( function (e)
   {
-    let currentAttrValue = $(this).attr('href')
-    $('.tabs ' + currentAttrValue).show().siblings().hide()
-    $(this).parent('li').addClass('active').siblings().removeClass('active')
+    let currentAttrValue = $(this).attr('href');
+    $('.tabs ' + currentAttrValue).show().siblings().hide();
+    $(this).parent('li').addClass('active').siblings().removeClass('active');
     e.preventDefault()
   }
-)
+);

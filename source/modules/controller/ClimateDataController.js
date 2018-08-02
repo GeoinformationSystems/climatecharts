@@ -20,7 +20,7 @@ class ClimateDataController
 
   constructor(main)
   {
-    this._main = main
+    this._main = main;
 
     // ------------------------------------------------------------------------
     // Member Variables
@@ -37,26 +37,26 @@ class ClimateDataController
   update(tempData, precData, placeName, coords, elev, source)
   {
     // Fill climate data
-    this._climateData = new ClimateData()
+    this._climateData = new ClimateData();
 
-    this._climateData.temp = this._fillData(tempData, 'temp')
-    this._climateData.prec = this._fillData(precData, 'prec')
+    this._climateData.temp = this._fillData(tempData, 'temp');
+    this._climateData.prec = this._fillData(precData, 'prec');
 
-    this._calcIndicator('temp')
-    this._calcIndicator('prec')
+    this._calcIndicator('temp');
+    this._calcIndicator('prec');
 
-    this._calcDataList()
-    this._calcMonthlyData()
-    this._calcExtremeData()
-    this._calcClimateClass()
-    this._calcNumYears()
+    this._calcDataList();
+    this._calcMonthlyData();
+    this._calcExtremeData();
+    this._calcClimateClass();
+    this._calcNumYears();
 
     // Fill meta information
-    this._setName(placeName)
-    this._setCoords(coords)
-    this._calcHemisphere(coords)
-    this._setElevation(elev)
-    this._setSource(source)
+    this._setName(placeName);
+    this._setCoords(coords);
+    this._calcHemisphere(coords);
+    this._setElevation(elev);
+    this._setSource(source);
 
     // Update the visualization
     this._main.modules.chartController.updateClimate(this._climateData)
@@ -69,7 +69,7 @@ class ClimateDataController
 
   clear()
   {
-    this._climateData = new ClimateData()
+    this._climateData = new ClimateData();
     this._main.modules.chartController.clear()
   }
 
@@ -96,24 +96,31 @@ class ClimateDataController
 
   _fillData(inData, dataType)
   {
-    let indicator = (dataType == 'prec') ? 'sum' : 'mean'
-    let outData = this._makeEmptyClimateDataObject(indicator)
+    let indicator = (dataType === 'prec') ? 'sum' : 'mean';
+    let outData = this._makeEmptyClimateDataObject(indicator);
 
     // Get data and calculate mean per month
     for (let monthIdx = 0; monthIdx < MONTHS_IN_YEAR.length; monthIdx++)
     {
+      let indata;
+      // depending on which data is called the structure differs
+      if (inData[monthIdx]['rawData'] !== undefined){
+        indata = inData[monthIdx]['rawData']
+      } else {
+        indata = inData[monthIdx]
+      }
       // Get raw data
-      outData[monthIdx].raw_data = inData[monthIdx]
+      outData[monthIdx].raw_data = indata;
 
       // For each year
-      let numYears = inData[monthIdx].length
-      for (var yearIdx = 0; yearIdx < numYears; yearIdx++)
+      let numYears = indata.length;
+      for (let yearIdx = 0; yearIdx < numYears; yearIdx++)
       {
         // Distinguish: is the value given?
-        let dataValue = inData[monthIdx][yearIdx]
+        let dataValue = indata[yearIdx];
         // If yes, account for monthly mean
         if (dataValue != null)
-          outData[monthIdx][indicator] += inData[monthIdx][yearIdx]
+          outData[monthIdx][indicator] += indata[yearIdx];
         // If no, do not account for monthly mean and increase number of gaps
         else
           outData[monthIdx].num_gaps += 1
@@ -121,14 +128,14 @@ class ClimateDataController
 
       // Calculate monthly value (mean or sum)
       // -> Current sum / number of years with data (years without gap)
-      let numYearsWithData = numYears-outData[monthIdx].num_gaps
+      let numYearsWithData = numYears-outData[monthIdx].num_gaps;
       // Error handling: Division by 0
-      if (numYearsWithData == 0)
-        outData[monthIdx][indicator] = null
+      if (numYearsWithData === 0)
+        outData[monthIdx][indicator] = null;
       else
         // Calculate mean for both temp and prec
         // -> for prec: mean of all measured prec values for this month
-        outData[monthIdx][indicator] /= numYearsWithData
+        outData[monthIdx][indicator] /= numYearsWithData;
 
       // Rounding factor
       outData[monthIdx][indicator] =
@@ -148,14 +155,14 @@ class ClimateDataController
     {
       raw_data: [],
       num_gaps: 0
-    }
+    };
     if (indicator == 'mean')
-      singleMonthlyObject.mean = 0.0
+      singleMonthlyObject.mean = 0.0;
     else // indicator == 'sum'
-      singleMonthlyObject.sum = 0
+      singleMonthlyObject.sum = 0;
 
     // Assemble final climate data object for one year
-    let climateDataObject = []
+    let climateDataObject = [];
     for (var monthIdx = 0; monthIdx < MONTHS_IN_YEAR.length; monthIdx++)
       climateDataObject.push( // deep copy necessary!
         this._main.modules.helpers.deepCopy(singleMonthlyObject)
@@ -170,17 +177,17 @@ class ClimateDataController
 
   _calcIndicator(dataType)
   {
-    let numMonthsWithData = MONTHS_IN_YEAR.length
-    let outIndicator = 0
-    let indicator = (dataType == 'prec') ? 'sum' : 'mean'
+    let numMonthsWithData = MONTHS_IN_YEAR.length;
+    let outIndicator = 0;
+    let indicator = (dataType == 'prec') ? 'sum' : 'mean';
 
     // Accumulate final yearly mean / sum
     for (let monthIdx = 0; monthIdx < MONTHS_IN_YEAR.length; monthIdx++)
     {
       // Only if at least one year had data
-      let monthlyValue = this._climateData[dataType][monthIdx][indicator]
+      let monthlyValue = this._climateData[dataType][monthIdx][indicator];
       if (monthlyValue != null)
-        outIndicator += monthlyValue
+        outIndicator += monthlyValue;
       // Otherwise, do not account for final yearly mean
       else
         numMonthsWithData -= 1
@@ -188,21 +195,21 @@ class ClimateDataController
 
     // Error handling: Division by 0
     if (numMonthsWithData == 0)
-      outIndicator = null
+      outIndicator = null;
     else
       if (indicator == 'mean')
-        outIndicator /= numMonthsWithData
+        outIndicator /= numMonthsWithData;
 
     // Rounding factor
     outIndicator =
       this._main.modules.helpers.roundToDecimalPlace(
         outIndicator,
         this._main.config.climateData.decimalPlaces
-      )
+      );
 
     // Assign to proper value
     if (dataType == 'prec')
-      this._climateData.prec_sum = outIndicator
+      this._climateData.prec_sum = outIndicator;
     else // 'temp'
       this._climateData.temp_mean = outIndicator
   }
@@ -216,35 +223,35 @@ class ClimateDataController
 
   _calcDataList()
   {
-    this._climateData.temp_list = []
+    this._climateData.temp_list = [];
     for (let monthIdx = 0; monthIdx < MONTHS_IN_YEAR.length; monthIdx++)
     {
-      this._climateData.temp_list[monthIdx] = []
-      let dataValues = this._climateData.temp[monthIdx].raw_data
+      this._climateData.temp_list[monthIdx] = [];
+      let dataValues = this._climateData.temp[monthIdx].raw_data;
       for (let valueIdx = 0; valueIdx < dataValues.length; valueIdx++)
       {
         if (this._main.modules.helpers.checkIfNumber(dataValues[valueIdx]))
         {
           this._climateData.temp_list[monthIdx].push(
             parseFloat(dataValues[valueIdx])
-          )
+          );
           this._climateData.has_temp = true
         }
       }
     }
 
-    this._climateData.prec_list = []
+    this._climateData.prec_list = [];
     for (let monthIdx = 0; monthIdx < MONTHS_IN_YEAR.length; monthIdx++)
     {
-      this._climateData.prec_list[monthIdx] = []
-      let dataValues = this._climateData.prec[monthIdx].raw_data
+      this._climateData.prec_list[monthIdx] = [];
+      let dataValues = this._climateData.prec[monthIdx].raw_data;
       for (let valueIdx = 0; valueIdx < dataValues.length; valueIdx++)
       {
         if (this._main.modules.helpers.checkIfNumber(dataValues[valueIdx]))
         {
           this._climateData.prec_list[monthIdx].push(
             parseFloat(dataValues[valueIdx])
-          )
+          );
           this._climateData.has_prec = true
         }
       }
@@ -302,17 +309,17 @@ class ClimateDataController
 
   _calcClimateClass()
   {
-    let climateClass = ""
+    let climateClass = "";
 
     // ------------------------------------------------------------------------
     // Get relevant climate data
     // ------------------------------------------------------------------------
 
-    let monthlyData =   this._climateData.monthly_short
-    let extremeData =   this._climateData.extreme
-    let precSum =       this._climateData.prec_sum
-    let tempMean =      this._climateData.temp_mean
-    let hemisphere =    this._climateData.hemisphere
+    let monthlyData =   this._climateData.monthly_short;
+    let extremeData =   this._climateData.extreme;
+    let precSum =       this._climateData.prec_sum;
+    let tempMean =      this._climateData.temp_mean;
+    let hemisphere =    this._climateData.hemisphere;
 
 
     // ------------------------------------------------------------------------
@@ -320,15 +327,15 @@ class ClimateDataController
     // depending on the hemisphere.
     // ------------------------------------------------------------------------
 
-    let precSummer = []
-    let precWinter = []
+    let precSummer = [];
+    let precWinter = [];
 
     if (hemisphere == LAT_HEMISPHERE[1])
     {
       for (var monthIdx=0; monthIdx<MONTHS_IN_YEAR.length; monthIdx++)
       {
         if (monthIdx >= SUMMER_MONTHS[0] && monthIdx <= SUMMER_MONTHS[1])
-          precSummer.push(monthlyData[monthIdx].prec)
+          precSummer.push(monthlyData[monthIdx].prec);
         else
           precWinter.push(monthlyData[monthIdx].prec)
       }
@@ -338,50 +345,50 @@ class ClimateDataController
       for (var monthIdx=0; monthIdx<MONTHS_IN_YEAR.length; monthIdx++)
       {
         if (monthIdx >= SUMMER_MONTHS[0] && monthIdx <= SUMMER_MONTHS[1])
-          precWinter.push(monthlyData[monthIdx].prec)
+          precWinter.push(monthlyData[monthIdx].prec);
         else
           precSummer.push(monthlyData[monthIdx].prec)
       }
     }
 
-    let summerMin = Math.min.apply(Math, precSummer)
-    let summerMax = Math.max.apply(Math, precSummer)
-    let winterMin = Math.min.apply(Math, precWinter)
-    let winterMax = Math.max.apply(Math, precWinter)
+    let summerMin = Math.min.apply(Math, precSummer);
+    let summerMax = Math.max.apply(Math, precSummer);
+    let winterMin = Math.min.apply(Math, precWinter);
+    let winterMax = Math.max.apply(Math, precWinter);
 
 
     // ------------------------------------------------------------------------
     // Count number of warm months (average temp > 10 °C)
     // ------------------------------------------------------------------------
 
-    let numWarmMonths = 0
+    let numWarmMonths = 0;
     for (monthIdx=0; monthIdx<MONTHS_IN_YEAR.length; monthIdx++)
       if (monthlyData[monthIdx].temp >= 10.0)
-        numWarmMonths++
+        numWarmMonths++;
 
 
     // ------------------------------------------------------------------------
     // Calculate dryness index
     // ------------------------------------------------------------------------
 
-    let precDry = 0
+    let precDry = 0;
 
-    let sumSummer = []
+    let sumSummer = [];
     for (var idx=0; idx<precSummer.length; idx++)
       sumSummer += precSummer[idx]
 
-    let sumWinter = []
+    let sumWinter = [];
     for (var idx=0; idx<precWinter.length; idx++)
       sumWinter += precWinter[idx]
 
-    let precDiff = sumSummer-sumWinter
+    let precDiff = sumSummer-sumWinter;
 
     if (sumSummer >= 2/3*precSum)
-      precDry = 2*tempMean + 28
+      precDry = 2*tempMean + 28;
     else if (sumWinter >= 2/3*precSum)
-      precDry = 2*tempMean
+      precDry = 2*tempMean;
     else
-      precDry = 2*tempMean + 14
+      precDry = 2*tempMean + 14;
 
 
     // ------------------------------------------------------------------------
@@ -390,9 +397,9 @@ class ClimateDataController
 
   	if (extremeData.maxTemp < 10)
     {
-  		climateClass = "E"
+  		climateClass = "E";
   		if (0 < extremeData.maxTemp < 10)
-  			climateClass += "T"
+  			climateClass += "T";
   		else
   			climateClass += "F"
   	}
@@ -400,15 +407,15 @@ class ClimateDataController
     {
   		if (precSum < 10*precDry)
       {
-  			climateClass = "B"
+  			climateClass = "B";
   			// 2nd letter
   			if (precSum > 5*precDry)
-  				climateClass += "S"
+  				climateClass += "S";
   			else
-  				climateClass += "W"
+  				climateClass += "W";
   			// 3rd letter
   			if (tempMean >= 18)
-  				climateClass += "h"
+  				climateClass += "h";
   			else
   				climateClass += "k"
   		}
@@ -416,42 +423,42 @@ class ClimateDataController
       {
   			if (extremeData.minTemp >= 18)
         {
-  				climateClass = "A"
+  				climateClass = "A";
   				// 2nd letter
   				if (extremeData.minPrec >= 60)
-  					climateClass += "f"
+  					climateClass += "f";
 
   				else if (precSum >= 25*(100 - extremeData.minPrec))
-  					climateClass += "m"
+  					climateClass += "m";
   				else if (summerMin < 60)
-  					climateClass += "s"
+  					climateClass += "s";
   				else if (winterMin < 60)
   					climateClass += "w"
   			}
   			else if (extremeData.minTemp <= -3)
         {
-  				climateClass = "D"
+  				climateClass = "D";
   				// 2nd letter
   				if (summerMin < winterMin &&
               winterMax > 3*summerMin && summerMin < 40)
-  					climateClass += "s"
+  					climateClass += "s";
   				else if (winterMin < summerMin && summerMax > 10*winterMin)
-  					climateClass += "w"
+  					climateClass += "w";
   				else
-  					climateClass += "f"
+  					climateClass += "f";
 
   				// 3rd letter
   				if (extremeData.maxTemp >= 22)
-  					climateClass += "a"
+  					climateClass += "a";
   				else if (
               extremeData.maxTemp < 22 &&
               numWarmMonths > 3)
-  					climateClass += "b"
+  					climateClass += "b";
   				else if (
               extremeData.maxTemp < 22 &&
               numWarmMonths <= 3 &&
               extremeData.minTemp > -38)
-  					climateClass += "c"
+  					climateClass += "c";
   				else if (
               extremeData.maxTemp < 22 &&
               numWarmMonths <= 3 &&
@@ -460,32 +467,32 @@ class ClimateDataController
   			}
   			else if (extremeData.minTemp > -3 && extremeData.minTemp < 18)
         {
-  				climateClass = "C"
+  				climateClass = "C";
 
   				// 2nd letter
   				if (summerMin < winterMin &&
               winterMax > 3*summerMin &&
               summerMin < 40)
-  					climateClass = climateClass + "s"
+  					climateClass = climateClass + "s";
   				else if (
               winterMin < summerMin &&
               summerMax > 10*winterMin)
-  					climateClass = climateClass + "w"
+  					climateClass = climateClass + "w";
   				else
-  					climateClass = climateClass + "f"
+  					climateClass = climateClass + "f";
 
   				// 3rd letter
   				if (extremeData.maxTemp >= 22)
-  					climateClass += "a"
+  					climateClass += "a";
   				else if (
               extremeData.maxTemp < 22 &&
               numWarmMonths > 3)
-  					climateClass += "b"
+  					climateClass += "b";
   				else if (
               extremeData.maxTemp < 22 &&
               numWarmMonths <= 3 &&
               extremeData.minTemp > -38)
-  					climateClass += "c"
+  					climateClass += "c";
   				else if (
               extremeData.maxTemp < 22 &&
               numWarmMonths <= 3 &&
@@ -506,11 +513,11 @@ class ClimateDataController
   _calcNumYears()
   {
     // Temoral Dimension
-    let minYear = this._main.modules.timeController.getPeriodStart()
-    let maxYear = this._main.modules.timeController.getPeriodEnd()
+    let minYear = this._main.modules.timeController.getPeriodStart();
+    let maxYear = this._main.modules.timeController.getPeriodEnd();
 
-    let minYearIdx = 0
-    let maxYearIdx = maxYear-minYear-1  // N.B: -1 to account for starting at 0
+    let minYearIdx = 0;
+    let maxYearIdx = maxYear-minYear-1;  // N.B: -1 to account for starting at 0
 
     // TODO: determine if there are data holes in between
     // -> set third return parameter like this
@@ -577,11 +584,11 @@ class ClimateDataController
     // Manipulate array: Each element is either a string or null
     for (let idx=0; idx<3; idx++)
       if (!this._main.modules.helpers.checkIfString(locNameArray[idx]))
-        locNameArray[idx] = null
+        locNameArray[idx] = null;
     // Remove empty elements
     let nonNullNameParts = locNameArray.filter(
       function(part) {return part!=null}
-    )
+    );
     // Concatenate to final name string, seperate parts by ", "
     this._climateData.name = nonNullNameParts.join(", ")
   }
@@ -593,33 +600,33 @@ class ClimateDataController
 
   _setCoords(coords)
   {
-    this._climateData.location.orig = coords
+    this._climateData.location.orig = coords;
 
     // Coords to DD
-    let lat = new String(
+    let lat = String(
       this._main.modules.helpers.roundToDecimalPlace(
         coords.lat,
         this._main.config.coordinates.decimalPlaces
       )
-    )
+    );
     // map coord < 0 -> 0 and coord >= 0 -> 1
-    lat = Math.abs(lat) + LAT_HEMISPHERE[(lat/Math.abs(lat)+1)/2]
-    let lng = new String(
+    lat = Math.abs(lat) + LAT_HEMISPHERE[(lat/Math.abs(lat)+1)/2];
+    let lng = String(
       this._main.modules.helpers.roundToDecimalPlace(
         coords.lng,
         this._main.config.coordinates.decimalPlaces
       )
-    )
-    lng = Math.abs(lng) + LNG_HEMISPHERE[(lng/Math.abs(lng)+1)/2]
-    this._climateData.location.DD = (lat + ", " + lng)
+    );
+    lng = Math.abs(lng) + LNG_HEMISPHERE[(lng/Math.abs(lng)+1)/2];
+    this._climateData.location.DD = (lat + ", " + lng);
 
     // Coords to DMS
     let ns = this._main.modules.helpers.convertDDtoDMS(
       coords.lat, LAT_HEMISPHERE
-    )
+    );
     let ew = this._main.modules.helpers.convertDDtoDMS(
       coords.lng, LNG_HEMISPHERE
-    )
+    );
     this._climateData.location.DMS = ("Position: " + ns + " " + ew)
 
   }
@@ -644,7 +651,7 @@ class ClimateDataController
 
   _setElevation(elevation)
   {
-    this._climateData.elevation = null
+    this._climateData.elevation = null;
     if (elevation>0)
       this._climateData.elevation = parseInt(elevation) + " m"
   }
@@ -656,20 +663,20 @@ class ClimateDataController
 
   _setSource(source)
   {
-    this._climateData.source = source
+    this._climateData.source = source;
 
-    let url = source
+    let url = source;
 
     // take only first url
     if (url.indexOf(',') > 0)
-      url = url.slice(0,url.indexOf(','))
+      url = url.slice(0,url.indexOf(','));
     
     //trim potential whitespaces
-    url = url.trim()
+    url = url.trim();
     
     // append http protocol, if necessary
     if (!url.startsWith('http'))
-      url = 'http://' + url
+      url = 'http://' + url;
 
     this._climateData.source_link = url
   }

@@ -20,18 +20,18 @@ class CoordinatesInInfobox
 
   constructor(main)
   {
-    this._main = main
+    this._main = main;
 
     // ------------------------------------------------------------------------
     // Member Variables
     // ------------------------------------------------------------------------
 
-    this._latDiv = $('#lat')
-    this._lngDiv = $('#lng')
+    this._latDiv = $('#lat');
+    this._lngDiv = $('#lng');
 
-    this._setButton = $('#set-coordinates')
+    this._setButton = $('#set-coordinates');
 
-    this._isEnabled = true
+    this._isEnabled = true;
 
 
     // ------------------------------------------------------------------------
@@ -45,11 +45,11 @@ class CoordinatesInInfobox
         {
           lat : parseFloat(this._latDiv.val()),
           lng : parseFloat(this._lngDiv.val())
-        }
+        };
         if (coords.lat && coords.lng)
           this._main.modules.mapController.setLocation(coords)
       }
-    )
+    );
 
     // Trigger click on "Set" button
     // by pressing Enter key in either coordinate box
@@ -58,7 +58,7 @@ class CoordinatesInInfobox
         if (evt.keyCode == 13)  // Enter
           this._setButton.click()
       }
-    )
+    );
     this._lngDiv.keyup( (evt) =>
       {
         if (evt.keyCode == 13)  // Enter
@@ -77,8 +77,8 @@ class CoordinatesInInfobox
   {
     if (!this._isEnabled)
     {
-      this._setButton.show()
-      this._latDiv.removeAttr('disabled')
+      this._setButton.show();
+      this._latDiv.removeAttr('disabled');
       this._lngDiv.removeAttr('disabled')
     }
 
@@ -89,7 +89,7 @@ class CoordinatesInInfobox
   {
     if (this._isEnabled)
     {
-      this._setButton.hide()
+      this._setButton.hide();
       this._latDiv.attr('disabled', 'disabled');
       this._lngDiv.attr('disabled', 'disabled');
     }
@@ -104,7 +104,7 @@ class CoordinatesInInfobox
 
   update(coords)
   {
-    this._latDiv.val(this._formatCoordinate(coords.lat))
+    this._latDiv.val(this._formatCoordinate(coords.lat));
     this._lngDiv.val(this._formatCoordinate(coords.lng))
   }
 
@@ -115,8 +115,8 @@ class CoordinatesInInfobox
 
   _formatCoordinate(val)
   {
-    let factor = Math.pow(10, this._main.config.coordinates.decimalPlaces)
-    let rounded = Math.round(val*factor)/factor
+    let factor = Math.pow(10, this._main.config.coordinates.decimalPlaces);
+    let rounded = Math.round(val*factor)/factor;
     return rounded.toString()
   }
 

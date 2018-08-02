@@ -21,14 +21,14 @@ class ClimateCellOnMap
 
   constructor(main)
   {
-    this._main = main
+    this._main = main;
 
 
     // ------------------------------------------------------------------------
     // Member Variables
     // ------------------------------------------------------------------------
 
-    this._map = this._main.modules.map.getMap()
+    this._map = this._main.modules.map.getMap();
 
     // Raster cell the current climate data originates from
     // -> Leaflet rectangle
@@ -46,7 +46,7 @@ class ClimateCellOnMap
     // Calculate raster cell which contain the current coordinates
     // ------------------------------------------------------------------------
 
-    let cellSize = this._main.modules.climateDatasetController.getSelectedDataset().raster_cell_size
+    let cellSize = this._main.modules.climateDatasetController.getSelectedDataset().raster_cell_size;
 
     // Determine the cell the current point is in
     // -> in array format, not object format!
@@ -54,14 +54,14 @@ class ClimateCellOnMap
     [
       Math.floor(coords.lat/cellSize.lat)*cellSize.lat,
       Math.floor(coords.lng/cellSize.lng)*cellSize.lng
-    ]
+    ];
     let maxPoint =
     [
       minPoint[0] + cellSize.lat,
       minPoint[1] + cellSize.lng
-    ]
+    ];
 
-    let bounds = [minPoint, maxPoint]
+    let bounds = [minPoint, maxPoint];
 
 
     // ------------------------------------------------------------------------
@@ -71,13 +71,13 @@ class ClimateCellOnMap
     // If cell does not exist yet => create it
     if (!this._cell)
     {
-      this._cell = new L.rectangle(bounds, this._main.config.climateCell.style)
+      this._cell = new L.rectangle(bounds, this._main.config.climateCell.style);
       this._cell.addTo(this._map)
     }
 
     // If cell already exists => update it
     else
-      this._cell.setBounds(bounds)
+      this._cell.setBounds(bounds);
 
 
     // ------------------------------------------------------------------------
@@ -86,16 +86,16 @@ class ClimateCellOnMap
     // => determine if the bounds of the cell are fully visible in the viewport
     // ------------------------------------------------------------------------
 
-    this._cell.bringToBack()
+    this._cell.bringToBack();
 
-    let mapBounds = this._map.getBounds()
-    let cellBounds = this._cell.getBounds()
+    let mapBounds = this._map.getBounds();
+    let cellBounds = this._cell.getBounds();
 
     // Is the climate cell completely in the viewport?
     // i.e. no bound of the cell is visible
     // => zoom out to fit the bounds
     if (cellBounds.contains(mapBounds))
-      this._map.fitBounds(cellBounds)
+      this._map.fitBounds(cellBounds);
 
     // Is the cell partially covered by the map?
     // i.e. the map does not contain the full extent of the cell
@@ -117,7 +117,7 @@ class ClimateCellOnMap
   {
     if (this._cell)
     {
-      this._map.removeLayer(this._cell)
+      this._map.removeLayer(this._cell);
       this._cell = null
     }
   }

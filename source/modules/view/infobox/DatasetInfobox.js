@@ -19,13 +19,13 @@ class DatasetInfobox
 
   constructor(main)
   {
-    this._main = main
+    this._main = main;
 
     // ------------------------------------------------------------------------
     // Member Variables
     // ------------------------------------------------------------------------
 
-    this._infobox = $('#dataset-info')
+    this._infobox = $('#dataset-info');
     this.disable()
   }
 
@@ -52,18 +52,18 @@ class DatasetInfobox
   updateDatasetInfo(dataset)
   {
     // Error handling: ensure that the infobox is visible
-    this.enable()
+    this.enable();
 
     // Clear content
-    this._infobox.empty()
+    this._infobox.empty();
 
     // Preparing links in case of multiple DOIs for one dataset
-    let doiLinks = ""
+    let doiLinks = "";
     // Splitting multiple DOIs in catalog by comma 
-    let doiSplit = dataset.doi.split(',')
+    let doiSplit = dataset.doi.split(',');
     for(var doiIDx in doiSplit){
         if (!doiSplit[doiIDx].startsWith('http'))
-            doiSplit[doiIDx] = 'http://' + doiSplit[doiIDx].trim()
+            doiSplit[doiIDx] = 'http://' + doiSplit[doiIDx].trim();
         doiLinks += '<a href="' + doiSplit[doiIDx] + '" target="_blank">' + doiSplit[doiIDx] + '</a><br />'
     }
 
@@ -107,10 +107,10 @@ class DatasetInfobox
   updateStationInfo(station)
   {
     // Error handling: ensure that the infobox is visible
-    this.enable()
+    this.enable();
 
     // Clear content
-    this._infobox.empty()
+    this._infobox.empty();
 
     // Set content
     this._infobox.html(''

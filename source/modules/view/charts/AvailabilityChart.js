@@ -23,7 +23,7 @@ class AvailabilityChart extends Chart
   {
     // Error handling: Only show chart if either prec or temp are given
     if (climateData.has_temp || climateData.has_prec)
-      super(main, 'availability-chart', climateData)
+      super(main, 'availability-chart', climateData);
 
     else
       super(main, 'availability-chart', null)
@@ -40,7 +40,7 @@ class AvailabilityChart extends Chart
 
   _initMembers(climateData)
   {
-    super._initMembers(climateData)
+    super._initMembers(climateData);
 
     // ------------------------------------------------------------------------
     // Preparation: Position values for visualization elements
@@ -70,8 +70,8 @@ class AvailabilityChart extends Chart
         - this._chartsMain.padding
         - this._chartMain.margin.bottom
       ),
-    }
-    this._chartPos.width =  this._chartPos.right - this._chartPos.left
+    };
+    this._chartPos.width =  this._chartPos.right - this._chartPos.left;
     this._chartPos.height = this._chartPos.bottom - this._chartPos.top
 
 
@@ -84,7 +84,7 @@ class AvailabilityChart extends Chart
 
   _setupChart()
   {
-    super._setupChart()
+    super._setupChart();
 
     // ------------------------------------------------------------------------
     // Setup grid
@@ -93,34 +93,34 @@ class AvailabilityChart extends Chart
     // Actual data: 2d array gridData[year][2*month]
     // 1) temp, 2) prec
     // => [0] = Jan temp, [1] = Jan prec, [2] = Feb temp, ... , [23] = Dec prec
-    let gridData = []
+    let gridData = [];
 
     // Number of years = number of rows
-    let numYears = this._climateData.years[1] - this._climateData.years[0] + 1
+    let numYears = this._climateData.years[1] - this._climateData.years[0] + 1;
 
     // Inital values for calculating svg rect positions
-  	let xPos =   this._chartPos.left
-  	let yPos =   this._chartPos.top
-  	let width =  this._chartPos.width / (MONTHS_IN_YEAR.length*2)
+  	let xPos =   this._chartPos.left;
+  	let yPos =   this._chartPos.top;
+  	let width =  this._chartPos.width / (MONTHS_IN_YEAR.length*2);
 
     // Save initial yPos to calculate how much height must be added
-    let startYPos = yPos
+    let startYPos = yPos;
 
     // For each year
   	for (let yearIdx = 0; yearIdx < numYears; yearIdx++)
     {
-  		gridData.push([])
+  		gridData.push([]);
 
       // For each month
   		for (let monthIdx = 0; monthIdx < MONTHS_IN_YEAR.length; monthIdx++)
       {
-        let tempValue = this._climateData.temp[monthIdx].raw_data[yearIdx]
+        let tempValue = this._climateData.temp[monthIdx].raw_data[yearIdx];
         // Is temp value existing?
         // -> If yes: default color
         // -> If not: color as 'not availble'
-        let tempColor = this._chartsMain.colors.temp
+        let tempColor = this._chartsMain.colors.temp;
         if (!this._main.modules.helpers.checkIfNumber(tempValue))
-          tempColor = this._chartsMain.colors.noData
+          tempColor = this._chartsMain.colors.noData;
 
         // Add new grid data
         gridData[yearIdx].push(
@@ -131,16 +131,16 @@ class AvailabilityChart extends Chart
             color:            tempColor,
             value:            tempValue,
           }
-        )
+        );
 
         // Increment the x position => move it over
-        xPos += width
+        xPos += width;
 
         // same procedure for prec value
-        let precValue = this._climateData.prec[monthIdx].raw_data[yearIdx]
-        let precColor = this._chartsMain.colors.prec
+        let precValue = this._climateData.prec[monthIdx].raw_data[yearIdx];
+        let precColor = this._chartsMain.colors.prec;
         if (!this._main.modules.helpers.checkIfNumber(precValue))
-          precColor = this._chartsMain.colors.noData
+          precColor = this._chartsMain.colors.noData;
 
         gridData[yearIdx].push(
           {
@@ -150,14 +150,14 @@ class AvailabilityChart extends Chart
             color:            precColor,
             value:            precValue,
           }
-        )
+        );
 
         // Increment the x position => move it over
         xPos += width
 
   		}
   		// Reset the x position after a row is complete
-  		xPos = this._chartPos.left
+  		xPos = this._chartPos.left;
   		// Increment the y position for the next row => Move it down
   		yPos += width
   	}
@@ -166,7 +166,7 @@ class AvailabilityChart extends Chart
     	.data(gridData)
     	.enter()
       .append('g')
-    	.attr('class', 'row')
+    	.attr('class', 'row');
 
     let column = row.selectAll('.square')
     	.data((d) => { return d })
@@ -181,7 +181,7 @@ class AvailabilityChart extends Chart
       .style('opacity',       this._chartMain.style.cellOpacity)
       .style('stroke',        this._chartsMain.colors.grid)
       .style('stroke-width',  this._chartMain.style.gridWidth + ' px')
-      .attr('shape-rendering','crispEdges')
+      .attr('shape-rendering','crispEdges');
 
       // Create text containing the actual value
     let value = row.selectAll('.square')
@@ -204,11 +204,11 @@ class AvailabilityChart extends Chart
             )
           )
         }
-      )
+      );
 
 
     // Add height: (final y pos - start y pos - start height)
-    this._resizeChartHeight(yPos - startYPos - this._chartPos.height)
+    this._resizeChartHeight(yPos - startYPos - this._chartPos.height);
 
 
     // ------------------------------------------------------------------------
@@ -223,7 +223,7 @@ class AvailabilityChart extends Chart
         + this._chartPos.top
         - this._chartMain.style.titleMargin
       )
-      .text(this._chartMain.headings.title)
+      .text(this._chartMain.headings.title);
 
 
     // ------------------------------------------------------------------------
@@ -233,7 +233,7 @@ class AvailabilityChart extends Chart
     // Legend entry names (chartMain) must ailgn with color names (chartsMain)
     for (let legendEntryName of Object.keys(this._chartMain.legend))
     {
-      this._resizeChartHeight(this._chartMain.style.squareWidth)
+      this._resizeChartHeight(this._chartMain.style.squareWidth);
 
       this._chart.append('rect')
         .attr('class',          'ac-legend-cell')
@@ -244,7 +244,7 @@ class AvailabilityChart extends Chart
         .style('fill',          this._chartsMain.colors[legendEntryName])
         .style('opacity',       this._chartMain.style.cellOpacity)
         .style('stroke',        this._chartsMain.colors.grid)
-        .style('stroke-width',  this._chartMain.style.gridWidth + ' px')
+        .style('stroke-width',  this._chartMain.style.gridWidth + ' px');
 
       this._chart.append('text')
         .attr('text-anchor', 'start')
@@ -270,11 +270,11 @@ class AvailabilityChart extends Chart
     // Make row headings: year number
     yPos = 0
       + this._chartPos.top
-      + width/2
+      + width/2;
 
     for (let yearIdx = 0; yearIdx < numYears; yearIdx++)
     {
-      let year = this._climateData.years[0]+yearIdx
+      let year = this._climateData.years[0]+yearIdx;
       // Place heading
       this._chart.append('text')
         .attr('class', 'ac-year')
@@ -286,7 +286,7 @@ class AvailabilityChart extends Chart
           - this._chartsMain.padding
         )
         .attr('y', yPos)
-        .text(year)
+        .text(year);
       // Go to next y position
       yPos += width
     }
@@ -298,11 +298,11 @@ class AvailabilityChart extends Chart
     //  T   P   T   P   T   P   ...
     xPos = 0
       + this._chartPos.left
-      + width
+      + width;
 
     for (let monthIdx = 0; monthIdx < MONTHS_IN_YEAR.length; monthIdx++)
     {
-      let month = MONTHS_IN_YEAR[monthIdx]
+      let month = MONTHS_IN_YEAR[monthIdx];
 
       // Place 1st heading: month
       this._chart.append('text')
@@ -314,7 +314,7 @@ class AvailabilityChart extends Chart
           + this._chartPos.top
           - this._chartMain.style.colHeadHeight*2
         )
-        .text(month)
+        .text(month);
 
       // Place 2nd heading: T | P
       this._chart.append('text')
@@ -329,7 +329,7 @@ class AvailabilityChart extends Chart
           + this._chartPos.top
           - this._chartMain.style.colHeadHeight
         )
-        .text(this._chartMain.headings.temp)
+        .text(this._chartMain.headings.temp);
 
       this._chart.append('text')
         .attr('class', 'ac-year')
@@ -343,7 +343,7 @@ class AvailabilityChart extends Chart
           + this._chartPos.top
           - this._chartMain.style.colHeadHeight
         )
-        .text(this._chartMain.headings.prec)
+        .text(this._chartMain.headings.prec);
 
       // Increment to next month
       xPos += (2*width)
