@@ -47,3 +47,42 @@ $(".tab-links a").click( function (e)
     e.preventDefault()
   }
 );
+
+// Standalone switch between content pages (e.g. used in 'more info' Link from Cookie-Overlay-Div) 
+function showTabContent(e, currentTab){
+    $('.tabs ' + currentTab).show().siblings().hide()
+    $(".tab-links [href='" + currentTab + "']").parent('li').addClass('active').siblings().removeClass('active')
+    e.preventDefault()
+}
+
+// Manage visibilty of 'Cookie Information Box'
+function setCookieAndHideDiv(){
+    setCookie('hideCookieHint','true',365)
+    $(".collectCookies").css('display','none')
+}
+
+function setCookie(cname, cvalue, exdays) {
+    let d = new Date()
+    d.setTime(d.getTime() + (exdays*24*60*60*1000))
+    let expires = "expires="+d.toUTCString()
+    document.cookie = cname + "=" + cvalue + "; " + expires
+}
+function getCookie(cname) {
+     let name = cname + "="
+     let cookieArray = document.cookie.split(';')
+     for(let i=0; i<cookieArray.length; i++) {
+        let c = cookieArray[i];
+        while (c.charAt(0)==' ') c = c.substring(1)
+        if (c.indexOf(name) == 0) return c.substring(name.length,c.length)
+     }
+     return "";
+ } 
+
+
+$(document).ready(function(){
+  if(getCookie("hideCookieHint") == "true")
+  {
+    $(".collectCookies").css('display','none')
+  }
+
+})

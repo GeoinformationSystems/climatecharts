@@ -64,12 +64,10 @@
   	<!-- Piwik -->
   	<script type="text/javascript">
   	  var _paq = _paq || [];
-  	  // tracker methods like "setCustomDimension" should be called before "trackPageView"
   	  _paq.push(['trackPageView']);
   	  _paq.push(['enableLinkTracking']);
   	  (function() {
   	    var u="https://mars.geo.tu-dresden.de/";
-  	    // var u="//mars.geo.tu-dresden.de/";
   	    _paq.push(['setTrackerUrl', u+'piwik.php']);
   	    _paq.push(['setSiteId', '4']);
   	    var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
@@ -318,6 +316,13 @@
   											</p>
   										</div>
   									</div>
+                                                                    <div class="col-lg-4">
+  										<div class="box info">
+  											<h3>License</h3>
+                                                                                        <a rel="license" href="http://creativecommons.org/licenses/by/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by/4.0/88x31.png" /></a><br /><span xmlns:dct="http://purl.org/dc/terms/" href="http://purl.org/dc/dcmitype/StillImage" property="dct:title" rel="dct:type">All generated diagrams </span> by <a xmlns:cc="http://creativecommons.org/ns#" href="climatecharts.net" property="cc:attributionName" rel="cc:attributionURL">climatecharts.net</a> are licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>.
+  											
+                                                                                </div>
+                                                                    </div>
   								</div>
   							</div>
 
@@ -340,6 +345,8 @@
   													<span class="arid">arid</span> or seasonally changing.
   												</p>
   												<img class="img img-responsive" src="data/img/example.png">
+                                                                                                <br/>
+                                                                                                <a rel="license" href="http://creativecommons.org/licenses/by/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by/4.0/88x31.png" /></a><br /><span xmlns:dct="http://purl.org/dc/terms/" href="http://purl.org/dc/dcmitype/StillImage" property="dct:title" rel="dct:type">All generated diagrams </span> by <a xmlns:cc="http://creativecommons.org/ns#" href="climatecharts.net" property="cc:attributionName" rel="cc:attributionURL">climatecharts.net</a> are licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>.
   											</div>
   										</div>
 
@@ -353,19 +360,32 @@
   													with the following constraint:<br/>
   													<br/>
   													Web design and technical development: <br/>
-                            M.Sc. Marcus Kossatz <br/>
+                                                                                                        M.Sc. Marcus Kossatz <br/>
   													M.Sc. Felix Wiemann <br/>
+                                                                                                        Peggy Thiemt <br/>
   													<br/>
   													Contact: <br/>
   													Prof. Dr. Lars Bernard<br/>
   													Mail: Lars.Bernard@tu-dresden.de<br/>
   													Phone: +49 (0)351 463-35880<br/>
-  												</p>
-  											</div>
+  												</p> 
+                                                                                        </div>
   										</div>
-                      <div class="box-quiet">
-  										  <iframe id="piwik-tracking" style="width: 100%; height: 100%; border: 0" src="https://mars.geo.tu-dresden.de/index.php?module=CoreAdminHome&action=optOut&idsite=4&language=de" frameborder="0" scrolling="no"></iframe>
-  								    </div>
+                                                                                <div class="box">
+                                                                                    
+                                                                                    <p style="font-size:1.1em"><b>Matomo Webanalysis</b></p>
+                                                                                    <p>
+                                                                                    To improve our web pages, we additionally collect anonymised visitor data using the web analysis tool Matomo (formerly PIWIK).<br/><br/>
+                                                                                    In order for us to provide you the best possible experience on our website, we need to collect and process certain information. Depending on your use of the Services, that may include:                                                                                                    
+                                                                                    </p>
+                                                                                    <ul>
+                                                                                        <li><b>Usage data</b> — when you visit our site, we will store: the website from which you visited us from, the parts of our site you visit, the date and duration of your visit, your anonymised IP address, information from the device (device type, operating system, screen resolution, language, country you are located in, and web browser type) you used during your visit. We process this usage data for statistical purposes, to improve our site and to recognize and stop any misuse.</li>
+                                                                                        <li><b>Cookies</b> — we use cookies (small data files transferred onto computers or devices by sites) for record-keeping purposes and to enhance functionality on our site. You may deactivate or restrict the transmission of cookies by changing the settings of your web browser. Cookies that are already stored may be deleted at any time.</li>
+                                                                                    </ul>
+                                                                                    <p>You can opt out of being tracked by our Matomo Analytics instance below:</p>
+                                                                                    <iframe id="piwik-tracking" style="height:100px; width: 100%; border: 0" src="https://mars.geo.tu-dresden.de/index.php?module=CoreAdminHome&action=optOut&idsite=4&language=en" frameborder="0" scrolling="no"></iframe>
+                                                                                    
+                                                                                </div>
   									</div>
   								</div>
   							</div>
@@ -378,6 +398,14 @@
   	</div>
     <div id="loader"></div>
 
+    
+    <!-- Cookie Info -->
+    <div class="collectCookies">
+        This website uses cookies and the analytics software Matomo.
+        <a onclick='showTabContent(event, "#about");' href="#" title="ClimateCharts - Privacy policy">More information</a>
+        <button onclick='setCookieAndHideDiv();'>OK</button>
+    </div>
+ 
 
     <!-- OWN MODULES -->
 
@@ -436,6 +464,6 @@
     <!-- MAIN -->
     <script src="build/modules/main.js"></script>
     <link  href="build/modules/main.css" rel="stylesheet" />
-
+ 
   </body>
 </html>
