@@ -9,7 +9,13 @@
 .settings/
 
 *.fodt#
+<<<<<<< HEAD
 
 /node_modules
 package-lock.json
 src/main/webapp/img/example.png
+=======
+*.yml
+
+.htaccess
+>>>>>>> origin/master
