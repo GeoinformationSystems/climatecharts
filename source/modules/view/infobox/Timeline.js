@@ -90,12 +90,20 @@ class Timeline
             this._rangeSlider = $("<div id='range-slider'></div>");
             $("body").append(this._rangeSlider);
 
+            // range slider background bar for maximum range of all datasets
+            this._backgroundSlider = $("<div id='background-slider'></div>");
+            this._backgroundSlider.insertBefore($("#slider"));
+
             // Determine drag movement of range slider
             let xPos = null;
             let leftRangePos = null;
             let yearDist = null;
             let yearsPerPx = null;
             let sliderHandles = $('.ui-slider-handle');
+
+            // append some spans on slider handles for labels
+            sliderHandles.first().append('<span id="sliderHandleMinYear">' + minYear + '</span>');
+            sliderHandles.last().append('<span id="sliderHandleMaxYear">' + maxYear + '</span>');
 
             this._updateRangeSliderPosition();
 
@@ -194,7 +202,6 @@ class Timeline
     // Ensure that slider range has always the correct position
     $(window).resize(this._updateRangeSliderPosition);
 
-
     // ------------------------------------------------------------------------
     // Reset the timeline to the original position
     // ------------------------------------------------------------------------
@@ -204,7 +211,6 @@ class Timeline
         this._main.modules.timeController.resetPeriod()
       }
     )
-
   }
 
 
@@ -220,7 +226,9 @@ class Timeline
     end =   Math.max(end, this._minYear);
     end =   Math.min(end, this._maxYear);
     this._periodStartDiv.html(start);
-    this._periodEndDiv.html(end)
+    this._periodEndDiv.html(end);
+    $('#sliderHandleMinYear').text(start);
+    $('#sliderHandleMaxYear').text(end);
   }
 
   updateMinMaxYear(min, max)
@@ -243,8 +251,8 @@ class Timeline
     {
       this._sliderDiv.slider("destroy");
       this._rangeSlider.remove()
+      this._backgroundSlider.remove()
     }
-
     // Init again
     this.init(minYear, maxYear, periodStart, periodEnd)
   }
@@ -275,6 +283,19 @@ class Timeline
 
   _updateRangeSliderPosition()
   {
+    let infoboxDiv = $('#coordinates-in-infobox');
+    $('#slider').css(
+      {
+        'width':      (infoboxDiv.width()*(main.modules.timeController.getMaxYear() - main.modules.timeController.getMinYear())) / (main.config.time.maxYear - main.config.time.minYear),
+        'left':       (infoboxDiv.width()*(main.modules.timeController.getMinYear() - main.config.time.minYear)) / (main.config.time.maxYear - main.config.time.minYear),
+      }
+    )
+    $('#background-slider').css(
+      {
+        'width':        infoboxDiv.width(),
+      }
+    )
+    
     let rangeDiv = $('.ui-slider-range');
     $('#range-slider').css(
       {
@@ -284,6 +305,7 @@ class Timeline
         'height':     rangeDiv.height(),
       }
     )
+    
   }
 
 }
