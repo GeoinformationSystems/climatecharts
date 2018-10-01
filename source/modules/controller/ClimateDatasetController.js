@@ -94,9 +94,8 @@ class ClimateDatasetController {
     let variables = [];
     for (var idx = 0; idx < 2; idx++)
       for (var name in this._selectedDataset.meta_datasets[idx].variable)
-        if (this._selectedDataset.meta_datasets[idx].variable[name]._shape === "time lat lon")
-          variables.push(this._selectedDataset.meta_datasets[idx].variable[name]._name);
-
+        if (this._selectedDataset.meta_datasets[idx].variable[name]._shape === "time lat lon" && this._selectedDataset.meta_datasets[idx].variable[name]._name !== "stn")
+            variables.push(this._selectedDataset.meta_datasets[idx].variable[name]._name);
     let coords = this._main.modules.mapController.getCoordinates();
     let timePeriod =
       [
