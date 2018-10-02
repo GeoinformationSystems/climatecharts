@@ -350,14 +350,14 @@ class ClimateChart extends Chart
         rows.attr('fill', 'black')
           .attr('font-weight', 'normal')
           .style('text-shadow', 'none');
-        month.style('text-shadow', '1px 1px 2px gray')
+        month.style('text-shadow', 'none')
           .attr('font-weight', 'bold');
         temp.attr('fill', this._chartsMain.colors.temp)
           .attr('font-weight', 'bold')
-          .style('text-shadow', '1px 2px 2px gray');
+          .style('text-shadow', 'none');
         prec.attr('fill', this._chartsMain.colors.prec)
           .attr('font-weight', 'bold')
-          .style('text-shadow', '2px 2px 2px gray');
+          .style('text-shadow', 'none');
 
         c1.attr('transform',
           'translate('
