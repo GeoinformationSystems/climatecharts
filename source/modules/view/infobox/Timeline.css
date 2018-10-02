@@ -22,3 +22,31 @@
   right: 10px;
   margin-top: -6px;  
 }
+
+#background-slider
+{
+    position: absolute;
+    border: 1px solid #aaaaaa;
+    height: .8em;
+    font-size: 1.1em;
+    border-radius: 4px;
+    background-color:#bbbbbb;
+/*    background: repeating-linear-gradient(
+        -45deg,
+        #bbb,
+        #bbb 10px,
+        #ccc 10px,
+        #ccc 20px
+    );*/
+}
+/* positioning of labels with year on slider handles */
+#sliderHandleMinYear, #sliderHandleMaxYear{
+    margin-left: -75%;
+    line-height: 3.5em;
+    color: #555555;
+    background-color: white;
+}
+/* remove outline on slider handles when focused */
+.ui-slider-handle:focus {
+    outline:none;
+}

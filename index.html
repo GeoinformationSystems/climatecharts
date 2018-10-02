@@ -12,11 +12,11 @@
 
 
 <html>
-  <head>
+<head>
 
     <!-- META INFORMATION -->
     <title>ClimateCharts</title>
-  	<meta charset=utf-8 />
+        <meta charset=utf-8 />
     <meta name="author" content="Felix Wiemann, Marcus Kossatz">
     <meta name="description" content="An application to create meteorological charts for places worldwide.">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -51,353 +51,324 @@
 
     <!-- Polyfill: Internet Explorer 11 support -->
     <script src="build/third-party/polyfill/browser-polyfill.min.js"></script>  
-    
+
     <!-- toggle-switch: nice little style for simple toggles -->
     <link  href="build/third-party/toggle-switch/toggle-switch.css" rel="stylesheet" />
-    
+
     <!-- Font Awesome icon set -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
     <!-- x2js: conversion XML <-> JSON -->
     <script src="build/third-party/x2js/xml2json.js"></script>
 
-  	<!-- Piwik -->
-  	<script type="text/javascript">
-  	  var _paq = _paq || [];
-  	  _paq.push(['trackPageView']);
-  	  _paq.push(['enableLinkTracking']);
-  	  (function() {
-  	    var u="https://mars.geo.tu-dresden.de/";
-  	    _paq.push(['setTrackerUrl', u+'piwik.php']);
-  	    _paq.push(['setSiteId', '4']);
-  	    var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
-  	    g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'piwik.js'; s.parentNode.insertBefore(g,s);
-  	  })();
-  	</script>
-  	<noscript>
-  		<p>
-  			<img src="https://mars.geo.tu-dresden.de/piwik.php?idsite=4&rec=1" style="border:0" alt="" />
-  		</p>
-  	</noscript>
-  	<!-- End Piwik Code -->
+    <!-- Piwik -->
+    <script type="text/javascript">
+      var _paq = _paq || [];
+      _paq.push(['trackPageView']);
+      _paq.push(['enableLinkTracking']);
+      (function() {
+        var u="https://mars.geo.tu-dresden.de/";
+        _paq.push(['setTrackerUrl', u+'piwik.php']);
+        _paq.push(['setSiteId', '4']);
+        var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+        g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'piwik.js'; s.parentNode.insertBefore(g,s);
+      })();
+    </script>
 
-  </head>
+</head>
 
-  <body>
-  	<div class="container-fluid">
-  		<div class="row">
-  			<div class="col-lg-1"></div>
-  			<div class="col-lg-10">
-  				<div class="container-fluid">
-  					<div class="tabs">
-  						<div class="jumbotron">
-  							<div class="row">
-  								<div class="col-lg-12">
-  									<div class="headline">
-  										<h2><a href="https://climatecharts.net">ClimateCharts.net</a></h2>
-  										<p class="secHeadline">An application to
-  										create meteorological charts for places worldwide</p>
-  									</div>
-  								</div>
-  							</div>
-  							<div class="row">
-  								<div class="col-lg-10">
-  									<ul class="tab-links nav nav-pills">
-  										<li class="active"><a href="#home">Home</a></li>
-  										<li><a href="#data-software">Datasets & Software</a></li>
-  										<li><a href="#about">About</a></li>
-  									</ul>
-  								</div>
-  								<div class="col-lg-2">
-  									<a target="_blank" href="https://tu-dresden.de/bu/umwelt/geo/geoinformatik">
-  									<img class="img img-responsive" id="logo" src="data/img/logo_weiss.svg"> </a>
-  								</div>
-  							</div>
-  						</div>
-
-  						<div class="tab-content">
-  							<div id="home" class="tab active">
-  								<div class="row">
-  									<div id="main-container" class="col-lg-9">
-  										<div id="map" class="box"></div>
-  										<div id="chart-info" class="box">
-  											<p id="info" class="info">
-  												The ClimateChart application shows the climate,
-  												i.e. the temperature and the precipitation, of all
-  												places on Earth.
-  												When you click on the world map above, a climate chart
-  												and a diagram showing the variation of temperature and
-  												precipitation of this location on Earth are plotted.
-  												On the right side you can change the source of the
-  												climate data and change the time frame of the data.
-  											</p>
-  										</div>
-  									</div>
-  									<div class="col-lg-3">
-  										<div class="box">
-  											<div class="form-group">
-                          <div id="coordinates-in-infobox">
-                            <label class="coordinates-label" for=lat>Latitude:</label>
-                            <label class="coordinates-label" for=lng>Longitude:</label>
-                            <button id='set-coordinates'>Set</button>
-                            <br/>
-                            <input id="lat" class="form-control coordinates" type="text">
-                            <input id="lng" class="form-control coordinates" type="text">
-                            <hr>
-                          </div>
-  												<p class="period">Time Period:</p>
-  												<span id="period-start"></span>
-  												<p class="period">to</p>
-  												<span id="period-end"></span>
-                          <button id='reset-timeline'>Reset</button>
-  												<p id="amount"></p>
-  												<div id="slider"></div>
-  											</div>
-                        <hr>
-  											<div class="form-group">
-                          <p>
-                            Title of the Diagram
-                            <button id='set-diagram-title'>Write</button>
-                          </p>
-  												<input id="user-title" type="text" class="form-control" placeholder="Enter title">
-  											</div>
-  										</div>
-  										<div id="dataset-infobox" class="box block">
-                        <div id="datasets-in-list" class="dropdown">
-                          <div class="linewrapper"></div>
-                          <p class ="datasets-title">
-                            Dataset &nbsp;
-                          </p>
-                          <p id='dataset-name'></p>
-                          <select id="datasets" name="datasets" style="width:100%">
-                          </select>
-                          <br/>
-                          <div id="dataset-info"></div>
+<body>
+    <!-- Piwik -->
+    <noscript><p><img src="https://mars.geo.tu-dresden.de/piwik.php?idsite=4&rec=1" style="border:0" alt="" /></p></noscript>
+    
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-1"></div>
+            <div class="col-lg-10">
+                <div class="container-fluid">
+                    <div class="tabs">
+                        <div class="jumbotron">
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="headline">
+                                        <h2><a href="https://climatecharts.net">ClimateCharts.net</a></h2>
+                                        <p class="secHeadline">An application to create meteorological charts for places worldwide</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-10">
+                                    <ul class="tab-links nav nav-pills">
+                                        <li class="active"><a href="#home">Home</a></li>
+                                        <li><a href="#data-software">Datasets & Software</a></li>
+                                        <li><a href="#about">About</a></li>
+                                    </ul>
+                                </div>
+                                <div class="col-lg-2">
+                                    <a target="_blank" href="https://tu-dresden.de/bu/umwelt/geo/geoinformatik">
+                                    <img class="img img-responsive" id="logo" src="data/img/logo_weiss.svg"> </a>
+                                </div>
+                            </div>
                         </div>
-                      </div>
-  									</div>
-  								</div>
-  							</div>
-  							<div id="data-software" class="tab">
-  								<div class="row">
-  									<div class="col-lg-8">
-  										<div class="box">
-  											<div class="info">
-  												<h3>Datasets</h3>
-  												<p id="source" class ="block">
-                            ClimateCharts.net uses two different kinds of data sources: interpolated and simulated climate data for raster cells on the map and real measured weather data from weather stations around the world.
-                          </p>
-                          <h4>Climate Data for Raster Cells</h4>
-                          <p class="block">
-                            <a href="http://dx.doi.org/10.5285/4c7fdfa6-f176-4c58-acee-683d5e9d2ed5" target="_blank">
-                              <b>CRU Time Series v3.23</b>
-                            </a>
-                            <br/>
-                            University of East Anglia Climatic Research Unit; Harris, I.(.; Jones, P.D. (2015): CRU TS3.23: Climatic Research Unit (CRU) Time-Series (TS) Version 3.23 of High Resolution Gridded Data of Month-by-month Variation in Climate (Jan. 1901- Dec. 2014). Centre for Environmental Data Analysis, 09 November 2015.
-                            <br/>
-                            Spatial Resolution: 0.5° x 0.5°
-                            <br/>
-                            Temporal Coverage: 1901 - 2014
-                          </p>
-                          <p class="block">
-                            <a href="http://climate.geog.udel.edu/~climate/html_pages/README.ghcn_ts2.html" target="_blank">
-                              <b>University of Delaware Air Temperature and Precipitation v4.01</b>
-                            </a>
-                            <br/>
-                            Monthly global gridded high resolution station (land) data for air temperature and precipitation from 1901-2014. UDel_AirT_Precip data provided by the NOAA/OAR/ESRL PSD, Boulder, Colorado, USA, from their Web site at http://www.esrl.noaa.gov/psd/ Reference: Willmott, C. J. and K. Matsuura (2001) Terrestrial Air Temperature and Precipitation: Monthly and Annual Time Series (1950 - 1999)
-                            <br/>
-                            Spatial Resolution: 0.5° x 0.5°
-                            <br/>
-                            Temporal Coverage: 1901 - 2014
-                          </p>
-                          <p class="block">
-                            <a href="http://dx.doi.org/10.1029/2007JD008470" target="_blank">
-                              <b>GHCN CAMS</b>
-                            </a>
-                            <b>and</b>
-                            <a href="http://dx.doi.org/10.5676/DWD_GPCC/FD_M_V7_050" target="_blank">
-                              <b>GPCC v7</b>
-                            </a>
-                            <br/>
-                            GHCN CAMS is a high resolution (0.5x0.5) analyzed global land surface temperatures from 1948 to near present. GHCN Gridded V2 data provided by the NOAA/OAR/ESRL PSD, Boulder, Colorado, USA, from their Web site at http://www.esrl.noaa.gov/psd/ Reference: Fan, Y., and H. van den Dool (2008), A global monthly land surface air temperature analysis for 1948-present, J. Geophys. Res., 113, D01103. GPCC Global Precipitation Climatology Centre monthly precipitation dataset from 1901-present is calculated from global station data. Reference: Schneider, Udo; Becker, Andreas; Finger, Peter; Meyer-Christoffer, Anja; Rudolf, Bruno; Ziese, Markus (2011): GPCC Full Data Reanalysis Version 6.0 at 0.5°: Monthly Land-Surface Precipitation from Rain-Gauges built on GTS-based and Historic Data.
-                            <br/>
-                            Spatial Resolution: 0.5° x 0.5°
-                            <br/>
-                            Temporal Coverage: 1948 - 2013
-                          </p>
-  												<p class="block">
-                            Please note that the temperature and precipitation values shown in the diagram are based on interpolated data and therefore might differ significantly from real conditions.
-  												</p>
-                          <h4>Weather Stations</h4>
-                          <p class="block">
-                            <a href="http://www.ncdc.noaa.gov/ghcnm/" target="_blank">
-                              <b>Global Historical Climatology Network</b>
-                            </a>
-                            <br/>
-                            GHCN-Monthly provides climatological observations for four elements: monthly mean maximum temperature, minimum temperature, mean temperature, and monthly total precipitation. Since the early 1990s the Global Historical Climatology Network-Monthly (GHCN-M) dataset has been an internationally recognized source of data for the study of observed variability and change in land surface air temperature. It provides monthly mean temperature data for 7280 stations from 226 countries and territories, ongoing monthly updates of more than 2000 stations to support monitoring of current and evolving climate conditions, and homogeneity adjustments to remove non-climatic influences that can bias the observed temperature record.
-                          </p>
-                          <h4>Location Names and Elevation data</h4>
-  												<p>
-  													For the title and elevation value the gazetteer from <a href="http://www.geonames.org/" target="_blank">GeoNames</a> is used (Creative Commons Attribution 3.0 License).
-                            Elevation is based on SRTM data and only available between 60° northern and 58° southern latitude. The climate class is calculated from the temperature and precipitation data according to the
-  													<a target="_blank" href="https://en.wikipedia.org/wiki/K%C3%B6ppen_climate_classification">Köppen-Geiger climate classification scheme</a>.
-  												</p>
-  											</div>
-  										</div>
-  									</div>
-  									<div class="col-lg-4">
-  										<div class="box info">
-  											<h3>Software</h3>
-  											<p>
-  												Frontend libraries:
-  											</p>
-  											<ul>
-                          <li>
-                            <a href="http://getbootstrap.com/" target="_blank">
-                              Bootstrap
-                            </a>
-                          </li>
-  											  <li>
-                            <a href="https://d3js.org/" target="_blank">
-                              Data Driven Documents (D3)
-                            </a>
-                            +
-                            <a href="https://bl.ocks.org/mbostock/4061502" target="_blank">
-                              Box Plots
-                            </a>
-                          </li>
-  											  <li>
-                            <a href="https://github.com/exupero/saveSvgAsPng" target="_blank">
-                              Save SVG As PNG
-                            </a>
-                          </li>
-  											  <li>
-                            <a href="https://jquery.com/" target="_blank">
-                              jQuery
-                            </a>
-                            +
-                            <a href="https://jqueryui.com/" target="_blank">
-                              jQuery UI
-                            </a>
-                          </li>
-                          <li>
-                            <a href="http://leafletjs.com/" target="_blank">
-                              Leaflet
-                            </a>
-                          </li>
-                          <li>
-                            <a href="https://ghinda.net/css-toggle-switch/index.htm" target="_blank">
-                              CSS Toggle Switch
-                            </a>
-                          </li>
-                          <li>
-                            <a href="https://github.com/abdmob/x2js" target="_blank">
-                              x2js
-                            </a>
-                          </li>
-  											</ul>
-  											<p>
-  												Servers and web services:
-  											</p>
-  											<ul>
-  											  <li>
-                            <a href="http://www.unidata.ucar.edu/software/thredds/current/tds/" target="_blank">
-                              THREDDS Data Server
-                            </a>
-                          </li>
-  											  <li>
-                            <a href="http://www.geonames.org/" target="_blank">
-                              GeoNames
-                            </a>
-                          </li>
-  											</ul>
-  											<p> Optimized for Firefox and Chrome. This website uses
-  												the <a href="https://piwik.org/Piwik" target="_blank"> Piwik Analytics Platform</a> to obtain user data.
-  											</p>
-  										</div>
-  									</div>
-                                                                    <div class="col-lg-4">
-  										<div class="box info">
-  											<h3>License</h3>
-                                                                                        <a rel="license" href="http://creativecommons.org/licenses/by/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by/4.0/88x31.png" /></a><br /><span xmlns:dct="http://purl.org/dc/terms/" href="http://purl.org/dc/dcmitype/StillImage" property="dct:title" rel="dct:type">All generated diagrams </span> by <a xmlns:cc="http://creativecommons.org/ns#" href="climatecharts.net" property="cc:attributionName" rel="cc:attributionURL">climatecharts.net</a> are licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>.
-  											
-                                                                                </div>
-                                                                    </div>
-  								</div>
-  							</div>
 
-  							<div id="about" class="tab">
-  								<div class="row">
-  									<div class="col-lg-8">
-  										<div class="box">
-  											<div class="info">
-  												<h3>The Walter-Lieth Chart</h3>
-  												<p class="block">
-  													The charts on this site are drawn following the Walter-Lieth standard.
-  													The most characteristic feature of this type of climate diagram
-  													is that the ratio between temperature and precipitation scale is constantly
-  													1:2, which makes it easier to compare local climates. If
-  													there are precipitation values above 100mm per month, the scale above is aligned,
-  													ensuring that the chart doesn't become to missshaped.
-  													Additionally, it graphically emphasizes in a simplified form if the local conditions
-  													are  <span class="humid">humid</span>,
-  													<span class="veryhumid">perhumid</span>,
-  													<span class="arid">arid</span> or seasonally changing.
-  												</p>
-  												<img class="img img-responsive" src="data/img/example.png">
-                                                                                                <br/>
-                                                                                                <a rel="license" href="http://creativecommons.org/licenses/by/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by/4.0/88x31.png" /></a><br /><span xmlns:dct="http://purl.org/dc/terms/" href="http://purl.org/dc/dcmitype/StillImage" property="dct:title" rel="dct:type">All generated diagrams </span> by <a xmlns:cc="http://creativecommons.org/ns#" href="climatecharts.net" property="cc:attributionName" rel="cc:attributionURL">climatecharts.net</a> are licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>.
-  											</div>
-  										</div>
+                        <div class="tab-content">
+                            <div id="home" class="tab active">
+                                <div class="row">
+                                    <div id="main-container" class="col-lg-9">
+                                        <div id="map" class="box"></div>
+                                        <div id="chart-info" class="box">
+                                            <p id="info" class="info">
+                                                    The ClimateChart application shows the climate,
+                                                    i.e. the temperature and the precipitation, of all
+                                                    places on Earth.
+                                                    When you click on the world map above, a climate chart
+                                                    and a diagram showing the variation of temperature and
+                                                    precipitation of this location on Earth are plotted.
+                                                    On the right side you can change the source of the
+                                                    climate data and change the time frame of the data.
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-3">
+                                        <div class="box">
+                                            <div class="form-group">
+                                                <div id="coordinates-in-infobox">
+                                                    <label class="coordinates-label" for=lat>Latitude:</label>
+                                                    <label class="coordinates-label" for=lng>Longitude:</label>
+                                                    <button id='set-coordinates'>Set</button>
+                                                    <br/>
+                                                    <input id="lat" class="form-control coordinates" type="text">
+                                                    <input id="lng" class="form-control coordinates" type="text">
+                                                </div>
+                                                <hr>
+                                                <div id="timeline-in-infobox">
+                                                    <p class="period">Time Period:</p>
+                                                    <!--<span id="period-start"></span>
+                                                    <p class="period">to</p>
+                                                    <span id="period-end"></span>-->
+                                                    <button id='reset-timeline'>Reset</button>
+                                                    <p id="amount"></p>
+                                                    <div id="slider"></div>
+                                                </div>
+                                                <hr>
+                                                <div id="title-in-infobox">
+                                                    <p>
+                                                        Title of the Diagram
+                                                        <button id='set-diagram-title'>Write</button>
+                                                    </p>
+                                                    <input id="user-title" type="text" class="form-control" placeholder="Enter title">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div id="data-software" class="tab">
+                                <div class="row">
+                                    <div class="col-lg-8">
+                                        <div class="box">
+                                            <div class="info">
+                                                <h3>Datasets</h3>
+                                                <p id="source" class ="block">
+                                                    ClimateCharts.net uses two different kinds of data sources: 
+                                                    interpolated and simulated climate data for raster cells on the 
+                                                    map and real measured weather data from weather stations around the world.
+                                                </p>
+                                                <h4>Climate Data for Raster Cells</h4>
+                                                <p class="block">
+                                                    <a href="http://dx.doi.org/10.5285/4c7fdfa6-f176-4c58-acee-683d5e9d2ed5" target="_blank">
+                                                        <b>CRU Time Series v3.23</b>
+                                                    </a>
+                                                    <br/>
+                                                    University of East Anglia Climatic Research Unit; Harris, I.(.; Jones, P.D. (2015): 
+                                                    CRU TS3.23: Climatic Research Unit (CRU) Time-Series (TS) Version 3.23 of 
+                                                    High Resolution Gridded Data of Month-by-month Variation in Climate (Jan. 1901- Dec. 2014). 
+                                                    Centre for Environmental Data Analysis, 09 November 2015.
+                                                    <br/>
+                                                    Spatial Resolution: 0.5° x 0.5°
+                                                    <br/>
+                                                    Temporal Coverage: 1901 - 2014
+                                                </p>
+                                                <p class="block">
+                                                    <a href="http://climate.geog.udel.edu/~climate/html_pages/README.ghcn_ts2.html" target="_blank">
+                                                        <b>University of Delaware Air Temperature and Precipitation v4.01</b>
+                                                    </a>
+                                                    <br/>
+                                                    Monthly global gridded high resolution station (land) data for air temperature 
+                                                    and precipitation from 1901-2014. UDel_AirT_Precip data provided by the NOAA/OAR/ESRL PSD, 
+                                                    Boulder, Colorado, USA, from their Web site at http://www.esrl.noaa.gov/psd/ Reference: 
+                                                    Willmott, C. J. and K. Matsuura (2001) Terrestrial Air Temperature and Precipitation: 
+                                                    Monthly and Annual Time Series (1950 - 1999)
+                                                    <br/>
+                                                    Spatial Resolution: 0.5° x 0.5°
+                                                    <br/>
+                                                    Temporal Coverage: 1901 - 2014
+                                                </p>
+                                                <p class="block">
+                                                    <a href="http://dx.doi.org/10.1029/2007JD008470" target="_blank">
+                                                        <b>GHCN CAMS</b>
+                                                    </a>
+                                                    <b>and</b>
+                                                    <a href="http://dx.doi.org/10.5676/DWD_GPCC/FD_M_V7_050" target="_blank">
+                                                        <b>GPCC v7</b>
+                                                    </a>
+                                                    <br/>
+                                                    GHCN CAMS is a high resolution (0.5x0.5) analyzed global land surface temperatures 
+                                                    from 1948 to near present. GHCN Gridded V2 data provided by the NOAA/OAR/ESRL PSD, 
+                                                    Boulder, Colorado, USA, from their Web site at http://www.esrl.noaa.gov/psd/ Reference: 
+                                                    Fan, Y., and H. van den Dool (2008), A global monthly land surface air temperature analysis 
+                                                    for 1948-present, J. Geophys. Res., 113, D01103. GPCC Global Precipitation Climatology Centre 
+                                                    monthly precipitation dataset from 1901-present is calculated from global station data. 
+                                                    Reference: Schneider, Udo; Becker, Andreas; Finger, Peter; Meyer-Christoffer, Anja; Rudolf, Bruno; 
+                                                    Ziese, Markus (2011): GPCC Full Data Reanalysis Version 6.0 at 0.5°: Monthly Land-Surface Precipitation 
+                                                    from Rain-Gauges built on GTS-based and Historic Data.
+                                                    <br/>
+                                                    Spatial Resolution: 0.5° x 0.5°
+                                                    <br/>
+                                                    Temporal Coverage: 1948 - 2013
+                                                </p>
+                                                <p class="block">
+                                                    Please note that the temperature and precipitation values shown in the diagram are based on 
+                                                    interpolated data and therefore might differ significantly from real conditions.
+                                                </p>
+                                                <h4>Weather Stations</h4>
+                                                <p class="block">
+                                                    <a href="http://www.ncdc.noaa.gov/ghcnm/" target="_blank">
+                                                        <b>Global Historical Climatology Network</b>
+                                                    </a>
+                                                    <br/>
+                                                    GHCN-Monthly provides climatological observations for four elements: monthly mean maximum 
+                                                    temperature, minimum temperature, mean temperature, and monthly total precipitation. 
+                                                    Since the early 1990s the Global Historical Climatology Network-Monthly (GHCN-M) dataset 
+                                                    has been an internationally recognized source of data for the study of observed variability 
+                                                    and change in land surface air temperature. It provides monthly mean temperature data for 
+                                                    7280 stations from 226 countries and territories, ongoing monthly updates of more than 2000 stations 
+                                                    to support monitoring of current and evolving climate conditions, and homogeneity adjustments 
+                                                    to remove non-climatic influences that can bias the observed temperature record.
+                                                </p>
+                                                <h4>Location Names and Elevation data</h4>
+                                                <p>
+                                                    For the title and elevation value the gazetteer from <a href="http://www.geonames.org/" target="_blank">GeoNames</a> 
+                                                    is used (Creative Commons Attribution 3.0 License). Elevation is based on SRTM data and only available between 60° northern 
+                                                    and 58° southern latitude. The climate class is calculated from the temperature and precipitation data according 
+                                                    to the <a target="_blank" href="https://en.wikipedia.org/wiki/K%C3%B6ppen_climate_classification">Köppen-Geiger climate classification scheme</a>.
+                                                </p>
+                                                <h4>Active Dataset</h4>
+                                                <p id='dataset-name'></p>
+                                                <select id="datasets" name="datasets" style="width:100%">
+                                                </select>
+                                                <!--
+                                                <div id="dataset-infobox" class="box block">
+                                                    <div id="datasets-in-list" class="dropdown">
+                                                        <div class="linewrapper"></div>
+                                                        <p class ="datasets-title">Dataset: &nbsp;</p>
+                                                        <br/>
+                                                        <div id="dataset-info"></div>
+                                                    </div>
+                                                </div>
+                                                -->
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4">
+                                        <div class="box info">
+                                            <h3>Software</h3>
+                                            <p>Frontend libraries:</p>
+                                            <ul>
+                                                <li><a href="http://getbootstrap.com/" target="_blank">Bootstrap</a></li>
+                                                <li><a href="https://d3js.org/" target="_blank">Data Driven Documents (D3)</a> + <a href="https://bl.ocks.org/mbostock/4061502" target="_blank">Box Plots</a></li>
+                                                <li><a href="https://github.com/exupero/saveSvgAsPng" target="_blank">Save SVG As PNG</a></li>
+                                                <li><a href="https://jquery.com/" target="_blank">jQuery</a> + <a href="https://jqueryui.com/" target="_blank">jQuery UI</a></li>
+                                                <li><a href="http://leafletjs.com/" target="_blank">Leaflet</a></li>
+                                                <li><a href="https://ghinda.net/css-toggle-switch/index.htm" target="_blank">CSS Toggle Switch</a></li>
+                                                <li><a href="https://github.com/abdmob/x2js" target="_blank">x2js</a></li>
+                                            </ul>
+                                            <p>Servers and web services:</p>
+                                            <ul>
+                                                <li><a href="http://www.unidata.ucar.edu/software/thredds/current/tds/" target="_blank">THREDDS Data Server</a></li>
+                                                <li><a href="http://www.geonames.org/" target="_blank">GeoNames</a></li>
+                                            </ul>
+                                            <p>Optimized for Firefox and Chrome. This website uses the <a href="https://piwik.org/Piwik" target="_blank">Piwik Analytics Platform</a> to obtain user data.</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4">
+                                        <div class="box info">
+                                            <h3>License</h3>
+                                            <a rel="license" href="http://creativecommons.org/licenses/by/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by/4.0/88x31.png" /></a><br /><span xmlns:dct="http://purl.org/dc/terms/" href="http://purl.org/dc/dcmitype/StillImage" property="dct:title" rel="dct:type">All generated diagrams </span> by <a xmlns:cc="http://creativecommons.org/ns#" href="climatecharts.net" property="cc:attributionName" rel="cc:attributionURL">climatecharts.net</a> are licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
 
-  									</div>
-  									<div class="col-lg-4">
-  										<div class="box">
-  											<div class="info">
-  												<p>
-  													The <a target="_blank" href="http://tu-dresden.de/impressum">
-  													Legal disclaimer of Dresden University of Technology </a> is applied
-  													with the following constraint:<br/>
-  													<br/>
-  													Web design and technical development: <br/>
-                                                                                                        M.Sc. Marcus Kossatz <br/>
-  													M.Sc. Felix Wiemann <br/>
-                                                                                                        Peggy Thiemt <br/>
-  													<br/>
-  													Contact: <br/>
-  													Prof. Dr. Lars Bernard<br/>
-  													Mail: Lars.Bernard@tu-dresden.de<br/>
-  													Phone: +49 (0)351 463-35880<br/>
-  												</p> 
-                                                                                        </div>
-  										</div>
-                                                                                <div class="box">
-                                                                                    
-                                                                                    <p style="font-size:1.1em"><b>Matomo Webanalysis</b></p>
-                                                                                    <p>
-                                                                                    To improve our web pages, we additionally collect anonymised visitor data using the web analysis tool Matomo (formerly PIWIK).<br/><br/>
-                                                                                    In order for us to provide you the best possible experience on our website, we need to collect and process certain information. Depending on your use of the Services, that may include:                                                                                                    
-                                                                                    </p>
-                                                                                    <ul>
-                                                                                        <li><b>Usage data</b> — when you visit our site, we will store: the website from which you visited us from, the parts of our site you visit, the date and duration of your visit, your anonymised IP address, information from the device (device type, operating system, screen resolution, language, country you are located in, and web browser type) you used during your visit. We process this usage data for statistical purposes, to improve our site and to recognize and stop any misuse.</li>
-                                                                                        <li><b>Cookies</b> — we use cookies (small data files transferred onto computers or devices by sites) for record-keeping purposes and to enhance functionality on our site. You may deactivate or restrict the transmission of cookies by changing the settings of your web browser. Cookies that are already stored may be deleted at any time.</li>
-                                                                                    </ul>
-                                                                                    <p>You can opt out of being tracked by our Matomo Analytics instance below:</p>
-                                                                                    <iframe id="piwik-tracking" style="height:100px; width: 100%; border: 0" src="https://mars.geo.tu-dresden.de/index.php?module=CoreAdminHome&action=optOut&idsite=4&language=en" frameborder="0" scrolling="no"></iframe>
-                                                                                    
-                                                                                </div>
-  									</div>
-  								</div>
-  							</div>
-  						</div>
-  					</div>
-  				</div>
-  			</div>
-  			<div class="col-lg-1"></div>
-  		</div>
-  	</div>
+                            <div id="about" class="tab">
+                                <div class="row">
+                                    <div class="col-lg-8">
+                                        <div class="box">
+                                            <div class="info">
+                                                <h3>The Walter-Lieth Chart</h3>
+                                                <p class="block">
+                                                        The charts on this site are drawn following the Walter-Lieth standard.
+                                                        The most characteristic feature of this type of climate diagram
+                                                        is that the ratio between temperature and precipitation scale is constantly
+                                                        1:2, which makes it easier to compare local climates. If
+                                                        there are precipitation values above 100mm per month, the scale above is aligned,
+                                                        ensuring that the chart doesn't become to missshaped.
+                                                        Additionally, it graphically emphasizes in a simplified form if the local conditions
+                                                        are  <span class="humid">humid</span>,
+                                                        <span class="veryhumid">perhumid</span>,
+                                                        <span class="arid">arid</span> or seasonally changing.
+                                                </p>
+                                                <img class="img img-responsive" src="data/img/example.png">
+                                                <br/>
+                                                <a rel="license" href="http://creativecommons.org/licenses/by/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by/4.0/88x31.png" /></a><br /><span xmlns:dct="http://purl.org/dc/terms/" href="http://purl.org/dc/dcmitype/StillImage" property="dct:title" rel="dct:type">All generated diagrams </span> by <a xmlns:cc="http://creativecommons.org/ns#" href="climatecharts.net" property="cc:attributionName" rel="cc:attributionURL">climatecharts.net</a> are licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>.
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4">
+                                        <div class="box">
+                                            <div class="info">
+                                                <p>
+                                                    The <a target="_blank" href="http://tu-dresden.de/impressum">
+                                                    Legal disclaimer of Dresden University of Technology </a> is applied
+                                                    with the following constraint:<br/>
+                                                    <br/>
+                                                    Web design and technical development: <br/>
+                                                    M.Sc. Marcus Kossatz <br/>
+                                                    M.Sc. Felix Wiemann <br/>
+                                                    Peggy Thiemt <br/>
+                                                    <br/>
+                                                    Contact: <br/>
+                                                    Prof. Dr. Lars Bernard<br/>
+                                                    Mail: Lars.Bernard@tu-dresden.de<br/>
+                                                    Phone: +49 (0)351 463-35880<br/>
+                                                </p> 
+                                            </div>
+                                        </div>
+                                        <div class="box">
+                                            <p style="font-size:1.1em"><b>Matomo Webanalysis</b></p>
+                                            <p>
+                                            To improve our web pages, we additionally collect anonymised visitor data using the web analysis tool Matomo (formerly PIWIK).<br/><br/>
+                                            In order for us to provide you the best possible experience on our website, we need to collect and process certain information. Depending on your use of the Services, that may include:                                                                                                    
+                                            </p>
+                                            <ul>
+                                                <li><b>Usage data</b> — when you visit our site, we will store: the website from which you visited us from, the parts of our site you visit, the date and duration of your visit, your anonymised IP address, information from the device (device type, operating system, screen resolution, language, country you are located in, and web browser type) you used during your visit. We process this usage data for statistical purposes, to improve our site and to recognize and stop any misuse.</li>
+                                                <li><b>Cookies</b> — we use cookies (small data files transferred onto computers or devices by sites) for record-keeping purposes and to enhance functionality on our site. You may deactivate or restrict the transmission of cookies by changing the settings of your web browser. Cookies that are already stored may be deleted at any time.</li>
+                                            </ul>
+                                            <p>You can opt out of being tracked by our Matomo Analytics instance below:</p>
+                                            <iframe id="piwik-tracking" style="height:100px; width: 100%; border: 0" src="https://mars.geo.tu-dresden.de/index.php?module=CoreAdminHome&action=optOut&idsite=4&language=en" frameborder="0" scrolling="no"></iframe>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-1"></div>
+        </div>
+    </div>
     <div id="loader"></div>
-
     
     <!-- Cookie Info -->
     <div class="collectCookies">
@@ -405,7 +376,6 @@
         <a onclick='showTabContent(event, "#about");' href="#" title="ClimateCharts - Privacy policy">More information</a>
         <button onclick='setCookieAndHideDiv();'>OK</button>
     </div>
- 
 
     <!-- OWN MODULES -->
 
