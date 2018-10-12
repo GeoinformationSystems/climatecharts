@@ -39,8 +39,9 @@ class CoordinatesInInfobox
     // Spread the world: new coordinates
     // ------------------------------------------------------------------------
 
-    this._setButton.click( () =>
+    this._setButton.click( (e) =>
       {
+        e.preventDefault();
         let coords =
         {
           lat : parseFloat(this._latDiv.val()),

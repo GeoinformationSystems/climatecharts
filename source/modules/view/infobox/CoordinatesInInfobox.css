@@ -1,15 +1,29 @@
-.coordinates-label,
-.coordinates
+/*#settings-in-infobox
 {
-  width: 90px;
-  display: inline-block;
-  text-align: left;
-  margin: 0 20px 0px 0px;
+    position: relative; 
+    width: 100%; 
 }
 
-#set-coordinates
+.coordinates-label
 {
-  position: absolute;
-  right: 10px;
-  top: 28px;
+    width: 90px;
+    display: inline-block;
+    text-align: left;
+}
+
+#coordinates-in-infobox{
+    width: 50%;
+    position: relative;
+    display: inline-block;
+    margin-right: -4px;
+    position:relative;
+    left:0%;
+}*/
+
+#lat, #lng
+{
+    width: 120px; 
+}
+#set-coordinates{
+    margin-right: 20px;
 }

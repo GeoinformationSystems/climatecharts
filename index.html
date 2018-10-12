@@ -118,8 +118,40 @@
                     <div class="tab-content">
                         <div id="home" class="tab active">
                             <div class="row">
-                                <div id="main-container" class="col-lg-9">
+                                <div id="main-container" class="col-lg-12">
                                     <div id="map" class="box"></div>
+                                    <div class="box"> 
+                                        <form class="form-horizontal">
+                                            <div class="form-group">
+                                                <label id="label-timeline" for="slider" class="col-xs-12 col-sm-2 control-label">Time Period:</label>
+                                                <div id="box-input-timeline" class="col-xs-12 col-sm-8">
+                                                      <div id="slider" ></div>
+                                                </div>
+                                                <div class="col-xs-12 col-sm-2"><button id="reset-timeline">Reset</button></div>
+                                            </div>
+                                        </form>
+                                        <hr>
+                                        <form class="form-inline">
+                                            <div class="form-group">
+                                                <label for="lat" >Coordinates:</label>
+                                                <div class="input-group">
+                                                    <div class="input-group-addon input-sm">Lat</div>
+                                                    <input id="lat" class="form-control input-sm" type="text" placeholder="Latitude">
+                                                </div>
+                                                <div class="input-group">
+                                                    <div class="input-group-addon input-sm">Lng</div>
+                                                    <input id="lng" class="form-control input-sm" type="text" placeholder="Longitude">
+                                                </div>
+                                                <button id='set-coordinates'>Set</button> 
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="user-title" >Title of the Diagram:</label>
+                                                <input id="user-title" type="text" class="form-control  input-sm" placeholder="Enter custom title">
+                                                <button id='set-diagram-title'>Write</button>
+                                            </div>
+                                            
+                                        </form>
+                                    </div>
                                     <div id="chart-info" class="box">
                                         <p id="info" class="info">
                                             The ClimateChart application shows the climate,
@@ -131,38 +163,6 @@
                                             On the right side you can change the source of the
                                             climate data and change the time frame of the data.
                                         </p>
-                                    </div>
-                                </div>
-                                <div class="col-lg-3">
-                                    <div class="box">
-                                        <div class="form-group">
-                                            <div id="coordinates-in-infobox">
-                                                <label class="coordinates-label" for=lat>Latitude:</label>
-                                                <label class="coordinates-label" for=lng>Longitude:</label>
-                                                <button id='set-coordinates'>Set</button>
-                                                <br/>
-                                                <input id="lat" class="form-control coordinates" type="text">
-                                                <input id="lng" class="form-control coordinates" type="text">
-                                            </div>
-                                            <hr>
-                                            <div id="timeline-in-infobox">
-                                                <p class="period">Time Period:</p>
-                                                <!--<span id="period-start"></span>
-                                                <p class="period">to</p>
-                                                <span id="period-end"></span>-->
-                                                <button id='reset-timeline'>Reset</button>
-                                                <p id="amount"></p>
-                                                <div id="slider"></div>
-                                            </div>
-                                            <hr>
-                                            <div id="title-in-infobox">
-                                                <p>
-                                                    Title of the Diagram
-                                                    <button id='set-diagram-title'>Write</button>
-                                                </p>
-                                                <input id="user-title" type="text" class="form-control" placeholder="Enter title">
-                                            </div>
-                                        </div>
                                     </div>
                                 </div>
                             </div>

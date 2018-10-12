@@ -206,10 +206,11 @@ class Timeline
     // Reset the timeline to the original position
     // ------------------------------------------------------------------------
 
-    $('#reset-timeline').click( () =>
-      {
+    $('#reset-timeline').click( (e) =>
+    {
+        e.preventDefault();
         this._main.modules.timeController.resetPeriod()
-      }
+    }
     )
   }
 
@@ -283,7 +284,7 @@ class Timeline
 
   _updateRangeSliderPosition()
   {
-    let infoboxDiv = $('#coordinates-in-infobox');
+    let infoboxDiv = $('#box-input-timeline');
     $('#slider').css(
       {
         'width':      (infoboxDiv.width()*(main.modules.timeController.getMaxYear() - main.modules.timeController.getMinYear())) / (main.config.time.maxYear - main.config.time.minYear),

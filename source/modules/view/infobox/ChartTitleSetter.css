@@ -1,6 +1,35 @@
-#set-diagram-title
+/*#set-diagram-title
 {
-  position: absolute;
-  right: 10px;
-  margin-top: -9px;
+    float: right;
+    margin-top: -6px;  
+}
+#title-in-infobox{
+    width: 50%;
+    position: relative;
+    display: inline-block;
+    margin-right: -4px;
+    position: relative;
+    right:0px;
+}
+
+#box-label-title{
+    position:absolute;
+    left:0px;
+    width:130px;
+    bottom: 0px;
+}
+#box-set-title{
+    position:absolute;
+    right:0px;
+    width:70px;   
+    bottom:0px;
+}
+#box-input-title{
+    position:relative;
+    margin:0 85px 0 135px;
+}*/
+
+#user-title
+{
+    width: 300px; 
 }
