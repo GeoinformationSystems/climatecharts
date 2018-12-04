@@ -158,7 +158,7 @@ let loadConfig = (main) =>
           temp:
           {
             caption:        "Temperature Mean",
-            unit:           "°C",
+            unit:           "\u00B0C", //Unicode for °C
             dist:            10,  // Distance between two ticks
           },
           table:
@@ -210,7 +210,7 @@ let loadConfig = (main) =>
           [
             {
               data:       'temp',
-              title:      "Distribution of Temperature [°C]",
+              title:      "Distribution of Temperature [\u00B0C]",  //Unicode for °C
               color:      'rgb(230, 20, 20)',
               maxRange:   [-40, +40]
             },
