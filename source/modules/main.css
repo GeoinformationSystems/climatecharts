@@ -125,12 +125,12 @@ button:active
   text-transform: none;
 
   border: 1px solid transparent;
-  border-radius: 5px;
+  border-radius: 2px;
   border-color: rgb(128,128,128);
 
   color: rgb(255,255,255);
   background-image: none;
-  background-color: rgb(128,128,128);
+  background-color: #868686;
 
   cursor: pointer;
 
@@ -143,14 +143,19 @@ button:active
   -webkit-appearance: button;
 }
 
-button:hover
+button:hover:enabled
 {
   color: rgb(255,255,255);
   background-color: #337ab7;
   border-color: #2e6da4;
+  opacity: 0.75;
 }
 
-
+button:disabled{
+  color: #d9d9d9;
+  border-color: #a6a6a6;
+  background-color: #a6a6a6;
+}
 
 .box
 {
@@ -163,11 +168,11 @@ button:hover
   border: 1px solid #babdb6;
 }
 
-.box:hover
+/*.box:hover
 {
   box-shadow: 0px 0px 6px #babdb6;
   transition: 0.2s;
-}
+}*/
 
 .box-quiet
 {

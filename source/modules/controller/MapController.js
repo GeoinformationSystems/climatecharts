@@ -68,7 +68,10 @@ class MapController
 
     // Tell everyone: new coordinates
     this._coords = this._bringCoordsInBounds(origCoords);
-    this._main.hub.onLocationChange(this._coords)
+    this._main.modules.chartController.setCoords(this._coords);
+    this._main.hub.onLocationChange(this._coords);
+
+    
   }
 
 
@@ -82,6 +85,10 @@ class MapController
     this._stationJustActivated = true
   }
 
+  getMode(){
+    return this._stationJustActivated;
+    
+  }
 
   // ==========================================================================
   // Getter: Receive current coordinates from map
@@ -89,6 +96,7 @@ class MapController
 
   getCoordinates()
   {
+    this._coords = this._main.modules.chartController.getCoords();
     return this._coords
   }
 

@@ -25,10 +25,12 @@ let loadModules = (main) =>
   // ==========================================================================
 
   // Map
-  main.modules.map =                        new Map(main);
+  main.modules.map =                        new MapView(main);
   main.modules.locationMarkerOnMap =        new LocationMarkerOnMap(main);
   main.modules.climateCellOnMap =           new ClimateCellOnMap(main);
   main.modules.weatherStationsOnMap =       new WeatherStationsOnMap(main);
+  // main.modules.mapView =                    new MapView(main)
+  // main.modules.mapChart =                   new MapChart(main);
 
   // Timeline
   main.modules.timeline =                   new Timeline(main);
@@ -50,4 +52,5 @@ let loadModules = (main) =>
   main.modules.climateDatasetController =   new ClimateDatasetController(main);
   main.modules.climateDataController =      new ClimateDataController(main);
   main.modules.chartController =            new ChartController(main)
+
 };

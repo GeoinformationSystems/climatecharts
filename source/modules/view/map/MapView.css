@@ -1,0 +1,46 @@
+.leaflet-container
+{
+  background-color: white;
+}
+
+#map
+{
+  height: 400px;
+  width: 100%;
+}
+
+.popup-container{
+  text-align: center;
+}
+
+.leaflet-popup-content-wrapper{
+ border-radius: 5px;
+}
+
+.popup-text{ 
+  text-align:left;
+}
+
+.popup-header:after{
+  content: "";
+  text-align: left;
+  display: block;
+  margin: 0 auto;
+  width: 80%;
+  padding-top: 10px;
+  border-bottom: 1px  solid #eee;
+}
+
+.geoprofiletxt:before{
+  content: "";
+  text-align: left;
+  display: block;
+  margin: 0 auto;
+  width: 80%;
+  margin-bottom: 10px; 
+  border-bottom: 1px  solid #595959;
+}
+
+.popup-button {
+  width: auto !important;
+}

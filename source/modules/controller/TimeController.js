@@ -37,7 +37,8 @@ class TimeController
       + main.config.time.periodEnd
       - main.config.time.periodLength;
     this._periodEnd = 0
-      + main.config.time.periodEnd
+      + main.config.time.periodEnd;
+    
   }
 
 
@@ -75,11 +76,13 @@ class TimeController
 
   getMinYear()
   {
+    //this._minYear = this._main.modules.chartController.getMinYear();
     return this._minYear
   }
 
   getMaxYear()
   {
+    //this._maxYear = this._main.modules.chartController.getMaxYear();
     return this._maxYear
   }
 
@@ -118,6 +121,7 @@ class TimeController
     }
 
     // Tell everyone
+    this._main.modules.chartController.setTimePeriod(this._periodStart, this._periodEnd);
     this._main.hub.onPeriodChange(this._periodStart, this._periodEnd)
   }
 
@@ -134,6 +138,7 @@ class TimeController
     this._periodStart = Math.max(this._periodStart, this._minYear);
 
     // Update
+    this._main.modules.chartController.setTimePeriod(this._periodStart, this._periodEnd);
     this._main.hub.onResetPeriod(this._periodStart, this._periodEnd)
 
   }
@@ -145,6 +150,7 @@ class TimeController
 
   getPeriodStart()
   {
+    this._periodStart = this._main.modules.chartController.getStartPeriod();
     return this._periodStart
   }
 
@@ -155,6 +161,7 @@ class TimeController
 
   getPeriodEnd()
   {
+    this._periodEnd = this._main.modules.chartController.getEndPeriod();
     return this._periodEnd
   }
 

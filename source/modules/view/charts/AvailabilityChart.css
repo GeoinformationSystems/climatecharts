@@ -1,0 +1,38 @@
+/* SCALE SWITCH */
+
+#dc-switch
+{
+  position: absolute;
+  top: -5px;
+  left: 5px;
+  width: 135px;
+}
+
+/* scale switch */
+#dc-switch-title
+{
+  width: 100%;
+  text-align: left;
+  font-size: 1.2em;
+  margin-bottom: 0.2em;
+}
+
+#dc-switch-options
+{
+  font-size: 1.0em !important;
+  line-height: 2.5em !important;
+  background-color: #868686 !important;
+  border-radius: 2px;
+}
+
+.dc-switch-option
+{
+  color: white !important;
+  text-shadow: none !important;
+  font-weight: normal !important;
+}
+
+#dc-switch-button
+{
+  background-color: #337ab7 !important;
+}

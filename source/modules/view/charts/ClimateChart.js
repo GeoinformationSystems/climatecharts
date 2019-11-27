@@ -21,14 +21,16 @@ class ClimateChart extends Chart
   // ==========================================================================
 
 
-  constructor(main, climateData)
+  constructor(main, climateData, id)
   {
-    // Error handling: Only show chart if both prec and temp are given
+    var id = id;
+        // Error handling: Only show chart if both prec and temp are given
     if (climateData.has_temp && climateData.has_prec)
-      super(main, 'climate-chart', climateData);
+      super(main, 'climate-chart', climateData, id, null);
 
     else
-      super(main, 'climate-chart', null)
+      super(main, 'climate-chart', null, id, null)
+
   }
 
 
@@ -50,11 +52,13 @@ class ClimateChart extends Chart
     // Preparation: Position values for visualization elements
     // ------------------------------------------------------------------------
 
+    this._chartMain.switch.activeState = 0;
     // Position values of actual climate chart
     // -> Horizontal: left, right
     // -> Vertical: top, max, break, min, bottom
     this._chartPos = {
-      left: ( 0
+      left:
+       ( 0
         + this._mainPos.left
         + this._chartsMain.padding
         + this._chartMain.margin.left
@@ -64,7 +68,8 @@ class ClimateChart extends Chart
         + this._chartsMain.padding
         + this._chartMain.margin.top
       ),
-      right: ( 0
+      right:
+      ( 0
         + this._mainPos.left
         + Math.round(this._mainPos.width
           * this._chartMain.widthRatio)
@@ -75,7 +80,7 @@ class ClimateChart extends Chart
         + this._mainPos.bottom
         - this._chartsMain.padding
         - this._chartMain.margin.bottom
-      ),
+      ), 
     };
     this._chartPos.width =  this._chartPos.right - this._chartPos.left;
     this._chartPos.height = this._chartPos.bottom - this._chartPos.top;
@@ -167,8 +172,8 @@ class ClimateChart extends Chart
     // ------------------------------------------------------------------------
     graphOptions.childNodes[this._chartMain.switch.activeState].className ='cc-graph-active';
     
-    graphOptionLine.innerHTML = '<i class="fa fa-area-chart" aria-hidden="true"></i>';
-    graphOptionBar.innerHTML = '<i class="fa fa-bar-chart" aria-hidden="true"></i>';
+    graphOptionLine.innerHTML = '<i class="fas fa-chart-area" aria-hidden="true"></i>';
+    graphOptionBar.innerHTML = '<i class="fas fa-chart-bar" aria-hidden="true"></i>';
     //graphOptionStep.innerHTML = '<i class="fa fa-map" aria-hidden="true"></i>'
 
 
@@ -180,7 +185,7 @@ class ClimateChart extends Chart
     $(graphOptions.childNodes).click((e) =>
       {
         // clean chart
-        $('#climate-chart').remove();
+        $('#climate-chart'+this._chartCollectionId).remove();
       
         //set active state and reset other Options
         for (let i = 0; i < e.currentTarget.parentNode.childNodes.length; i++)
@@ -246,6 +251,7 @@ class ClimateChart extends Chart
     
     this._drawCaption();
     this._drawTable();
+    this._drawAvailabilityBar();
 
 
     // ------------------------------------------------------------------------
@@ -254,19 +260,20 @@ class ClimateChart extends Chart
 
     this._chart.append('g')
       .attr('class', 'focus')
+      .attr('id', 'focus' + this._chartCollectionId)
       .attr('visibility', 'hidden');
 
-    this._chart.select('.focus')
+    this._chart.select('#focus'+ this._chartCollectionId)
       .append('circle')
-      .attr('id', 'c1')
+      .attr('id', 'c1' + this._chartCollectionId)
       .attr('r', this._chartMain.mouseover.circleRadius)
       .attr('fill', 'white')
       .attr('stroke', this._chartsMain.colors.temp)
       .style('stroke-width', this._chartMain.mouseover.strokeWidth);
 
-    this._chart.select('.focus')
+    this._chart.select('#focus'+ this._chartCollectionId)
       .append('circle')
-      .attr('id', 'c2')
+      .attr('id', 'c2'  + this._chartCollectionId)
       .attr('r', this._chartMain.mouseover.circleRadius)
       .attr('fill', 'white')
       .attr('stroke', this._chartsMain.colors.prec)
@@ -276,13 +283,13 @@ class ClimateChart extends Chart
     // Event handling
     let showCircles = () =>
       {
-        this._chart.select('.focus')
+        this._chart.select('#focus'+ this._chartCollectionId)
           .attr('visibility', 'visible')
       };
 
     let hideCircles = () =>
       {
-        this._chart.select('.focus')
+        this._chart.select('#focus'+ this._chartCollectionId)
           .attr('visibility', 'hidden')
       };
 
@@ -294,11 +301,18 @@ class ClimateChart extends Chart
           .style('font-size', this._chartsMain.fontSizes.large + 'em')
           .style('text-shadow', 'none')
       };
+    
+      let defocusAvailabilityCell = ()=>{
+        this._chart.selectAll('.'+this._chartName+this._chartCollectionId+'-wl-bar')
+          .style('stroke',        d3.rgb(211,211,211))
+          .style('stroke-width',  '1px')
+      }
 
     //this._chartWrapper.mouseover(hideCircles)
 
     this._chartWrapper.mouseout(hideCircles);
     this._chartWrapper.mouseout(defocusMonth);
+    this._chartWrapper.mouseout(defocusAvailabilityCell);
 
 
     //Todo: change wording from "click" to "mouse" position 
@@ -335,15 +349,18 @@ class ClimateChart extends Chart
         {
           hideCircles();
           defocusMonth();
+          defocusAvailabilityCell();
           return
         }
         showCircles();
 
-        let c1 =    this._chart.select('#c1');
-        let c2 =    this._chart.select('#c2');
+        let c1 =    this._chart.select('#c1' + this._chartCollectionId);
+        let c2 =    this._chart.select('#c2' + this._chartCollectionId);
         let month = this._chart.select('#month_c' + xI);
         let temp =  this._chart.select('#temp_c' + xI);
         let prec =  this._chart.select('#prec_c' + xI);
+        let availTemp =  this._chart.select('#avail_month_temp'+ xI);
+        let availPrec =  this._chart.select('#avail_month_prec'+ xI);
         let rows =  this._chart.selectAll('.cell');
 
         // Highlight closest month in chart and table
@@ -358,6 +375,10 @@ class ClimateChart extends Chart
         prec.attr('fill', this._chartsMain.colors.prec)
           .attr('font-weight', 'bold')
           .style('text-shadow', 'none');
+        availTemp.style('stroke', this._chartsMain.colors.temp)
+        .style('stroke-width', '2px');
+        availPrec.style('stroke', this._chartsMain.colors.prec)
+        .style('stroke-width', '2px');
 
         c1.attr('transform',
           'translate('
@@ -569,7 +590,6 @@ class ClimateChart extends Chart
     // min position: between break and min (>=5 cells)
     this._chartPos.min = this._chartPos.break
       + cellWidth * (this.ticks.temp.values.belowBreak.length-1);
-
     // bottom position: min position + space for heading
     this._chartPos.bottom = 0
       + this._chartPos.min
@@ -671,15 +691,15 @@ class ClimateChart extends Chart
     // Cover overlapping prec lines resulting from break value
     
     this.defs.append('clipPath')
-      .attr('id',     'rect-bottom')
+      .attr('id',     'rect-bottom'+ this._chartCollectionId)
       .append('rect')
       .attr('x',      this._chartPos.left)
       .attr('y',      this._chartPos.break)
       .attr('width',  this._chartPos.width)
       .attr('height', (this._chartPos.min-this._chartPos.break));
 
-    this.defs.append('clipPath')
-      .attr('id',     'rect-top')
+    this.defs.append('clipPath' )
+      .attr('id',     'rect-top'+ this._chartCollectionId)
       .append('rect')
       .attr('x',      this._chartPos.left)
       .attr('y',      this._chartPos.max)
@@ -925,7 +945,8 @@ class ClimateChart extends Chart
         let areaTemp = d3.svg
           .area()
           .x( (d) => {return this.xScale(d.month)})
-          .y0((d) => {return this.yScaleTempBelowBreak(d.temp)})
+          .y0((d) => {
+            return this.yScaleTempBelowBreak(d.temp)})
           .y1(this._chartPos.min)
           .interpolate('linear');
 
@@ -933,7 +954,7 @@ class ClimateChart extends Chart
           .data(this._climateData.monthly_short)
           .attr('class', 'area')
           .attr('d', areaTemp(this._climateData.monthly_short))
-          .attr('clip-path', 'url(#clip-prec)')
+          .attr('clip-path', 'url(#clip-prec'+ this._chartCollectionId + ')')
           .attr('fill', this._chartsMain.colors.arid)
           .attr('stroke', 'none')
     }
@@ -951,7 +972,7 @@ class ClimateChart extends Chart
       .data(this._climateData.monthly_short)
       .attr('class', 'area')
       .attr('d', areaPrecBelowBreak(this._climateData.monthly_short))
-      .attr('clip-path', 'url(#clip-temp)')
+      .attr('clip-path', 'url(#clip-temp'+ this._chartCollectionId + ')')
       .attr('fill', this._chartsMain.colors.humid)
       .attr('stroke', 'none');
 
@@ -966,7 +987,7 @@ class ClimateChart extends Chart
       .data(this._climateData.monthly_short)
       .attr('class', 'area')
       .attr('d', areaPrecAboveBreak(this._climateData.monthly_short))
-      .attr('clip-path', 'url(#clip-temp2)')
+      .attr('clip-path', 'url(#clip-temp2'+ this._chartCollectionId + ')')
       .attr('fill', this._chartsMain.colors.perhumid)
       .attr('stroke', 'none');
 
@@ -992,7 +1013,7 @@ class ClimateChart extends Chart
     }
     
     this.defs.append('clipPath')
-      .attr('id', 'clip-temp')
+      .attr('id', 'clip-temp'+ this._chartCollectionId)
       .append('path')
       .attr('d', areaTempTo100(this._climateData.monthly_short));
     
@@ -1003,7 +1024,7 @@ class ClimateChart extends Chart
       .interpolate('linear');
 
     this.defs.append('clipPath')
-      .attr('id', 'clip-temp2')
+      .attr('id', 'clip-temp2'+ this._chartCollectionId)
       .append('path')
       .attr('d', area100ToMax(this._climateData.monthly_short));
 
@@ -1014,7 +1035,7 @@ class ClimateChart extends Chart
       .interpolate(curveType);
 
     this.defs.append('clipPath')
-      .attr('id', 'clip-prec')
+      .attr('id', 'clip-prec'+ this._chartCollectionId)
       .append('path')
       .attr('d', areaAbovePrec(this._climateData.monthly_short));
     
@@ -1035,16 +1056,16 @@ class ClimateChart extends Chart
     if(curveType == "bar")
     {            
         this._chart.append('g')
-            .attr('id', 'bars');
+            .attr('id', 'bars'+ this._chartCollectionId);
         
         if (this.breakExists)
         {
-            let bar = d3.select("#bars").selectAll("g")
+            let bar = d3.select("#bars"+ this._chartCollectionId).selectAll("g")
                 .data(this._climateData.monthly_short)
               .enter().append("rect")
                 .attr('x', (d) => { return ( this.xScale(d.month) - ( this._chartMain.style.barWidth / 2) ) })
                 .attr('y', (d) => { return this.yScalePrecAboveBreak(d.prec) })
-                .attr('clip-path', 'url(#rect-top)')             
+                .attr('clip-path', 'url(#rect-top' + this._chartCollectionId +')')             
                 .attr('width', this._chartMain.style.barWidth)
                 .attr('height', (d) => { return this.yScalePrecAboveBreak(0) - this.yScalePrecAboveBreak(d.prec) } )
                 .attr('fill', this._chartsMain.colors.perhumid)
@@ -1054,12 +1075,12 @@ class ClimateChart extends Chart
                 .attr('shape-rendering', 'crispEdges')
         }
         
-        let bar = d3.select("#bars").selectAll("g")
+        let bar = d3.select("#bars"+ this._chartCollectionId).selectAll("g")
             .data(this._climateData.monthly_short)
           .enter().append("rect")
             .attr('x', (d) => { return ( this.xScale(d.month) - ( this._chartMain.style.barWidth / 2) ) })
             .attr('y', (d) => { return this.yScalePrecBelowBreak(d.prec) })
-            .attr('clip-path', 'url(#rect-bottom)')             
+            .attr('clip-path', 'url(#rect-bottom' + this._chartCollectionId +')')             
             .attr('width', this._chartMain.style.barWidth)
             .attr('height', (d) => { return this.yScalePrecBelowBreak(0) - this.yScalePrecBelowBreak(d.prec) } )
             .attr('fill', this._chartsMain.colors.humid)
@@ -1081,7 +1102,7 @@ class ClimateChart extends Chart
           this._chart.append('svg:path')
             .attr('class', 'line')
             .attr('d', linePrecAboveBreak(this._climateData.monthly_short))
-            .attr('clip-path', 'url(#rect-top)')
+            .attr('clip-path', 'url(#rect-top' + this._chartCollectionId +')')
             .attr('fill', 'none')
             .attr('stroke', this._chartsMain.colors.prec)
             .attr('stroke-width', this._chartMain.style.lineWidth)
@@ -1098,7 +1119,7 @@ class ClimateChart extends Chart
         this._chart.append('svg:path')
           .attr('class', 'line')
           .attr('d', linePrecBelowBreak(this._climateData.monthly_short))
-          .attr('clip-path', 'url(#rect-bottom)')
+          .attr('clip-path', 'url(#rect-bottom' + this._chartCollectionId +')')
           .attr('fill', 'none')
           .attr('stroke', this._chartsMain.colors.prec)
           .attr('stroke-width', this._chartMain.style.lineWidth)
@@ -1117,7 +1138,7 @@ class ClimateChart extends Chart
       .interpolate('linear');
 
     this._chart.append('svg:path')
-      .attr('id', 'tempLine')
+      .attr('id', 'tempLine'+ this._chartCollectionId)
       .attr('class', 'line')
       .attr('d', lineTemp(this._climateData.monthly_short))
       .attr('fill', 'none')
@@ -1130,7 +1151,7 @@ class ClimateChart extends Chart
   _extendTempLine()
   {
         let yHalfWay = 0;
-        let tempLinePath = d3.select('#tempLine').attr('d');
+        let tempLinePath = d3.select('#tempLine'+ this._chartCollectionId).attr('d');
         
         yHalfWay = this.yScaleTempBelowBreak ( this._climateData.monthly_short[11].temp + ( (this._climateData.monthly_short[0].temp - this._climateData.monthly_short[11].temp ) / 2) );
         
@@ -1138,9 +1159,8 @@ class ClimateChart extends Chart
                 + "L" + tempLinePath.substr(1)
                 + "L" + ( this._chartPos.right ) + "," + ( yHalfWay );
 
-        //console.log(tempLinePath)
 
-        d3.select('#tempLine').attr('d',tempLinePath)
+        d3.select('#tempLine'+ this._chartCollectionId).attr('d',tempLinePath)
   }
 
   _addZeroLine()
@@ -1174,7 +1194,8 @@ class ClimateChart extends Chart
         - this._chartMain.captionDist / 2
         - this._chartsMain.padding * 2
       )
-      .attr('y', this._chartPos.bottom)
+      .attr('y', 
+      this._chartPos.bottom)
       .attr('text-anchor', 'end')
       .style('font-size', this._chartsMain.fontSizes.huge + 'em')
       .text( ''
@@ -1193,7 +1214,8 @@ class ClimateChart extends Chart
         - this._chartMain.captionDist / 2
         + this._chartsMain.padding * 2
       )
-      .attr('y', this._chartPos.bottom)
+      .attr('y', 
+      this._chartPos.bottom)
       .attr('text-anchor', 'begin')
       .style('font-size', this._chartsMain.fontSizes.huge + 'em')
       .text( ''
@@ -1341,6 +1363,239 @@ class ClimateChart extends Chart
 
   }
 
+  _drawAvailabilityBar(){
+
+    //set intervals
+    let intervals = this._chartMain.availabilitybar.colorInterval;
+    let step = 100/ intervals;
+    let a_range1, a_range2, a_range3, a_range4, a_range5, a_color;
+    let index = 0;
+    var cellWidth = this._chartPos.width / (MONTHS_IN_YEAR.length-1);
+    a_range1 = step;
+    a_range2 = 2*step;
+    a_range3 = 3*step;
+    a_range4 = 4*step;
+    a_range5 = 5*step;
+
+    let timeinterval = this._climateData.years[1] - this._climateData.years[0] +1;
+    let oneMonthPercentage = 100 / timeinterval;
+
+    // set up Temperature Bar values/colors
+    for(let temp of this._climateData.temp_list){
+      let percentage = temp.length * oneMonthPercentage;
+
+      if(percentage == 100){
+        a_color = this._chartMain.availabilitycolors.a_range6;
+      }
+      else if( 0 < percentage && percentage <= a_range1){
+        a_color = this._chartMain.availabilitycolors.a_range1;
+      }
+      else if( a_range1 < percentage && percentage <= a_range2){
+        a_color = this._chartMain.availabilitycolors.a_range2;
+      }
+      else if(a_range2< percentage && percentage <= a_range3){
+        a_color = this._chartMain.availabilitycolors.a_range3;
+      }
+      else if( a_range3< percentage&& percentage <= a_range4){
+        a_color = this._chartMain.availabilitycolors.a_range4;
+      }
+      else if(a_range4 < percentage && percentage < 100){
+        a_color = this._chartMain.availabilitycolors.a_range5;
+      }
+      // else if(a_range5 < percentage && percentage < 100){
+      //   a_color = this._chartMain.availabilitycolors.a_range6;
+      // }
+
+      //draw bar
+      this._chart.append('rect')
+        .classed('wl-availability-bar',true)
+        .classed(this._chartName+this._chartCollectionId+'-wl-bar', true)
+        .attr('id','avail_month_temp'+index)
+        .attr('x', 0
+        + this._chartPos.left
+        + index * cellWidth
+         )
+        .attr('y', this._chartPos.bottom
+        + this._chartsMain.padding
+        + 0.5*cellWidth)
+        .attr('width',          cellWidth)
+        .attr('height',         cellWidth/2)
+        .style('fill',          a_color)
+        .style('opacity',       this._chartMain.style.availabilityOpacity)
+        .style('stroke',        d3.rgb(211,211,211))
+        .style('stroke-width',  cellWidth + ' px');
+
+        index++;
+    }
+
+    // temperature title
+    this._chart.append('text')
+    .classed(          'awl-text',true)
+    .classed(this._chartName+this._chartCollectionId+'-awl', true)
+    .attr('text-anchor', 'start')
+    .attr('font-size', (this._chartsMain.fontSizes.normal + 'em'))
+    .attr('x', 0
+      + this._chartPos.left
+      +this._chartsMain.padding
+      + index * cellWidth
+    )
+    .attr('y', 0
+      + this._chartPos.bottom
+      + this._chartsMain.padding
+      + 0.9*cellWidth
+  )
+  .text(this._chartMain.availabilitybar.temp)
+
+    // setup Precipitation bar values
+    let i = 0;
+    for(let prec of this._climateData.prec_list){
+      let prec_percentage = prec.length * oneMonthPercentage;
+
+      if(prec_percentage == 100){
+        a_color = this._chartMain.availabilitycolors.a_range6;
+      }
+      else if(prec_percentage <= a_range1){
+        a_color = this._chartMain.availabilitycolors.a_range1;
+      }
+      else if( a_range1 < prec_percentage && prec_percentage <= a_range2){
+        a_color = this._chartMain.availabilitycolors.a_range2;
+      }
+      else if(a_range2< prec_percentage && prec_percentage <= a_range3){
+        a_color = this._chartMain.availabilitycolors.a_range3;
+      }
+      else if( a_range3< prec_percentage&& prec_percentage <= a_range4){
+        a_color = this._chartMain.availabilitycolors.a_range4;
+      }
+      else if(a_range4 < prec_percentage && prec_percentage < 100){
+        a_color = this._chartMain.availabilitycolors.a_range5;
+      }
+      // else if(a_range5 < prec_percentage ){
+      //   a_color = this._chartMain.availabilitycolors.a_range6;
+      // }
+
+      // draw bar
+      this._chart.append('rect')
+        .classed('wl-availability-bar',true)
+        .classed(this._chartName+this._chartCollectionId+'-wl-bar', true)
+        .attr('id', 'avail_month_prec'+i)
+        .attr('x', 0
+        + this._chartPos.left
+        + i * cellWidth
+         )
+        .attr('y', this._chartPos.bottom
+        + this._chartsMain.padding
+        + 1.5*cellWidth)
+        .attr('width',          cellWidth)
+        .attr('height',         cellWidth/2)
+        .style('fill',          a_color)
+        .style('opacity',       this._chartMain.style.availabilityOpacity)
+        .style('stroke',        d3.rgb(211,211,211))
+        .style('stroke-width',  '1px');
+
+        i++;
+    }
+
+
+      // precipitation title
+      this._chart.append('text')
+      .classed(          'awl-text',true)
+      .classed(this._chartName+this._chartCollectionId+'-awl', true)
+      .attr('text-anchor', 'start')
+      .attr('font-size', (this._chartsMain.fontSizes.normal + 'em'))
+      .attr('x', 0
+        + this._chartPos.left
+        + this._chartsMain.padding
+        + i * cellWidth
+      )
+      .attr('y', 0
+        + this._chartPos.bottom
+        + this._chartsMain.padding
+        + 1.9 *cellWidth
+    )
+    .text(this._chartMain.availabilitybar.prec)
+    
+
+    // Legend
+    let a = 0;
+    for(let color of Object.keys(this._chartMain.availabilitycolors)){
+  
+      this._chart.append('rect')
+        .classed(          'awl-legend-cell',true)
+        .classed(this._chartName+this._chartCollectionId+'-awl', true)
+        .attr('x',              
+        this._chartPos.left 
+        + a * cellWidth)
+        .attr('y',  0
+          + this._chartsMain.padding
+          + this._chartPos.bottom 
+          + 2.5*cellWidth)
+        .attr('width',          cellWidth)
+        .attr('height',         cellWidth/2)
+        .style('fill',          this._chartMain.availabilitycolors[color])
+        .style('opacity',       this._chartMain.style.cellOpacity)
+        .style('stroke',        d3.rgb(211,211,211))
+        .style('stroke-width',  cellWidth + ' px');
+
+        a++;
+      }
+
+      // legend title
+      this._chart.append('text')
+      .classed(          'awl-text',true)
+      .classed(this._chartName+this._chartCollectionId+'-awl', true)
+      .attr('text-anchor', 'start')
+      .attr('font-size', (this._chartsMain.fontSizes.normal + 'em'))
+      .attr('x', 0
+        + this._chartPos.left
+        +this._chartsMain.padding
+        + a * cellWidth
+      )
+      .attr('y',  0
+      + this._chartsMain.padding
+      + this._chartPos.bottom 
+      + 2.8*cellWidth
+    )
+    .text(this._chartMain.availabilitybar.avail)
+
+
+    this._chart.append('text')
+        .classed(          'awl-text',true)
+        .classed(this._chartName+this._chartCollectionId+'-awl', true)
+          .attr('text-anchor', 'start')
+          .attr('font-size', (this._chartsMain.fontSizes.normal + 'em'))
+          .attr('x', 0
+            + this._chartPos.left
+          )
+          .attr('y', 0
+          + this._chartsMain.padding
+          + this._chartPos.bottom 
+          + 3.5*cellWidth
+          )
+          .text('0%')
+
+    this._chart.append('text')
+      .classed(          'awl-text',true)
+      .classed(this._chartName+this._chartCollectionId+'-awl', true)
+        .attr('text-anchor', 'start')
+        .attr('font-size', (this._chartsMain.fontSizes.normal + 'em'))
+        .attr('x', 0
+        + this._chartPos.left
+        +this._chartsMain.padding
+        + (a-0.5) * cellWidth
+        )
+        .attr('y', 0
+        + this._chartsMain.padding
+        + this._chartPos.bottom 
+        + 3.5*cellWidth
+        )
+        .text('100%')
+
+
+    var shift = 2.5*cellWidth + 2 * this._chartsMain.padding;
+    this._resizeChartHeight(shift);
+    this._chartPos.bottom += shift; 
+
+}
   // ========================================================================
   // Helper function: Resize the height of the chart by x px
   // ========================================================================
@@ -1349,6 +1604,7 @@ class ClimateChart extends Chart
   {
     // Resize whole container and footer
     super._resizeChartHeight(shiftUp);
+
   }
 
 

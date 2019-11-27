@@ -46,6 +46,7 @@ class ChartTitleSetter
 
   update(title)
   {
+    
     this._chartTitleDiv.val(title)
   }
 }

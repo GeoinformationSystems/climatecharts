@@ -61,6 +61,13 @@ class ClimateData
       minPrec:            null,
       maxPrec:            null,
     }
+    this.realextreme =
+    {
+      minTemp:            null,
+      maxTemp:            null,
+      minPrec:            null,
+      maxPrec:            null,
+    }
   }
 
 }

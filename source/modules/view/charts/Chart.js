@@ -16,30 +16,39 @@ class Chart
   // PUBLIC MEMBERS
   // ##########################################################################
 
-
   // ==========================================================================
   // Constructor
   // ==========================================================================
 
-  constructor(main, chartName, climateData)
+  constructor(main, chartName, climateData, id, profile)
   {
     this._main = main;
 
     this._chartExists = true;
+    this._newCollectionStart = false;
+    this._chartCollectionId = id;
+    this._climateData = this._main.modules.helpers.deepCopy(climateData);
+    this._geoProfile = profile;
 
     // Get charts main -> generic information for all charts
     // get initial dimensions as a deep copy to change them later on
     this._chartsMain = this._main.config.charts;
-
+   
     // Get chart main -> specific information for this chart
     this._chartName = chartName;
     this._chartMain = null;
     for (let chart of this._main.config.charts.charts)
-      if (chart.name === chartName)
+      if (chart.name === chartName)     
         this._chartMain = chart;
 
     // Error handling: if no climateData, chart will not be set up
     if (!climateData) return this._chartExists = false;
+
+    //check if complete new container has to be drawn
+    this._chartZero = this._chartsMain.charts[0].name;
+     if(this._chartZero == chartName){
+       this._newCollectionStart = true;
+     }
 
     // Global setup for all chart types
     this._initMembers(climateData);
@@ -48,38 +57,86 @@ class Chart
     this._setupToolbar();
     this._setupChart();
     this._setupHeaderFooter()
+
+
+    // var chartContainer = $('.svg-content-responsive');
+    var chartContainer = d3.selectAll('.svg-content-responsive');
+    var activeContainer = [];
+    // Array.from(chartContainer).forEach((el)=>{
+    //   el.addEventListener('click', brushingAndLinking);
+    // })
+    chartContainer.on("click", (d, i)=>{
+      let blID = chartContainer[0][i].id.replace ( /[^\d.]/g, '' );;
+      let container = d3.select('#chartcollection'+ blID +'-menu')
+      .style('border', '1px solid #ff00ff');
+      console.log(blID);
+      brushingAndLinking();
+    })
+    // for(let chart of chartContainer){
+    //   chart.on("click", () =>{
+    //      brushingAndLinking();
+    //   });
+    // }
+    
+    function brushingAndLinking(){
+      console.log('domainByTrait', chartContainer);
+      activeContainer = chartContainer[0].filter(isActive);
+      console.log('traits', activeContainer);
+
   }
 
+  function isActive(value){
+    // let classlist = value.parentElement.classList;
+    for(let i of value.parentElement.classList){
+      if(i == 'active'){
+        return value;
+      }
+    }
+  }
+
+  }
 
   // ========================================================================
   // Update title of chart
   // ========================================================================
 
-  updateTitle(title)
-  {
-    if (this._chartExists)
-    {
-      // Update model
-      this._title = title;
-      // Update view
-      this._titleDiv.text(title)
-    }
-  }
+  // updateTitle(title)
+  // {
+  //   // if (this._chartExists)
+  //   // {
+  //   //   // Update model
+  //   //   this._title = title;
+  //   //   // Update view
+  //   //   this._titleDiv.text(title)
+  //   // }
+  // }
 
 
   // ========================================================================
   // Remove chart
   // ========================================================================
 
-  remove()
+  _remove()
   {
     if (this._chartExists)
     {
       // Clean model
       this._climateData = null;
       // Clean view
-      this._chartWrapper.remove();
-      this._toolbar.empty()
+      //this._chartWrapper.remove();
+      let chartmenu = $('#chartcollection' + this._chartCollectionId + '-menu'); 
+      chartmenu.remove();
+
+      d3.selectAll('.chart-grid').each(
+        function(){
+          if(this.childElementCount < 1){
+            this.remove();
+          };
+        }
+      )
+
+      this._toolbar.empty();
+      this._main.modules.chartController.deleteMapItem(this._chartCollectionId);
     }
   }
 
@@ -118,7 +175,7 @@ class Chart
     this._mainPos.height =  this._mainPos.bottom  - this._mainPos.top;
 
     // Actual chart data
-    this._climateData = climateData
+    this._climateData = climateData;
   }
 
 
@@ -156,23 +213,203 @@ class Chart
 
   _setupContainer()
   {
-    // Get parent container (the one that contains all charts)
-    let parentContainer = $('#' + this._chartsMain.parentContainer);
+    let partialID = 'chartcollection' + this._chartCollectionId;
+    let chartID = this._chartMain.name + this._chartCollectionId;
+    var navbar_list;
+    
+    if(this._newCollectionStart){
+      navbar_list = this._setupContainerMenu(partialID, chartID);      
+    }else{
+      // tabmenu buttons
+      navbar_list = this._main.modules.domElementCreator.create(
+        'li',                              // Element type
+        chartID + '-li',  // ID
+        ['chart-li']      // Classes , 'w3-bar-item' ,'w3-button', 'tablink'
+      );
+      var navUl = document.getElementById(partialID + '-list');
+      navUl.append(navbar_list);
+      this._navbarli = $('#' + chartID + '-li');
+    }
 
-    // Setup wrapper for all chart elements
+    let navbarbtn = this._main.modules.domElementCreator.create(
+      'a',                              // Element type
+      chartID + '-a',  // ID
+      'chart-a',           // Classes , 'w3-bar-item' ,'w3-button', 'tablink'
+    );
+    navbar_list.append(navbarbtn);
+    this._navbarbtn = $('#' + chartID + '-a');
+
+    // add link to navigation bar
+    navbarbtn.setAttribute("href", "#" + chartID + '-wrapper');
+    navbarbtn.setAttribute("data-toggle", "pill");
+
+    switch(this._chartMain.name){
+      case 'climate-chart':{
+        navbarbtn.innerHTML = '<i class="fas fa-chart-area" aria-hidden="true" align="center"></i>';
+        break;
+      }
+      case 'distribution-chart':{
+        navbarbtn.innerHTML = '<i class="fas fa-chart-bar" aria-hidden="true" align="center"></i>';
+        break;
+      }
+      case 'availability-chart':{
+        navbarbtn.innerHTML = '<i class="fab fa-buromobelexperte" aria-hidden="true" align="center"></i>';
+        break;
+      }
+      case 'map-chart':{
+        navbarbtn.innerHTML = '<i class="fas fa-globe-europe" aria-hidden="true" align="center"></i>';
+        $('#map-chart'+this._chartCollectionId+'-a').on("click", () =>{
+          setTimeout(()=>{
+            window.dispatchEvent(new Event('resize'));
+          }, 500);
+          
+        })
+        break;
+      }
+      default:{
+        navbarbtn.text = this._chartMain.name;
+      }
+    }
+
+
+    // Chart Wrapper for all chart elements
     let chartWrapper = this._main.modules.domElementCreator.create(
         'div',                              // Element type
-        this._chartMain.name + '-wrapper',  // ID
-        ['chart-wrapper', 'box']            // Classes
+        chartID + '-wrapper',  // ID
+        ['chart-wrapper', 'box', 'tab-pane', 'fade']            // Classes 'w3-container'
       );
-    parentContainer.append(chartWrapper);
-    this._chartWrapper = $('#' + this._chartMain.name + '-wrapper');
+    
+      if(this._newCollectionStart){
+        chartWrapper.classList.add("in");
+        chartWrapper.classList.add("active");
+      }
+    var tabCon = document.getElementById(partialID + '-tabContent');
+    tabCon.append(chartWrapper);
+    this._chartWrapper = $('#' + chartID + '-wrapper');
 
+      
     // Adjust "height" of wrapper
-    this._chartWrapper.css('padding-bottom',
-      100*(this._chartHeight/this._chartWidth) + '%'
-    )
+    if(this._chartName != 'map-chart'){
+      this._chartWrapper.css('padding-bottom', 
+        100*(this._chartHeight/this._chartWidth) + '%'
+      );
+    }
+
   }
+
+    // ==========================================================================
+  // Setup Container for first Chart in Collection
+  // 
+  // ==========================================================================
+_setupContainerMenu(partID, cID){
+  // Get parent container (the one that contains all charts)
+  let parentContainer = $('#' + this._chartsMain.parentContainer);
+
+  let amountOfCharts = this._main.modules.chartController.getMapSize();
+  let chartgrid;
+  
+  //TODO if chart gets closed -> go over selectAll(rows) to reorder
+  //Grid Layout
+  //if uneven number of charts, start new row
+  var grids;
+  var partiallyFilledRow = false;
+  d3.selectAll('.chart-grid').each(
+    function(){
+      if(this.childElementCount == 1){
+        partiallyFilledRow = true;
+        grids = this;
+      };
+    }
+  )
+
+  if(amountOfCharts % 2 == 1 && !partiallyFilledRow){
+
+    chartgrid = this._main.modules.domElementCreator.create(
+      'div',                              // Element type
+      partID + '-grid',  // ID
+      ['chart-grid',  'row']            // Classes 'container-fluid', 'w3-row'
+    );
+    parentContainer.append(chartgrid);
+    this._chartgrid = $('#' + partID + '-grid'); 
+  } else{
+  //if even number put it in the same
+    chartgrid = grids;
+  }
+
+// Tabbed Container for charts
+  let chartmenu = this._main.modules.domElementCreator.create(
+    'div',                              // Element type
+    partID + '-menu',  // ID
+    ['chart-menu']            // Classes w3-row  col-lg-6 'w3-col', 's6', 'w3-dark-grey' , 'w3-center'
+  );
+  chartgrid.append(chartmenu);
+  this._chartmenu = $('#' + partID + '-menu'); 
+
+  //divide into left and right column for padding
+  var lr_column = document.getElementById(partID + '-menu');
+  if(chartgrid.childElementCount == 1){
+    lr_column.classList.add("left-col");
+  }else{
+    lr_column.classList.add("right-col");
+  }
+
+  //create grid if more than 1 chart is displayed
+  let gridMaybe = d3.selectAll('.chart-menu');
+  if(chartgrid.childElementCount != 1){
+    gridMaybe.classed("col-md-12",false);
+    gridMaybe.classed("col-md-6", true);
+
+
+    this._resizeCanvas();
+
+
+  }else{
+    // gridMaybe.classed("col-md-6", false);
+    // gridMaybe.classed("col-md-12", true);
+    // this._resizeCanvas();
+    //d3.selectAll("left-col").attr('padding-right', 0);
+  }
+
+
+// Navigational Tabs
+  let navbar = this._main.modules.domElementCreator.create(
+      'div',                              // Element type
+      partID + '-bar',  // ID
+      ['chart-bar' ]         // Classes 'w3-sidebar', 'w3-bar-block', 'w3-light-grey', 'w3-card'
+  );
+  chartmenu.append(navbar);
+  this._navbar = $('#' + partID + '-bar');
+
+  // nav bar pills
+  let navbarlist = this._main.modules.domElementCreator.create(
+    'ul',                              // Element type
+    partID + '-list',  // ID
+    ['chart-list', 'nav' ,'nav-pills', 'nav-stacked']          // Classes , 'w3-bar-item' ,'w3-button', 'tablink'
+  );
+  navbar.append(navbarlist);
+  this._navbarlist = $('#' + partID + '-list');
+
+  // tabmenu buttons
+  let navbarli = this._main.modules.domElementCreator.create(
+    'li',                              // Element type
+    cID + '-li',  // ID
+    ['chart-li', 'active']      // Classes , 'w3-bar-item' ,'w3-button', 'tablink'
+  );
+  navbarlist.append(navbarli);
+  this._navbarli = $('#' + partID + '-li');
+
+  //tab-content
+  let tabContent = this._main.modules.domElementCreator.create(
+    'div',                              // Element type
+    partID + '-tabContent',  // ID
+    ['tab-content']            // Classes 'w3-container'
+  );
+  chartmenu.append(tabContent);
+  this._tabContent = $('#' + partID + '-tabContent');
+
+  return navbarli;
+  
+}
 
 
   // ==========================================================================
@@ -189,9 +426,26 @@ class Chart
     this._chartWrapper[0].appendChild(toolbar);
     this._toolbar = $(toolbar);
 
-    // Save options: PNG
+    // close button
+    let closeBtn = this._main.modules.domElementCreator.create(
+      'button',
+       'close'+this._chartCollectionId, 
+       ['close-chart', 'toolbarbtn']
+    );
+    this._toolbar.append(closeBtn);
+    closeBtn.innerHTML = '<i class="fas fa-times" style="color:#c3c3c3;" aria-hidden="true" align="center"></i>';
+
+    $(closeBtn).click(() =>
+      {
+        //this._saveToPNG()
+        this._remove()
+      }
+    );
+
     let pngButton = this._main.modules.domElementCreator.create(
-      'button', '', ['save-to-png']
+      'button',
+      'savepng'+this._chartCollectionId,
+       ['save-to-png', 'toolbarbtn']
     );
     $(pngButton).html(this._chartsMain.saveOptions.png.buttonName);
     this._toolbar.append(pngButton);
@@ -205,7 +459,9 @@ class Chart
     // Save options: SVG
 // TODO: get to work
     let svgButton = this._main.modules.domElementCreator.create(
-      'button', '', ['save-to-svg']
+      'button', 
+      'savesvg'+this._chartCollectionId,  
+      ['save-to-svg', 'toolbar-btn']
     );
     $(svgButton).html(this._chartsMain.saveOptions.svg.buttonName);
     this._toolbar.append(svgButton);
@@ -217,7 +473,7 @@ class Chart
         this._saveToSVG()
       }
     )
-
+    
   }
 
 
@@ -230,7 +486,7 @@ class Chart
   {
     this._chart = d3.select(this._chartWrapper[0])
       .append('svg')
-      .attr('id', this._chartMain.name)
+      .attr('id', this._chartName + this._chartCollectionId)
       .attr('version', 1.1)
       .attr('xmlns', 'http://www.w3.org/2000/svg')
       .attr('width', '100%')
@@ -248,6 +504,7 @@ class Chart
       .style('shape-rendering', 'default')
       .style('text-rendering',  'optimizeLegibility')
       .style('background-color','transparent')
+
   }
 
 
@@ -259,7 +516,7 @@ class Chart
   {
     // Title
     this._chart.append('text')
-      .attr('id', this._chartName + '-title')
+      .attr('id', this._chartName + this._chartCollectionId + '-title')
       .attr('class', 'chart-header chart-title')
       .attr('x', this._chartWidth/2)
       .attr('y', 0
@@ -287,7 +544,7 @@ class Chart
     // Footer: Source link
     this._footerElems = [2];
     this._footerElems[0] = this._chart.append('text')
-      .attr('class', 'footer source')
+      .attr('class', 'footer source footer-'+this._chartName+this._chartCollectionId)
       .attr('x', 0
         + this._chartsMain.padding
       )
@@ -308,7 +565,7 @@ class Chart
 
     // Footer: Reference URL
     this._footerElems[1] = this._chart.append('text')
-      .attr('class', 'footer ref-url')
+      .attr('class', 'footer ref-url footer-'+this._chartName+this._chartCollectionId)
       .attr('x', 0
         + this._chartWidth
         - this._chartsMain.padding
@@ -321,8 +578,7 @@ class Chart
       .style('text-anchor', 'end')
       .style('font-size', this._chartsMain.fontSizes.small + 'em')
       .style('opacity', this._chartsMain.footerOpacity)
-//      .text('\u00A9 ' + this._refURL)
-        .text(this._refURL)
+      .text('\u00A9 ' + this._refURL)
   }
 
 
@@ -345,8 +601,8 @@ class Chart
 
     // Reset view: change height of wrapper
     this._chartWrapper.css('padding-bottom',
-      100*(this._chartHeight/this._chartWidth) + '%'
-    )
+     100*(this._chartHeight/this._chartWidth) + '%'
+    );
   }
 
 
@@ -418,5 +674,54 @@ class Chart
     }
 
   }
+
+
+   // ==========================================================================
+  // TODO
+  // Save chart to SVG
+  // ==========================================================================
+
+  _resizeCanvas(){
+    var w;
+    let canvas = d3.selectAll('.mapboxgl-map').each(
+      function(){
+        // let id = document.getElementById('#map-chart'+this._chartCollectionId+'-wrapper');
+        // let w = id.clientWidth();
+        w =  parseInt(this.style.width, 10)*0.45;
+        let height= w*0.6;
+        this.style.width = w + 'px';
+        this.style.height = height + 'px';
+      }
+      
+    )
+    let text = d3.selectAll('.maphf').each(
+      function(){
+        this.style.fontSize = 75 + '%';
+      }
+    )
+
+    // let textfooter = d3.selectAll('.footer').each(
+    //   function(){
+    //     this.style.fontSize = 75 + '%';
+    //   }
+    // )
+
+    let mapGL = d3.selectAll('.mapboxgl-control-container').each(
+      function(){
+        let test =  parseInt(this.style.width, 10);
+        let w = test * 0.45;
+        let height= w*0.6;
+        this.style.width = w + 'px';
+        this.style.height = height + 'px';
+      })
+  // }
+  // let wrapper = document.getElementById('#map-chart'+ this._chartCollectionId + '-wrapper');
+  // wrapper.setAttribute('width', w);
+
+  setTimeout(()=>{
+    window.dispatchEvent(new Event('resize'));
+    	}, 500);
+  }
+
 
 }

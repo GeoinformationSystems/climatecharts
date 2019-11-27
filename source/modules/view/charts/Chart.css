@@ -1,17 +1,94 @@
-.chart-wrapper
-{
-  width: 100%;
-  vertical-align: top;
+.chart-grid{
+  
 }
 
+.row{
+  margin: 0px;
+}
+
+.tab-content{
+  width: 100%;
+}
+
+.no-gutters > .col, [class*="col-md-6"] {
+    padding-right: 4px; 
+    padding-left: 0px;
+
+  }
+
+.no-gutters > .col, [class*="col-md-12"] {
+    padding-right: 0px;
+    padding-left: 0px;
+
+  }
+
+  .right-col{
+    padding: 0;
+  }
+
+.chart-menu
+{
+  display: flex;
+}
+
+.chart-menu:hover{
+  box-shadow: 0px 0px 6px #babdb6;
+  transition: 0.2s;
+}
+
+.chart-bar{
+  width: 10%;
+  display:inline-flex;
+  float:left;
+  background-color: white;
+  opacity: 0.75;
+  border-right-color: solid lightgray;
+}
+
+.chart-list{
+  padding: 0px;
+  width: 100%;
+  border-left: 1px solid #babdb6;
+  border-bottom: 1px solid #babdb6;
+  border-top: 1px solid #babdb6;
+}
+
+
+.chart-a{
+  padding: 0px;
+  border-bottom: 1px solid #babdb6;
+  opacity: 1.0;
+}
+
+.nav-pills > li > a{
+  border-radius: 0;
+  height: 40px;
+  text-align: center;
+}
+
+.nav-pills > li > a > i{
+  font-size: 1.5em;
+}
+
+.chart-wrapper{
+  width: 80% ;
+  display:inline-flex;
+  position: absolute;
+}
+
+.box.chart-wrapper{
+  margin-bottom: 0px;
+  margin-top: 0px;
+  border-left-color: #eeeeee;
+}
 
 /* level 1: toolbar for manipulating / saving the chart
   -> not printed */
 .toolbar
 {
-  position: absolute;
+  position: relative;
   left:     0;
-  top:      0;
+  top:      0px;
   width:    100%;
   height:   50px;
   z-index:  50;
@@ -20,26 +97,52 @@
 .save-to-png
 {
   position: absolute;
-  top:   21px;
-  right: 10px;
+  top: 10%;
+  right: 1%;
 }
 
 .save-to-svg
 {
   position: absolute;
-  top:   21px;
-  right: 72px;
+  margin-right: 40px;
+  right: 8%;
+  top: 10%;
 }
 
+.close-chart{
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  right: -15px;
+  top: -19px;
+  background-color: white;
+  border:none;
+}
 
+.close-chart:hover{
+  color: #eeeeee !important;
+  background-color: white !important;
+}
 
+.close-chart:active{
+  background-color: white;
+  border:none;
+  width:20px;
+  height:20px;
+  
+}
+
+#closeIcon{
+  color: black;
+}
 
 .svg-content-responsive
 {
-  display:  inline-block;
+  display:  inline-flex;
   position: absolute;
   float:    left;
   left:     0;
+
 }
 
 

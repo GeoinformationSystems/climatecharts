@@ -186,10 +186,10 @@ let loadHub = (main) =>
   main.hub.onDiagramTitleChange = (title) =>
     {
       // Update all diagrams
-      main.modules.chartController.updateTitle(title);
+    //  main.modules.chartController.updateTitle(title);
 
       // Update user defined title
-      main.modules.chartTitleSetter.update(title)
+      // main.modules.chartTitleSetter.update(title)
     }
 
 };

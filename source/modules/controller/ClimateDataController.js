@@ -26,7 +26,8 @@ class ClimateDataController
     // Member Variables
     // ------------------------------------------------------------------------
 
-    this._climateData = new ClimateData()
+    this._climateData = new ClimateData();
+    this._profileClimateData = new ClimateData()
   }
 
 
@@ -50,6 +51,7 @@ class ClimateDataController
     this._calcExtremeData();
     this._calcClimateClass();
     this._calcNumYears();
+    this._calcRealExtremeData()
 
     // Fill meta information
     this._setName(placeName);
@@ -59,9 +61,11 @@ class ClimateDataController
     this._setSource(source);
 
     // Update the visualization
-    this._main.modules.chartController.updateClimate(this._climateData)
-  }
+    this._main.modules.map.drawPopup(this._climateData);
+    this._main.modules.chartController.updateClimate(this._climateData);
 
+    
+  }
 
   // ==========================================================================
   // Clear the current climate data
@@ -81,15 +85,22 @@ class ClimateDataController
   getClimateData()
   {
     return this._climateData
+    
   }
-
 
 
   // ##########################################################################
   // PRIVATE MEMBERS
   // ##########################################################################
+  // setAsyncFlag(maybe, callback){
+  //   this._asnyc = maybe;
+  //   callback();
+  // }
 
-
+  // getFlag()
+  // {
+  //   return this._asnyc
+  // }
   // ==========================================================================
   // Fill monthly data for prec and temp
   // ==========================================================================
@@ -292,6 +303,7 @@ class ClimateDataController
         ),
         maxTemp: d3.max(this._climateData.monthly_short, function(data)
           {return data.temp}
+          // {return d3.max(data.temp, Number);}
         ),
         minPrec: d3.min(this._climateData.monthly_short, function(data)
           {return data.prec}
@@ -302,6 +314,31 @@ class ClimateDataController
       }
   }
 
+  // ==========================================================================
+  // Get real min/max temperature and precipitation
+  // ==========================================================================
+
+  _calcRealExtremeData()
+  {
+    this._climateData.realextreme = {
+        minTemp: d3.min(this._climateData.temp_list , function(data)
+
+          {return d3.max(data, Number);}
+        ),
+        maxTemp: d3.max(this._climateData.temp_list, function(data)
+
+          {return d3.max(data, Number);}
+        ),
+        minPrec: d3.min(this._climateData.prec_list, function(data)
+
+          {return d3.max(data, Number);}
+        ),
+        maxPrec: d3.max(this._climateData.prec_list, function(data)
+
+          {return d3.max(data, Number);}
+        ),
+      }
+  }
 
   // ==========================================================================
   // Calculate Climate Class
@@ -679,6 +716,51 @@ class ClimateDataController
       url = 'http://' + url;
 
     this._climateData.source_link = url
+  }
+
+
+    // ==========================================================================
+  // Set new climate data
+  // ==========================================================================
+
+  calculateGeoProfileCollection(collection, counter)
+  // calculateGeoProfileCollection(tempData, precData, coords)
+  {
+    var profileCollection=[];
+    for(let i =0; i < Object.keys(collection).length; i++){  
+    // Fill climate data
+      let item = collection[i];
+      this._climateData = new ClimateData();
+      // let collection = [];
+
+      this._climateData.temp = this._fillData(item.temp, 'temp');
+      this._climateData.prec = this._fillData(item.prec, 'prec');
+
+      this._calcIndicator('temp');
+      this._calcIndicator('prec');
+
+      this._calcDataList();
+      this._calcMonthlyData();
+      this._calcExtremeData();
+      this._calcClimateClass();
+      this._calcNumYears();
+      this._calcRealExtremeData()
+
+      // Fill meta information
+      this._setName(item.namelist);
+      this._setCoords(item.coordinates);
+      this._calcHemisphere(item.coordinates);
+      this._setElevation(item.elevation);
+      this._setSource(item.src);
+
+      profileCollection.push(this._climateData);
+    
+      // Update the visualization
+    if(Object.keys(profileCollection).length == Object.keys(collection).length){
+      this._main.modules.chartController.updateCharts(profileCollection, counter, true);
+    }
+
+    }
   }
 
 }

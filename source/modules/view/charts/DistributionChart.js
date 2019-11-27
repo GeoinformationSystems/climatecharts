@@ -18,14 +18,15 @@ class DistributionChart extends Chart
   // Constructor
   // ==========================================================================
 
-  constructor(main, climateData)
+  constructor(main, climateData,id)
   {
+    var id = id;
     // Error handling: Only show chart if either prec or temp are given
     if (climateData.has_temp || climateData.has_prec)
-      super(main, 'distribution-chart', climateData);
+      super(main, 'distribution-chart', climateData, id, null);
 
     else
-      super(main, 'distribution-chart', null)
+      super(main, 'distribution-chart', null, id, null)
   }
 
 
@@ -137,7 +138,7 @@ class DistributionChart extends Chart
     this._toolbar[0].appendChild(dcSwitch);
 
     let switchLabel = this._main.modules.domElementCreator.create(
-      'label', null, ['switch-light', 'switch-candy'], [['onClick', '']]
+      'label', null, ['switch-light'], [['onClick', '']]
     );
     dcSwitch.appendChild(switchLabel);
 
@@ -192,6 +193,8 @@ class DistributionChart extends Chart
     $(switchOptions).click((e) =>
       {
         this._switchState = (this._switchState+1) % 2;
+        // Clean charts
+        // $('#boxplot-group').remove();
         this._setupChart()
       }
     )
@@ -207,7 +210,7 @@ class DistributionChart extends Chart
     super._setupChart();
 
     // Clean charts
-    $('#boxplot-group').remove();
+    $('#boxplot-group'+this._chartCollectionId).remove();
 
     // N.B. Get local copy of climateData
     // This is veeeeeeeeery important! It drove me nuts, because I spent
@@ -219,7 +222,7 @@ class DistributionChart extends Chart
     // Create boxplot group
     let svg = this._chart
       .append('g')
-      .attr('id', 'boxplot-group');
+      .attr('id', 'boxplot-group'+ this._chartCollectionId);
 
     // For each subchart
     for (let datatypeIdx = 0; datatypeIdx < this._numSubcharts; datatypeIdx++)

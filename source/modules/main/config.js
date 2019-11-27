@@ -74,17 +74,17 @@ let loadConfig = (main) =>
       {
         width:          728,  // Reference: full width
         height:         420,  // Reference: initial full height
-        titleTop:       5,    // Top margin for title
-        subtitleTop:    25,   // Top margin for subtitle
-        mainTop:        55,   // Top margin for main (= height of title area)
+        titleTop:       10,    // Top margin for title
+        subtitleTop:    35,   // Top margin for subtitle
+        mainTop:        65,   // Top margin for main (= height of title area)
         footerTop:      50,   // Margin for footer
       },
       padding:          10,
       fontSizes:    // [em]
       {
-        title:          1.4,
-        huge:           1.2,
-        large:          1.1,
+        title:          1.5,
+        huge:           1.3,
+        large:          1.2,
         normal:         1.0,
         small:          0.9,
         tiny:           0.75,
@@ -93,12 +93,31 @@ let loadConfig = (main) =>
       {
         temp:           d3.rgb(230,20, 20 ),
         prec:           d3.rgb(4,  61, 183),
-        arid:           d3.rgb(255,233,15 ),
+        arid:           d3.rgb(255,233,15 ), 
         humid:          d3.rgb(89, 131,213),
         perhumid:       d3.rgb(4,  61, 183),
         grid:           d3.rgb(211,211,211),
         axes:           d3.rgb(255,255,255),
-        noData:         d3.rgb(240,240,240),
+        noData:         d3.rgb(70, 71, 73),
+      },
+      // discreteSteps:    6,
+      tempcolors:
+      {
+        t_range1:           d3.rgb(249,231,174),
+        t_range2:           d3.rgb(234,196,134),
+        t_range3:           d3.rgb(218,156,91),
+        t_range4:           d3.rgb(198,109,46),
+        t_range5:           d3.rgb(171,56,22),
+        t_range6:           d3.rgb(125,0,37),
+      },
+      precipcolors:
+      {
+        p_range1:           d3.rgb(215,244,207),
+        p_range2:           d3.rgb(154,220,187),
+        p_range3:           d3.rgb(24,  189,  176),
+        p_range4:           d3.rgb(0 , 149,  175),
+        p_range5:           d3.rgb(0 ,  93,  158),
+        p_range6:           d3.rgb(38,   24,   95),
       },
       footerOpacity:    0.4,
       saveOptions:
@@ -144,7 +163,8 @@ let loadConfig = (main) =>
             lineWidth:      1.5,  // Lines for prec and temp
             lineWidthBar:   0,
             areaOpacity:    0.7,  // For the areas between prec/temp lines
-            barOpacity:    0.8,  // For the areas between prec/temp lines      
+            barOpacity:    0.8,  // For the areas between prec/temp lines    
+            availabilityOpacity: 0.9,  
             barWidth: 26,
           },
           prec:
@@ -158,7 +178,7 @@ let loadConfig = (main) =>
           temp:
           {
             caption:        "Temperature Mean",
-            unit:           "\u00B0C", //Unicode for °C
+            unit:           "°C",
             dist:            10,  // Distance between two ticks
           },
           table:
@@ -186,7 +206,23 @@ let loadConfig = (main) =>
           switch:
           {
             activeState: 0,
-          },    
+          }, 
+          availabilitybar:{
+            // oneMonthPercentage : 3.33,
+            colorInterval: 5,  
+            temp: "Availability of Temperature",
+            prec: "Availability of Precipitation",
+            avail: "Percentage of Missing Data"
+          },   
+          availabilitycolors:{
+            a_range6:           d3.rgb(249,  249,  249),
+            a_range5:           d3.rgb(218,  218,  218),
+            a_range4:           d3.rgb(174,  174,  174),
+            a_range3:           d3.rgb(126,  126,  126),
+            a_range2:           d3.rgb(76 ,  76 ,  76),
+            a_range1:           d3.rgb(27 ,  27 ,  27),
+            // hardbreak:          d3.rgb(255,0,0)
+          }
         },
 
         // --------------------------------------------------------------------
@@ -210,7 +246,7 @@ let loadConfig = (main) =>
           [
             {
               data:       'temp',
-              title:      "Distribution of Temperature [\u00B0C]",  //Unicode for °C
+              title:      "Distribution of Temperature [°C]",
               color:      'rgb(230, 20, 20)',
               maxRange:   [-40, +40]
             },
@@ -224,7 +260,7 @@ let loadConfig = (main) =>
           switch:
           {
             title:      "Y-Axis Scaling",
-            states:     ['automatic', 'fixed'],
+            states:     ['relative', 'fixed'],
           },
         },
 
@@ -247,6 +283,7 @@ let loadConfig = (main) =>
             titleMargin:      45,   // Margin-bottom for title of the chart
             legendEntryMargin:3,    // Margin-top for entry in legend
             cellOpacity:      0.5,  // Opacity value for colored cells
+            availabilityOpacity: 1.0,
           },
           headings:
           {
@@ -256,10 +293,57 @@ let loadConfig = (main) =>
           },
           legend:
           {
-            temp:         "Temperature data available",
-            prec:         "Precipitation data available",
+            temp:         "Temperature Scale",
+            prec:         "Precipitation Scale",
             noData:       "No data available",
           },
+          discreteSteps:    6, // how many colors are used
+          
+          tempcolors:
+          {
+            t_range1:           d3.rgb(249,231,174),
+            t_range2:           d3.rgb(234,196,134),
+            t_range3:           d3.rgb(218,156,91),
+            t_range4:           d3.rgb(198,109,46),
+            t_range5:           d3.rgb(171,56,22),
+            t_range6:           d3.rgb(125,0,37),
+          },
+          precipcolors:
+          {
+            p_range1:           d3.rgb(215,244,207),
+            p_range2:           d3.rgb(154,220,187),
+            p_range3:           d3.rgb(24,  189,  176),
+            p_range4:           d3.rgb(0 , 149,  175),
+            p_range5:           d3.rgb(0 ,  93,  158),
+            p_range6:           d3.rgb(38,   24,   95),
+          },
+          switch:
+          {
+            title:      "Color Scaling",
+            states:     ['relative', 'fixed'],
+          },
+        },
+        // --------------------------------------------------------------------
+        {
+          name:         'map-chart',
+          margin:         // [px]
+          {
+            left :        30,
+            top:          30,
+            right:        30,
+            bottom:       0,
+          },
+          
+          // style:
+          // {
+          //   gridWidth:        1,    // Width of stroke of square
+          //   squareWidth:      25,   // Dimension of cell sqares
+          //   rowHeadWidth:     20,   // Width of row "heading" (year number)
+          //   colHeadHeight:    12,   // Height of col heading (month / value)
+          //   titleMargin:      45,   // Margin-bottom for title of the chart
+          //   legendEntryMargin:3,    // Margin-top for entry in legend
+          //   cellOpacity:      0.5,  // Opacity value for colored cells
+          // },
         },
       ],
     },

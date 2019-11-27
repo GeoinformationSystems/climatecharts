@@ -22,6 +22,7 @@ class WeatherStationsOnMap
   {
     this._main = main;
     this._map = this._main.modules.map.getMap();
+    this._isStation = false;
 
     // ------------------------------------------------------------------------
     // Member Variables
@@ -101,10 +102,19 @@ class WeatherStationsOnMap
     stationMarker.addEventListener('click', (evt) =>
       {
         this._main.modules.weatherStationController.select(stationMarker.station)
+        this._isStation = true;
       }
     )
   }
 
+  getMode(){
+    return this._isStation;
+
+  }
+
+  setMode(mode){
+    this._isStation = mode;
+  }
 
   // ==========================================================================
   // Hide weather station = remove from map
@@ -121,6 +131,8 @@ class WeatherStationsOnMap
     // Forget station
     let listIdx = this._activeStations.indexOf(station);
     this._activeStations.splice(listIdx, 1)
+
+    this._isStation = false;
   }
 
 

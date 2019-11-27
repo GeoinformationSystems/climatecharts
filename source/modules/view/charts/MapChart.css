@@ -1,0 +1,28 @@
+.map-content{
+    display:  inline-block;
+}
+
+.mapboxgl-map{
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+.footer-source {
+    position: absolute;
+    bottom: 2px !important;
+}
+
+.footer{
+    position: absolute;
+    bottom: 2px !important;
+    right: 5px !important;
+}
+
+div.tooltip {	
+    position: absolute;			
+    text-align: center;			
+    background-color: white;
+	padding: 10px;
+	border-radius: 5px;
+	z-index: 100;
+}
