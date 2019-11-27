@@ -1,10 +1,7 @@
 // ############################################################################
-// ClimateChart                                                           View
+// MapChart                                                           View
 // ############################################################################
-// Visualizes temperature and precipitation for each month in a Walter-Lieth
-// Climate Chart and a data table for the monthly temperature mean and
-// precipitation sum.
-// This is the main element of the application and therefore provides its name.
+// Visualizes spatial temperature profile along individually drawn line. 
 // ############################################################################
 
 
@@ -106,7 +103,10 @@ class MapChart extends Chart
      return 0;
     })
 
-    // source: https://www.geodatasource.com/developers/javascript
+    /**
+     * * source: https://www.geodatasource.com/developers/javascript
+     */
+
     function calculateDistance(lat1, lon1, lat2, lon2, unit) {
       if ((lat1 == lat2) && (lon1 == lon2)) {
         return 0;
@@ -181,7 +181,7 @@ class MapChart extends Chart
     .attr("class", "tooltip")			
     .attr("id", this._chartName + this._chartCollectionId + '-tooltip')	
     .style("opacity", 0)
-    .html("lalalala Maaarraaaa!");
+    .html("!");
 
     // canvas.addEventListener('mouseover', this._onMouseDown, false);
     // this._chart.on('mousemove', (evt)=>{

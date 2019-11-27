@@ -114,23 +114,22 @@ class ChartController
     
     let mapSize = this._chartsCollection.size;
 
-    if(flag){
+    // if(flag){
       this._charts =
       [
         new ClimateChart(this._main, this._climatedata, counter),
         new DistributionChart(this._main, this._climatedata, counter),
         new AvailabilityChart(this._main, this._climatedata, counter),
-        new MapChart(this._main, this._climatedata, counter, profileCollection),
+        // new MapChart(this._main, this._climatedata, counter, profileCollection),
       ];
-    }else{
-    this._charts =
-      [
-        // new MapChart(this._main, this._climatedata, counter),
-        new ClimateChart(this._main, this._climatedata, counter),
-        new DistributionChart(this._main, this._climatedata, counter),
-        new AvailabilityChart(this._main, this._climatedata, counter),
-      ];
-    }
+    // }else{
+    // this._charts =
+    //   [
+    //     new ClimateChart(this._main, this._climatedata, counter),
+    //     new DistributionChart(this._main, this._climatedata, counter),
+    //     new AvailabilityChart(this._main, this._climatedata, counter),
+    //   ];
+    // }
     this._chartsAreActive = true;
     
     }

@@ -303,123 +303,125 @@ class ClimateDatasetController {
 
 
  // ==========================================================================
-  //  get dataset from server for all locations, collect it before sending it on
-  // ==========================================================================
-
+ //  get dataset from server for all locations, collect it before sending it on
+ // ==========================================================================
+/**
+ * ? Spatial Profile WIP
+ */
 
   
-  setupGeoProfile(coordset, counter) {
-      var climateCollection1 = [];
-      var emptyDatasets = 0;
-      var flag = false; 
-      // Error handling: ignore if dataset not fully loaded yet
-      if (!this._selectedDataset) return;
-      if (this._selectedDataset.meta_datasets.length === 0) return;
+//   setupGeoProfile(coordset, counter) {
+//       var climateCollection1 = [];
+//       var emptyDatasets = 0;
+//       var flag = false; 
+//       // Error handling: ignore if dataset not fully loaded yet
+//       if (!this._selectedDataset) return;
+//       if (this._selectedDataset.meta_datasets.length === 0) return;
 
-      // Get request variable from dataset (e.b. 'tmp')
-      let variables = [];
-      for (var idx = 0; idx < 2; idx++)
-        for (var name in this._selectedDataset.meta_datasets[idx].variable)
-          if (this._selectedDataset.meta_datasets[idx].variable[name]._shape === "time lat lon" && this._selectedDataset.meta_datasets[idx].variable[name]._name !== "stn")
-              variables.push(this._selectedDataset.meta_datasets[idx].variable[name]._name);
+//       // Get request variable from dataset (e.b. 'tmp')
+//       let variables = [];
+//       for (var idx = 0; idx < 2; idx++)
+//         for (var name in this._selectedDataset.meta_datasets[idx].variable)
+//           if (this._selectedDataset.meta_datasets[idx].variable[name]._shape === "time lat lon" && this._selectedDataset.meta_datasets[idx].variable[name]._name !== "stn")
+//               variables.push(this._selectedDataset.meta_datasets[idx].variable[name]._name);
 
-      let timePeriod =
-      [
-        this._main.modules.timeController.getPeriodStart(),
-        this._main.modules.timeController.getPeriodEnd() + 1,
-      ];
+//       let timePeriod =
+//       [
+//         this._main.modules.timeController.getPeriodStart(),
+//         this._main.modules.timeController.getPeriodEnd() + 1,
+//       ];
 
 
-      // Error handling: Only update if variables, coords and timePeriod given
-      if (variables.length === 0)
-        return console.error(""
-          + "The datset"
-          + this._selectedDataset.name
-          + "could not be loaded correctly"
-        );
-      if (Object.keys(coordset).length == 0){return}
+//       // Error handling: Only update if variables, coords and timePeriod given
+//       if (variables.length === 0)
+//         return console.error(""
+//           + "The datset"
+//           + this._selectedDataset.name
+//           + "could not be loaded correctly"
+//         );
+//       if (Object.keys(coordset).length == 0){return}
 
-      for(let i =0; i < Object.keys(coordset).length; i++){  
-        let coords = {
-          lat: coordset[i][0],
-          lng: coordset[i][1]
-        }
+//       for(let i =0; i < Object.keys(coordset).length; i++){  
+//         let coords = {
+//           lat: coordset[i][0],
+//           lng: coordset[i][1]
+//         }
 
-      // Load data for this dataset at this position in this time period
-        this._main.modules.serverInterface.requestClimateDataForCell(
-          this._selectedDataset.url_datasets,
-          variables,      // [tmp, pre]
-          coords,         // [lat, lng]
-          timePeriod,     // [minDate, maxDate]
-          (tempDataXml, precDataXml, names, elevation) =>    // success callback
-          {
-            // Load climate data from server in XML and transform to JSON
-            let tempDataOrig = this._x2js.xml2json(tempDataXml[0]).grid;
-            let precDataOrig = this._x2js.xml2json(precDataXml[0]).grid;
+//       // Load data for this dataset at this position in this time period
+//         this._main.modules.serverInterface.requestClimateDataForCell(
+//           this._selectedDataset.url_datasets,
+//           variables,      // [tmp, pre]
+//           coords,         // [lat, lng]
+//           timePeriod,     // [minDate, maxDate]
+//           (tempDataXml, precDataXml, names, elevation) =>    // success callback
+//           {
+//             // Load climate data from server in XML and transform to JSON
+//             let tempDataOrig = this._x2js.xml2json(tempDataXml[0]).grid;
+//             let precDataOrig = this._x2js.xml2json(precDataXml[0]).grid;
 
-            // Transform data structure to climateData
-            let tempData = this._gridDataToClimateData(tempDataOrig);
-            let precData = this._gridDataToClimateData(precDataOrig);
+//             // Transform data structure to climateData
+//             let tempData = this._gridDataToClimateData(tempDataOrig);
+//             let precData = this._gridDataToClimateData(precDataOrig);
 
-            // Detect empty dataset: Is it an empty dataset?
-            for (let nullValue of CLIMATE_DATASET_NULL_VALUES){
-              if (tempData[0][0] === nullValue) {
-                // this._main.modules.loading.end();
-                // return this._main.modules.climateDataController.clear()
+//             // Detect empty dataset: Is it an empty dataset?
+//             for (let nullValue of CLIMATE_DATASET_NULL_VALUES){
+//               if (tempData[0][0] === nullValue) {
+//                 // this._main.modules.loading.end();
+//                 // return this._main.modules.climateDataController.clear()
                 
-                emptyDatasets ++;
-                flag =true;
-                break;
-              }else{
-                flag = false;
-              }
-            }
-            if(!flag){
-              // continue;
+//                 emptyDatasets ++;
+//                 flag =true;
+//                 break;
+//               }else{
+//                 flag = false;
+//               }
+//             }
+//             if(!flag){
+//               // continue;
             
-              // else{
-                // Assemble name array
-                let name = [
-                  names[0].name,
-                  names[0].adminName1,
-                  names[0].countryName,
-                ];
+//               // else{
+//                 // Assemble name array
+//                 let name = [
+//                   names[0].name,
+//                   names[0].adminName1,
+//                   names[0].countryName,
+//                 ];
 
-                // Get elevation
-                let elev = elevation[0].srtm3;
+//                 // Get elevation
+//                 let elev = elevation[0].srtm3;
 
-                // Get source DOI
-                let source = this._selectedDataset.doi;
+//                 // Get source DOI
+//                 let source = this._selectedDataset.doi;
 
-                //assemble data object that will be saved into the collection
-                let data = {
-                  temp: tempData,
-                  prec: precData,
-                  namelist: name,
-                  coordinates: coords,
-                  elevation: elev,
-                  src: source
+//                 //assemble data object that will be saved into the collection
+//                 let data = {
+//                   temp: tempData,
+//                   prec: precData,
+//                   namelist: name,
+//                   coordinates: coords,
+//                   elevation: elev,
+//                   src: source
 
-                }
-              // }
-                climateCollection1.push(data);
+//                 }
+//               // }
+//                 climateCollection1.push(data);
 
-              }
-               //in config
-               let finished = Object.keys(coordset).length - emptyDatasets;
-               if(Object.keys(climateCollection1).length == finished){
-                 this._main.modules.climateDataController.calculateGeoProfileCollection(climateCollection1, counter);
-                //  climateCollection1 = [];
-                //  emptyDatasets = 0;
-            }
+//               }
+//                //in config
+//                let finished = Object.keys(coordset).length - emptyDatasets;
+//                if(Object.keys(climateCollection1).length == finished){
+//                  this._main.modules.climateDataController.calculateGeoProfileCollection(climateCollection1, counter);
+//                 //  climateCollection1 = [];
+//                 //  emptyDatasets = 0;
+//             }
 
            
-          }
+//           }
           
-      )
-    }
+//       )
+//     }
 
 
-}
+// }
 
 }

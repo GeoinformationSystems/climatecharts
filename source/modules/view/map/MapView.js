@@ -136,8 +136,7 @@ class MapView
     let name = climateD.name;
 
     var popupContainer = L.DomUtil.create('div', 'popup-container', container);
-
-    console.log("Test popup");
+;
     var infotextHeader = L.DomUtil.create('h2', 'popup-header', popupContainer);
     infotextHeader.setAttribute('id', 'ihead1');
     if(!isStation){
@@ -191,7 +190,6 @@ class MapView
     //   removeProfile.setAttribute('disabled', 'true');
     // }
     // // removeProfile.setAttribute('disabled', this._noLinesOnMap);
-    // console.log('yeahno', this._noLinesOnMap);
     // removeProfile.innerHTML = 'Remove All Lines';
 
     // removeProfile.onclick=()=>{

@@ -67,7 +67,7 @@ const RUN_LOCALLY =
 {
   'thredds':          false,
   'gazetteer':        false,
-  'weatherstations':  false
+  'weatherstations':  true
 };
 
 // Port on which tomcat8 runs on the localhost and / or on the server

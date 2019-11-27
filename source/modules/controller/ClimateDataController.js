@@ -722,45 +722,47 @@ class ClimateDataController
     // ==========================================================================
   // Set new climate data
   // ==========================================================================
+  /**
+   * ? Spatial Profile WIP 
+   */
+  // calculateGeoProfileCollection(collection, counter)
+  // // calculateGeoProfileCollection(tempData, precData, coords)
+  // {
+  //   var profileCollection=[];
+  //   for(let i =0; i < Object.keys(collection).length; i++){  
+  //   // Fill climate data
+  //     let item = collection[i];
+  //     this._climateData = new ClimateData();
+  //     // let collection = [];
 
-  calculateGeoProfileCollection(collection, counter)
-  // calculateGeoProfileCollection(tempData, precData, coords)
-  {
-    var profileCollection=[];
-    for(let i =0; i < Object.keys(collection).length; i++){  
-    // Fill climate data
-      let item = collection[i];
-      this._climateData = new ClimateData();
-      // let collection = [];
+  //     this._climateData.temp = this._fillData(item.temp, 'temp');
+  //     this._climateData.prec = this._fillData(item.prec, 'prec');
 
-      this._climateData.temp = this._fillData(item.temp, 'temp');
-      this._climateData.prec = this._fillData(item.prec, 'prec');
+  //     this._calcIndicator('temp');
+  //     this._calcIndicator('prec');
 
-      this._calcIndicator('temp');
-      this._calcIndicator('prec');
+  //     this._calcDataList();
+  //     this._calcMonthlyData();
+  //     this._calcExtremeData();
+  //     this._calcClimateClass();
+  //     this._calcNumYears();
+  //     this._calcRealExtremeData()
 
-      this._calcDataList();
-      this._calcMonthlyData();
-      this._calcExtremeData();
-      this._calcClimateClass();
-      this._calcNumYears();
-      this._calcRealExtremeData()
+  //     // Fill meta information
+  //     this._setName(item.namelist);
+  //     this._setCoords(item.coordinates);
+  //     this._calcHemisphere(item.coordinates);
+  //     this._setElevation(item.elevation);
+  //     this._setSource(item.src);
 
-      // Fill meta information
-      this._setName(item.namelist);
-      this._setCoords(item.coordinates);
-      this._calcHemisphere(item.coordinates);
-      this._setElevation(item.elevation);
-      this._setSource(item.src);
-
-      profileCollection.push(this._climateData);
+  //     profileCollection.push(this._climateData);
     
-      // Update the visualization
-    if(Object.keys(profileCollection).length == Object.keys(collection).length){
-      this._main.modules.chartController.updateCharts(profileCollection, counter, true);
-    }
+  //     // Update the visualization
+  //   if(Object.keys(profileCollection).length == Object.keys(collection).length){
+  //     this._main.modules.chartController.updateCharts(profileCollection, counter, true);
+  //   }
 
-    }
-  }
+  //   }
+  // }
 
 }
