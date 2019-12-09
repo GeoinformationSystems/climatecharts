@@ -13,6 +13,10 @@
   text-align: center;
 }
 
+.popup-container > h2{
+  font-size: 120%;
+}
+
 .leaflet-popup-content-wrapper{
  border-radius: 5px;
 }

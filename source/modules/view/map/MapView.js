@@ -30,9 +30,7 @@ class MapView
         lat: null,
         lng: null
       };  
-    this._startEndCoords=[];
     this._profileCoordCollection=[];
-    this._drawProfile = false;
 
     // ------------------------------------------------------------------------
     // Member Variables
@@ -76,21 +74,14 @@ class MapView
       {
         this._drawPopup = true;
 
-        if(this._drawProfile){
-
-        }
-        else{ //  update current location
+        //  update current location
         this._main.modules.mapController.setLocation(
           {
             lat: evt.latlng.lat,
             lng: evt.latlng.lng
           });  
 
-          this._lastCoords = evt.latlng; 
-      }
-      // this._drawProfile = false;
-      this._startEndCoords =[]
-
+        this._lastCoords = evt.latlng; 
     })
   }
 
@@ -107,19 +98,20 @@ class MapView
     infotextHeader.setAttribute('id', 'ihead1');
     if(!isStation){
       if(name.length < 3){
-        infotextHeader.textContent = "climate cell";
+        infotextHeader.textContent = "Climate Cell";
       }
       else{
-        infotextHeader.innerHTML = "climate cell near:" + "</br><strong>" + climateD.name + "</strong>";
+        infotextHeader.innerHTML = "Climate Cell Near:" + "</br><strong>" + climateD.name + "</strong>";
       }
     }else{
-      infotextHeader.innerHTML = "climate station in:" + "</br><strong>" + climateD.name+ "</strong>";
+      infotextHeader.innerHTML = "Climate Station In:" + "</br><strong>" + climateD.name+ "</strong>";
     }
 
     var infotext = L.DomUtil.create('p', 'popup-text', popupContainer);
     infotext.innerHTML = 
-    "<strong>elevation:</strong> " + climateD.elevation +"</br>" + "<strong>climate class:</strong> " + climateD.climate_class +"</br>" + 
-    "<strong>years:</strong> " + climateD.years[0] +" - " + climateD.years[1]  +"</br>";
+    "<strong>Elevation:</strong> " + climateD.elevation +"</br>" 
+    + "<strong>Climate Class:</strong> " + climateD.climate_class +"</br>" 
+    + "<strong>Years:</strong> " + climateD.years[0] +" - " + climateD.years[1]  +"</br>";
 
     var addbtn = L.DomUtil.create('button', 'popup-button addbtn', popupContainer);
     addbtn.setAttribute('type', 'button');
@@ -132,6 +124,9 @@ class MapView
 
   }
 
+  // ==========================================================================
+  // draw popup
+  // ==========================================================================
   drawPopup(climateData){
     if(!this._drawPopup){
       return;
@@ -145,7 +140,7 @@ class MapView
     this.createPopup(container, climateData, mode);
     
 
-    var infoPopup = L.popup({classname: 'info-popup'})
+    var infoPopup = L.popup({classname: 'info-popup', keepInView: true})
       .setLatLng(this._lastCoords)
       .setContent(container)
       .openOn(this._map);
@@ -154,7 +149,7 @@ class MapView
     this._drawPopup=false;
 
   }
-    //}
+
   // ==========================================================================
   // Getter
   // ==========================================================================

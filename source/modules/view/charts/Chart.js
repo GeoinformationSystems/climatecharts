@@ -58,32 +58,35 @@ class Chart
     this._setupChart();
     this._setupHeaderFooter()
 
-
+    /**
+     * * Brushing & Linking
+     *  
+     */
     // var chartContainer = $('.svg-content-responsive');
-    var chartContainer = d3.selectAll('.svg-content-responsive');
-    var activeContainer = [];
-    // Array.from(chartContainer).forEach((el)=>{
+    // var chartContainer = d3.selectAll('.svg-content-responsive');
+    // var activeContainer = [];
+    // // Array.from(chartContainer).forEach((el)=>{
     //   el.addEventListener('click', brushingAndLinking);
     // })
-    chartContainer.on("click", (d, i)=>{
-      let blID = chartContainer[0][i].id.replace ( /[^\d.]/g, '' );;
-      let container = d3.select('#chartcollection'+ blID +'-menu')
-      .style('border', '1px solid #ff00ff');
-      console.log(blID);
-      brushingAndLinking();
-    })
+    // chartContainer.on("click", (d, i)=>{
+    //   let blID = chartContainer[0][i].id.replace ( /[^\d.]/g, '' );;
+    //   let container = d3.select('#chartcollection'+ blID +'-menu')
+    //   .style('border', '1px solid #ff00ff');
+    //   console.log(blID);
+    //   brushingAndLinking();
+    // })
     // for(let chart of chartContainer){
     //   chart.on("click", () =>{
     //      brushingAndLinking();
     //   });
     // }
     
-    function brushingAndLinking(){
-      console.log('domainByTrait', chartContainer);
-      activeContainer = chartContainer[0].filter(isActive);
-      console.log('traits', activeContainer);
+  //   function brushingAndLinking(){
+  //     console.log('domainByTrait', chartContainer);
+  //     activeContainer = chartContainer[0].filter(isActive);
+  //     console.log('traits', activeContainer);
 
-  }
+  // }
 
   function isActive(value){
     // let classlist = value.parentElement.classList;
