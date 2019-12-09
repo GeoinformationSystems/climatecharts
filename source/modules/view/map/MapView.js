@@ -77,41 +77,7 @@ class MapView
         this._drawPopup = true;
 
         if(this._drawProfile){
-          /**
-           * ? Spatial Profile - WIP
-           */
-          // let removelines = $('#removeProfileLinebtn');
-          // removelines.removeAttr('disabled');
-          // this._noLinesOnMap = false;
 
-          // this._profileCoordCollection = [];
-          //   let pos2 = [evt.latlng.lat, evt.latlng.lng];
-          //   this._startEndCoords.push(pos2);
-
-          //   // draw line between the two set points
-          //   var line = L.polyline(this._startEndCoords, 
-          //     {color: 'blue',
-          //     weight: 2,
-          //     lineCap: 'round'
-          //     }
-          //     ).addTo(this._profileGroup);
-            
-          //   // zoom in on line
-          //   this._map.fitBounds(line.getBounds());
-
-          //   // get coordinates along the line
-          //   var line = turf.lineString(this._startEndCoords);
-          //   var options = {units: 'kilometers'};
-          //   var length = turf.length(line, {units:'kilometers'});
-          //   var interval= length / 8;
-          //   for(let i = 0; i <= 8; i++){
-          //     let along = turf.along(line, i*interval, options);
-          //     this._profileCoordCollection.push(along.geometry.coordinates);  
-
-          //     var marker = L.marker(along.geometry.coordinates).addTo(this._profileGroup);  
-          //   }
-          //   this._main.modules.climateDatasetController.setupGeoProfile(this._profileCoordCollection, this._lastLocationCounter);
-          //   this._lastLocationCounter = this._lastLocationCounter+1;
         }
         else{ //  update current location
         this._main.modules.mapController.setLocation(
@@ -164,41 +130,6 @@ class MapView
       this._drawCharts(false);
     }
 
-    /**
-     * ? Spatial Profile WIP
-     */
-    // var geoProfile = L.DomUtil.create('p', 'popup-text geoprofiletxt', popupContainer);
-    // geoProfile.innerHTML = 
-    // "To create a geo-spatial profile from this starting point select an end destination on the map after clicking 'Draw Profile'. The climate data will be simulated data only.";
-  
-    // var drawLine = L.DomUtil.create('button', 'popup-button drawbtn', popupContainer);
-    // drawLine.setAttribute('type', 'button');
-    // drawLine.innerHTML = 'Draw Profile';
-
-    // drawLine.onclick= () =>{
-    //   let position1 = [this._lastCoords.lat, this._lastCoords.lng]
-    //   this._startEndCoords.push(position1);
-    //   this._drawProfile = true;
-    //   this._map.closePopup();
-
-    // }
-
-    // var removeProfile = L.DomUtil.create('button', 'popup-button removeP', popupContainer);
-    // removeProfile.setAttribute('type', 'button');
-    // removeProfile.setAttribute('id', 'removeProfileLinebtn');
-    // if(this._noLinesOnMap){
-    //   removeProfile.setAttribute('disabled', 'true');
-    // }
-    // // removeProfile.setAttribute('disabled', this._noLinesOnMap);
-    // removeProfile.innerHTML = 'Remove All Lines';
-
-    // removeProfile.onclick=()=>{
-    //   this._profileGroup.clearLayers();
-    //   removeProfile.setAttribute('disabled', 'true');
-    //   this._noLinesOnMap = true;
-    //   console.log('yeahno', this._noLinesOnMap);
-
-    // }
   }
 
   drawPopup(climateData){
