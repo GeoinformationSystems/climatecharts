@@ -116,7 +116,10 @@ let loadHub = (main) =>
       main.modules.weatherStationController.updateStations();
 
       // Update period data in timeline
-      main.modules.timeline.updatePeriod(start, end)
+      main.modules.timeline.updatePeriod(start, end);
+
+      // Update Popup on map
+      main.modules.map.updatePopup(start, end);
     };
 
   main.hub.onResetPeriod = (start, end) =>

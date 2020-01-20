@@ -22,7 +22,8 @@ class MapView
   {
     this._main = main;
     this._title = null;
-    this._drawPopup = false;
+    this._drawPopupNow = false;
+    this._popupExists = false;
     this._noLinesOnMap = true;
     this._lastLocationCounter= 0;
     this._lastCoords =
@@ -72,7 +73,7 @@ class MapView
     // -> distinguish between click on station or directly on map
     this._map.on("click", evt =>
       {
-        this._drawPopup = true;
+        this._drawPopupNow = true;
 
         //  update current location
         this._main.modules.mapController.setLocation(
@@ -82,18 +83,22 @@ class MapView
           });  
 
         this._lastCoords = evt.latlng; 
-    })
-  }
+      })
+
+      this._map.on("popupclose", evt=>{
+        this._popupExists = false;
+      });
+    }
 
   
   // ==========================================================================
-  // create popup
+  // fill popup with content
   // ==========================================================================
-  createPopup(container, climateD, isStation) {
+  _fillPopup(container, climateD, isStation) {
     let name = climateD.name;
 
     var popupContainer = L.DomUtil.create('div', 'popup-container', container);
-;
+
     var infotextHeader = L.DomUtil.create('h2', 'popup-header', popupContainer);
     infotextHeader.setAttribute('id', 'ihead1');
     if(!isStation){
@@ -111,7 +116,7 @@ class MapView
     infotext.innerHTML = 
     "<strong>Elevation:</strong> " + climateD.elevation +"</br>" 
     + "<strong>Climate Class:</strong> " + climateD.climate_class +"</br>" 
-    + "<strong>Years:</strong> " + climateD.years[0] +" - " + climateD.years[1]  +"</br>";
+    + "<strong>Years:</strong> <div id='pYears'>" + climateD.years[0] +" - " + climateD.years[1]  + "</div>" + "</br>";
 
     var addbtn = L.DomUtil.create('button', 'popup-button addbtn', popupContainer);
     addbtn.setAttribute('type', 'button');
@@ -128,7 +133,7 @@ class MapView
   // draw popup
   // ==========================================================================
   drawPopup(climateData){
-    if(!this._drawPopup){
+    if(!this._drawPopupNow){
       return;
     }
     var container = L.DomUtil.create('div');
@@ -137,7 +142,7 @@ class MapView
     var mode = this._main.modules.weatherStationsOnMap.getMode();
 
     // draw popup with information
-    this.createPopup(container, climateData, mode);
+    this._fillPopup(container, climateData, mode);
     
 
     var infoPopup = L.popup({classname: 'info-popup', keepInView: true})
@@ -146,10 +151,35 @@ class MapView
       .openOn(this._map);
 
     this._main.modules.weatherStationsOnMap.setMode(false);
-    this._drawPopup=false;
+    this._drawPopupNow=false;
+    this._popupExists = true;
 
   }
 
+  _addChart(evt){
+    let coords = this._main.modules.mapController.setLocation(
+      {
+        lat: evt.latlng.lat,
+        lng: evt.latlng.lng
+      });
+
+  }
+
+  _drawCharts(flag){
+    this._main.modules.chartController.updateCharts(null, this._lastLocationCounter, flag);
+    this._lastLocationCounter = this._lastLocationCounter+1;
+  }
+
+  /**
+  * Update Popup after Time Slider changed
+  */
+  updatePopup(start, end){
+    if(this._popupExists){
+      var newPeriod = document.getElementById("pYears");
+      newPeriod.textContent = start + "-" + end;
+    }
+  }
+   
   // ==========================================================================
   // Getter
   // ==========================================================================
@@ -164,18 +194,6 @@ class MapView
   }
 
   
-  addChart(evt){
-    let coords = this._main.modules.mapController.setLocation(
-      {
-        lat: evt.latlng.lat,
-        lng: evt.latlng.lng
-      });
-
-  }
-
-  _drawCharts(flag){
-    this._main.modules.chartController.updateCharts(null, this._lastLocationCounter, flag);
-    this._lastLocationCounter = this._lastLocationCounter+1;
-  }
+ 
 
 }

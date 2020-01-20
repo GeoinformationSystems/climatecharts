@@ -66,7 +66,7 @@ const RANGE_SLIDER_OFFSET = 5;
 const RUN_LOCALLY =
 {
   'thredds':          false,
-  'gazetteer':        true,
+  'gazetteer':        false,
   'weatherstations':  true
 };
 
