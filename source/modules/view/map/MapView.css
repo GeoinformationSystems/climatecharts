@@ -14,16 +14,13 @@
 }
 
 .popup-container > h2{
-  font-size: 120%;
+  font-size: 115%;
 }
 
-.leaflet-popup-content-wrapper{
- border-radius: 5px;
-}
+/* .leaflet-popup-content-wrapper{
+ /* border-radius: 5px; 
+} */
 
-.popup-text{ 
-  text-align:left;
-}
 
 .popup-header:after{
   content: "";
@@ -35,16 +32,15 @@
   border-bottom: 1px  solid #eee;
 }
 
-.geoprofiletxt:before{
-  content: "";
-  text-align: left;
-  display: block;
-  margin: 0 auto;
-  width: 80%;
-  margin-bottom: 10px; 
-  border-bottom: 1px  solid #595959;
+.popup-text{ 
+  text-align:left;
+}
+
+.popup-text >p{
+  margin: 2%;
 }
 
 .popup-button {
   width: auto !important;
 }
+

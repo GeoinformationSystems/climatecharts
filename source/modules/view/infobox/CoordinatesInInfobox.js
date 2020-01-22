@@ -48,7 +48,8 @@ class CoordinatesInInfobox
           lng : parseFloat(this._lngDiv.val())
         };
         if (coords.lat && coords.lng)
-          this._main.modules.mapController.setLocation(coords)
+          this._main.modules.mapController.setLocation(coords);
+          this._main.modules.map.setLastCoords(coords);
       }
     );
 

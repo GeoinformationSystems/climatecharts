@@ -85,9 +85,10 @@ class MapView
         this._lastCoords = evt.latlng; 
       })
 
-      this._map.on("popupclose", evt=>{
-        this._popupExists = false;
-      });
+    this._map.on("popupclose", evt=>{
+      this._popupExists = false;
+    });
+
     }
 
   
@@ -114,9 +115,25 @@ class MapView
 
     var infotext = L.DomUtil.create('p', 'popup-text', popupContainer);
     infotext.innerHTML = 
-    "<strong>Elevation:</strong> " + climateD.elevation +"</br>" 
-    + "<strong>Climate Class:</strong> " + climateD.climate_class +"</br>" 
-    + "<strong>Years:</strong> <div id='pYears'>" + climateD.years[0] +" - " + climateD.years[1]  + "</div>" + "</br>";
+    "<p><strong>Elevation: </strong> " + climateD.elevation +"</p>" 
+    + "<p><strong>Climate Class: </strong> " + climateD.climate_class + "</p>"
+    + "<p id='pYears'><strong>Years: </strong>" + climateD.years[0] +" - " + climateD.years[1]  + "</p>";
+
+    // var infotext2 = L.DomUtil.create('table', 'popup-text2', popupContainer);
+    // infotext2.innerHTML = 
+    // "<tr>"+
+    //   "<td><strong>Elevation: </strong></td>"+
+    //   "<td class='2ndrow'>" +  climateD.elevation +"</td>"+
+    // "</tr>" +
+    // "<tr>"+
+    //   "<td><strong>Climate Class: </strong></td>" +
+    //   "<td class='2ndrow' >" + climateD.climate_class + "</td>" +
+    // "</tr>" +
+    // "<tr>"+
+    //   "<td><strong>Years: </strong></td>"+
+    //   "<td class='2ndrow' id='pYears'>" + climateD.years[0] +" - " + climateD.years[1]  + "</td>"
+    // "</tr>";
+
 
     var addbtn = L.DomUtil.create('button', 'popup-button addbtn', popupContainer);
     addbtn.setAttribute('type', 'button');
@@ -127,14 +144,19 @@ class MapView
       this._drawCharts(false);
     }
 
+
+
   }
 
   // ==========================================================================
   // draw popup
   // ==========================================================================
   drawPopup(climateData){
-    if(!this._drawPopupNow){
-      return;
+    // if(!this._drawPopupNow){
+    //   return;
+    // }
+    if(this._popupExists){
+      this._map.closePopup();
     }
     var container = L.DomUtil.create('div');
     // get current mode 
@@ -153,6 +175,7 @@ class MapView
     this._main.modules.weatherStationsOnMap.setMode(false);
     this._drawPopupNow=false;
     this._popupExists = true;
+
 
   }
 
@@ -176,7 +199,7 @@ class MapView
   updatePopup(start, end){
     if(this._popupExists){
       var newPeriod = document.getElementById("pYears");
-      newPeriod.textContent = start + "-" + end;
+      newPeriod.innerHTML = "<strong>Years: </strong>" + start + " - " + end;
     }
   }
    
@@ -193,7 +216,12 @@ class MapView
     return this._profileCoordCollection;
   }
 
-  
+  /**
+   * Setter 
+   */
  
+  setLastCoords(coords){
+    this._lastCoords = coords; 
+  }
 
 }
