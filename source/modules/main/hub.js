@@ -88,6 +88,9 @@ let loadHub = (main) =>
 
       // Update coordinates in infobox
       main.modules.coordinatesInInfobox.update(coords)
+
+      //open Popup
+      // main.modules.map.updatePopup(start, end);
     };
 
 

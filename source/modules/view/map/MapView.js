@@ -152,9 +152,9 @@ class MapView
   // draw popup
   // ==========================================================================
   drawPopup(climateData){
-    // if(!this._drawPopupNow){
-    //   return;
-    // }
+    if(!this._drawPopupNow){
+      return;
+    }
     if(this._popupExists){
       this._map.closePopup();
     }
@@ -173,10 +173,8 @@ class MapView
       .openOn(this._map);
 
     this._main.modules.weatherStationsOnMap.setMode(false);
-    this._drawPopupNow=false;
+    this._drawPopupNow= false;
     this._popupExists = true;
-
-
   }
 
   _addChart(evt){
