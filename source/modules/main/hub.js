@@ -73,7 +73,8 @@ let loadHub = (main) =>
         
         main.modules.locationMarkerOnMap.set(coords);
         main.modules.climateCellOnMap.set(coords);
-        main.modules.climateDatasetController.update()
+        main.modules.climateDatasetController.update();
+        main.modules.map.updatePopup();
       }
 
       // In WeatherStation mode
@@ -122,7 +123,7 @@ let loadHub = (main) =>
       main.modules.timeline.updatePeriod(start, end);
 
       // Update Popup on map
-      main.modules.map.updatePopup(start, end);
+      main.modules.map.updatePopupTime(start, end);
     };
 
   main.hub.onResetPeriod = (start, end) =>
