@@ -129,7 +129,6 @@
   border:none;
   width:20px;
   height:20px;
-  
 }
 
 #closeIcon{
@@ -154,3 +153,9 @@
   right: 20px;
   padding: 4px;
 }
+
+.distbar{
+  width: 24px;
+  height: 24px;
+}
+

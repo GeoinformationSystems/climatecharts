@@ -103,16 +103,16 @@ class Chart
   // Update title of chart
   // ========================================================================
 
-  // updateTitle(title)
-  // {
-  //   // if (this._chartExists)
-  //   // {
-  //   //   // Update model
-  //   //   this._title = title;
-  //   //   // Update view
-  //   //   this._titleDiv.text(title)
-  //   // }
-  // }
+  updateTitle(title)
+  {
+    if (this._chartExists)
+    {
+      // Update model
+      this._title = title;
+      // Update view
+      this._titleDiv.text(title)
+    }
+  }
 
 
   // ========================================================================
@@ -245,35 +245,48 @@ class Chart
     // add link to navigation bar
     navbarbtn.setAttribute("href", "#" + chartID + '-wrapper');
     navbarbtn.setAttribute("data-toggle", "pill");
+    var disImgID= "distribution-chart" + this._chartCollectionId +"-img";
+    var disListID= "distribution-chart" + this._chartCollectionId +"-li";
 
     switch(this._chartMain.name){
       case 'climate-chart':{
         navbarbtn.innerHTML = '<i class="fas fa-chart-area" aria-hidden="true" align="center"></i>';
+
+        // switch image in distribution chart when switching charts
+        $("#" + chartID + '-li').on("click", () =>{
+          if(!$('#' + chartID + '-li').hasClass('active')){
+            console.log("within1");
+            $('#'+disImgID).attr('src', 'data/img/noun_BoxPlot_normal.png');
+            $('#'+disListID).removeClass('active');
+          }
+        });
         break;
       }
       case 'distribution-chart':{
-        navbarbtn.innerHTML = '<i class="fas fa-chart-bar" aria-hidden="true" align="center"></i>';
+        navbarbtn.innerHTML = '<img id="'+chartID+'-img"' + 'class="distbar" src="data/img/noun_BoxPlot_normal.png"></img>';
+        // switch image
+        $("#" + chartID + '-li>a').on("click", () =>{
+          if(!$('#' + chartID + '-li').hasClass('active')){
+            $('#'+disImgID).attr('src', 'data/img/noun_BoxPlot_highlight.png');
+          }
+        });
+
         break;
       }
       case 'availability-chart':{
         navbarbtn.innerHTML = '<i class="fab fa-buromobelexperte" aria-hidden="true" align="center"></i>';
-        break;
-      }
-      case 'map-chart':{
-        navbarbtn.innerHTML = '<i class="fas fa-globe-europe" aria-hidden="true" align="center"></i>';
-        $('#map-chart'+this._chartCollectionId+'-a').on("click", () =>{
-          setTimeout(()=>{
-            window.dispatchEvent(new Event('resize'));
-          }, 500);
-          
-        })
+        $("#" + chartID + '-li').on("click", () =>{
+          if(!$('#' + chartID + '-li').hasClass('active')){
+            $('#'+disImgID).attr('src', 'data/img/noun_BoxPlot_normal.png');
+            $('#'+disListID).removeClass('active');
+          }
+        });
         break;
       }
       default:{
         navbarbtn.text = this._chartMain.name;
       }
     }
-
 
     // Chart Wrapper for all chart elements
     let chartWrapper = this._main.modules.domElementCreator.create(

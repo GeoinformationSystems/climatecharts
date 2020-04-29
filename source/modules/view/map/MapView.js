@@ -212,10 +212,6 @@ class MapView
   updatePopup(){
     this._drawPopupNow = true;
     L.popup().update();
-    // popup.update();
-    // this._climateData = this._main.modules.climateDataController.getClimateData();;
-    // this.drawPopup();
-    //autopanstart
   }
   // ==========================================================================
   // Getter

@@ -34,7 +34,7 @@ class ChartTitleSetter
     // Type new name => write into diagrams
     this._chartTitleDiv.change( () =>
       {
-        this._main.hub.onDiagramTitleChange(this._chartTitleDiv.val())
+        // this._main.hub.onDiagramTitleChange(this._chartTitleDiv.val())
       }
     )
   }

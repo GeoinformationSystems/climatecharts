@@ -128,16 +128,16 @@ class ChartController
   // Update the title of the charts
   // ==========================================================================
 
-  // updateTitle(title)
-  // {
-  //   // if (this._chartsAreActive)
-  //   //   for (let chart of this._charts)
-  //   //     chart.updateTitle(title)
-  //   //     this._chartobject.customTitle = title;
+  updateTitle(title)
+  {
+    if (this._chartsAreActive)
+      for (let chart of this._charts)
+        chart.updateTitle(title)
+        this._chartobject.customTitle = title;
 
-  //       //let chartobject = this._chartobject;
-  //       //this._chartsCollection.set(this._locationKey, chartobject);
-  // }
+        let chartobject = this._chartobject;
+        this._chartsCollection.set(this._locationKey, chartobject);
+  }
 
 
   // ==========================================================================
