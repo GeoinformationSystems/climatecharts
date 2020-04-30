@@ -104,9 +104,13 @@
 .save-to-svg
 {
   position: absolute;
-  margin-right: 40px;
-  right: 8%;
+  margin-right: 5%;
+  right: 13%;
   top: 10%;
+}
+
+.save-to-svg:active {
+  margin-right: 5%;
 }
 
 .close-chart{
@@ -155,7 +159,7 @@
 }
 
 .distbar{
-  width: 24px;
-  height: 24px;
+  width: 60%;
+  height: 100%;
 }
 

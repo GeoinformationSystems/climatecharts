@@ -255,7 +255,6 @@ class Chart
         // switch image in distribution chart when switching charts
         $("#" + chartID + '-li').on("click", () =>{
           if(!$('#' + chartID + '-li').hasClass('active')){
-            console.log("within1");
             $('#'+disImgID).attr('src', 'data/img/noun_BoxPlot_normal.png');
             $('#'+disListID).removeClass('active');
           }
