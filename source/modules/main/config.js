@@ -222,7 +222,8 @@ let loadConfig = (main) =>
             a_range2:           d3.rgb(76 ,  76 ,  76),
             a_range1:           d3.rgb(27 ,  27 ,  27),
             // hardbreak:          d3.rgb(255,0,0)
-          }
+          },
+          infoTextNotEnoughData: "Not enough data available for the selected station to create this chart. Please select a different time period. Detailed information regarding available data can be found via the availability chart.",
         },
 
         // --------------------------------------------------------------------

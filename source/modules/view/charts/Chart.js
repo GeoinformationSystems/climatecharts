@@ -41,14 +41,18 @@ class Chart
       if (chart.name === chartName)     
         this._chartMain = chart;
 
-    // Error handling: if no climateData, chart will not be set up
-    if (!climateData) return this._chartExists = false;
 
     //check if complete new container has to be drawn
     this._chartZero = this._chartsMain.charts[0].name;
-     if(this._chartZero == chartName){
-       this._newCollectionStart = true;
-     }
+    if(this._chartZero == chartName){
+      this._newCollectionStart = true;
+    }
+    
+    // Error handling: if no climateData, chart will not be set up
+    if (!climateData) {
+      this._setupChartlessContainer();
+      return this._chartExists = false;
+    }
 
     // Global setup for all chart types
     this._initMembers(climateData);
@@ -425,6 +429,19 @@ _setupContainerMenu(partID, cID){
   return navbarli;
   
 }
+  // ==========================================================================
+  // Setup an empty container when not enought data
+  // ==========================================================================
+
+  _setupChartlessContainer()
+  {
+    this._setupContainer();
+    let infoNotAvail = this._main.modules.domElementCreator.create(
+      'div', this._chartMain.name+'-info', ['info']
+    );
+    infoNotAvail.innerHTML = this._chartsMain.charts[0].infoTextNotEnoughData;
+    this._chartWrapper[0].appendChild(infoNotAvail);
+  }
 
 
   // ==========================================================================
