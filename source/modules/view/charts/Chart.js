@@ -125,26 +125,23 @@ class Chart
 
   _remove()
   {
-    if (this._chartExists)
-    {
-      // Clean model
-      this._climateData = null;
-      // Clean view
-      //this._chartWrapper.remove();
-      let chartmenu = $('#chartcollection' + this._chartCollectionId + '-menu'); 
-      chartmenu.remove();
+    // Clean model
+    this._climateData = null;
+    // Clean view
+    //this._chartWrapper.remove();
+    let chartmenu = $('#chartcollection' + this._chartCollectionId + '-menu'); 
+    chartmenu.remove();
 
-      d3.selectAll('.chart-grid').each(
-        function(){
-          if(this.childElementCount < 1){
-            this.remove();
-          };
-        }
-      )
+    d3.selectAll('.chart-grid').each(
+      function(){
+        if(this.childElementCount < 1){
+          this.remove();
+        };
+      }
+    )
 
-      this._toolbar.empty();
-      this._main.modules.chartController.deleteMapItem(this._chartCollectionId);
-    }
+    this._toolbar.empty();
+    this._main.modules.chartController.deleteMapItem(this._chartCollectionId);
   }
 
 
@@ -340,7 +337,7 @@ _setupContainerMenu(partID, cID){
       };
     }
   )
-
+  console.log ("amount charts: "+ amountOfCharts);
   if(amountOfCharts % 2 == 1 && !partiallyFilledRow){
 
     chartgrid = this._main.modules.domElementCreator.create(
@@ -436,6 +433,7 @@ _setupContainerMenu(partID, cID){
   _setupChartlessContainer()
   {
     this._setupContainer();
+    this._setupToolbar();
     let infoNotAvail = this._main.modules.domElementCreator.create(
       'div', this._chartMain.name+'-info', ['info']
     );
@@ -488,38 +486,39 @@ _setupContainerMenu(partID, cID){
       }
     );
 
-    let pngButton = this._main.modules.domElementCreator.create(
-      'button',
-      'savepng'+this._chartCollectionId,
-       ['save-to-png', 'toolbarbtn']
-    );
-    $(pngButton).html(this._chartsMain.saveOptions.png.buttonName);
-    this._toolbar.append(pngButton);
+    if (this._climateData) {  
+      let pngButton = this._main.modules.domElementCreator.create(
+        'button',
+        'savepng'+this._chartCollectionId,
+        ['save-to-png', 'toolbarbtn']
+      );
+      $(pngButton).html(this._chartsMain.saveOptions.png.buttonName);
+      this._toolbar.append(pngButton);
 
-    $(pngButton).click(() =>
-      {
-        this._saveToPNG()
-      }
-    );
+      $(pngButton).click(() =>
+        {
+          this._saveToPNG()
+        }
+      );
 
-    // Save options: SVG
-// TODO: get to work
-    let svgButton = this._main.modules.domElementCreator.create(
-      'button', 
-      'savesvg'+this._chartCollectionId,  
-      ['save-to-svg', 'toolbar-btn']
-    );
-    $(svgButton).html(this._chartsMain.saveOptions.svg.buttonName);
-    this._toolbar.append(svgButton);
+      // Save options: SVG
+      // TODO: get to work
+      let svgButton = this._main.modules.domElementCreator.create(
+        'button', 
+        'savesvg'+this._chartCollectionId,  
+        ['save-to-svg', 'toolbar-btn']
+      );
+      $(svgButton).html(this._chartsMain.saveOptions.svg.buttonName);
+      this._toolbar.append(svgButton);
 
-    $(svgButton).click(() =>
-      {
-        let rootDiv =       this._chart[0][0];
-        let fileName =      this._chartName;  // TODO: more sophisticated
-        this._saveToSVG()
-      }
-    )
-    
+      $(svgButton).click(() =>
+        {
+          let rootDiv =       this._chart[0][0];
+          let fileName =      this._chartName;  // TODO: more sophisticated
+          this._saveToSVG()
+        }
+      )
+    } 
   }
 
 

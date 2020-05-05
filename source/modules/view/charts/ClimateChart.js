@@ -143,22 +143,23 @@ class ClimateChart extends Chart
   {
     super._setupToolbar();
 
-    let graphOptions = this._main.modules.domElementCreator.create(
-      'div', 'cc-graph-options'
-    );
-    this._toolbar[0].appendChild(graphOptions);
+    if (this._climateData) { 
+      let graphOptions = this._main.modules.domElementCreator.create(
+        'div', 'cc-graph-options'
+      );
+      this._toolbar[0].appendChild(graphOptions);
 
 
-    let graphOptionLine = this._main.modules.domElementCreator.create(
-      'a', 'cc-graph-option-first',[] , [['title', 'Walter-Lieth Chart']]
-    );
-    graphOptions.appendChild(graphOptionLine);
+      let graphOptionLine = this._main.modules.domElementCreator.create(
+        'a', 'cc-graph-option-first',[] , [['title', 'Walter-Lieth Chart']]
+      );
+      graphOptions.appendChild(graphOptionLine);
 
 
-    let graphOptionBar = this._main.modules.domElementCreator.create(
-      'a', 'cc-graph-option-last',[] , [['title', 'Bar Chart']]
-    );
-    graphOptions.appendChild(graphOptionBar);
+      let graphOptionBar = this._main.modules.domElementCreator.create(
+        'a', 'cc-graph-option-last',[] , [['title', 'Bar Chart']]
+      );
+      graphOptions.appendChild(graphOptionBar);
     
     //disabled for now
 //    let graphOptionStep = this._main.modules.domElementCreator.create(
@@ -204,6 +205,7 @@ class ClimateChart extends Chart
         this._setupHeaderFooter()
       }
     )
+    }
   }
 
 
