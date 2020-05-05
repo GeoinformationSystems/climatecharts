@@ -31,10 +31,10 @@
   display: flex;
 }
 
-.chart-menu:hover{
-  box-shadow: 0px 0px 6px #babdb6;
+ .chart-menu:hover{
+  box-shadow: 0px 0px 4px #babdb6;
   transition: 0.2s;
-}
+} 
 
 .chart-bar{
   width: 10%;
@@ -105,7 +105,7 @@
 {
   position: absolute;
   margin-right: 5%;
-  right: 13%;
+  right: 15%;
   top: 10%;
 }
 

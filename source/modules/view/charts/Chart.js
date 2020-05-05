@@ -453,7 +453,21 @@ _setupContainerMenu(partID, cID){
     $(closeBtn).click(() =>
       {
         //this._saveToPNG()
-        this._remove()
+        this._remove();
+
+        var collectionNr;
+        // if(this._chartCollectionId % 2 == 0){
+        //   collectionNr = this._chartCollectionId;
+        // }else{
+        //   collectionNr = this._chartCollectionId-1;
+        // }
+        // var collectionName = '#chartcollection'+ collectionNr +'-grid';
+        // let childCount = $('#chartcollection'+ collectionNr +'-grid')[0].childElementCount;
+        // let childCount = $('#chartcollection'+ collectionNr +'-grid').find(closeBtn.id);
+        // let childCount = $(this).closest('.chart-grid');
+        // chartcollection0-grid
+        // console.log(childCount);
+        
       }
     );
 
