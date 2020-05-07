@@ -29,6 +29,7 @@ class Chart
     this._chartCollectionId = id;
     this._climateData = this._main.modules.helpers.deepCopy(climateData);
     this._geoProfile = profile;
+    this._climateChartExists;
 
     // Get charts main -> generic information for all charts
     // get initial dimensions as a deep copy to change them later on
@@ -48,19 +49,38 @@ class Chart
       this._newCollectionStart = true;
     }
     
+    // this._initMembers(climateData);
+    // this._setupContainer();
+    // this._setupToolbar();
     // Error handling: if no climateData, chart will not be set up
-    if (!climateData) {
-      this._setupChartlessContainer();
-      return this._chartExists = false;
-    }
-
-    // Global setup for all chart types
+    // if (!climateData) {
+      
+    //   // this._setupContainer();
+    //   // this._setupToolbar();
+    //   // this._setupChartlessContainer();
+    //   this._climateChartExists = false;
+    //   // return this._chartExists = false;
+    // }else{
+    //   this._climateChartExists = true;
+    // }
     this._initMembers(climateData);
-    this._setChartMetadata();
+    if(this._climateData){ 
+      this._setChartMetadata();
+    }
     this._setupContainer();
     this._setupToolbar();
-    this._setupChart();
-    this._setupHeaderFooter()
+    this._setupChart(); 
+    this._setupHeaderFooter();
+  
+    // Global setup for all chart types
+    // this._initMembers(climateData);
+    // this._setChartMetadata();
+
+    // this._setupContainer();
+    
+    // this._setupToolbar();
+    // this._setupChart();
+    // this._setupHeaderFooter()
 
     /**
      * * Brushing & Linking
@@ -125,23 +145,26 @@ class Chart
 
   _remove()
   {
-    // Clean model
-    this._climateData = null;
-    // Clean view
-    //this._chartWrapper.remove();
-    let chartmenu = $('#chartcollection' + this._chartCollectionId + '-menu'); 
-    chartmenu.remove();
+    if (this._chartExists)
+    {
+      // Clean model
+      this._climateData = null;
+      // Clean view
+      //this._chartWrapper.remove();
+      let chartmenu = $('#chartcollection' + this._chartCollectionId + '-menu'); 
+      chartmenu.remove();
 
-    d3.selectAll('.chart-grid').each(
-      function(){
-        if(this.childElementCount < 1){
-          this.remove();
-        };
-      }
-    )
+      d3.selectAll('.chart-grid').each(
+        function(){
+          if(this.childElementCount < 1){
+            this.remove();
+          };
+        }
+      )
 
-    this._toolbar.empty();
-    this._main.modules.chartController.deleteMapItem(this._chartCollectionId);
+      this._toolbar.empty();
+      this._main.modules.chartController.deleteMapItem(this._chartCollectionId);
+    }
   }
 
 
@@ -322,7 +345,7 @@ _setupContainerMenu(partID, cID){
   let parentContainer = $('#' + this._chartsMain.parentContainer);
 
   let amountOfCharts = this._main.modules.chartController.getMapSize();
-  let chartgrid;
+  var chartgrid;
   
   //TODO if chart gets closed -> go over selectAll(rows) to reorder
   //Grid Layout
@@ -331,13 +354,13 @@ _setupContainerMenu(partID, cID){
   var partiallyFilledRow = false;
   d3.selectAll('.chart-grid').each(
     function(){
-      if(this.childElementCount == 1){
+      if(this.childElementCount <= 1){
         partiallyFilledRow = true;
         grids = this;
       };
     }
   )
-  console.log ("amount charts: "+ amountOfCharts);
+
   if(amountOfCharts % 2 == 1 && !partiallyFilledRow){
 
     chartgrid = this._main.modules.domElementCreator.create(
@@ -432,8 +455,7 @@ _setupContainerMenu(partID, cID){
 
   _setupChartlessContainer()
   {
-    this._setupContainer();
-    this._setupToolbar();
+    // this._setupContainer();
     let infoNotAvail = this._main.modules.domElementCreator.create(
       'div', this._chartMain.name+'-info', ['info']
     );
@@ -486,7 +508,7 @@ _setupContainerMenu(partID, cID){
       }
     );
 
-    if (this._climateData) {  
+    if(this._climateData){
       let pngButton = this._main.modules.domElementCreator.create(
         'button',
         'savepng'+this._chartCollectionId,
@@ -502,7 +524,7 @@ _setupContainerMenu(partID, cID){
       );
 
       // Save options: SVG
-      // TODO: get to work
+  // TODO: get to work
       let svgButton = this._main.modules.domElementCreator.create(
         'button', 
         'savesvg'+this._chartCollectionId,  
@@ -518,7 +540,8 @@ _setupContainerMenu(partID, cID){
           this._saveToSVG()
         }
       )
-    } 
+    }
+    
   }
 
 
@@ -587,43 +610,45 @@ _setupContainerMenu(partID, cID){
       .text(this._subtitle);
 
     // Footer: Source link
-    this._footerElems = [2];
-    this._footerElems[0] = this._chart.append('text')
-      .attr('class', 'footer source footer-'+this._chartName+this._chartCollectionId)
-      .attr('x', 0
-        + this._chartsMain.padding
-      )
-      .attr('y', 0
-        + this._chartPos.bottom
-        + this._chartsMain.positions.footerTop
-        + this._chartsMain.padding
-      )
-      .style('cursor', 'pointer')
-      .style('font-size', this._chartsMain.fontSizes.small + 'em')
-      .style('opacity', this._chartsMain.footerOpacity)
-      .text('Data Source: ' + this._climateData.source)
-      .on('click', () =>
-        {
-          window.open(this._climateData.source_link)
-        }
-      );
+    if(this._climateData){
+      this._footerElems = [2];
+      this._footerElems[0] = this._chart.append('text')
+        .attr('class', 'footer source footer-'+this._chartName+this._chartCollectionId)
+        .attr('x', 0
+          + this._chartsMain.padding
+        )
+        .attr('y', 0
+          + this._chartPos.bottom
+          + this._chartsMain.positions.footerTop
+          + this._chartsMain.padding
+        )
+        .style('cursor', 'pointer')
+        .style('font-size', this._chartsMain.fontSizes.small + 'em')
+        .style('opacity', this._chartsMain.footerOpacity)
+        .text('Data Source: ' + this._climateData.source)
+        .on('click', () =>
+          {
+            window.open(this._climateData.source_link)
+          }
+        );
 
-    // Footer: Reference URL
-    this._footerElems[1] = this._chart.append('text')
-      .attr('class', 'footer ref-url footer-'+this._chartName+this._chartCollectionId)
-      .attr('x', 0
-        + this._chartWidth
-        - this._chartsMain.padding
-      )
-      .attr('y', 0
-        + this._chartPos.bottom
-        + this._chartsMain.positions.footerTop
-        + this._chartsMain.padding
-      )
-      .style('text-anchor', 'end')
-      .style('font-size', this._chartsMain.fontSizes.small + 'em')
-      .style('opacity', this._chartsMain.footerOpacity)
-      .text('\u00A9 ' + this._refURL)
+      // Footer: Reference URL
+      this._footerElems[1] = this._chart.append('text')
+        .attr('class', 'footer ref-url footer-'+this._chartName+this._chartCollectionId)
+        .attr('x', 0
+          + this._chartWidth
+          - this._chartsMain.padding
+        )
+        .attr('y', 0
+          + this._chartPos.bottom
+          + this._chartsMain.positions.footerTop
+          + this._chartsMain.padding
+        )
+        .style('text-anchor', 'end')
+        .style('font-size', this._chartsMain.fontSizes.small + 'em')
+        .style('opacity', this._chartsMain.footerOpacity)
+        .text('\u00A9 ' + this._refURL)
+    }
   }
 
 
