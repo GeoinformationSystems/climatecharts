@@ -223,7 +223,7 @@ let loadConfig = (main) =>
             a_range1:           d3.rgb(27 ,  27 ,  27),
             // hardbreak:          d3.rgb(255,0,0)
           },
-          infoTextNotEnoughData: "Not enough data available for the selected station to create this chart. Please select a different time period. Detailed information regarding available data can be found via the availability chart.",
+          infoTextNotEnoughData: "There is not enough data available for the selected station to create a climate chart. Please choose a different time period or take a look at the other charts of your selection which you can find in the sidepanel of this chart's container. Detailed information regarding the availability of the data can be found in the ",
         },
 
         // --------------------------------------------------------------------

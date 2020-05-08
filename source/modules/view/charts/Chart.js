@@ -49,20 +49,7 @@ class Chart
       this._newCollectionStart = true;
     }
     
-    // this._initMembers(climateData);
-    // this._setupContainer();
-    // this._setupToolbar();
-    // Error handling: if no climateData, chart will not be set up
-    // if (!climateData) {
-      
-    //   // this._setupContainer();
-    //   // this._setupToolbar();
-    //   // this._setupChartlessContainer();
-    //   this._climateChartExists = false;
-    //   // return this._chartExists = false;
-    // }else{
-    //   this._climateChartExists = true;
-    // }
+    // Global setup for all chart types
     this._initMembers(climateData);
     if(this._climateData){ 
       this._setChartMetadata();
@@ -71,16 +58,7 @@ class Chart
     this._setupToolbar();
     this._setupChart(); 
     this._setupHeaderFooter();
-  
-    // Global setup for all chart types
-    // this._initMembers(climateData);
-    // this._setChartMetadata();
-
-    // this._setupContainer();
-    
-    // this._setupToolbar();
-    // this._setupChart();
-    // this._setupHeaderFooter()
+      
 
     /**
      * * Brushing & Linking
@@ -251,7 +229,7 @@ class Chart
       navbar_list = this._main.modules.domElementCreator.create(
         'li',                              // Element type
         chartID + '-li',  // ID
-        ['chart-li']      // Classes , 'w3-bar-item' ,'w3-button', 'tablink'
+        ['chart-li', 'nav-item']      // Classes , 'w3-bar-item' ,'w3-button', 'tablink'
       );
       var navUl = document.getElementById(partialID + '-list');
       navUl.append(navbar_list);
@@ -260,11 +238,11 @@ class Chart
 
     let navbarbtn = this._main.modules.domElementCreator.create(
       'a',                              // Element type
-      chartID + '-a',  // ID
-      'chart-a',           // Classes , 'w3-bar-item' ,'w3-button', 'tablink'
+      chartID + '-tab',  // ID
+      ['chart-a', 'nav-link'],           // Classes , 'w3-bar-item' ,'w3-button', 'tablink'
     );
     navbar_list.append(navbarbtn);
-    this._navbarbtn = $('#' + chartID + '-a');
+    this._navbarbtn = $('#' + chartID + '-tab');
 
     // add link to navigation bar
     navbarbtn.setAttribute("href", "#" + chartID + '-wrapper');
@@ -432,7 +410,7 @@ _setupContainerMenu(partID, cID){
   let navbarli = this._main.modules.domElementCreator.create(
     'li',                              // Element type
     cID + '-li',  // ID
-    ['chart-li', 'active']      // Classes , 'w3-bar-item' ,'w3-button', 'tablink'
+    ['chart-li', 'active', 'nav-item']      // Classes , 'w3-bar-item' ,'w3-button', 'tablink'
   );
   navbarlist.append(navbarli);
   this._navbarli = $('#' + partID + '-li');
@@ -456,11 +434,30 @@ _setupContainerMenu(partID, cID){
   _setupChartlessContainer()
   {
     // this._setupContainer();
-    let infoNotAvail = this._main.modules.domElementCreator.create(
-      'div', this._chartMain.name+'-info', ['info']
-    );
-    infoNotAvail.innerHTML = this._chartsMain.charts[0].infoTextNotEnoughData;
-    this._chartWrapper[0].appendChild(infoNotAvail);
+    // let infoNotAvail = this._main.modules.domElementCreator.create(
+    //   'div', this._chartName + this._chartCollectionId, ['info']
+    // );
+
+    let link = "availability-chart" + this._chartCollectionId;
+    let textlink = this._chartsMain.charts[0].infoTextNotEnoughData + "<a id='"+ link+"-link' href='#AvailChart'>Availability Chart.</a>"
+
+    // infoNotAvail.innerHTML = textlink;
+    this._chart = d3.select(this._chartWrapper[0])
+    .append('div')
+    .attr('id', this._chartName + this._chartCollectionId)
+    .attr('width', '100%')
+    .style('padding-right', '15%')
+    .style('padding-left', '5%')
+    .style('line-height', '180%')
+    // .attr('class', 'notavail-info')
+    .html(textlink)
+
+  $('#'+link+'-link').click(() =>
+    {
+      // $('#chartcollection' + this._chartCollectionId+'-li:'+'')
+      $('#'+link+"-tab").tab('show');
+    }
+  )
   }
 
 

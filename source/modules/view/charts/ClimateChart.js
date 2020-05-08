@@ -221,9 +221,10 @@ class ClimateChart extends Chart
 
   _setupChart()
   {
-    super._setupChart();
+    // super._setupChart();
     
     if(this._climateData){
+    super._setupChart();
         let curveType = "";
         let paddingXScale = 0;
         
