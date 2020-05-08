@@ -325,32 +325,19 @@ _setupContainerMenu(partID, cID){
   let amountOfCharts = this._main.modules.chartController.getMapSize();
   var chartgrid;
   
-  //TODO if chart gets closed -> go over selectAll(rows) to reorder
   //Grid Layout
-  //if uneven number of charts, start new row
-  var grids;
-  var partiallyFilledRow = false;
-  d3.selectAll('.chart-grid').each(
-    function(){
-      if(this.childElementCount <= 1){
-        partiallyFilledRow = true;
-        grids = this;
-      };
-    }
-  )
 
-  if(amountOfCharts % 2 == 1 && !partiallyFilledRow){
-
+  var chartgridExists = $("div").hasClass("chart-grid");
+  if(!chartgridExists){
     chartgrid = this._main.modules.domElementCreator.create(
       'div',                              // Element type
       partID + '-grid',  // ID
-      ['chart-grid',  'row']            // Classes 'container-fluid', 'w3-row'
+      ['chart-grid']            //'row' Classes 'container-fluid', 'w3-row'
     );
     parentContainer.append(chartgrid);
-    this._chartgrid = $('#' + partID + '-grid'); 
-  } else{
-  //if even number put it in the same
-    chartgrid = grids;
+    this._chartgrid = $('#' + partID + '-grid');
+  }else{
+    chartgrid = $(".chart-grid");
   }
 
 // Tabbed Container for charts
@@ -365,26 +352,9 @@ _setupContainerMenu(partID, cID){
   //divide into left and right column for padding
   var lr_column = document.getElementById(partID + '-menu');
   if(chartgrid.childElementCount == 1){
-    lr_column.classList.add("left-col");
+    // lr_column.classList.add("left-col");
   }else{
-    lr_column.classList.add("right-col");
-  }
-
-  //create grid if more than 1 chart is displayed
-  let gridMaybe = d3.selectAll('.chart-menu');
-  if(chartgrid.childElementCount != 1){
-    gridMaybe.classed("col-md-12",false);
-    gridMaybe.classed("col-md-6", true);
-
-
-    this._resizeCanvas();
-
-
-  }else{
-    // gridMaybe.classed("col-md-6", false);
-    // gridMaybe.classed("col-md-12", true);
-    // this._resizeCanvas();
-    //d3.selectAll("left-col").attr('padding-right', 0);
+    // lr_column.classList.add("right-col");
   }
 
 
@@ -419,7 +389,7 @@ _setupContainerMenu(partID, cID){
   let tabContent = this._main.modules.domElementCreator.create(
     'div',                              // Element type
     partID + '-tabContent',  // ID
-    ['tab-content']            // Classes 'w3-container'
+    ['tab-content', 'contentcontainer']            // Classes 'w3-container'
   );
   chartmenu.append(tabContent);
   this._tabContent = $('#' + partID + '-tabContent');
@@ -433,15 +403,10 @@ _setupContainerMenu(partID, cID){
 
   _setupChartlessContainer()
   {
-    // this._setupContainer();
-    // let infoNotAvail = this._main.modules.domElementCreator.create(
-    //   'div', this._chartName + this._chartCollectionId, ['info']
-    // );
 
     let link = "availability-chart" + this._chartCollectionId;
     let textlink = this._chartsMain.charts[0].infoTextNotEnoughData + "<a id='"+ link+"-link' href='#AvailChart'>Availability Chart.</a>"
 
-    // infoNotAvail.innerHTML = textlink;
     this._chart = d3.select(this._chartWrapper[0])
     .append('div')
     .attr('id', this._chartName + this._chartCollectionId)
@@ -449,12 +414,10 @@ _setupContainerMenu(partID, cID){
     .style('padding-right', '15%')
     .style('padding-left', '5%')
     .style('line-height', '180%')
-    // .attr('class', 'notavail-info')
     .html(textlink)
 
   $('#'+link+'-link').click(() =>
     {
-      // $('#chartcollection' + this._chartCollectionId+'-li:'+'')
       $('#'+link+"-tab").tab('show');
     }
   )
@@ -486,21 +449,7 @@ _setupContainerMenu(partID, cID){
 
     $(closeBtn).click(() =>
       {
-        //this._saveToPNG()
         this._remove();
-
-        var collectionNr;
-        // if(this._chartCollectionId % 2 == 0){
-        //   collectionNr = this._chartCollectionId;
-        // }else{
-        //   collectionNr = this._chartCollectionId-1;
-        // }
-        // var collectionName = '#chartcollection'+ collectionNr +'-grid';
-        // let childCount = $('#chartcollection'+ collectionNr +'-grid')[0].childElementCount;
-        // let childCount = $('#chartcollection'+ collectionNr +'-grid').find(closeBtn.id);
-        // let childCount = $(this).closest('.chart-grid');
-        // chartcollection0-grid
-        // console.log(childCount);
         
       }
     );

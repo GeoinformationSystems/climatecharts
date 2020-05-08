@@ -15,9 +15,9 @@ let loadConfig = (main) =>
     time :
     {
       minYear:      1750,       // Minimum possible year of climate data
-      maxYear:      2018,       // Maximum possible year of climate data
+      maxYear:      2019,       // Maximum possible year of climate data
       periodLength: 30,         // Number of years in time period (default: 30)
-      periodEnd:    2018,       // Initial end year of the period
+      periodEnd:    2019,       // Initial end year of the period
     },
 
     // ========================================================================

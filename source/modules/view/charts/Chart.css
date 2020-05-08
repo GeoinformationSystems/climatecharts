@@ -1,34 +1,24 @@
 .chart-grid{
-  
+  display: flex;
+  flex-flow: row wrap-reverse;
+  justify-content: flex-start;
+  align-items: flex-start; 
 }
 
-.row{
-  margin: 0px;
+
+.contentcontainer{
+  width: 90%;
+  float:right;
 }
 
-.tab-content{
-  width: 100%;
-}
 
-.no-gutters > .col, [class*="col-md-6"] {
-    padding-right: 4px; 
-    padding-left: 0px;
-
-  }
-
-.no-gutters > .col, [class*="col-md-12"] {
-    padding-right: 0px;
-    padding-left: 0px;
-
-  }
-
-  .right-col{
-    padding: 0;
-  }
 
 .chart-menu
 {
-  display: flex;
+  flex-grow: 2;
+  flex-shrink: 1;
+  flex-basis: 40%;
+  margin: 0.5%;
 }
 
  .chart-menu:hover{
