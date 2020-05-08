@@ -2,7 +2,7 @@
   display: flex;
   flex-flow: row wrap-reverse;
   justify-content: flex-start;
-  align-items: flex-start; 
+  align-items: flex-end; 
 }
 
 
@@ -22,7 +22,7 @@
 }
 
  .chart-menu:hover{
-  box-shadow: 0px 0px 4px #babdb6;
+  box-shadow: 3px -3px 4px #babdb6;
   transition: 0.2s;
 } 
 
@@ -31,7 +31,6 @@
   display:inline-flex;
   float:left;
   background-color: white;
-  opacity: 0.75;
   border-right-color: solid lightgray;
 }
 
