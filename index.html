@@ -156,8 +156,13 @@
                                                 <input id="user-title" type="text" class="form-control  input-sm" placeholder="Enter custom title">
                                                 <button id='set-diagram-title' disabled="true">Write</button>
                                             </div>
-                                            
+                                            <div class="form-group">
+                                                <label for="user-title" >Dataset:</label>
+                                                <select id="datasets" name="datasets" ></select>
+                                            </div>
                                         </form>
+
+                                        
                                     </div>
                                     <div id="chart-info" class="box">
                                         <p id="info" class="info">
@@ -267,9 +272,10 @@
                                             </p>
                                             <h4>Active Dataset</h4>
                                             <p id='dataset-name'></p>
-                                            <select id="datasets" name="datasets" style="width:100%">
+                                            <div id='dataset-info'></div>
+                                            <!--<select id="datasets" name="datasets" style="width:100%">
                                             </select>
-                                            <!--
+                                            
                                             <div id="dataset-infobox" class="box block">
                                                 <div id="datasets-in-list" class="dropdown">
                                                     <div class="linewrapper"></div>
@@ -277,8 +283,8 @@
                                                     <br/>
                                                     <div id="dataset-info"></div>
                                                 </div>
-                                            </div>
-                                            -->
+                                            </div>-->
+                                            
                                         </div>
                                     </div>
                                 </div>

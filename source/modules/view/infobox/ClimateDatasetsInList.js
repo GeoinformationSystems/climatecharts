@@ -54,17 +54,19 @@ class ClimateDatasetsInList
 
   enable()
   {
-    if (!this._isEnabled)
-      this._datasetList.show();
-
+    if (!this._isEnabled) {
+      //this._datasetList.show();
+      this._datasetList.prop('disabled', false);
+    }
     this._isEnabled = true
   }
 
   disable()
   {
-    if (this._isEnabled)
-      this._datasetList.hide();
-
+    if (this._isEnabled){
+      //this._datasetList.hide();
+      this._datasetList.prop('disabled', true);
+    }
     this._isEnabled = false
   }
 
