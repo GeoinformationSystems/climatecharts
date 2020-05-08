@@ -142,7 +142,7 @@ class MapView
     addbtn.setAttribute('text-align', 'right');
     addbtn.innerHTML = 'Create Charts';
     addbtn.onclick= () =>{
-      this._drawCharts(false);
+      this._drawCharts();
     }
 
 
@@ -191,8 +191,8 @@ class MapView
 
   }
 
-  _drawCharts(flag){
-    this._main.modules.chartController.updateCharts(null, this._lastLocationCounter, flag);
+  _drawCharts(){
+    this._main.modules.chartController.updateCharts(this._lastLocationCounter);
     this._lastLocationCounter = this._lastLocationCounter+1;
   }
 

@@ -106,7 +106,7 @@ class ChartController
   // Kickstart drawing of charts
   // ==========================================================================
 
-  updateCharts(profileCollection, counter, flag){
+  updateCharts(counter){
     this._locationKey = counter;
     // Create charts all over again
     let chartobject = this._main.modules.helpers.deepCopy(this._chartobject);
