@@ -43,7 +43,7 @@ class ClimateDatasetsInList
           this._datasetList.val()
         )
       }
-    )
+    );
 
   }
 
@@ -54,20 +54,18 @@ class ClimateDatasetsInList
 
   enable()
   {
-    if (!this._isEnabled) {
-      //this._datasetList.show();
+    if (!this._isEnabled)
       this._datasetList.prop('disabled', false);
-    }
-    this._isEnabled = true
+
+    this._isEnabled = true;
   }
 
   disable()
   {
-    if (this._isEnabled){
-      //this._datasetList.hide();
+    if (this._isEnabled)
       this._datasetList.prop('disabled', true);
-    }
-    this._isEnabled = false
+
+    this._isEnabled = false;
   }
 
 
@@ -82,12 +80,12 @@ class ClimateDatasetsInList
     link.attr('target', '_blank');
     link.text(this._main.config.station.source.name);
 
-    this._datasetsTitle.html(link)
+    this._datasetsTitle.html(link);
   }
 
   removeStationsTitle()
   {
-    this._datasetsTitle.html("")
+    this._datasetsTitle.html("");
   }
 
 
@@ -95,7 +93,7 @@ class ClimateDatasetsInList
   // Add / Remove element to / from list
   // ==========================================================================
 
-  add(climateDataset, isFirst)
+  add(climateDataset)
   {
     this._datasetList.append(
         "<option "
@@ -104,12 +102,12 @@ class ClimateDatasetsInList
       + ">"
       + climateDataset.name
       + "</option>"
-    )
+    );
   }
 
   remove(climateDataset)
   {
-    $('#'+climateDataset.id).remove()
+    $('#'+climateDataset.id).remove();
   }
 
 }
