@@ -35,6 +35,7 @@
     <link href="build/third-party/jquery/waitMe.min.css" rel="stylesheet"/>
 
     <!-- Bootstrap (requires jQuery) -->
+    <script src="build/third-party/bootstrap/popper.min.js"></script>
     <script src="build/third-party/bootstrap/bootstrap.min.js"></script>
     <link href="build/third-party/bootstrap/bootstrap.min.css" rel="stylesheet"/>
 
@@ -159,6 +160,7 @@
                                             <div class="form-group">
                                                 <label for="user-title" >Dataset:</label>
                                                 <select id="datasets" name="datasets" ></select>
+                                                <a type="button" id="dataset-tooltip" class="tooltip-inactive" data-toggle="popover" data-placement="top" data-html="true" data-original-title="" data-content=""><i class="fas fa-info-circle" aria-hidden="true"></i></a>
                                             </div>
                                         </form>
 
@@ -270,21 +272,6 @@
                                                 and 58° southern latitude. The climate class is calculated from the temperature and precipitation data according
                                                 to the <a target="_blank" href="https://en.wikipedia.org/wiki/K%C3%B6ppen_climate_classification">Köppen-Geiger climate classification scheme</a>.
                                             </p>
-                                            <h4>Active Dataset</h4>
-                                            <p id='dataset-name'></p>
-                                            <div id='dataset-info'></div>
-                                            <!--<select id="datasets" name="datasets" style="width:100%">
-                                            </select>
-                                            
-                                            <div id="dataset-infobox" class="box block">
-                                                <div id="datasets-in-list" class="dropdown">
-                                                    <div class="linewrapper"></div>
-                                                    <p class ="datasets-title">Dataset: &nbsp;</p>
-                                                    <br/>
-                                                    <div id="dataset-info"></div>
-                                                </div>
-                                            </div>-->
-                                            
                                         </div>
                                     </div>
                                 </div>

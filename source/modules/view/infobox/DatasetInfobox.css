@@ -2,21 +2,58 @@
 {
   margin: 0px;
   height:30px;
+  width: 250px;
 }
 
-#dataset-name
+.datasets-name
 {
-  font-weight: normal;
-  margin-bottom: 4px;
-}
-
-#dataset-info
-{
-	text-align: justify;
+  font-size: 1.1em;
+  font-weight: bold;
+  margin: 0px;
 }
 
 .datasets-title
 {
-  font-size: 1.1em;
+  font-size: 1em;
   font-weight: bold;
+}
+
+.datasets-text
+{
+  font-size: 1em;
+  text-align: justify;
+}
+
+.popover {
+  max-width:80%;
+}
+#dataset-tooltip 
+{
+  width:1.75em;
+  line-height: 1.75em;
+  margin: 5px;
+  display: inline-block;
+  text-align: center;
+  vertical-align: middle;
+  color: #ffffff;
+  border-radius: 2px;
+  cursor: pointer;
+}
+
+.tooltip-inactive
+{ 
+  background-color: #868686;
+}
+.tooltip-inactive:hover
+{
+  background-color: #337ab7;
+}
+
+.tooltip-active 
+{
+  background-color: #f08888;
+}
+.tooltip-active:hover
+{
+  background-color: #f02222;
 }

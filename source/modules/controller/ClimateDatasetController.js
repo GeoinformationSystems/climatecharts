@@ -162,10 +162,12 @@ class ClimateDatasetController {
           tempData, precData,           // Actual climate data
           name, coords, elev, source    // Meta data
         );
+        
+        this._main.modules.loading.end();
       }
     )
     
-    this._main.modules.loading.end();
+    
   }
 
 
@@ -219,13 +221,17 @@ class ClimateDatasetController {
           // Get metadata
           this._loadMetadata(dataset);
         }
+        this._main.modules.loading.end();
       }
     )
 
-    this._main.modules.loading.end();
+    
   }
 
   _loadMetadata(dataset) {
+
+    this._main.modules.loading.start("datasets");
+
     this._main.modules.serverInterface.requestMetadataForDataset(
       dataset.url_datasets,
       (tempDataXml, precDataXml) => {
@@ -239,6 +245,8 @@ class ClimateDatasetController {
             lat: parseFloat(dataset.meta_datasets[0].group[0].attribute[6]._value),
             lng: parseFloat(dataset.meta_datasets[0].group[0].attribute[7]._value)
           };
+
+        this._main.modules.loading.end();
       }
     )
 

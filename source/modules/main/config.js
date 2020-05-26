@@ -398,7 +398,7 @@ let loadConfig = (main) =>
       source:
       {
         name:       "Global Historical Climatology Network",
-        link:       "www.ncdc.noaa.gov/ghcnm/",
+        link:       "https://www.ncdc.noaa.gov/ghcnm/",
         description:
           "GHCN-Monthly provides climatological observations for four elements: monthly mean maximum temperature, minimum temperature, mean temperature, and monthly total precipitation. Since the early 1990s the Global Historical Climatology Network-Monthly (GHCN-M) dataset has been an internationally recognized source of data for the study of observed variability and change in land surface air temperature. It provides monthly mean temperature data for 7280 stations from 226 countries and territories, ongoing monthly updates of more than 2000 stations to support monitoring of current and evolving climate conditions, and homogeneity adjustments to remove non-climatic influences that can bias the observed temperature record.",
       },

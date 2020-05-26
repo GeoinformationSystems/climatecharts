@@ -27,10 +27,7 @@ class ClimateDatasetsInList
     // ------------------------------------------------------------------------
 
     this._datasetList = $('#datasets');
-    this._datasetsTitle = $('#dataset-name');
-
     this._isEnabled = true;
-
 
     // ------------------------------------------------------------------------
     // User Interaction
@@ -66,26 +63,6 @@ class ClimateDatasetsInList
       this._datasetList.prop('disabled', true);
 
     this._isEnabled = false;
-  }
-
-
-  // ==========================================================================
-  // Set / Remove title for WeatherStations mode
-  // ==========================================================================
-
-  setStationsTitle()
-  {
-    let link = $('<a/>');
-    link.attr('href', 'http://' + this._main.config.station.source.link);
-    link.attr('target', '_blank');
-    link.text(this._main.config.station.source.name);
-
-    this._datasetsTitle.html(link);
-  }
-
-  removeStationsTitle()
-  {
-    this._datasetsTitle.html("");
   }
 
 

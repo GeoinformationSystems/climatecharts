@@ -2,7 +2,7 @@
 // DatasetsInfInfobox                                                     View
 // ############################################################################
 // Shows the metadata of the currently selected dataset or the weather station
-// in the infobox on the right.
+// in a popup/tooltip - toggled by an info button.
 // ############################################################################
 
 
@@ -21,29 +21,12 @@ class DatasetInfobox
   {
     this._main = main;
 
-    // ------------------------------------------------------------------------
-    // Member Variables
-    // ------------------------------------------------------------------------
+    this._datasetTooltip = $('#dataset-tooltip');
 
-    this._infobox = $('#dataset-info');
-    this.disable()
+    //Setup info button and related Bootstrap popover 
+    this._setupTooltip();
+    
   }
-
-
-  // ==========================================================================
-  // Enable / Disable infobox
-  // ==========================================================================
-
-  enable()
-  {
-    this._infobox.show()
-  }
-
-  disable()
-  {
-    this._infobox.hide()
-  }
-
 
   // ==========================================================================
   // Update text for currently selected climate dataset
@@ -51,12 +34,6 @@ class DatasetInfobox
 
   updateDatasetInfo(dataset)
   {
-    // Error handling: ensure that the infobox is visible
-    this.enable();
-
-    // Clear content
-    this._infobox.empty();
-
     // Preparing links in case of multiple DOIs for one dataset
     let doiLinks = "";
     // Splitting multiple DOIs in catalog by comma 
@@ -67,12 +44,21 @@ class DatasetInfobox
         doiLinks += '<a href="' + doiSplit[doiIDx] + '" target="_blank">' + doiSplit[doiIDx] + '</a><br />'
     }
 
-    // Set content
-    this._infobox.html(''
+    // If popover is visible: close popover tooltip 
+    if(this._datasetTooltip.data('bs.popover').tip().hasClass('in'))
+      this._datasetTooltip.click();
+
+    // Set tooltip title
+    $('#dataset-tooltip').attr('data-original-title',''
+      + '<p class="datasets-name">'
+      + dataset.name
+      + '</p>');
+    // Set tooltip content
+    $('#dataset-tooltip').attr('data-content',''  
       + '<p class="datasets-title">'
       + this._main.config.datasetsInfobox.ref
       + '</p>'
-      + '<p>'
+      + '<p class="datasets-text">'
       + dataset.description
       + '</p>'
       + '<p>'
@@ -88,15 +74,14 @@ class DatasetInfobox
       + '° x '
       + dataset.raster_cell_size.lng
       + '°'
-      + '</p>'
-      + '<p>'
+      + '<br />'
       + this._main.config.datasetsInfobox.time
       + ': '
       + dataset.time_period[0]
       + ' - '
       + dataset.time_period[1]
       + '</p>'
-    )
+    );
   }
 
 
@@ -106,18 +91,21 @@ class DatasetInfobox
 
   updateStationInfo(station)
   {
-    // Error handling: ensure that the infobox is visible
-    this.enable();
+    // If popover is visible: close popover tooltip 
+    if(this._datasetTooltip.data('bs.popover').tip().hasClass('in'))
+      this._datasetTooltip.click();
 
-    // Clear content
-    this._infobox.empty();
-
-    // Set content
-    this._infobox.html(''
+    // Set tooltip title
+    $('#dataset-tooltip').attr('data-original-title',''
+      + '<p class="datasets-name">'
+      + this._main.config.station.source.name
+      + '</p>');
+    // Set tooltip content
+    $('#dataset-tooltip').attr('data-content',''
       + '<p class="datasets-title">'
       + this._main.config.datasetsInfobox.ref
       + '</p>'
-      + '<p>'
+      + '<p class="datasets-text">'
       + this._main.config.station.source.description
       + '</p>'
       + '<p><a href="'
@@ -134,8 +122,7 @@ class DatasetInfobox
       + station.name
       + ', '
       + station.country
-      + '</p>'
-      + '<p>'
+      + '<br />'
       + this._main.config.datasetsInfobox.time
       + ': '
       + station.min_year
@@ -165,6 +152,38 @@ class DatasetInfobox
       // + ' months'
       // + '</p>'
     )
+  }
+
+  // ##########################################################################
+  // PRIVATE MEMBERS
+  // ##########################################################################
+
+  // ==========================================================================
+  // Setup info button and related Bootstrap popover  
+  // ==========================================================================
+
+  _setupTooltip()
+  {
+    // Initialize popover for display of dataset info in tooltip & bind to main-container
+    this._datasetTooltip.popover({
+      container: '#main-container'
+    });
+
+    this._datasetTooltip.on("click", () => {
+
+      if(this._datasetTooltip.data('bs.popover').tip().hasClass('in')) 
+      {
+        this._datasetTooltip.attr('class', 'tooltip-active');
+        // this._datasetTooltip.addClass('tooltip-active');
+        this._datasetTooltip.html('<i class="fas fa-times-circle" aria-hidden="true"></i>');
+      }
+      else
+      {
+        this._datasetTooltip.attr('class', 'tooltip-inactive');
+        // this._datasetTooltip.removeClass('tooltip-active');
+        this._datasetTooltip.html('<i class="fas fa-info-circle" aria-hidden="true"></i>');
+      }
+    });
   }
 
 }

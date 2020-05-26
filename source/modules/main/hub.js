@@ -35,7 +35,6 @@ let loadHub = (main) =>
       if (oldMode == 'S')
       {
         main.modules.weatherStationController.deselect();
-        main.modules.climateDatasetsInList.removeStationsTitle()
       }
 
       // New mode ClimateCell: restore climate datasets and coordinates
@@ -44,12 +43,6 @@ let loadHub = (main) =>
         main.modules.climateDatasetsInList.enable();
         main.modules.coordinatesInInfobox.enable();
         main.modules.climateDatasetController.reselect()
-      }
-
-      // New mode WeatherStation: set datasets title and disable coordinates
-      if (newMode == 'S')
-      {
-        main.modules.climateDatasetsInList.setStationsTitle()
       }
 
       // Set new mode
@@ -68,8 +61,8 @@ let loadHub = (main) =>
       if (main.mode == "C")
       {
         //set Piwiks CustomDimension: Searched Locations to track Locations in cell mode
-	_paq.push(['setCustomDimension', 1, coords.lat + ',' + coords.lng + ',1,' + main.modules.timeController.getPeriodStart() + ',' + main.modules.timeController.getPeriodEnd()]);
-	_paq.push(['trackPageView']);
+        _paq.push(['setCustomDimension', 1, coords.lat + ',' + coords.lng + ',1,' + main.modules.timeController.getPeriodStart() + ',' + main.modules.timeController.getPeriodEnd()]);
+        _paq.push(['trackPageView']);
         
         main.modules.locationMarkerOnMap.set(coords);
         main.modules.climateCellOnMap.set(coords);
@@ -81,17 +74,13 @@ let loadHub = (main) =>
       else if (main.mode == "S")
       {
         //set Piwiks CustomDimension: Searched Locations to track Locations in station mode
-	_paq.push(['setCustomDimension', 1, coords.lat + ',' + coords.lng + ',2,' + main.modules.timeController.getPeriodStart() + ',' + main.modules.timeController.getPeriodEnd()]);
-	_paq.push(['trackPageView'])
-        
-        // Handled directly in WeatherStation controller?
+        _paq.push(['setCustomDimension', 1, coords.lat + ',' + coords.lng + ',2,' + main.modules.timeController.getPeriodStart() + ',' + main.modules.timeController.getPeriodEnd()]);
+        _paq.push(['trackPageView'])
       }
 
       // Update coordinates in infobox
       main.modules.coordinatesInInfobox.update(coords)
 
-      //open Popup
-      // main.modules.map.updatePopup(start, end);
     };
 
 
