@@ -25,18 +25,25 @@ class ChartTitleSetter
     // Member variables
     // ------------------------------------------------------------------------
 
-    this._chartTitleDiv = $('#user-title');
+    this._userTitle = $('#user-title');
+
+    //this._chartTitleDiv = $('#user-title');
+    this._setButton = $('#set-diagram-title');
 
     // ------------------------------------------------------------------------
     // Event handling
     // ------------------------------------------------------------------------
 
-    // Type new name => write into diagrams
-    this._chartTitleDiv.change( () =>
+    this._setButton.click( (e) =>
       {
-        // this._main.hub.onDiagramTitleChange(this._chartTitleDiv.val())
+        e.preventDefault();
+        let title = this._userTitle.val();
+        
+        if (this._main.modules.helpers.checkIfString(title)){
+          this._main.hub.onDiagramTitleChange(title);
+        }
       }
-    )
+    );
   }
 
 
@@ -46,7 +53,6 @@ class ChartTitleSetter
 
   update(title)
   {
-    
-    this._chartTitleDiv.val(title)
+    this._userTitle.val(title)
   }
 }

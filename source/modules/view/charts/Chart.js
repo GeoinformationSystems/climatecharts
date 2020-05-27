@@ -83,21 +83,21 @@ class Chart
     //   });
     // }
     
-  //   function brushingAndLinking(){
-  //     console.log('domainByTrait', chartContainer);
-  //     activeContainer = chartContainer[0].filter(isActive);
-  //     console.log('traits', activeContainer);
+    //   function brushingAndLinking(){
+    //     console.log('domainByTrait', chartContainer);
+    //     activeContainer = chartContainer[0].filter(isActive);
+    //     console.log('traits', activeContainer);
 
-  // }
+    // }
 
-  function isActive(value){
-    // let classlist = value.parentElement.classList;
-    for(let i of value.parentElement.classList){
-      if(i == 'active'){
-        return value;
-      }
-    }
-  }
+    // function isActive(value){
+    //   // let classlist = value.parentElement.classList;
+    //   for(let i of value.parentElement.classList){
+    //     if(i == 'active'){
+    //       return value;
+    //     }
+    //   }
+    // }
 
   }
 
@@ -128,7 +128,6 @@ class Chart
       // Clean model
       this._climateData = null;
       // Clean view
-      //this._chartWrapper.remove();
       let chartmenu = $('#chartcollection' + this._chartCollectionId + '-menu'); 
       chartmenu.remove();
 
@@ -314,89 +313,88 @@ class Chart
 
   }
 
-    // ==========================================================================
-  // Setup Container for first Chart in Collection
-  // 
   // ==========================================================================
-_setupContainerMenu(partID, cID){
-  // Get parent container (the one that contains all charts)
-  let parentContainer = $('#' + this._chartsMain.parentContainer);
+  // Setup Container for first Chart in Collection
+  // ==========================================================================
 
-  let amountOfCharts = this._main.modules.chartController.getMapSize();
-  var chartgrid;
-  
-  //Grid Layout
+  _setupContainerMenu(partID, cID){
+    // Get parent container (the one that contains all charts)
+    let parentContainer = $('#' + this._chartsMain.parentContainer);
 
-  var chartgridExists = $("div").hasClass("chart-grid");
-  if(!chartgridExists){
-    chartgrid = this._main.modules.domElementCreator.create(
+    let amountOfCharts = this._main.modules.chartController.getMapSize();
+    var chartgrid;
+    
+    //Grid Layout
+    var chartgridExists = $("div").hasClass("chart-grid");
+    if(!chartgridExists){
+      chartgrid = this._main.modules.domElementCreator.create(
+        'div',                              // Element type
+        partID + '-grid',  // ID
+        ['chart-grid']            //'row' Classes 'container-fluid', 'w3-row'
+      );
+      parentContainer.append(chartgrid);
+      this._chartgrid = $('#' + partID + '-grid');
+    }else{
+      chartgrid = $(".chart-grid");
+    }
+
+    // Tabbed Container for charts
+    let chartmenu = this._main.modules.domElementCreator.create(
       'div',                              // Element type
-      partID + '-grid',  // ID
-      ['chart-grid']            //'row' Classes 'container-fluid', 'w3-row'
+      partID + '-menu',  // ID
+      ['chart-menu']            // Classes w3-row  col-lg-6 'w3-col', 's6', 'w3-dark-grey' , 'w3-center'
     );
-    parentContainer.append(chartgrid);
-    this._chartgrid = $('#' + partID + '-grid');
-  }else{
-    chartgrid = $(".chart-grid");
-  }
+    chartgrid.append(chartmenu);
+    this._chartmenu = $('#' + partID + '-menu'); 
 
-// Tabbed Container for charts
-  let chartmenu = this._main.modules.domElementCreator.create(
-    'div',                              // Element type
-    partID + '-menu',  // ID
-    ['chart-menu']            // Classes w3-row  col-lg-6 'w3-col', 's6', 'w3-dark-grey' , 'w3-center'
-  );
-  chartgrid.append(chartmenu);
-  this._chartmenu = $('#' + partID + '-menu'); 
-
-  //divide into left and right column for padding
-  var lr_column = document.getElementById(partID + '-menu');
-  if(chartgrid.childElementCount == 1){
-    // lr_column.classList.add("left-col");
-  }else{
-    // lr_column.classList.add("right-col");
-  }
+    //divide into left and right column for padding
+    // var lr_column = document.getElementById(partID + '-menu');
+    // if(chartgrid.childElementCount == 1){
+    //   // lr_column.classList.add("left-col");
+    // }else{
+    //   // lr_column.classList.add("right-col");
+    // }
 
 
-// Navigational Tabs
-  let navbar = this._main.modules.domElementCreator.create(
+    // Navigational Tabs
+    let navbar = this._main.modules.domElementCreator.create(
+        'div',                              // Element type
+        partID + '-bar',  // ID
+        ['chart-bar' ]         // Classes 'w3-sidebar', 'w3-bar-block', 'w3-light-grey', 'w3-card'
+    );
+    chartmenu.append(navbar);
+    this._navbar = $('#' + partID + '-bar');
+
+    // nav bar pills
+    let navbarlist = this._main.modules.domElementCreator.create(
+      'ul',                              // Element type
+      partID + '-list',  // ID
+      ['chart-list', 'nav' ,'nav-pills', 'nav-stacked']          // Classes , 'w3-bar-item' ,'w3-button', 'tablink'
+    );
+    navbar.append(navbarlist);
+    this._navbarlist = $('#' + partID + '-list');
+
+    // tabmenu buttons
+    let navbarli = this._main.modules.domElementCreator.create(
+      'li',                              // Element type
+      cID + '-li',  // ID
+      ['chart-li', 'active', 'nav-item']      // Classes , 'w3-bar-item' ,'w3-button', 'tablink'
+    );
+    navbarlist.append(navbarli);
+    this._navbarli = $('#' + partID + '-li');
+
+    //tab-content
+    let tabContent = this._main.modules.domElementCreator.create(
       'div',                              // Element type
-      partID + '-bar',  // ID
-      ['chart-bar' ]         // Classes 'w3-sidebar', 'w3-bar-block', 'w3-light-grey', 'w3-card'
-  );
-  chartmenu.append(navbar);
-  this._navbar = $('#' + partID + '-bar');
+      partID + '-tabContent',  // ID
+      ['tab-content', 'contentcontainer']            // Classes 'w3-container'
+    );
+    chartmenu.append(tabContent);
+    this._tabContent = $('#' + partID + '-tabContent');
 
-  // nav bar pills
-  let navbarlist = this._main.modules.domElementCreator.create(
-    'ul',                              // Element type
-    partID + '-list',  // ID
-    ['chart-list', 'nav' ,'nav-pills', 'nav-stacked']          // Classes , 'w3-bar-item' ,'w3-button', 'tablink'
-  );
-  navbar.append(navbarlist);
-  this._navbarlist = $('#' + partID + '-list');
-
-  // tabmenu buttons
-  let navbarli = this._main.modules.domElementCreator.create(
-    'li',                              // Element type
-    cID + '-li',  // ID
-    ['chart-li', 'active', 'nav-item']      // Classes , 'w3-bar-item' ,'w3-button', 'tablink'
-  );
-  navbarlist.append(navbarli);
-  this._navbarli = $('#' + partID + '-li');
-
-  //tab-content
-  let tabContent = this._main.modules.domElementCreator.create(
-    'div',                              // Element type
-    partID + '-tabContent',  // ID
-    ['tab-content', 'contentcontainer']            // Classes 'w3-container'
-  );
-  chartmenu.append(tabContent);
-  this._tabContent = $('#' + partID + '-tabContent');
-
-  return navbarli;
-  
-}
+    return navbarli;
+    
+  }
   // ==========================================================================
   // Setup an empty container when not enought data
   // ==========================================================================
@@ -416,11 +414,11 @@ _setupContainerMenu(partID, cID){
     .style('line-height', '180%')
     .html(textlink)
 
-  $('#'+link+'-link').click(() =>
-    {
-      $('#'+link+"-tab").tab('show');
-    }
-  )
+    $('#'+link+'-link').click(() =>
+      {
+        $('#'+link+"-tab").tab('show');
+      }
+    )
   }
 
 
@@ -455,6 +453,7 @@ _setupContainerMenu(partID, cID){
     );
 
     if(this._climateData){
+      // Save options: PNG
       let pngButton = this._main.modules.domElementCreator.create(
         'button',
         'savepng'+this._chartCollectionId,
@@ -470,7 +469,6 @@ _setupContainerMenu(partID, cID){
       );
 
       // Save options: SVG
-  // TODO: get to work
       let svgButton = this._main.modules.domElementCreator.create(
         'button', 
         'savesvg'+this._chartCollectionId,  
@@ -541,7 +539,7 @@ _setupContainerMenu(partID, cID){
       .style('font-size', this._chartsMain.fontSizes.title + 'em')
       .text(this._title);
 
-    this._titleDiv = $('#' + this._chartName + '-title');
+    this._titleDiv = $('#' + this._chartName  + this._chartCollectionId + '-title');
 
     // Subtitle
     this._chart.append('text')
@@ -656,7 +654,6 @@ _setupContainerMenu(partID, cID){
 
 
   // ==========================================================================
-  // TODO
   // Save chart to SVG
   // ==========================================================================
 
@@ -691,12 +688,6 @@ _setupContainerMenu(partID, cID){
 
   }
 
-
-   // ==========================================================================
-  // TODO
-  // Save chart to SVG
-  // ==========================================================================
-
   _resizeCanvas(){
     var w;
     let canvas = d3.selectAll('.mapboxgl-map').each(
@@ -716,12 +707,6 @@ _setupContainerMenu(partID, cID){
       }
     )
 
-    // let textfooter = d3.selectAll('.footer').each(
-    //   function(){
-    //     this.style.fontSize = 75 + '%';
-    //   }
-    // )
-
     let mapGL = d3.selectAll('.mapboxgl-control-container').each(
       function(){
         let test =  parseInt(this.style.width, 10);
@@ -730,14 +715,10 @@ _setupContainerMenu(partID, cID){
         this.style.width = w + 'px';
         this.style.height = height + 'px';
       })
-  // }
-  // let wrapper = document.getElementById('#map-chart'+ this._chartCollectionId + '-wrapper');
-  // wrapper.setAttribute('width', w);
 
-  setTimeout(()=>{
-    window.dispatchEvent(new Event('resize'));
-    	}, 500);
+    setTimeout(()=>{
+      window.dispatchEvent(new Event('resize'));
+        }, 500);
   }
-
 
 }

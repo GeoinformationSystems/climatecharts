@@ -74,7 +74,6 @@ class ClimateDataController
   clear()
   {
     this._climateData = new ClimateData();
-    this._main.modules.chartController.clear()
   }
 
 

@@ -67,7 +67,7 @@ let loadConfig = (main) =>
     // ========================================================================
     charts:
     {
-      parentContainer:  'main-container',
+      parentContainer:  'main-container-charts',
       className:        'chart',
       referenceURL:     'ClimateCharts.net',
       positions:        // [px]
