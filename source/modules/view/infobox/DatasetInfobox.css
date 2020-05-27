@@ -4,18 +4,22 @@
   height:30px;
   width: 250px;
 }
+#datasets-info>div 
+{
+  margin-bottom: 20px;
+}
 
 .datasets-name
-{
-  font-size: 1.1em;
+{ 
   font-weight: bold;
-  margin: 0px;
+  border-bottom: 1px solid #babdb6; 
+  padding-bottom: 3px;
 }
 
 .datasets-title
 {
   font-size: 1em;
-  font-weight: bold;
+  font-variant-caps: small-caps;
 }
 
 .datasets-text
@@ -24,8 +28,11 @@
   text-align: justify;
 }
 
-.popover {
-  max-width:80%;
+.popover 
+{
+  max-width: 80%;
+  font-family: inherit;
+  font-size: inherit;
 }
 #dataset-tooltip 
 {

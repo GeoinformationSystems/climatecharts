@@ -79,9 +79,9 @@ class CoordinatesInInfobox
   {
     if (!this._isEnabled)
     {
-      this._setButton.show();
+      this._setButton.removeAttr('disabled');
       this._latDiv.removeAttr('disabled');
-      this._lngDiv.removeAttr('disabled')
+      this._lngDiv.removeAttr('disabled');
     }
 
     this._isEnabled = true
@@ -91,7 +91,7 @@ class CoordinatesInInfobox
   {
     if (this._isEnabled)
     {
-      this._setButton.hide();
+      this._setButton.attr('disabled', 'disabled');
       this._latDiv.attr('disabled', 'disabled');
       this._lngDiv.attr('disabled', 'disabled');
     }

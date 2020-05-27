@@ -149,7 +149,7 @@ let loadHub = (main) =>
       main.modules.datasetInfobox.updateDatasetInfo(dataset);
 
       // Update climate data for ClimateCell
-      main.modules.climateDatasetController.update()
+      main.modules.climateDatasetController.update();
     };
 
 

@@ -48,39 +48,9 @@ class DatasetInfobox
     if(this._datasetTooltip.data('bs.popover').tip().hasClass('in'))
       this._datasetTooltip.click();
 
-    // Set tooltip title
-    $('#dataset-tooltip').attr('data-original-title',''
-      + '<p class="datasets-name">'
-      + dataset.name
-      + '</p>');
-    // Set tooltip content
-    $('#dataset-tooltip').attr('data-content',''  
-      + '<p class="datasets-title">'
-      + this._main.config.datasetsInfobox.ref
-      + '</p>'
-      + '<p class="datasets-text">'
-      + dataset.description
-      + '</p>'
-      + '<p>'
-      + doiLinks
-      + '</p>'
-      + '<p class="datasets-title">'
-      + this._main.config.datasetsInfobox.metadata
-      + '</p>'
-      + '<p>'
-      + this._main.config.datasetsInfobox.resolution
-      + ': '
-      + dataset.raster_cell_size.lat
-      + '° x '
-      + dataset.raster_cell_size.lng
-      + '°'
-      + '<br />'
-      + this._main.config.datasetsInfobox.time
-      + ': '
-      + dataset.time_period[0]
-      + ' - '
-      + dataset.time_period[1]
-      + '</p>'
+    // retrieve display of metadata from tab "Dataset & Software"
+    this._datasetTooltip.attr('data-content',''
+      + $('#' + dataset.id + '-info').html()
     );
   }
 
@@ -95,13 +65,11 @@ class DatasetInfobox
     if(this._datasetTooltip.data('bs.popover').tip().hasClass('in'))
       this._datasetTooltip.click();
 
-    // Set tooltip title
-    $('#dataset-tooltip').attr('data-original-title',''
-      + '<p class="datasets-name">'
-      + this._main.config.station.source.name
-      + '</p>');
     // Set tooltip content
     $('#dataset-tooltip').attr('data-content',''
+      + '<p class="datasets-name">'
+      + this._main.config.station.source.name
+      + '</p>'
       + '<p class="datasets-title">'
       + this._main.config.datasetsInfobox.ref
       + '</p>'
