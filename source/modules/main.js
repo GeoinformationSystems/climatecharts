@@ -26,17 +26,12 @@ let main = {};
 
 main.mode = 'C';
 
-
 // Load configuration, modules and hub
 
 loadConfig(main);    // Source in: source/modules/main/config.js
 loadModules(main);   // Source in: source/modules/main/modules.js
 loadHub(main);       // Source in: source/modules/main/hub.js
 
-
-// ############################################################################
-// Relicts from old website
-// ############################################################################
 
 // Switch between "Home", "Datasets & Software" and "About" tab.
 $(".tab-links a").click( function (e)
