@@ -24,12 +24,15 @@ class ClimateChart extends Chart
   constructor(main, climateData, id)
   {
     var id = id;
-        // Error handling: Only show chart if both prec and temp are given
+    // Error handling: Only show full chart if both prec and temp are given
     if (climateData.has_temp && climateData.has_prec)
-      super(main, 'climate-chart', climateData, id, null);
+      super(main, 'climate-chart', climateData, id, null, true);
+    // Error handling: At least show metadata info if either prec or temp are given
+    else if (climateData.has_temp || climateData.has_prec)
+      super(main, 'climate-chart', climateData, id, null, false);
 
     else
-      super(main, 'climate-chart', null, id, null)
+      super(main, 'climate-chart', null, id, null, false)
 
   }
 
@@ -151,207 +154,201 @@ class ClimateChart extends Chart
 
   _setupChart()
   {
-    // super._setupChart();
+    super._setupChart();
+
+    let curveType = "";
+    let paddingXScale = 0;
     
-    if(this._climateData){
-        super._setupChart();
-
-        let curveType = "";
-        let paddingXScale = 0;
-        
-        if (this._chartMain.switch.activeState == 0) {
-            curveType = "linear"
-        }
-        else if(this._chartMain.switch.activeState == 1) {
-            curveType = "bar";
-            paddingXScale = 1
-        }
-        else if(this._chartMain.switch.activeState == 2) {
-            curveType = "step"
-        }
-        else { //No chart type definded for activeState of switch => set to first option
-          return this._chartMain.switch.activeState = 0;
-        }
-
-        this._setupScales(paddingXScale);
-        this._drawGrid();
-        
-        if(this._chartMain.switch.activeState != 1) this._drawAreas(curveType);
-        
-        this._drawPrecLine(curveType);
-        this._drawTempLine();
-        
-        if(this._chartMain.switch.activeState == 1) this._extendTempLine();
-        
-        this._drawAxis();
-        
-        if(this._chartMain.switch.activeState > 0) this._addZeroLine();
-        
-        this._drawCaption();
-        this._drawTable();
-        this._drawAvailabilityBar();
-
-
-        // ------------------------------------------------------------------------
-        // Interaction: Mouseover effect
-        // ------------------------------------------------------------------------
-
-        this._chart.append('g')
-          .attr('class', 'focus')
-          .attr('id', 'focus' + this._chartCollectionId)
-          .attr('visibility', 'hidden');
-
-        this._chart.select('#focus'+ this._chartCollectionId)
-          .append('circle')
-          .attr('id', 'c1' + this._chartCollectionId)
-          .attr('r', this._chartMain.mouseover.circleRadius)
-          .attr('fill', 'white')
-          .attr('stroke', this._chartsMain.colors.temp)
-          .style('stroke-width', this._chartMain.mouseover.strokeWidth);
-
-        this._chart.select('#focus'+ this._chartCollectionId)
-          .append('circle')
-          .attr('id', 'c2'  + this._chartCollectionId)
-          .attr('r', this._chartMain.mouseover.circleRadius)
-          .attr('fill', 'white')
-          .attr('stroke', this._chartsMain.colors.prec)
-          .style('stroke-width', this._chartMain.mouseover.strokeWidth);
-
-
-        // Event handling
-        let showCircles = () =>
-          {
-            this._chart.select('#focus'+ this._chartCollectionId)
-              .attr('visibility', 'visible')
-          };
-
-        let hideCircles = () =>
-          {
-            this._chart.select('#focus'+ this._chartCollectionId)
-              .attr('visibility', 'hidden')
-          };
-
-        let defocusMonth = () =>
-          {
-            this._chart.selectAll('.cell')
-              .attr('fill', 'black')
-              .attr('font-weight', 'normal')
-              .style('font-size', this._chartsMain.fontSizes.large + 'em')
-              .style('text-shadow', 'none')
-          };
-        
-          let defocusAvailabilityCell = ()=>{
-            this._chart.selectAll('.'+this._chartName+this._chartCollectionId+'-wl-bar')
-              .style('stroke',        d3.rgb(211,211,211))
-              .style('stroke-width',  '1px')
-          }
-
-        //this._chartWrapper.mouseover(hideCircles)
-
-        this._chartWrapper.mouseout(hideCircles);
-        this._chartWrapper.mouseout(defocusMonth);
-        this._chartWrapper.mouseout(defocusAvailabilityCell);
-
-
-        //Todo: change wording from "click" to "mouse" position 
-        this._chartWrapper.mousemove( (e) =>
-          {
-            // Get click position inside svg canvas
-            let svg = this._chart[0][0];
-            let clickPtReal = svg.createSVGPoint();
-            clickPtReal.x = e.clientX;
-            clickPtReal.y = e.clientY;
-            let clickPtSVG = clickPtReal.matrixTransform(
-              svg.getScreenCTM().inverse()
-            );
-
-            // Calculate closest distance between mouse position and tick
-            let posX =    clickPtSVG.x;
-            let lowDiff = 1e99;
-            let xI =      null;
-            let tickPos = this.xScale.range();
-
-            for (let i=0; i<tickPos.length; i++)
-            {
-              let diff = Math.abs(posX - tickPos[i]);
-              if (diff < lowDiff)
-              {
-                lowDiff = diff;
-                xI = i
-              }
-            }
-
-            // Hack: for december, disable hover when far away
-            // faw away = further than half distance between two ticks + a bit more
-            if (lowDiff > ((tickPos[1]-tickPos[0])/2)*1.1)
-            {
-              hideCircles();
-              defocusMonth();
-              defocusAvailabilityCell();
-              return
-            }
-            showCircles();
-
-            let c1 =    this._chart.select('#c1' + this._chartCollectionId);
-            let c2 =    this._chart.select('#c2' + this._chartCollectionId);
-            let month = this._chart.select('#month_c' + xI);
-            let temp =  this._chart.select('#temp_c' + xI);
-            let prec =  this._chart.select('#prec_c' + xI);
-            let availTemp =  this._chart.select('#avail_month_temp'+ xI);
-            let availPrec =  this._chart.select('#avail_month_prec'+ xI);
-            let rows =  this._chart.selectAll('.cell');
-
-            // Highlight closest month in chart and table
-            rows.attr('fill', 'black')
-              .attr('font-weight', 'normal')
-              .style('text-shadow', 'none');
-            month.style('text-shadow', 'none')
-              .attr('font-weight', 'bold');
-            temp.attr('fill', this._chartsMain.colors.temp)
-              .attr('font-weight', 'bold')
-              .style('text-shadow', 'none');
-            prec.attr('fill', this._chartsMain.colors.prec)
-              .attr('font-weight', 'bold')
-              .style('text-shadow', 'none');
-            availTemp.style('stroke', this._chartsMain.colors.temp)
-            .style('stroke-width', '2px');
-            availPrec.style('stroke', this._chartsMain.colors.prec)
-            .style('stroke-width', '2px');
-
-            c1.attr('transform',
-              'translate('
-                + tickPos[xI] + ','
-                + this.yScaleTempBelowBreak(this._climateData.monthly_short[xI].temp) + ')'
-            );
-
-            if (
-              this._climateData.monthly_short[xI].prec <=
-              this._chartMain.prec.breakValue
-            )
-            {
-              c2.attr('transform',
-                'translate('
-                  + tickPos[xI] + ','
-                  + this.yScalePrecBelowBreak(this._climateData.monthly_short[xI].prec) + ')'
-              )
-            }
-            if (
-              this._climateData.monthly_short[xI].prec >
-              this._chartMain.prec.breakValue
-            )
-            {
-              c2.attr('transform',
-                'translate('
-                  + tickPos[xI] + ','
-                  + this.yScalePrecAboveBreak(this._climateData.monthly_short[xI].prec) + ')'
-              )
-            }
-          }
-        )
-    }else{
-      super._setupChartlessContainer();
+    if (this._chartMain.switch.activeState == 0) {
+        curveType = "linear"
+    }
+    else if(this._chartMain.switch.activeState == 1) {
+        curveType = "bar";
+        paddingXScale = 1
+    }
+    else if(this._chartMain.switch.activeState == 2) {
+        curveType = "step"
+    }
+    else { //No chart type definded for activeState of switch => set to first option
+      return this._chartMain.switch.activeState = 0;
     }
 
+    this._setupScales(paddingXScale);
+    this._drawGrid();
+    
+    if(this._chartMain.switch.activeState != 1) this._drawAreas(curveType);
+    
+    this._drawPrecLine(curveType);
+    this._drawTempLine();
+    
+    if(this._chartMain.switch.activeState == 1) this._extendTempLine();
+    
+    this._drawAxis();
+    
+    if(this._chartMain.switch.activeState > 0) this._addZeroLine();
+    
+    this._drawCaption();
+    this._drawTable();
+    this._drawAvailabilityBar();
+
+
+    // ------------------------------------------------------------------------
+    // Interaction: Mouseover effect
+    // ------------------------------------------------------------------------
+
+    this._chart.append('g')
+      .attr('class', 'focus')
+      .attr('id', 'focus' + this._chartCollectionId)
+      .attr('visibility', 'hidden');
+
+    this._chart.select('#focus'+ this._chartCollectionId)
+      .append('circle')
+      .attr('id', 'c1' + this._chartCollectionId)
+      .attr('r', this._chartMain.mouseover.circleRadius)
+      .attr('fill', 'white')
+      .attr('stroke', this._chartsMain.colors.temp)
+      .style('stroke-width', this._chartMain.mouseover.strokeWidth);
+
+    this._chart.select('#focus'+ this._chartCollectionId)
+      .append('circle')
+      .attr('id', 'c2'  + this._chartCollectionId)
+      .attr('r', this._chartMain.mouseover.circleRadius)
+      .attr('fill', 'white')
+      .attr('stroke', this._chartsMain.colors.prec)
+      .style('stroke-width', this._chartMain.mouseover.strokeWidth);
+
+
+    // Event handling
+    let showCircles = () =>
+      {
+        this._chart.select('#focus'+ this._chartCollectionId)
+          .attr('visibility', 'visible')
+      };
+
+    let hideCircles = () =>
+      {
+        this._chart.select('#focus'+ this._chartCollectionId)
+          .attr('visibility', 'hidden')
+      };
+
+    let defocusMonth = () =>
+      {
+        this._chart.selectAll('.cell')
+          .attr('fill', 'black')
+          .attr('font-weight', 'normal')
+          .style('font-size', this._chartsMain.fontSizes.large + 'em')
+          .style('text-shadow', 'none')
+      };
+    
+    let defocusAvailabilityCell = ()=>
+      {
+        this._chart.selectAll('.'+this._chartName+this._chartCollectionId+'-wl-bar')
+          .style('stroke',        d3.rgb(211,211,211))
+          .style('stroke-width',  '1px')
+      };
+
+    //this._chartWrapper.mouseover(hideCircles)
+
+    this._chartWrapper.mouseout(hideCircles);
+    this._chartWrapper.mouseout(defocusMonth);
+    this._chartWrapper.mouseout(defocusAvailabilityCell);
+
+
+    //Todo: change wording from "click" to "mouse" position 
+    this._chartWrapper.mousemove( (e) =>
+      {
+        // Get click position inside svg canvas
+        let svg = this._chart[0][0];
+        let clickPtReal = svg.createSVGPoint();
+        clickPtReal.x = e.clientX;
+        clickPtReal.y = e.clientY;
+        let clickPtSVG = clickPtReal.matrixTransform(
+          svg.getScreenCTM().inverse()
+        );
+
+        // Calculate closest distance between mouse position and tick
+        let posX =    clickPtSVG.x;
+        let lowDiff = 1e99;
+        let xI =      null;
+        let tickPos = this.xScale.range();
+
+        for (let i=0; i<tickPos.length; i++)
+        {
+          let diff = Math.abs(posX - tickPos[i]);
+          if (diff < lowDiff)
+          {
+            lowDiff = diff;
+            xI = i
+          }
+        }
+
+        // Hack: for december, disable hover when far away
+        // faw away = further than half distance between two ticks + a bit more
+        if (lowDiff > ((tickPos[1]-tickPos[0])/2)*1.1)
+        {
+          hideCircles();
+          defocusMonth();
+          defocusAvailabilityCell();
+          return
+        }
+        showCircles();
+
+        let c1 =    this._chart.select('#c1' + this._chartCollectionId);
+        let c2 =    this._chart.select('#c2' + this._chartCollectionId);
+        let month = this._chart.select('#month_c' + xI);
+        let temp =  this._chart.select('#temp_c' + xI);
+        let prec =  this._chart.select('#prec_c' + xI);
+        let availTemp =  this._chart.select('#avail_month_temp'+ xI);
+        let availPrec =  this._chart.select('#avail_month_prec'+ xI);
+        let rows =  this._chart.selectAll('.cell');
+
+        // Highlight closest month in chart and table
+        rows.attr('fill', 'black')
+          .attr('font-weight', 'normal')
+          .style('text-shadow', 'none');
+        month.style('text-shadow', 'none')
+          .attr('font-weight', 'bold');
+        temp.attr('fill', this._chartsMain.colors.temp)
+          .attr('font-weight', 'bold')
+          .style('text-shadow', 'none');
+        prec.attr('fill', this._chartsMain.colors.prec)
+          .attr('font-weight', 'bold')
+          .style('text-shadow', 'none');
+        availTemp.style('stroke', this._chartsMain.colors.temp)
+        .style('stroke-width', '2px');
+        availPrec.style('stroke', this._chartsMain.colors.prec)
+        .style('stroke-width', '2px');
+
+        c1.attr('transform',
+          'translate('
+            + tickPos[xI] + ','
+            + this.yScaleTempBelowBreak(this._climateData.monthly_short[xI].temp) + ')'
+        );
+
+        if (
+          this._climateData.monthly_short[xI].prec <=
+          this._chartMain.prec.breakValue
+        )
+        {
+          c2.attr('transform',
+            'translate('
+              + tickPos[xI] + ','
+              + this.yScalePrecBelowBreak(this._climateData.monthly_short[xI].prec) + ')'
+          )
+        }
+        if (
+          this._climateData.monthly_short[xI].prec >
+          this._chartMain.prec.breakValue
+        )
+        {
+          c2.attr('transform',
+            'translate('
+              + tickPos[xI] + ','
+              + this.yScalePrecAboveBreak(this._climateData.monthly_short[xI].prec) + ')'
+          )
+        }
+      }
+    )
   }
 
   _setupScales(paddingOuterTicksXScale)

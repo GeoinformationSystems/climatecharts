@@ -20,7 +20,7 @@ class Chart
   // Constructor
   // ==========================================================================
 
-  constructor(main, chartName, climateData, id, profile)
+  constructor(main, chartName, climateData, id, profile, dataIsViable)
   {
     this._main = main;
 
@@ -29,7 +29,7 @@ class Chart
     this._chartCollectionId = id;
     this._climateData = this._main.modules.helpers.deepCopy(climateData);
     this._geoProfile = profile;
-    this._climateChartExists;
+    this._dataIsViable = dataIsViable;
 
     this._graphOptionsElements = [];
 
@@ -53,12 +53,10 @@ class Chart
     
     // Global setup for all chart types
     this._initMembers(climateData);
-    if(this._climateData){ 
-      this._setChartMetadata();
-    }
+    this._setChartMetadata();
     this._setupContainer();
-    this._setupToolbar();
-    this._setupChart(); 
+    this._setupToolbar(); 
+    if(this._dataIsViable) this._setupChart(); else this._setupChartlessContainer();
     this._setupHeaderFooter();
       
 
@@ -403,17 +401,14 @@ class Chart
 
   _setupChartlessContainer()
   {
+    this._createSvgCanvas();
 
     let link = "availability-chart" + this._chartCollectionId;
     let textlink = this._chartsMain.charts[0].infoTextNotEnoughData + "<a id='"+ link+"-link' href='#AvailChart'>Availability Chart.</a>"
 
-    this._chart = d3.select(this._chartWrapper[0])
+    d3.select(this._chartWrapper[0])
     .append('div')
-    .attr('id', this._chartName + this._chartCollectionId)
-    .attr('width', '100%')
-    .style('padding-right', '15%')
-    .style('padding-left', '5%')
-    .style('line-height', '180%')
+    .attr('id', 'infobox-chartless-' + this._chartName + this._chartCollectionId ) 
     .html(textlink)
 
     $('#'+link+'-link').click(() =>
@@ -453,7 +448,7 @@ class Chart
       }
     );
 
-    if(this._climateData){
+    if(this._dataIsViable){
 
       let saveOptions = this._main.modules.domElementCreator.create(
         'div',
@@ -567,7 +562,16 @@ class Chart
 
   _setupChart()
   {
-    this._chart = d3.select(this._chartWrapper[0])
+    this._createSvgCanvas();
+  }
+
+  // ==========================================================================
+  // Create SVG Canvas: also used for chartless container
+  // ==========================================================================
+
+  _createSvgCanvas()
+  {
+   	this._chart = d3.select(this._chartWrapper[0])
       .append('svg')
       .attr('id', this._chartName + this._chartCollectionId)
       .attr('version', 1.1)
@@ -587,7 +591,6 @@ class Chart
       .style('shape-rendering', 'default')
       .style('text-rendering',  'optimizeLegibility')
       .style('background-color','transparent')
-
   }
 
 
@@ -625,7 +628,7 @@ class Chart
       .text(this._subtitle);
 
     // Footer: Source link
-    if(this._climateData){
+
       this._footerElems = [2];
       this._footerElems[0] = this._chart.append('text')
         .attr('class', 'footer source footer-'+this._chartName+this._chartCollectionId)
@@ -663,7 +666,7 @@ class Chart
         .style('font-size', this._chartsMain.fontSizes.small + 'em')
         .style('opacity', this._chartsMain.footerOpacity)
         .text('\u00A9 ' + this._refURL)
-    }
+    
   }
 
 

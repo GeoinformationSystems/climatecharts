@@ -23,10 +23,10 @@ class DistributionChart extends Chart
     var id = id;
     // Error handling: Only show chart if either prec or temp are given
     if (climateData.has_temp || climateData.has_prec)
-      super(main, 'distribution-chart', climateData, id, null);
+      super(main, 'distribution-chart', climateData, id, null, true);
 
     else
-      super(main, 'distribution-chart', null, id, null)
+      super(main, 'distribution-chart', null, id, null, false)
   }
 
 

@@ -214,3 +214,9 @@
   height: 1.5em;
 }
 
+[id ^= "infobox-chartless-"] {
+  position: absolute;
+  margin:  10% 10% 0px 10%;
+  border: 1px solid #babdb6;
+  padding: 15px;
+}
