@@ -205,6 +205,14 @@ let loadConfig = (main) =>
           },
           switch:
           {
+            title:      "",
+            // states:     ['Walter-Lieth Chart', 'Bar Chart', 'Step Chart'],
+            states:     ['Walter-Lieth Chart', 'Bar Chart'],
+            statesDisplay: [
+              '<i class="fas fa-chart-area" aria-hidden="true"></i>', 
+              '<i class="fas fa-chart-bar" aria-hidden="true"></i>', 
+              '<i class="fas fa-map" aria-hidden="true"></i>'
+              ],
             activeState: 0,
           }, 
           availabilitybar:{
@@ -262,6 +270,8 @@ let loadConfig = (main) =>
           {
             title:      "Y-Axis Scaling",
             states:     ['relative', 'fixed'],
+            statesDisplay: ['Relative', 'Fixed'],
+            activeState: 0,
           },
         },
 
@@ -322,6 +332,8 @@ let loadConfig = (main) =>
           {
             title:      "Color Scaling",
             states:     ['relative', 'fixed'],
+            statesDisplay: ['Relative', 'Fixed'],
+            activeState: 0,
           },
         },
         // --------------------------------------------------------------------

@@ -46,13 +46,11 @@ class ClimateChart extends Chart
   _initMembers(climateData)
   {
     super._initMembers(climateData);
-    
   
     // ------------------------------------------------------------------------
     // Preparation: Position values for visualization elements
     // ------------------------------------------------------------------------
 
-    this._chartMain.switch.activeState = 0;
     // Position values of actual climate chart
     // -> Horizontal: left, right
     // -> Vertical: top, max, break, min, bottom
@@ -138,85 +136,17 @@ class ClimateChart extends Chart
     
   }
 
-
-  _setupToolbar()
-  {
-    super._setupToolbar();
-
-    if (this._climateData) { 
-      let graphOptions = this._main.modules.domElementCreator.create(
-        'div', 'cc-graph-options'
-      );
-      this._toolbar[0].appendChild(graphOptions);
-
-
-      let graphOptionLine = this._main.modules.domElementCreator.create(
-        'a', 'cc-graph-option-first',[] , [['title', 'Walter-Lieth Chart']]
-      );
-      graphOptions.appendChild(graphOptionLine);
-
-
-      let graphOptionBar = this._main.modules.domElementCreator.create(
-        'a', 'cc-graph-option-last',[] , [['title', 'Bar Chart']]
-      );
-      graphOptions.appendChild(graphOptionBar);
-    
-    //disabled for now
-//    let graphOptionStep = this._main.modules.domElementCreator.create(
-//      'a', 'cc-graph-option-last',[] , [['title', 'Step Chart']]
-//    )
-//    graphOptions.appendChild(graphOptionStep)
-
-
-    // ------------------------------------------------------------------------
-    // Label switch title and switch states
-    // ------------------------------------------------------------------------
-    graphOptions.childNodes[this._chartMain.switch.activeState].className ='cc-graph-active';
-    
-    graphOptionLine.innerHTML = '<i class="fas fa-chart-area" aria-hidden="true"></i>';
-    graphOptionBar.innerHTML = '<i class="fas fa-chart-bar" aria-hidden="true"></i>';
-    //graphOptionStep.innerHTML = '<i class="fa fa-map" aria-hidden="true"></i>'
-
-
-
-    // ------------------------------------------------------------------------
-    // Interaction: click on toggle switch to change the layout
-    // ------------------------------------------------------------------------
-
-    $(graphOptions.childNodes).click((e) =>
-      {
-        // clean chart
-        $('#climate-chart'+this._chartCollectionId).remove();
-      
-        //set active state and reset other Options
-        for (let i = 0; i < e.currentTarget.parentNode.childNodes.length; i++)
-        {
-            if(e.currentTarget.parentNode.childNodes[i] === e.currentTarget){
-                this._chartMain.switch.activeState = i
-            }
-            else {
-                e.currentTarget.parentNode.childNodes[i].className=''
-            }    
-        }
-        
-        e.currentTarget.className ='cc-graph-active';
-
-        this._setupChart();
-        this._setupHeaderFooter()
-      }
-    )
-    }
-  }
-
-
   // ========================================================================
   // Draw the whole chart
+  // ========================================================================
   // - left side: diagram
   //    * axes + ticks
   //    * grids
   //    * lines and areas for temp and prec
   //    * caption for temp and prec
   // - right side: table
+  // - availablity bars: temp|prec
+  // - availablity legend
   // ========================================================================
 
   _setupChart()
@@ -224,7 +154,8 @@ class ClimateChart extends Chart
     // super._setupChart();
     
     if(this._climateData){
-    super._setupChart();
+        super._setupChart();
+
         let curveType = "";
         let paddingXScale = 0;
         
@@ -238,7 +169,10 @@ class ClimateChart extends Chart
         else if(this._chartMain.switch.activeState == 2) {
             curveType = "step"
         }
-        
+        else { //No chart type definded for activeState of switch => set to first option
+          return this._chartMain.switch.activeState = 0;
+        }
+
         this._setupScales(paddingXScale);
         this._drawGrid();
         

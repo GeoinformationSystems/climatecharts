@@ -54,6 +54,7 @@
 .tooltip-inactive:hover
 {
   background-color: #337ab7;
+  opacity: 0.75;
 }
 
 .tooltip-active 
@@ -63,4 +64,5 @@
 .tooltip-active:hover
 {
   background-color: #f02222;
+  opacity: 0.75;
 }

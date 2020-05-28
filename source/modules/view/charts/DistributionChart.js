@@ -43,9 +43,6 @@ class DistributionChart extends Chart
   {
     super._initMembers(climateData);
 
-    // Initial switch state -> must be 0 !!!
-    this._switchState = 0;
-
     // Number of subcharts (should be 2 -> temp and prec)
     this._numSubcharts = this._chartMain.subcharts.length;
 
@@ -105,112 +102,20 @@ class DistributionChart extends Chart
       - this._chartPos.top
   }
 
-
-
-  // ==========================================================================
-  // Setup toolbar elements
-  // ==========================================================================
-
-  _setupToolbar()
-  {
-    super._setupToolbar();
-
-    // ------------------------------------------------------------------------
-    // Create structure
-    // dc = distribution chart
-    // _wrapperDiv
-    // |-> _chart         // main svg canvas contains charts, printed
-    // _toolbar			      // buttons for changing/saving charts, not printed
-    // |-> dc-switch      // switch optimal <-> fixed scale
-    // |   |-> label      '.switch-light switch-candy'
-    // |   |-> input      'dc-switch-input'
-    // |   |-> div        'dc-switch-title'
-    // |   |-> span       'dc-switch-options'
-    // |   |   |-> span   'dc-switch-option-l'
-    // |   |   |-> span   'dc-switch-option-r'
-    // |   |   |-> a      'dc-switch-button'
-    // ------------------------------------------------------------------------
-
-    // Level 1@_toolbar - dc-switch
-    let dcSwitch = this._main.modules.domElementCreator.create(
-      'div', 'dc-switch'
-    );
-    this._toolbar[0].appendChild(dcSwitch);
-
-    let switchLabel = this._main.modules.domElementCreator.create(
-      'label', null, ['switch-light'], [['onClick', '']]
-    );
-    dcSwitch.appendChild(switchLabel);
-
-    let switchInput = this._main.modules.domElementCreator.create(
-      'input', 'dc-switch-input', null, [['type', 'checkbox']]
-    );
-    switchLabel.appendChild(switchInput);
-
-    let switchTitle = this._main.modules.domElementCreator.create(
-      'div', 'dc-switch-title'
-    );
-    switchLabel.appendChild(switchTitle);
-
-    let switchOptions = this._main.modules.domElementCreator.create(
-      'span', 'dc-switch-options'
-    );
-    switchLabel.appendChild(switchOptions);
-
-    let switchOptionL = this._main.modules.domElementCreator.create(
-      'span', 'dc-switch-option-l', ['dc-switch-option']
-    );
-    switchOptions.appendChild(switchOptionL);
-
-    let switchOptionR = this._main.modules.domElementCreator.create(
-      'span', 'dc-switch-option-r', ['dc-switch-option']
-    );
-    switchOptions.appendChild(switchOptionR);
-
-    let switchButton = this._main.modules.domElementCreator.create(
-      'a', 'dc-switch-button'
-    );
-    switchOptions.appendChild(switchButton);
-
-
-    // ------------------------------------------------------------------------
-    // Label switch title and switch states
-    // ------------------------------------------------------------------------
-
-    switchTitle.innerHTML = this._chartMain.switch.title;
-    switchOptionL.innerHTML = ""
-      + this._chartMain.switch.states[0].charAt(0).toUpperCase()
-      + this._chartMain.switch.states[0].slice(1);
-    switchOptionR.innerHTML = ""
-      + this._chartMain.switch.states[1].charAt(0).toUpperCase()
-      + this._chartMain.switch.states[1].slice(1);
-
-
-    // ------------------------------------------------------------------------
-    // Interaction: click on toggle switch to change the layout
-    // ------------------------------------------------------------------------
-
-    $(switchOptions).click((e) =>
-      {
-        this._switchState = (this._switchState+1) % 2;
-        // Clean charts
-        // $('#boxplot-group').remove();
-        this._setupChart()
-      }
-    )
-  }
-
-
-  // ==========================================================================
-  // Setup the whole chart
-  // ==========================================================================
+  // ========================================================================
+  // Draw the whole chart
+  // ========================================================================
+  // - foreach set of data: distribution of temp|prec
+  //    * axes + ticks
+  //    * grids
+  //    * boxplots
+  // - todo: availablity bars: temp|prec
+  // - todo: availablity legend
+  // ========================================================================
 
   _setupChart()
   {
     super._setupChart();
-
-    // Clean charts
-    $('#boxplot-group'+this._chartCollectionId).remove();
 
     // N.B. Get local copy of climateData
     // This is veeeeeeeeery important! It drove me nuts, because I spent
@@ -316,15 +221,19 @@ class DistributionChart extends Chart
       // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
       // y-Axis
       // -> 2 switch state modi:
-      //  0: automatic  - adapt scale to data values and distribute perfectly
+      //  0: reative  - adapt scale to data values and distribute perfectly
       //  1: fixed      - always the same scale to make charts comparable
       // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
       let yDomain = null;
-      if (this._switchState == 0) //  => automatic
+      if (this._chartMain.switch.activeState == 0) 
         yDomain = [vizMin, vizMax];
-      else // switchState == 1        => fixed
+      else if (this._chartMain.switch.activeState == 1)
         yDomain = maxRange;
+      else { // No Y-Axis Scaling defined for activeState of switch => set to first option   
+        return this._chartMain.switch.activeState = 0;
+      }
+        
 
       let yScale = d3.scale
         .linear()

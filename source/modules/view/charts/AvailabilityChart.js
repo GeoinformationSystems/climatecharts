@@ -45,9 +45,6 @@ class AvailabilityChart extends Chart
   {
     super._initMembers(climateData);
 
-    // Initial switch state -> must be 0 !!!
-    this._switchState = 0;
-
     // ------------------------------------------------------------------------
     // Preparation: Position values for visualization elements
     // ------------------------------------------------------------------------
@@ -83,85 +80,12 @@ class AvailabilityChart extends Chart
   }
 
 
-  _setupToolbar(){
-
-
-    super._setupToolbar();
-
-    let dcSwitch = this._main.modules.domElementCreator.create(
-      'div', 'dc-switch'
-    );
-    this._toolbar[0].appendChild(dcSwitch);
-
-    let switchLabel = this._main.modules.domElementCreator.create(
-      'label', null, ['switch-light'], [['onClick', '']]
-    );
-    dcSwitch.appendChild(switchLabel);
-
-    let switchInput = this._main.modules.domElementCreator.create(
-      'input', 'dc-switch-input', null, [['type', 'checkbox']]
-    );
-    switchLabel.appendChild(switchInput);
-
-    let switchTitle = this._main.modules.domElementCreator.create(
-      'div', 'dc-switch-title'
-    );
-    switchLabel.appendChild(switchTitle);
-
-    let switchOptions = this._main.modules.domElementCreator.create(
-      'span', 'dc-switch-options'
-    );
-    switchLabel.appendChild(switchOptions);
-
-    let switchOptionL = this._main.modules.domElementCreator.create(
-      'span', 'dc-switch-option-l', ['dc-switch-option']
-    );
-    switchOptions.appendChild(switchOptionL);
-
-    let switchOptionR = this._main.modules.domElementCreator.create(
-      'span', 'dc-switch-option-r', ['dc-switch-option']
-    );
-    switchOptions.appendChild(switchOptionR);
-
-    let switchButton = this._main.modules.domElementCreator.create(
-      'a', 'dc-switch-button'
-    );
-    switchOptions.appendChild(switchButton);
-
-     // ------------------------------------------------------------------------
-    // Label switch title and switch states
-    // ------------------------------------------------------------------------
-
-    switchTitle.innerHTML = this._chartMain.switch.title;
-    switchOptionL.innerHTML = ""
-      + this._chartMain.switch.states[0].charAt(0).toUpperCase()
-      + this._chartMain.switch.states[0].slice(1);
-    switchOptionR.innerHTML = ""
-      + this._chartMain.switch.states[1].charAt(0).toUpperCase()
-      + this._chartMain.switch.states[1].slice(1);
-
-
-    // ------------------------------------------------------------------------
-    // Interaction: click on toggle switch to change the layout
-    // ------------------------------------------------------------------------
-
-    $(switchOptions).click((e) =>
-      {
-        let switchtmp = (this._switchState+1) % 2;
-
-        this._initMembers(this._climateData);
-        this._switchState = switchtmp;
-
-        var rows = d3.selectAll('.'+ this._chartName+ this._chartCollectionId+ '-ac').remove();
-     
-        this._setupChart();
-      }
-    )
-
-  }
-  // ==========================================================================
+  // ========================================================================
   // Draw the whole chart
-  // ==========================================================================
+  // ========================================================================
+  // - availability grid
+  // - legend
+  // ========================================================================
 
   _setupChart()
   {
@@ -207,7 +131,7 @@ class AvailabilityChart extends Chart
         let tempValue = this._climateData.temp[monthIdx].raw_data[yearIdx];
         
         //set up color intervals
-        if(this._switchState == 0){
+        if(this._chartMain.switch.activeState == 0){
           let minTemp = this._climateData.realextreme.minTemp;
           let maxTemp = this._climateData.realextreme.maxTemp;
           let range = maxTemp - minTemp;
@@ -218,12 +142,15 @@ class AvailabilityChart extends Chart
           range4 = minTemp + 4*interval;
           range5 = minTemp + 5*interval;
         }
-        else{
+        else if (this._chartMain.switch.activeState == 1){
           range1 = 5;
           range2 = 10;
           range3 = 20;
           range4 = 30;
           range5 = 35;
+        }
+        else { // No Color Scaling defined for activeState of switch => set to first option
+          return this._chartMain.switch.activeState = 0;
         }
 
         // assign colors
@@ -275,7 +202,7 @@ class AvailabilityChart extends Chart
         let precValue = this._climateData.prec[monthIdx].raw_data[yearIdx];
 
         // let p_range1, p_range2, p_range3, p_range4, p_range5;
-        if(this._switchState == 0){
+        if(this._chartMain.switch.activeState == 0) {
           let minPrec = this._climateData.realextreme.minPrec;
           let maxPrec = this._climateData.realextreme.maxPrec;
           let p_range = maxPrec - minPrec;
@@ -286,12 +213,15 @@ class AvailabilityChart extends Chart
           p_range4 = minPrec + 4*p_interval;
           p_range5 = minPrec + 5*p_interval;
         }
-        else{
+        else if(this._chartMain.switch.activeState == 1) {
           p_range1 = 40;
           p_range2 = 80;
           p_range3 = 120;
           p_range4 = 160;
           p_range5 = 200;
+        }
+        else { // No Color Scaling defined for activeState of switch => set to first option
+          return this._chartMain.switch.activeState = 0;
         }
 
         let precColor = this._chartsMain.colors.prec;
@@ -417,14 +347,14 @@ class AvailabilityChart extends Chart
       .text(this._chartMain.headings.title);
 
 
-    // ------------------------------------------------------------------------
-    // Legend
-    // ------------------------------------------------------------------------
+      // ------------------------------------------------------------------------
+      // Legend
+      // ------------------------------------------------------------------------
 
-    // Legend entry names (chartMain) must ailgn with color names (chartsMain)
- // ------------------------------------------------------------------------
-// Temperature Legend
-// ------------------------------------------------------------------------
+      // Legend entry names (chartMain) must ailgn with color names (chartsMain)
+      // ------------------------------------------------------------------------
+      // Temperature Legend
+      // ------------------------------------------------------------------------
       this._resizeChartHeight(this._chartMain.style.squareWidth);
       
       var index = 0;

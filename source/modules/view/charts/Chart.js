@@ -31,6 +31,8 @@ class Chart
     this._geoProfile = profile;
     this._climateChartExists;
 
+    this._graphOptionsElements = [];
+
     // Get charts main -> generic information for all charts
     // get initial dimensions as a deep copy to change them later on
     this._chartsMain = this._main.config.charts;
@@ -439,7 +441,7 @@ class Chart
     // close button
     let closeBtn = this._main.modules.domElementCreator.create(
       'button',
-       'close'+this._chartCollectionId, 
+       'close' + this._chartName + this._chartCollectionId, 
        ['close-chart', 'toolbarbtn']
     );
     this._toolbar.append(closeBtn);
@@ -448,19 +450,26 @@ class Chart
     $(closeBtn).click(() =>
       {
         this._remove();
-        
       }
     );
 
     if(this._climateData){
+
+      let saveOptions = this._main.modules.domElementCreator.create(
+        'div',
+        'save-button-area' + this._chartName + this._chartCollectionId
+      );
+      this._toolbar.append(saveOptions);
+
       // Save options: PNG
       let pngButton = this._main.modules.domElementCreator.create(
         'button',
-        'savepng'+this._chartCollectionId,
-        ['save-to-png', 'toolbarbtn']
+        'savepng' + this._chartName + this._chartCollectionId,
+        [],
+        [['title', 'Download as PNG']]
       );
       $(pngButton).html(this._chartsMain.saveOptions.png.buttonName);
-      this._toolbar.append(pngButton);
+      saveOptions.append(pngButton);
 
       $(pngButton).click(() =>
         {
@@ -471,11 +480,12 @@ class Chart
       // Save options: SVG
       let svgButton = this._main.modules.domElementCreator.create(
         'button', 
-        'savesvg'+this._chartCollectionId,  
-        ['save-to-svg', 'toolbar-btn']
+        'savesvg' + this._chartName + this._chartCollectionId,
+        [],
+        [['title', 'Download as SVG']]
       );
       $(svgButton).html(this._chartsMain.saveOptions.svg.buttonName);
-      this._toolbar.append(svgButton);
+      saveOptions.append(svgButton);
 
       $(svgButton).click(() =>
         {
@@ -484,6 +494,67 @@ class Chart
           this._saveToSVG()
         }
       )
+
+      let graphOptions = this._main.modules.domElementCreator.create(
+        'div', 
+        'graph-options-' + this._chartName + this._chartCollectionId
+      );
+      this._toolbar[0].appendChild(graphOptions);
+
+      // Set title if given in config
+      let hoverHint = '';
+      if(this._chartMain.switch.title != '') {
+        graphOptions.innerHTML = '<p>' + this._chartMain.switch.title + ': </p>';
+        hoverHint = this._chartMain.switch.title + ': ';
+      }
+
+      for(let i = 0 ; i < this._chartMain.switch.states.length; i++)
+      {
+        let optionPos = '';
+        if( i===0 ) optionPos = 'first';
+        else if (i === this._chartMain.switch.states.length-1) optionPos = 'last';
+        else optionPos = 'middle';
+
+        let graphOption = this._main.modules.domElementCreator.create(
+          'a', 
+          'graph-option-'+ optionPos + '-' + this._chartName + this._chartCollectionId,
+          [], 
+          [['title', hoverHint + this._chartMain.switch.states[i]]]
+        );
+        graphOption.innerHTML = this._chartMain.switch.statesDisplay[i];
+        graphOptions.appendChild(graphOption);
+        this._graphOptionsElements.push(graphOption);
+      }
+
+      graphOptions.querySelectorAll('a')[this._chartMain.switch.activeState].className ='graph-active';
+      
+
+      // ------------------------------------------------------------------------
+      // Interaction: click on toggle switch to change the layout
+      // ------------------------------------------------------------------------    
+      
+      $(this._graphOptionsElements).click((e) =>
+        {
+          // clean chart
+          $('#' + this._chartName + this._chartCollectionId).remove();
+
+          // set active state and reset other Options
+          for (let i = 0; i < e.currentTarget.parentNode.querySelectorAll('a').length; i++)
+          {
+              if(e.currentTarget.parentNode.querySelectorAll('a')[i] === e.currentTarget){
+                  this._chartMain.switch.activeState = i
+              }
+              else {
+                  e.currentTarget.parentNode.querySelectorAll('a')[i].className=''
+              }    
+          }
+          
+          e.currentTarget.className ='graph-active';
+
+          this._setupChart();
+          this._setupHeaderFooter();
+        }
+      );
     }
     
   }
