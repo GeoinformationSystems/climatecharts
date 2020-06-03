@@ -99,8 +99,8 @@ class ClimateDatasetController {
     let coords = this._main.modules.mapController.getCoordinates();
     let timePeriod =
       [
-        this._main.modules.timeController.getPeriodStart(),
-        this._main.modules.timeController.getPeriodEnd() + 1,
+        this._main.modules.timeController.getPeriodStartDate(),
+        this._main.modules.timeController.getPeriodEndDate(),
       ];
 
     // Error handling: Only update if variables, coords and timePeriod given
@@ -112,9 +112,7 @@ class ClimateDatasetController {
       );
     if (
       (!this._main.modules.helpers.checkIfNumber(coords.lat)) ||
-      (!this._main.modules.helpers.checkIfNumber(coords.lng)) ||
-      (!this._main.modules.helpers.checkIfNumber(timePeriod[0])) ||
-      (!this._main.modules.helpers.checkIfNumber(timePeriod[1]))
+      (!this._main.modules.helpers.checkIfNumber(coords.lng)) 
     )
       return; // No coordinates or time period given
 

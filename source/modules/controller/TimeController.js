@@ -104,10 +104,10 @@ class TimeController
       return console.error("The given years are not integers");
 
     // Consistency check: periodEnd <= maxYear?
-    if ((endYear-1) > this._maxYear)
+    if ((endYear) > this._maxYear)
     {
       // If not, strip to maxYear and move periodStart
-      let yearDiff = Math.abs((endYear-1)-this._maxYear);
+      let yearDiff = Math.abs((endYear)-this._maxYear);
       this._periodEnd   =   this._maxYear;
       this._periodStart -=  yearDiff;
       // TODO: something missing here?
@@ -156,7 +156,7 @@ class TimeController
 
   getPeriodStartDate()
   {
-    return (this._periodStart + "-01-01T00:00:00Z")
+    return (this.getPeriodStart() + "-01-01T00:00:00Z")
   }
 
   getPeriodEnd()
@@ -167,7 +167,7 @@ class TimeController
 
   getPeriodEndDate()
   {
-    return ((this._periodEnd-1) + "-12-30T00:00:00Z")
+    return (this.getPeriodEnd() + "-12-31T00:00:00Z")
   }
 
   getPeriod()
@@ -177,7 +177,7 @@ class TimeController
 
   getPeriodLength()
   {
-    return (this._periodEnd - this._periodStart + 1)
+    return (this._periodEnd - this._periodStart)
   }
 
 

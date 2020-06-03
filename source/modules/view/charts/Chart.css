@@ -214,6 +214,11 @@
   height: 1.5em;
 }
 
+.switch-icons-img{
+  width: 12px;
+  height: 12px;
+}
+
 [id ^= "infobox-chartless-"] {
   position: absolute;
   margin:  10% 10% 0px 10%;

@@ -271,6 +271,10 @@ let loadConfig = (main) =>
             title:      "Y-Axis Scaling",
             states:     ['relative', 'fixed'],
             statesDisplay: ['Relative', 'Fixed'],
+            // statesDisplay: [
+            //   '<img class="switch-icons-img" src="data/img/fine1/yscale-relative.png" />', 
+            //   '<img class="switch-icons-img" src="data/img/fine1/yscale-fixed.png" />',
+            // ],
             activeState: 0,
           },
         },
