@@ -152,8 +152,9 @@ class ClimateDatasetController {
         // Get elevation
         let elev = elevation[0].srtm3;
 
-        // Get source DOI
-        let source = this._selectedDataset.doi;
+        // Get source 
+        let source = {name: this._selectedDataset.name,
+                      link: this._selectedDataset.doi};
 
         // Update climate data
         this._main.modules.climateDataController.update(

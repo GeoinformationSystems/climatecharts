@@ -27,7 +27,7 @@ class ClimateDataController
     // ------------------------------------------------------------------------
 
     this._climateData = new ClimateData();
-    this._profileClimateData = new ClimateData()
+  
   }
 
 
@@ -701,7 +701,7 @@ class ClimateDataController
   {
     this._climateData.source = source;
 
-    let url = source;
+    let url = source.link;
 
     // take only first url
     if (url.indexOf(',') > 0)
@@ -712,9 +712,9 @@ class ClimateDataController
     
     // append http protocol, if necessary
     if (!url.startsWith('http'))
-      url = 'http://' + url;
-
-    this._climateData.source_link = url
+      url = 'https://' + url;
+    
+    this._climateData.source.link = url
   }
 
 }

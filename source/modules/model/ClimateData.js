@@ -32,9 +32,7 @@ class ClimateData
     this.elevation =      null;                // Height in meter
     this.years =          [null, null, null];  // Min year, Max year, Appendix
 
-    this.source =         null;                // Data source
-    this.source_link =    null;                // Link to data source
-    this.doi =            null;                // Link to doc. object identifier
+    this.source =         null;                // Data source with name and link
 
 
     // ------------------------------------------------------------------------

@@ -643,12 +643,22 @@ class Chart
         .style('cursor', 'pointer')
         .style('font-size', this._chartsMain.fontSizes.small + 'em')
         .style('opacity', this._chartsMain.footerOpacity)
-        .text('Data Source: ' + this._climateData.source)
         .on('click', () =>
           {
-            window.open(this._climateData.source_link)
+            window.open(this._climateData.source.link)
           }
         );
+      this._footerElems[0].append('tspan')
+        .attr('x', 0
+            + this._chartsMain.padding
+          )
+        .text('Data Source: ' + this._climateData.source.name);
+      this._footerElems[0].append('tspan')
+        .attr('x', 0
+            + this._chartsMain.padding
+          )
+        .attr('dy', '1em')
+        .text(this._climateData.source.link);
 
       // Footer: Reference URL
       this._footerElems[1] = this._chart.append('text')
