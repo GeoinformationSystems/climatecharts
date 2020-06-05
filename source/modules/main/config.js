@@ -218,8 +218,8 @@ let loadConfig = (main) =>
           availabilitybar:{
             // oneMonthPercentage : 3.33,
             colorInterval: 5,  
-            temp: "Availability of Temperature",
-            prec: "Availability of Precipitation",
+            temp: "Availability of Temperature Data",
+            prec: "Availability of Precipitation Data",
             avail: "Percentage of Missing Data"
           },   
           availabilitycolors:{

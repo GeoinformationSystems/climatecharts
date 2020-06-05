@@ -243,7 +243,7 @@ class ClimateChart extends Chart
     let defocusAvailabilityCell = ()=>
       {
         this._chart.selectAll('.'+this._chartName+this._chartCollectionId+'-wl-bar')
-          .style('stroke',        d3.rgb(211,211,211))
+          .style('stroke', this._chartsMain.colors.grid)
           .style('stroke-width',  '1px')
       };
 
@@ -257,17 +257,17 @@ class ClimateChart extends Chart
     //Todo: change wording from "click" to "mouse" position 
     this._chartWrapper.mousemove( (e) =>
       {
-        // Get click position inside svg canvas
+        // Get mouse position inside svg canvas
         let svg = this._chart[0][0];
-        let clickPtReal = svg.createSVGPoint();
-        clickPtReal.x = e.clientX;
-        clickPtReal.y = e.clientY;
-        let clickPtSVG = clickPtReal.matrixTransform(
+        let mousePtReal = svg.createSVGPoint();
+        mousePtReal.x = e.clientX;
+        mousePtReal.y = e.clientY;
+        let mousePtSVG = mousePtReal.matrixTransform(
           svg.getScreenCTM().inverse()
         );
 
         // Calculate closest distance between mouse position and tick
-        let posX =    clickPtSVG.x;
+        let posX =    mousePtSVG.x;
         let lowDiff = 1e99;
         let xI =      null;
         let tickPos = this.xScale.range();
@@ -301,11 +301,19 @@ class ClimateChart extends Chart
         let availTemp =  this._chart.select('#avail_month_temp'+ xI);
         let availPrec =  this._chart.select('#avail_month_prec'+ xI);
         let rows =  this._chart.selectAll('.cell');
+        let availRows = this._chart.selectAll('.' + this._chartName + this._chartCollectionId + '-wl-bar');    
+
+        // reset table highlights
+        defocusMonth();
+        defocusAvailabilityCell();
+        // rows.attr('fill', 'black')
+        //   .attr('font-weight', 'normal')
+        //   .style('text-shadow', 'none');
+        // reset avail bars highlights
+        // availRows.style('stroke', this._chartsMain.colors.grid)
+        //   .style('stroke-width', '1px');
 
         // Highlight closest month in chart and table
-        rows.attr('fill', 'black')
-          .attr('font-weight', 'normal')
-          .style('text-shadow', 'none');
         month.style('text-shadow', 'none')
           .attr('font-weight', 'bold');
         temp.attr('fill', this._chartsMain.colors.temp)
@@ -314,21 +322,22 @@ class ClimateChart extends Chart
         prec.attr('fill', this._chartsMain.colors.prec)
           .attr('font-weight', 'bold')
           .style('text-shadow', 'none');
-        availTemp.style('stroke', this._chartsMain.colors.temp)
-        .style('stroke-width', '2px');
-        availPrec.style('stroke', this._chartsMain.colors.prec)
-        .style('stroke-width', '2px');
 
+        // Highlight closest month in avail bars
+        availTemp.style('stroke', this._chartsMain.colors.temp)
+          .style('stroke-width', '2px');
+        availPrec.style('stroke', this._chartsMain.colors.prec)
+          .style('stroke-width', '2px');
+
+        // move temp circle
         c1.attr('transform',
           'translate('
             + tickPos[xI] + ','
             + this.yScaleTempBelowBreak(this._climateData.monthly_short[xI].temp) + ')'
         );
 
-        if (
-          this._climateData.monthly_short[xI].prec <=
-          this._chartMain.prec.breakValue
-        )
+        // move prec circle if below break value
+        if (this._climateData.monthly_short[xI].prec <= this._chartMain.prec.breakValue)
         {
           c2.attr('transform',
             'translate('
@@ -336,10 +345,8 @@ class ClimateChart extends Chart
               + this.yScalePrecBelowBreak(this._climateData.monthly_short[xI].prec) + ')'
           )
         }
-        if (
-          this._climateData.monthly_short[xI].prec >
-          this._chartMain.prec.breakValue
-        )
+        // move prec circle if above break value
+        if (this._climateData.monthly_short[xI].prec > this._chartMain.prec.breakValue)
         {
           c2.attr('transform',
             'translate('
@@ -1350,7 +1357,7 @@ class ClimateChart extends Chart
         .classed(this._chartName+this._chartCollectionId+'-wl-bar', true)
         .attr('id','avail_month_temp'+index)
         .attr('x', 0
-        + this._chartPos.left
+        + this._chartPos.left - cellWidth/2
         + index * cellWidth
          )
         .attr('y', this._chartPos.bottom
@@ -1360,7 +1367,7 @@ class ClimateChart extends Chart
         .attr('height',         cellWidth/2)
         .style('fill',          a_color)
         .style('opacity',       this._chartMain.style.availabilityOpacity)
-        .style('stroke',        d3.rgb(211,211,211))
+        .style('stroke',        this._chartsMain.colors.grid)
         .style('stroke-width',  cellWidth + ' px');
 
         index++;
@@ -1373,8 +1380,8 @@ class ClimateChart extends Chart
     .attr('text-anchor', 'start')
     .attr('font-size', (this._chartsMain.fontSizes.normal + 'em'))
     .attr('x', 0
-      + this._chartPos.left
-      +this._chartsMain.padding
+      + this._chartPos.left - cellWidth/2
+      + this._chartsMain.padding
       + index * cellWidth
     )
     .attr('y', 0
@@ -1417,17 +1424,16 @@ class ClimateChart extends Chart
         .classed(this._chartName+this._chartCollectionId+'-wl-bar', true)
         .attr('id', 'avail_month_prec'+i)
         .attr('x', 0
-        + this._chartPos.left
-        + i * cellWidth
-         )
+          + this._chartPos.left - cellWidth/2
+          + i * cellWidth)
         .attr('y', this._chartPos.bottom
-        + this._chartsMain.padding
-        + 1.5*cellWidth)
+          + this._chartsMain.padding
+          + 1.5*cellWidth)
         .attr('width',          cellWidth)
         .attr('height',         cellWidth/2)
         .style('fill',          a_color)
         .style('opacity',       this._chartMain.style.availabilityOpacity)
-        .style('stroke',        d3.rgb(211,211,211))
+        .style('stroke',        this._chartsMain.colors.grid)
         .style('stroke-width',  '1px');
 
         i++;
@@ -1441,7 +1447,7 @@ class ClimateChart extends Chart
       .attr('text-anchor', 'start')
       .attr('font-size', (this._chartsMain.fontSizes.normal + 'em'))
       .attr('x', 0
-        + this._chartPos.left
+        + this._chartPos.left - cellWidth/2
         + this._chartsMain.padding
         + i * cellWidth
       )
@@ -1456,13 +1462,13 @@ class ClimateChart extends Chart
     // Legend
     let a = 0;
     for(let color of Object.keys(this._chartMain.availabilitycolors)){
-  
+
       this._chart.append('rect')
         .classed(          'awl-legend-cell',true)
         .classed(this._chartName+this._chartCollectionId+'-awl', true)
-        .attr('x',              
-        this._chartPos.left 
-        + a * cellWidth)
+        .attr('x', 0            
+          + this._chartPos.left - cellWidth/2
+          + a * cellWidth)
         .attr('y',  0
           + this._chartsMain.padding
           + this._chartPos.bottom 
@@ -1471,62 +1477,62 @@ class ClimateChart extends Chart
         .attr('height',         cellWidth/2)
         .style('fill',          this._chartMain.availabilitycolors[color])
         .style('opacity',       this._chartMain.style.cellOpacity)
-        .style('stroke',        d3.rgb(211,211,211))
+        .style('stroke',        this._chartsMain.colors.grid)
         .style('stroke-width',  cellWidth + ' px');
 
-        a++;
-      }
+      a++;
+    }
 
-      // legend title
-      this._chart.append('text')
+    // legend title
+    this._chart.append('text')
       .classed(          'awl-text',true)
       .classed(this._chartName+this._chartCollectionId+'-awl', true)
       .attr('text-anchor', 'start')
       .attr('font-size', (this._chartsMain.fontSizes.normal + 'em'))
       .attr('x', 0
-        + this._chartPos.left
-        +this._chartsMain.padding
+        + this._chartPos.left - cellWidth/2
+        + this._chartsMain.padding
         + a * cellWidth
       )
       .attr('y',  0
-      + this._chartsMain.padding
-      + this._chartPos.bottom 
-      + 2.8*cellWidth
-    )
-    .text(this._chartMain.availabilitybar.avail)
+        + this._chartsMain.padding
+        + this._chartPos.bottom 
+        + 2.8*cellWidth
+      )
+      .text(this._chartMain.availabilitybar.avail)
 
-
-    this._chart.append('text')
-        .classed(          'awl-text',true)
-        .classed(this._chartName+this._chartCollectionId+'-awl', true)
-          .attr('text-anchor', 'start')
-          .attr('font-size', (this._chartsMain.fontSizes.normal + 'em'))
-          .attr('x', 0
-            + this._chartPos.left
-          )
-          .attr('y', 0
-          + this._chartsMain.padding
-          + this._chartPos.bottom 
-          + 3.5*cellWidth
-          )
-          .text('0%')
 
     this._chart.append('text')
       .classed(          'awl-text',true)
       .classed(this._chartName+this._chartCollectionId+'-awl', true)
         .attr('text-anchor', 'start')
         .attr('font-size', (this._chartsMain.fontSizes.normal + 'em'))
-        .attr('x', 0
-        + this._chartPos.left
-        +this._chartsMain.padding
-        + (a-0.5) * cellWidth
+        .attr('x', -5
+          + this._chartPos.left - cellWidth/2
         )
         .attr('y', 0
         + this._chartsMain.padding
         + this._chartPos.bottom 
         + 3.5*cellWidth
         )
-        .text('100%')
+        .text('0%')
+
+      this._chart.append('text')
+        .classed(          'awl-text',true)
+        .classed(this._chartName+this._chartCollectionId+'-awl', true)
+          .attr('text-anchor', 'start')
+          .attr('font-size', (this._chartsMain.fontSizes.normal + 'em'))
+          .attr('x', 0
+            + this._chartPos.left - cellWidth/2
+            + this._chartsMain.padding
+            + (a-0.5) * cellWidth
+          )
+          .attr('y', 0
+          + this._chartsMain.padding
+          + this._chartPos.bottom 
+          + 3.5*cellWidth
+          )
+          .text('100%')
 
 
     var shift = 2.5*cellWidth + 2 * this._chartsMain.padding;
