@@ -1387,7 +1387,7 @@ class ClimateChart extends Chart
     .attr('y', 0
       + this._chartPos.bottom
       + this._chartsMain.padding
-      + 0.9*cellWidth
+      + 0.5*cellWidth + 15
   )
   .text(this._chartMain.availabilitybar.temp)
 
@@ -1454,7 +1454,7 @@ class ClimateChart extends Chart
       .attr('y', 0
         + this._chartPos.bottom
         + this._chartsMain.padding
-        + 1.9 *cellWidth
+        + 1.5 * cellWidth + 15
     )
     .text(this._chartMain.availabilitybar.prec)
     
@@ -1497,7 +1497,7 @@ class ClimateChart extends Chart
       .attr('y',  0
         + this._chartsMain.padding
         + this._chartPos.bottom 
-        + 2.8*cellWidth
+        + 2.5*cellWidth + 15
       )
       .text(this._chartMain.availabilitybar.avail)
 

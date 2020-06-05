@@ -58,46 +58,6 @@ class Chart
     this._setupToolbar(); 
     if(this._dataIsViable) this._setupChart(); else this._setupChartlessContainer();
     this._setupHeaderFooter();
-      
-
-    /**
-     * * Brushing & Linking
-     *  
-     */
-    // var chartContainer = $('.svg-content-responsive');
-    // var chartContainer = d3.selectAll('.svg-content-responsive');
-    // var activeContainer = [];
-    // // Array.from(chartContainer).forEach((el)=>{
-    //   el.addEventListener('click', brushingAndLinking);
-    // })
-    // chartContainer.on("click", (d, i)=>{
-    //   let blID = chartContainer[0][i].id.replace ( /[^\d.]/g, '' );;
-    //   let container = d3.select('#chartcollection'+ blID +'-menu')
-    //   .style('border', '1px solid #ff00ff');
-    //   console.log(blID);
-    //   brushingAndLinking();
-    // })
-    // for(let chart of chartContainer){
-    //   chart.on("click", () =>{
-    //      brushingAndLinking();
-    //   });
-    // }
-    
-    //   function brushingAndLinking(){
-    //     console.log('domainByTrait', chartContainer);
-    //     activeContainer = chartContainer[0].filter(isActive);
-    //     console.log('traits', activeContainer);
-
-    // }
-
-    // function isActive(value){
-    //   // let classlist = value.parentElement.classList;
-    //   for(let i of value.parentElement.classList){
-    //     if(i == 'active'){
-    //       return value;
-    //     }
-    //   }
-    // }
 
   }
 
@@ -226,8 +186,8 @@ class Chart
     }else{
       // tabmenu buttons
       navbar_list = this._main.modules.domElementCreator.create(
-        'li',                              // Element type
-        chartID + '-li',  // ID
+        'li',                         // Element type
+        chartID + '-li',              // ID
         ['chart-li', 'nav-item']      // Classes , 'w3-bar-item' ,'w3-button', 'tablink'
       );
       var navUl = document.getElementById(partialID + '-list');
@@ -236,9 +196,9 @@ class Chart
     }
 
     let navbarbtn = this._main.modules.domElementCreator.create(
-      'a',                              // Element type
-      chartID + '-tab',  // ID
-      ['chart-a', 'nav-link'],           // Classes , 'w3-bar-item' ,'w3-button', 'tablink'
+      'a',                            // Element type
+      chartID + '-tab',               // ID
+      ['chart-a', 'nav-link'],        // Classes , 'w3-bar-item' ,'w3-button', 'tablink'
     );
     navbar_list.append(navbarbtn);
     this._navbarbtn = $('#' + chartID + '-tab');
@@ -246,6 +206,7 @@ class Chart
     // add link to navigation bar
     navbarbtn.setAttribute("href", "#" + chartID + '-wrapper');
     navbarbtn.setAttribute("data-toggle", "pill");
+    navbarbtn.setAttribute("title", this._chartName.replace("-", " "));
     var disImgID= "distribution-chart" + this._chartCollectionId +"-img";
     var disListID= "distribution-chart" + this._chartCollectionId +"-li";
 

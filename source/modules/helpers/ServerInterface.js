@@ -35,13 +35,11 @@ class ServerInterface
 
   requestAllDatasets(successCallback)
   {
-    $.get(
-      ( ""
-        + ENDPOINTS.thredds
-        + "/catalog.xml"
-      ),
-      successCallback
-    )
+    let url0 = ""
+      + ENDPOINTS.thredds
+      + "/catalog.xml";
+    $.when($.get(url0))
+      .done(successCallback)
   }
 
   requestMetadataForDataset(urlPaths, successCallback)

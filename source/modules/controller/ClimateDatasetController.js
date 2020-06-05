@@ -49,7 +49,7 @@ class ClimateDatasetController {
     dataset.is_selected = true;
 
     // View
-    // Selection in ClimateDatasetsInList automatically
+    $('#' + dataset.id).attr('selected','selected');
 
     // Controller
     this._selectedDataset = dataset;
@@ -196,7 +196,8 @@ class ClimateDatasetController {
         let catalog = this._x2js.xml2json(xmlData).catalog;
 
         // For each dataset
-        for (let dsIdx in catalog.dataset) {
+        for (let dsIdx = 0 ; dsIdx < catalog.dataset.length; dsIdx++) 
+        {
           // Create new climate dataset
           let dataset = new ClimateDataset();
           dataset.id = catalog.dataset[dsIdx]._ID;
@@ -214,51 +215,37 @@ class ClimateDatasetController {
               parseInt(catalog.dataset[dsIdx].timeCoverage.end)
             ];
 
-          // Save dataset
-          this._datasets.push(dataset);
+          this._main.modules.serverInterface.requestMetadataForDataset(
+            dataset.url_datasets,
+            (tempDataXml, precDataXml) => {
+              dataset.meta_datasets =
+                [
+                  this._x2js.xml2json(tempDataXml[0]).netcdf,
+                  this._x2js.xml2json(precDataXml[0]).netcdf
+                ];
+              dataset.raster_cell_size =
+                {
+                  lat: parseFloat(dataset.meta_datasets[0].group[0].attribute[6]._value),
+                  lng: parseFloat(dataset.meta_datasets[0].group[0].attribute[7]._value)
+                };
 
-          // Get metadata
-          if(dsIdx == catalog.dataset.length-1) this._loadMetadata(dataset,true);
-          else this._loadMetadata(dataset,false);
-
-        }
+              // Save dataset
+              this._datasets.push(dataset);             
+              if(dsIdx == catalog.dataset.length-1)
+              {
+                this.displayDatasetMetadata();
+              }
+              this.selectByName(this._main.config.climateData.startWithDataset);
+              // add to drop down list
+              this._main.modules.climateDatasetsInList.add(dataset);
+            } 
+          ) 
+        }  
         this._main.modules.loading.end();
       }
     )
-
   }
 
-  _loadMetadata(dataset, isLast) {
-
-    this._main.modules.loading.start("dataset metadata");
-
-    this._main.modules.serverInterface.requestMetadataForDataset(
-      dataset.url_datasets,
-      (tempDataXml, precDataXml) => {
-        dataset.meta_datasets =
-          [
-            this._x2js.xml2json(tempDataXml[0]).netcdf,
-            this._x2js.xml2json(precDataXml[0]).netcdf
-          ];
-        dataset.raster_cell_size =
-          {
-            lat: parseFloat(dataset.meta_datasets[0].group[0].attribute[6]._value),
-            lng: parseFloat(dataset.meta_datasets[0].group[0].attribute[7]._value)
-          };
-        
-          if(isLast) {
-            // Display all dataset metadata in tab "Datasets & Software" 
-            // when metadata for all datasets is completely loaded
-            this.displayDatasetMetadata();
-          }
-        this._main.modules.loading.end();
-      }
-    )
-
-    // Add to view
-    this._main.modules.climateDatasetsInList.add(dataset);
-
-  }
 
   // ==========================================================================
   // Display all dataset metadata in tab "Datasets & Software"
@@ -266,28 +253,30 @@ class ClimateDatasetController {
 
   displayDatasetMetadata() 
   {
+    // console.log(this._datasets);
     let infotext = '';
-    for (let ds of this._datasets) 
+    for (let i = 0 ; i < this._datasets.length; i++)
     {
       // Preparing links in case of multiple DOIs for one dataset
       let doiLinks = "";
       // Splitting multiple DOIs in catalog by comma 
-      let doiSplit = ds.doi.split(',');
+      let doiSplit = this._datasets[i].doi.split(',');
       for(let doiIDx of doiSplit){
           if (!doiIDx.startsWith('http'))
               doiIDx = 'https://' + doiIDx.trim();
           doiLinks += '<a href="' + doiIDx + '" target="_blank">' + doiIDx + '</a><br />';
       }
       
-      infotext += '<div id="' + ds.id + '-info">'
+      
+      infotext += '<div id="' + this._datasets[i].id + '-info">'
         + '<p class="datasets-name">'
-        + ds.name
+        + this._datasets[i].name
         + '</p>'
         + '<p class="datasets-title">'
         + this._main.config.datasetsInfobox.ref
         + '</p>'
         + '<p class="datasets-text">'
-        + ds.description
+        + this._datasets[i].description
         + '</p>'
         + '<p>'
         + doiLinks
@@ -298,23 +287,23 @@ class ClimateDatasetController {
         + '<p>'
         + this._main.config.datasetsInfobox.resolution
         + ': '
-        + ds.raster_cell_size.lat
+        + this._datasets[i].raster_cell_size.lat
         + '° x '
-        + ds.raster_cell_size.lng
+        + this._datasets[i].raster_cell_size.lng
         + '°'
         + '<br />'
         + this._main.config.datasetsInfobox.time
         + ': '
-        + ds.time_period[0]
+        + this._datasets[i].time_period[0]
         + ' - '
-        + ds.time_period[1]
+        + this._datasets[i].time_period[1]
         + '</p></div>';
     }
     $('#datasets-info').html(infotext);
 
     // Initially select the first dataset in the list
-    if (!this._selectedDataset)
-      this.select(this._datasets[0]);
+    // if (!this._selectedDataset)
+    //   this.select(this._datasets[0]);
 
   }
 

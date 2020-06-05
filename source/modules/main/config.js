@@ -218,8 +218,8 @@ let loadConfig = (main) =>
           availabilitybar:{
             // oneMonthPercentage : 3.33,
             colorInterval: 5,  
-            temp: "Availability of Temperature Data",
-            prec: "Availability of Precipitation Data",
+            temp: "Missing Temperature Data",
+            prec: "Missing Precipitation Data",
             avail: "Percentage of Missing Data"
           },   
           availabilitycolors:{
@@ -369,6 +369,7 @@ let loadConfig = (main) =>
     climateData:
     {
       decimalPlaces: 1,     // Decimal precision for both temp / prec
+      startWithDataset: "CRU Time Series v4.04",
     },
 
     // ========================================================================
