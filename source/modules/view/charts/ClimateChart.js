@@ -211,12 +211,30 @@ class ClimateChart extends Chart
 
     this._chart.select('#focus'+ this._chartCollectionId)
       .append('circle')
-      .attr('id', 'c2'  + this._chartCollectionId)
+      .attr('id', 'c2' + this._chartCollectionId)
       .attr('r', this._chartMain.mouseover.circleRadius)
       .attr('fill', 'white')
       .attr('stroke', this._chartsMain.colors.prec)
       .style('stroke-width', this._chartMain.mouseover.strokeWidth);
 
+    this._chart.select('#focus'+ this._chartCollectionId)
+      .append('rect')
+      .attr('id', 'r1' + this._chartCollectionId)
+      .attr('width', this._chartPos.width / (MONTHS_IN_YEAR.length-1))
+      .attr('height', this._chartPos.width / (MONTHS_IN_YEAR.length-1) / 2)
+      .attr('fill', 'none')
+      .style('fill-opacity', 0)
+      .style('stroke', this._chartsMain.colors.temp)
+      .style('stroke-width', this._chartMain.mouseover.strokeWidth);
+    this._chart.select('#focus'+ this._chartCollectionId)
+      .append('rect')
+      .attr('id', 'r2' + this._chartCollectionId)
+      .attr('width', this._chartPos.width / (MONTHS_IN_YEAR.length-1))
+      .attr('height', this._chartPos.width / (MONTHS_IN_YEAR.length-1) / 2)
+      .attr('fill', 'none')
+      .style('fill-opacity', 0)
+      .style('stroke', this._chartsMain.colors.prec)
+      .style('stroke-width', this._chartMain.mouseover.strokeWidth);
 
     // Event handling
     let showCircles = () =>
@@ -239,24 +257,24 @@ class ClimateChart extends Chart
           .style('font-size', this._chartsMain.fontSizes.large + 'em')
           .style('text-shadow', 'none')
       };
+
     
-    let defocusAvailabilityCell = ()=>
-      {
-        this._chart.selectAll('.'+this._chartName+this._chartCollectionId+'-wl-bar')
-          .style('stroke', this._chartsMain.colors.grid)
-          .style('stroke-width',  '1px')
-      };
+    this._chart.append('rect')
+      .attr('id', this._chartName + this._chartCollectionId + '-hover-area')
+      .attr('pointer-events', 'all')
+      .attr('x', this._chartPos.left)
+      .attr('y', this._chartPos.top)
+      .attr('width', this._chartPos.width)
+      .attr('height', this._chartPos.height) 
+      .attr('fill', 'none')
+      .style('opacity', 0);
+   
+    var chartSVG = d3.select('#' + this._chartName + this._chartCollectionId + '-hover-area')[0]
 
-    //this._chartWrapper.mouseover(hideCircles)
+    $(chartSVG).mouseout(hideCircles);
+    $(chartSVG).mouseout(defocusMonth);
 
-    this._chartWrapper.mouseout(hideCircles);
-    this._chartWrapper.mouseout(defocusMonth);
-    this._chartWrapper.mouseout(defocusAvailabilityCell);
-
-
-    //Todo: change wording from "click" to "mouse" position 
-    this._chartWrapper.mousemove( (e) =>
-      {
+    $(chartSVG).mousemove((e) => {
         // Get mouse position inside svg canvas
         let svg = this._chart[0][0];
         let mousePtReal = svg.createSVGPoint();
@@ -288,24 +306,21 @@ class ClimateChart extends Chart
         {
           hideCircles();
           defocusMonth();
-          defocusAvailabilityCell();
           return
         }
+
         showCircles();
 
         let c1 =    this._chart.select('#c1' + this._chartCollectionId);
         let c2 =    this._chart.select('#c2' + this._chartCollectionId);
+        let r1 =    this._chart.select('#r1' + this._chartCollectionId);
+        let r2 =    this._chart.select('#r2' + this._chartCollectionId);
         let month = this._chart.select('#month_c' + xI);
         let temp =  this._chart.select('#temp_c' + xI);
         let prec =  this._chart.select('#prec_c' + xI);
-        let availTemp =  this._chart.select('#avail_month_temp'+ xI);
-        let availPrec =  this._chart.select('#avail_month_prec'+ xI);
-        let rows =  this._chart.selectAll('.cell');
-        let availRows = this._chart.selectAll('.' + this._chartName + this._chartCollectionId + '-wl-bar');    
-
+        
         // reset table highlights
         defocusMonth();
-        defocusAvailabilityCell();
 
         // Highlight closest month in chart and table
         month.style('text-shadow', 'none')
@@ -317,19 +332,12 @@ class ClimateChart extends Chart
           .attr('font-weight', 'bold')
           .style('text-shadow', 'none');
 
-        // Highlight closest month in avail bars
-        availTemp.style('stroke', this._chartsMain.colors.temp)
-          .style('stroke-width', '2px');
-        availPrec.style('stroke', this._chartsMain.colors.prec)
-          .style('stroke-width', '2px');
-
         // move temp circle
         c1.attr('transform',
           'translate('
             + tickPos[xI] + ','
             + this.yScaleTempBelowBreak(this._climateData.monthly_short[xI].temp) + ')'
         );
-
         // move prec circle if below break value
         if (this._climateData.monthly_short[xI].prec <= this._chartMain.prec.breakValue)
         {
@@ -348,6 +356,18 @@ class ClimateChart extends Chart
               + this.yScalePrecAboveBreak(this._climateData.monthly_short[xI].prec) + ')'
           )
         }
+        // move temp availability rectangle
+        r1.attr('transform',
+          'translate('
+            + this._chart.select('#avail_month_temp'+ xI).attr('x') + ','
+            + this._chart.select('#avail_month_temp'+ xI).attr('y') + ')'
+        );
+        // move prec aavailability rectangle
+        r2.attr('transform',
+          'translate('
+            + this._chart.select('#avail_month_prec'+ xI).attr('x') + ','
+            + this._chart.select('#avail_month_prec'+ xI).attr('y') + ')'
+        );
       }
     )
   }
@@ -1364,7 +1384,7 @@ class ClimateChart extends Chart
         .style('stroke',        this._chartsMain.colors.grid)
         .style('stroke-width',  cellWidth + ' px');
 
-        index++;
+      index++;
     }
 
     // temperature title
