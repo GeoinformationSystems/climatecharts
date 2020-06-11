@@ -55,11 +55,11 @@ let loadConfig = (main) =>
     },
 
     // ========================================================================
-    climateCell:
+    climateCell:            // map marker: rectangle
     {
       style:
       {
-        color:  '#000099',  // background color
+        color:  '#000099',  // stroke and background color
         weight: 2,          // stroke width
       },
     },
@@ -74,7 +74,7 @@ let loadConfig = (main) =>
       {
         width:          728,  // Reference: full width
         height:         420,  // Reference: initial full height
-        titleTop:       10,    // Top margin for title
+        titleTop:       10,   // Top margin for title
         subtitleTop:    35,   // Top margin for subtitle
         mainTop:        65,   // Top margin for main (= height of title area)
         footerTop:      50,   // Margin for footer
@@ -100,7 +100,6 @@ let loadConfig = (main) =>
         axes:           d3.rgb(255,255,255),
         noData:         d3.rgb(70, 71, 73),
       },
-      // discreteSteps:    6,
       tempcolors:
       {
         t_range1:           d3.rgb(249,231,174),
@@ -114,10 +113,10 @@ let loadConfig = (main) =>
       {
         p_range1:           d3.rgb(215,244,207),
         p_range2:           d3.rgb(154,220,187),
-        p_range3:           d3.rgb(24,  189,  176),
-        p_range4:           d3.rgb(0 , 149,  175),
-        p_range5:           d3.rgb(0 ,  93,  158),
-        p_range6:           d3.rgb(38,   24,   95),
+        p_range3:           d3.rgb(24,189,176),
+        p_range4:           d3.rgb(0,149,175),
+        p_range5:           d3.rgb(0,93,158),
+        p_range6:           d3.rgb(38,24,95),
       },
       footerOpacity:    0.4,
       saveOptions:
@@ -138,7 +137,6 @@ let loadConfig = (main) =>
       },
       charts:
       [
-
         // --------------------------------------------------------------------
         {
           name:           'climate-chart',
@@ -286,19 +284,16 @@ let loadConfig = (main) =>
           {
             left:         50,
             top:          50,
-            right:        20,
+            right:        50,
             bottom:       0,
           },
           style:
           {
             gridWidth:        1,    // Width of stroke of square
-            squareWidth:      25,   // Dimension of cell sqares
+            squareWidth:      26,   // Dimension of cell squares
             rowHeadWidth:     20,   // Width of row "heading" (year number)
             colHeadHeight:    12,   // Height of col heading (month / value)
             titleMargin:      45,   // Margin-bottom for title of the chart
-            legendEntryMargin:3,    // Margin-top for entry in legend
-            cellOpacity:      0.5,  // Opacity value for colored cells
-            availabilityOpacity: 1.0,
           },
           headings:
           {
@@ -311,26 +306,6 @@ let loadConfig = (main) =>
             temp:         "Temperature Scale",
             prec:         "Precipitation Scale",
             noData:       "No data available",
-          },
-          discreteSteps:    6, // how many colors are used
-          
-          tempcolors:
-          {
-            t_range1:           d3.rgb(249,231,174),
-            t_range2:           d3.rgb(234,196,134),
-            t_range3:           d3.rgb(218,156,91),
-            t_range4:           d3.rgb(198,109,46),
-            t_range5:           d3.rgb(171,56,22),
-            t_range6:           d3.rgb(125,0,37),
-          },
-          precipcolors:
-          {
-            p_range1:           d3.rgb(215,244,207),
-            p_range2:           d3.rgb(154,220,187),
-            p_range3:           d3.rgb(24,  189,  176),
-            p_range4:           d3.rgb(0 , 149,  175),
-            p_range5:           d3.rgb(0 ,  93,  158),
-            p_range6:           d3.rgb(38,   24,   95),
           },
           switch:
           {
@@ -350,17 +325,6 @@ let loadConfig = (main) =>
             right:        30,
             bottom:       0,
           },
-          
-          // style:
-          // {
-          //   gridWidth:        1,    // Width of stroke of square
-          //   squareWidth:      25,   // Dimension of cell sqares
-          //   rowHeadWidth:     20,   // Width of row "heading" (year number)
-          //   colHeadHeight:    12,   // Height of col heading (month / value)
-          //   titleMargin:      45,   // Margin-bottom for title of the chart
-          //   legendEntryMargin:3,    // Margin-top for entry in legend
-          //   cellOpacity:      0.5,  // Opacity value for colored cells
-          // },
         },
       ],
     },

@@ -306,12 +306,6 @@ class ClimateChart extends Chart
         // reset table highlights
         defocusMonth();
         defocusAvailabilityCell();
-        // rows.attr('fill', 'black')
-        //   .attr('font-weight', 'normal')
-        //   .style('text-shadow', 'none');
-        // reset avail bars highlights
-        // availRows.style('stroke', this._chartsMain.colors.grid)
-        //   .style('stroke-width', '1px');
 
         // Highlight closest month in chart and table
         month.style('text-shadow', 'none')

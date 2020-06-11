@@ -507,6 +507,7 @@ class Chart
           
           e.currentTarget.className ='graph-active';
 
+          this._initMembers(this._climateData);
           this._setupChart();
           this._setupHeaderFooter();
         }
