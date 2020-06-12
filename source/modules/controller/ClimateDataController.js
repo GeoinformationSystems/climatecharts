@@ -233,6 +233,7 @@ class ClimateDataController
 
   _calcDataList()
   {
+    // parse raw temp data
     this._climateData.temp_list = [];
     for (let monthIdx = 0; monthIdx < MONTHS_IN_YEAR.length; monthIdx++)
     {
@@ -249,7 +250,10 @@ class ClimateDataController
         }
       }
     }
+    // check if every month has a real temp value
+    if(this._climateData.temp.filter(month => month.mean != null).length != MONTHS_IN_YEAR.length) this._climateData.has_temp = false;
 
+    // parse raw prec data
     this._climateData.prec_list = [];
     for (let monthIdx = 0; monthIdx < MONTHS_IN_YEAR.length; monthIdx++)
     {
@@ -266,6 +270,8 @@ class ClimateDataController
         }
       }
     }
+    //check if every month has a real prec value
+    if(this._climateData.prec.filter(month => month.sum != null).length != MONTHS_IN_YEAR.length) this._climateData.has_prec = false;
   }
 
 

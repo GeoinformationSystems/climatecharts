@@ -552,7 +552,7 @@ class Chart
       .style('font-weight',     'normal')
       .style('shape-rendering', 'default')
       .style('text-rendering',  'optimizeLegibility')
-      .style('background-color','transparent')
+      .style('background-color','white')
   }
 
 
