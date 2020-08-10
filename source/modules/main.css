@@ -43,6 +43,89 @@ body
   overflow-y: scroll;
 }
 
+/* -------------START------------- */
+/* navbar left side for user guide */
+/* ------------------------------- */
+
+.fixed {
+  position: fixed;
+}
+.user-guide-toc {
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+#user-guide .nav-heading {
+  border-bottom: 1px solid #babdb6;
+  padding-bottom: 3px;
+  font-size: 14px;
+}
+#user-guide .img-left {
+  padding: 0px 15px 15px 0px;
+}
+#user-guide .img-center {
+  padding: 0px 15px 15px 0px;
+  margin: 0 auto;
+}
+#user-guide h5 {
+  border-bottom: 1px solid #babdb6;
+  padding-bottom: 3px;
+  padding-top: 20px;
+}
+#user-guide h6 {
+  border-bottom: 1px dotted #babdb6;
+  padding-bottom: 3px;
+  padding-top: 10px;
+}
+/* all links */
+.user-guide-toc .nav>li>a {
+  color: #333;
+  border-left: 2px solid transparent;
+  padding: 4px 20px;
+  font-size: 13px;
+  font-weight: 400;
+}
+/* nested links */
+.user-guide-toc .nav .nav>li>a {
+  padding-top: 1px;
+  padding-bottom: 1px;
+  padding-left: 30px;
+  font-size: 12px;
+}
+/* active & hover links */
+.user-guide-toc .nav>.active>a, 
+.user-guide-toc .nav>li>a:hover, 
+.user-guide-toc .nav>li>a:focus {
+  color: #337ab7;;                 
+  text-decoration: none;          
+  background-color: transparent;  
+  border-left-color: #337ab7;; 
+}
+/* all active links */
+.user-guide-toc .nav>.active>a, 
+.user-guide-toc .nav>.active:hover>a,
+.user-guide-toc .nav>.active:focus>a {
+  font-weight: 700;
+}
+/* nested active links */
+.user-guide-toc .nav .nav>.active>a, 
+.user-guide-toc .nav .nav>.active:hover>a,
+.user-guide-toc .nav .nav>.active:focus>a {
+  font-weight: 500;
+}
+/* hide inactive nested list */
+.user-guide-toc .nav ul.nav {
+  display: none;           
+}
+/* show active nested list */
+.user-guide-toc .nav>.active>ul.nav {
+  display: block;           
+}
+
+/* -------------END--------------- */
+/* navbar left side for user guide */
+/* ------------------------------- */
+
+
 h2
 {
   display: inline;
@@ -73,12 +156,6 @@ h4
   padding-top: 10px;
   padding-bottom: 10px;
 }
-
-/*input
-{
-  margin-top: 5px;
-  margin-bottom: 5px;
-}*/
 
 label
 {

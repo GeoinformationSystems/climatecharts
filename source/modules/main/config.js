@@ -303,8 +303,8 @@ let loadConfig = (main) =>
           },
           legend:
           {
-            temp:         "Temperature Scale",
-            prec:         "Precipitation Scale",
+            temp:         "Temperature Scale [°C]",
+            prec:         "Precipitation Scale [mm]",
             noData:       "No data available",
           },
           switch:

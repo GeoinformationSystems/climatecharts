@@ -27,24 +27,21 @@
     <!-- jQuery -->
     <script src="build/third-party/jquery/jquery.min.js"></script>
     <script src="build/third-party/jquery/jquery-ui.min.js"></script>
-    <script src="build/third-party/jquery/jquery.ui.touch-punch.min.js"></script>
     <link href="build/third-party/jquery/jquery-ui.css" rel="stylesheet"/>
-    <script src="build/third-party/jquery/panzoom.js"></script>
-    <script src="build/third-party/jquery/pointertouch.js"></script>
+
+    <!-- jQuery Plugin: waitMe - css loading screen -->
     <script src="build/third-party/jquery/waitMe.min.js"></script>
     <link href="build/third-party/jquery/waitMe.min.css" rel="stylesheet"/>
 
     <!-- Bootstrap (requires jQuery) -->
-    <script src="build/third-party/bootstrap/popper.min.js"></script>
     <script src="build/third-party/bootstrap/bootstrap.min.js"></script>
     <link href="build/third-party/bootstrap/bootstrap.min.css" rel="stylesheet"/>
-
 
     <!-- d3 visualization -->
     <script src="build/third-party/d3/d3.min.js"></script>
     <script src="build/third-party/d3/d3.boxplot.js"></script>
 
-    <!-- FileSaver: conveniently save canvas to external file -->
+    <!-- FileSaver: saveSvgAsPng - conveniently save canvas to external file -->
     <script src="build/third-party/FileSaver/saveSvgAsPng.js"></script>
 
     <!-- Leaflet: map and interaction -->
@@ -53,12 +50,6 @@
 
     <!-- Leaflet Plugin: Turf - line coordinate selection tool -->
     <script src='https://npmcdn.com/@turf/turf/turf.min.js'></script>
-
-    <!-- Polyfill: Internet Explorer 11 support -->
-    <script src="build/third-party/polyfill/browser-polyfill.min.js"></script>
-
-    <!-- toggle-switch: nice little style for simple toggles -->
-    <link href="build/third-party/toggle-switch/toggle-switch.css" rel="stylesheet"/>
 
     <!-- Font Awesome icon set -->
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css">
@@ -89,7 +80,7 @@
 
 </head>
 
-<body>
+<body data-spy="scroll" data-target=".user-guide-toc" data-offset="100">
 <!-- Piwik -->
 <noscript><p><img src="https://mars.geo.tu-dresden.de/piwik.php?idsite=5&rec=1" style="border:0" alt=""/></p></noscript>
 
@@ -112,6 +103,7 @@
                             <div class="col-lg-10">
                                 <ul class="tab-links nav nav-pills">
                                     <li class="active"><a href="#home">Home</a></li>
+                                    <li><a href="#user-guide">User Guide</a></li>
                                     <li><a href="#data-software">Datasets &amp; Software</a></li>
                                     <li><a href="#lic-cit">License &amp; Citation</a></li>
                                     <li><a href="#about">About</a></li>
@@ -189,7 +181,239 @@
                                 </div>
                             </div>
                         </div>
+                        
+                        <div id="user-guide" class="tab">
+                            <div class="row">
+                                <nav class="col-xs-3 user-guide-toc">
+                                    <ul id="sidebar-toc" class="nav nav-stacked fixed">
+                                        <li class="nav-heading">Content:</li>
+                                        <li>
+                                            <a href="#Creating">1 Creating a Climate Chart</a>
+                                            <ul class="nav nav-stacked">
+                                                <li><a href="#CreatingSub1">1.1 Map </a></li>
+                                                <li><a href="#CreatingSub2">1.2 Select a Location</a></li>
+                                                <li><a href="#CreatingSub3">1.3 Filter Options</a></li>
+                                            </ul>
+                                        </li>
+                                        <li>
+                                            <a href="#Visual">2 Visualizations</a>
+                                            <ul class="nav nav-stacked">
+                                                <li><a href="#VisualSub1">2.1 Walter-Lieth Climate Chart</a></li>
+                                                <li><a href="#VisualSub2">2.2 Distribution Chart (Boxplot)</a></li>
+                                                <li><a href="#VisualSub3">2.3 Availabilty Chart</a></li>
+                                            </ul>
+                                        </li>
+                                        <li>
+                                            <a href="#Download">3 Download Charts</a>
+                                        </li>
+                                    </ul>
+                                </nav>
 
+                                <div class="col-xs-9">
+                                    <div class="box">
+                                    <div class="info">
+                                    <h3>How to use ClimateCharts.net</h3>
+                                    <p>ClimateCharts.net is an easy to use web application for the generation of Walter-Lieth climate charts. 
+                                    The individual functions of the application are briefly explained below:</p>
+
+                                    <section id="Creating" class="group">
+                                        <h4>1 Creating a Climate Chart</h4>
+                                        <div id="CreatingSub1" class="subgroup">
+                                            <h5>1.1 Map </h5>
+                                            <p>When the web application is started, a map (1) is available that allows the user to select a region 
+                                            for generating a climate diagram. The most common tools are available for this purpose:</p>
+                                            <ul>
+                                                <li>Mouse interaction – scroll wheel: zoom in/out </li>
+                                                <li>+/-: zoom in/out (2)</li>
+                                                <li>Select Base Map (3)
+                                                    <ul>
+                                                        <li>ESRI Base Map</li>
+                                                        <li>OpenStreetMap</li>
+                                                    </ul>
+                                                </li>
+                                            </ul>
+                                            <img class="img-responsive img-center" src="data/img/user-guide/Mapwindow.png" />
+                                        </div>
+                                        <div id="CreatingSub2" class="subgroup">
+                                            <h5>1.2 Select a Location</h5>
+                                            <p>The selection of a location is quite easy and is done by clicking on a position in the map. Basically, 
+                                            there are two types of data sets available - raster data (see 1.2.1) and station data (see 1.2.2).</p>
+                                            <p>In addition, it is also possible to select a position on the map by entering coordinates into the filter menu. 
+                                            You can find it under the map tile (1). In this case a raster cell at this position is selected.</p>
+                                            <img class="img-responsive img-center" src="data/img/user-guide/Selection-Coordinate.png" />
+                                            <h6>1.2.1 Raster Data</h6>
+                                            <p>Once you selected a raster data set and clicked on a location, the corresponding raster cell is shown on the 
+                                            map in blue (1). Within this grid cell the resulting climate diagrams are identical. Another indicator that you 
+                                            are seeing raster instead of station data is the note "Climate Cell" at the top of the information popup (2). 
+                                            This popup also contains information about the name of the place you have selected (3) as well as information 
+                                            about the climate classes according to Köppen-Geiger, the altitude and the selected time period (4). With the 
+                                            button "Create Charts" a diagram is created below the map (5).</p>
+                                            <img class="img-responsive img-center" src="data/img/user-guide/Selection-Raster.png" />
+                                            <h6>1.2.2 Station Data</h6>
+                                            <p>If you click on one of the brown marked dots on the map, a weather station is selected. Once activated the 
+                                            color will change to blue (1). </p>
+                                            <p>You can also see that you have selected a station by the note "Climate Station" in the popup (2). This popup also 
+                                            contains information about the name of the place you have selected (3) as well as information about the climate 
+                                            classes according to Köppen-Geiger, the altitude and the selected time period (4). With the button "Create Charts" 
+                                            a diagram is created below the map (5).</p>
+                                            <img class="img-responsive img-center" src="data/img/user-guide/Selection-Station.png" />
+                                        </div>
+                                        <div id="CreatingSub3" class="subgroup">
+                                            <h5>1.3 Filter Options</h5>
+                                            <h6>1.3.1 Data Sets</h6>
+                                            <p>Overall, four data sets are available for the generation of climate charts.</p>
+                                            <p>The weather stations’ data set is part of the Global Historical Climatology Network (GHCN). 
+                                            This data set is automatically selected whenever a user clicks on a station (cf. 1.2.2).</p>
+                                            <img class="img-responsive img-center" src="data/img/user-guide/Filter-Dataset.png" />
+                                            <p>In addition, three different raster data sets can be used to generate climate diagrams. Select 
+                                            one of these data sets before clicking on a location in the map. The selection menu is located beneath the map.</p>
+                                            <p>After you have chosen the preferred data set, you can select a location in the map.</p>
+                                            <p>You can find more information about the datasets in the menu "Datasets &amp; Software".</p>
+
+                                            <h6>1.3.2 Time Period</h6>
+                                            <p>Climate diagrams are often generated for a period of at least 30 years. The web application 
+                                            ClimateCharts.net offers the possibility to adapt this period according to your own requirements. 
+                                            For this purpose, a slider for adjusting the period (1) is available. The Dark grey area shows the 
+                                            maximum time period in which data (independent of the selected dataset) is available. The maximum 
+                                            available time period for the selected data set (2) is shown in white. The length of this bar can 
+                                            vary depending on the selected data set. The selected time period can be adjusted individually by moving 
+                                            the upper and lower limits (3) of the light grey bar.</p>
+                                            <img class="img-responsive img-center" src="data/img/user-guide/Filter-Time.png" />
+                                            <p>Only the data of the selected period is processed and displayed in the climate chart. The "Reset" 
+                                            button is used to set the most recent time period with a length of 30 years (4).</p>                                            
+                                        </div>
+                                    </section>
+                                    <section id="Visual" class="group">
+                                        <h4>2 Visualizations</h4>
+                                        <p>Currently, three different types of climate charts can be generated. After you have created a 
+                                        climate chart with the button "Create Chart" you will get the following view:</p>
+                                        <img class="img-responsive img-center" src="data/img/user-guide/Chart-Intro.png" />
+                                        <p>In the upper left corner (1) you can switch between the three different visualizations. </p>
+                                        <ul>
+                                            <li>Walther-Lieth Climate Chart (see 2.1)</li>
+                                            <li>Distribution Chart (see 2.2)</li>
+                                            <li>Availability Chart (see 2.3)</li>
+                                        </ul>
+                                        <p>In the default setting, the Walter-Lieth Chart is displayed after generation.</p>
+                                        <div id="VisualSub1" class="subgroup">
+                                            <h5>2.1 Walter-Lieth Climate Chart</h5>
+                                            <h6>2.1.1 Structure of the Walter-Lieth Chart</h6>
+                                            <p>The Walter-Lieth Chart contains a number of components, which will be explained in the following:</p>
+                                            <img class="img-responsive img-center" src="data/img/user-guide/Chart-Walter-Lieth.png" />
+                                            <ol>
+                                                <li>The location’s name. A gazetteer is used to generate the name (<a href="https://www.geonames.org/" target="_blank">https://www.geonames.org/</a>). Alternatively, you can set a name manually.</li>
+                                                <li>The location’s coordinates.</li>
+                                                <li>Elevation of the location. For this information, the gazetteer "Geonames" is used as well.</li>
+                                                <li>Köppen-Geiger Climate Class. (Markus Kottek, Jürgen  Grieser, Christoph Beck, Bruno Rudolf and Franz Rubel. 2006. "World Map of the Köppen-Geiger climate classification updated." Meteorologische Zeitschrift 15 (3): 259–263. <a href="https://dx.doi.org/10.1127/0941-2948/2006/0130" target="_blank">https://dx.doi.org/10.1127/0941-2948/2006/0130</a>.)</li>
+                                                <li>Selected time period</li>
+                                                <li>Visualization of climate data according to Walter-Lieth (1967)</li>
+                                                <li>Table of the average monthly values used for temperature and precipitation sums.</li>
+                                                <li>Mean annual temperature and annual precipitation values</li>
+                                                <li>Information on the completeness of the data within the selected time period</li>
+                                                <li>Data source (see 1.3.1)</li>
+                                                <li>Option to display a bar chart</li>
+                                            </ol>
+                                            <h6>2.1.2 Understanding the Walter-Lieth Chart</h6>
+                                            <p>The Walter-Lieth Chart is an easy way to show information about the climatic conditions at a selected location 
+                                            The chart visualizes mean monthly temperatures (1) and mean monthly precipitation sum values (2). The values 
+                                            temperature and precipitation have a ratio of 1:2 up to a value of 100 mm mean monthly precipitation. This ratio 
+                                            changes to 1:10 if precipitation exceeds 100 mm. </p>
+                                            <img class="img-responsive img-center" src="data/img/user-guide/Chart-Walter-Lieth-2.png" />
+                                            <p>The resulting intersections between the temperature and precipitation curves create areas of different classifications (color):</p>
+                                            <ul>
+                                                <li>Yellow: The temperature curve lies above the precipitation curve. Arid or semi-arid conditions prevail.</li>
+                                                <li>Light blue: The precipitation curve lies above the temperature curve. Humid conditions prevail.</li>
+                                                <li>Dark blue: The precipitation curve is clearly above the temperature curve (note change in the scaling of the precipitation axis). These conditions are also called per-humid (monthly precipitation sum &gt; 100 mm).</li>
+                                            </ul>
+                                        </div>
+                                        <div id="VisualSub2" class="subgroup">
+                                            <h5>2.2 Distribution Chart (Boxplot)</h5>
+                                            <h6>2.2.1 Structure of the Distribution Chart</h6>
+                                            <img class="img-responsive img-center" src="data/img/user-guide/Chart-Distributions.png" />
+                                            <ol>
+                                                <li>The location’s name. A gazetteer is used to generate the name (<a href="https://www.geonames.org/" target="_blank">https://www.geonames.org/</a>). Alternatively, you can set a name manually.</li>
+                                                <li>The location’s coordinates.</li>
+                                                <li>Elevation of the location. For this information, the gazetteer "Geonames" is used as well.</li>
+                                                <li>Köppen-Geiger Climate Class. (Markus Kottek, Jürgen  Grieser, Christoph Beck, Bruno Rudolf and Franz Rubel. 2006. "World Map of the Köppen-Geiger climate classification updated." Meteorologische Zeitschrift 15 (3): 259–263. <a href="https://dx.doi.org/10.1127/0941-2948/2006/0130" target="_blank">https://dx.doi.org/10.1127/0941-2948/2006/0130</a>.)</li>
+                                                <li>Selected time period</li>
+                                                <li>Distribution chart (box plot) for the mean monthly temperatures during the selected period</li>
+                                                <li>Distribution chart (box plot) for the monthly precipitation sums during the selected period</li>
+                                                <li>Data source (see 1.3.1)</li>
+                                                <li>Adjustment of the scaling of the y-axis.
+                                                    <ol style="list-style-type: lower-alpha;">
+                                                        <li>Relative = based on the selected data</li>
+                                                        <li>Fixed = based on all data sets</li>
+                                                    </ol>
+                                                </li>
+                                            </ol>
+                                            <h6>2.2.2 Understanding the Distribution Chart</h6>
+                                            <p>This chart visualizes the monthly distribution of the climate parameters included in the Walter-Lieth Chart 
+                                            using a box plot. This kind of chart visualizes the distribution of different parameters. Here, the average 
+                                            sums of monthly temperature and precipitation values are shown. The box plot include:</p>
+                                            <ul>
+                                                <li>Median (middle value of the data set)</li>
+                                                <li>First quartile (25<sup>th</sup> Percentile, Q1)</li>
+                                                <li>Third Quartile (75<sup>th</sup> Percentile, Q2)</li>
+                                                <li>Interquartile Range (IQR, 25<sup>th</sup> to the 75<sup>th</sup> percentile; Box)</li>
+                                                <li>Whiskers (Q1 - 1.5*IQR and Q3 + 1.5*IQR)</li>
+                                                <li>Outliers (dots)</li>
+                                            </ul>
+                                            <img class="img-responsive img-center" src="data/img/user-guide/440px-Boxplot_vs_PDF.png" />
+                                            <p style="text-align:center; font-size:0.8em; "><a href="https://en.wikipedia.org/wiki/Box_plot#/media/File:Boxplot_vs_PDF.svg" target="_blank">image source</a></p>
+                                            
+                                            <p>Reading boxplots requires some experience and knowledge of data distribution. For more detailed 
+                                            information we recommend the article "Understanding Boxplots" by Michael Galarnyk:
+                                            <a href="https://towardsdatascience.com/understanding-boxplots-5e2df7bcbd51" target="_blank">https://towardsdatascience.com/understanding-boxplots-5e2df7bcbd51</a>
+                                            </p>
+                                        </div>
+                                        <div id="VisualSub3" class="subgroup">
+                                            <h5>2.3 Availabilty Chart</h5>
+                                            <h6>2.3.1 Structure of the Availability Chart</h6>
+                                            <p>The Availability Chart is a detailed tabular representation of the data of the Walter Lieth Climate Chart.</p>
+                                            <img class="img-responsive img-center" src="data/img/user-guide/Chart-Availability.png" />
+                                            <ol>
+                                                <li>The location’s name. A gazetteer is used to generate the name (<a href="https://www.geonames.org/" target="_blank">https://www.geonames.org/</a>). Alternatively, you can set a name manually.</li>
+                                                <li>The location’s coordinates.</li>
+                                                <li>Elevation of the location. For this information, the gazetteer "Geonames" is used as well.</li>
+                                                <li>Köppen-Geiger Climate Class. (Markus Kottek, Jürgen  Grieser, Christoph Beck, Bruno Rudolf and Franz Rubel. 2006. "World Map of the Köppen-Geiger climate classification updated." Meteorologische Zeitschrift 15 (3): 259–263. <a href="https://dx.doi.org/10.1127/0941-2948/2006/0130" target="_blank">https://dx.doi.org/10.1127/0941-2948/2006/0130</a>.)</li>
+                                                <li>Selected time period</li>
+                                                <li>Visualization of the mean monthly temperature values and the monthly precipitation sums involved in the climate diagram.</li>
+                                                <li>Color-coded scales for temperature and precipitation.</li>
+                                                <li>Data source (see 1.3.1)</li>
+                                                <li>Adjustment of the color-coded scales.
+                                                    <ol style="list-style-type: lower-alpha;">
+                                                        <li>Relative = based on the selected data</li>
+                                                        <li>Fixed = 
+                                                        <ol style="list-style-type: lower-roman;">
+                                                            <li>Temperature: &lt; 5°C to &gt; 35°C</li>
+                                                            <li>Precipitation: &lt; 40 mm to &gt; 200 mm</li>
+                                                        </ol>
+                                                        </li>
+                                                    </ol>
+                                                </li>
+                                            </ol>
+                                            <h6>2.3.2 Understanding the Availability Chart</h6>
+                                            <p>The Availability Chart is an easy-to-understand instrument for displaying temperature and precipitation data as numerical values. 
+                                            The color-coding of the table cells allows you to quickly perceive the values. It allows the comparison of the monthly 
+                                            values over the selected time period. It is also possible to identify data gaps. These data gaps occur exclusively in the 
+                                            data set of the GHCN Weather Stations (see 1.3.1).</p>
+                                        </div>
+                                    </section>
+                                    <section id="Download" class="group">
+                                        <h4>3 Download Charts</h4>
+                                        <p>All charts of the application Climatecharts.net are available for free. In the upper right corner of each diagram you 
+                                        will find two buttons to save the charts as PNG file (raster graphics) or SVG file (vector graphics). Saving as a vector 
+                                        graphic also allows you to easily edit the data (e.g. coloring).</p>
+                                        <p>In case you are using the diagrams or parts of it within scientific or other publications, we recommend to cite: 
+                                        Wiemann, Felix; Karrasch, Pierre; Müller, Matthias: ClimateCharts.net – eine Webanwendung zur Erzeugung räumlich und 
+                                        zeitlich variabler Klimadiagramme; In: AGIT - Journal für Angewandte Geoinformatik, 2-2016.</p>
+                                    </section>
+                                    </div>    
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
                         <div id="data-software" class="tab">
                             <div class="row">
                                 <div class="col-lg-8">
@@ -239,12 +463,13 @@
                                         <h3>Software</h3>
                                         <p>Frontend libraries:</p>
                                         <ul>
-                                            <li><a href="http://getbootstrap.com/" target="_blank">Bootstrap</a></li>
-                                            <li><a href="https://d3js.org/" target="_blank">Data Driven Documents (D3)</a> + <a href="https://bl.ocks.org/mbostock/4061502" target="_blank">Box Plots</a></li>
-                                            <li><a href="https://github.com/exupero/saveSvgAsPng" target="_blank">Save SVG As PNG</a></li>
+                                            <li><a href="https://getbootstrap.com/" target="_blank">Bootstrap 3.3.7</a> </li>
+                                            <li><a href="https://d3js.org/" target="_blank">Data Driven Documents (D3)</a> </li>
+                                            <li><a href="http://bl.ocks.org/jensgrubert/7789216" target="_blank">D3.js Boxplot with Axes and Labels</a></li>
                                             <li><a href="https://jquery.com/" target="_blank">jQuery</a> + <a href="https://jqueryui.com/" target="_blank">jQuery UI</a></li>
-                                            <li><a href="http://leafletjs.com/" target="_blank">Leaflet</a></li>
-                                            <li><a href="https://ghinda.net/css-toggle-switch/index.htm" target="_blank">CSS Toggle Switch</a></li>
+                                            <li><a href="https://github.com/vadimsva/waitMe" target="_blank">jQuery Plugin: waitMe</a></li>
+                                            <li><a href="https://leafletjs.com/" target="_blank">Leaflet</a></li>
+                                            <li><a href="https://github.com/exupero/saveSvgAsPng" target="_blank">Save SVG As PNG</a></li>
                                             <li><a href="https://github.com/abdmob/x2js" target="_blank">x2js</a></li>
                                         </ul>
                                         <p>Servers and web services:</p>
@@ -252,7 +477,7 @@
                                             <li><a href="http://www.unidata.ucar.edu/software/thredds/current/tds/" target="_blank">THREDDS Data Server</a></li>
                                             <li><a href="http://www.geonames.org/" target="_blank">GeoNames</a></li>
                                         </ul>
-                                        <p>Optimized for Firefox and Chrome. This website uses the <a href="https://piwik.org/Piwik" target="_blank">Piwik Analytics Platform</a> to obtain user data.</p>
+                                        <p>Optimized for Firefox and Chrome.</p>
                                     </div>
                                 </div>
                             </div>
@@ -274,24 +499,6 @@
                         <div id="about" class="tab">
                             <div class="row">
                                 <div class="col-lg-8">
-                                    <div class="box">
-                                        <div class="info">
-                                            <h3>The Walter-Lieth Chart</h3>
-                                            <p class="block">
-                                                The charts on this site are drawn following the Walter-Lieth standard.
-                                                The most characteristic feature of this type of climate diagram
-                                                is that the ratio between temperature and precipitation scale is constantly
-                                                1:2, which makes it easier to compare local climates. If
-                                                there are precipitation values above 100mm per month, the scale above is aligned,
-                                                ensuring that the chart doesn't become to missshaped.
-                                                Additionally, it graphically emphasizes in a simplified form if the local conditions
-                                                are <span class="humid">humid</span>,
-                                                <span class="veryhumid">perhumid</span>,
-                                                <span class="arid">arid</span> or seasonally changing.
-                                            </p>
-                                            <img class="img img-responsive" src="data/img/demo-chart.svg">
-                                        </div>
-                                    </div>
                                     <div class="box">
                                         <div class="info">
                                             <h3>Matomo Webanalysis</h3>
