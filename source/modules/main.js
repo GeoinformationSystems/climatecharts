@@ -51,9 +51,19 @@ function showTabContent(e, currentTab){
 }
 
 // Manage visibilty of 'Cookie Information Box'
-function setCookieAndHideDiv(){
-    setCookie('hideCookieHint','true',365)
-    $(".collectCookies").css('display','none')
+function setCookieAndHideDiv( accept ){
+  if(accept) {
+    _paq.push(['rememberCookieConsentGiven']);
+    document.cookie = 'cookie_declined=; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+    $('label[for=optout] strong').text('You are currently accepting tracking cookies. Click here to opt out.');
+  }
+  else {
+    _paq.push(['forgetCookieConsentGiven']);
+    setCookie('cookie_declined','true',365);
+    $('label[for=optout] strong').text('You are currently not accepting tracking cookies. Click here to opt in.');
+  }
+  $("#optout").prop("checked", accept);
+  $("#cookieScreen").css('display','none');
 }
 
 function setCookie(cname, cvalue, exdays) {
@@ -75,9 +85,23 @@ function getCookie(cname) {
 
 
 $(document).ready(function(){
-  if(getCookie("hideCookieHint") == "true")
+  if( getCookie("mtm_cookie_consent") != "" )
   {
-    $(".collectCookies").css('display','none')
+    setCookieAndHideDiv( true );
+    $("#cookieScreen").css('display','none')
   }
+  else if( getCookie("cookie_declined") == "true")
+  {
+    setCookieAndHideDiv( false );
+    $("#cookieScreen").css('display','none')
+  }
+
+  $("#optout").on("click", function() {
+    if (this.checked) {
+      setCookieAndHideDiv( true );
+    } else {
+      setCookieAndHideDiv( false );
+    }
+  });
 
 })

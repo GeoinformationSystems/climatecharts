@@ -57,26 +57,22 @@
     <!-- x2js: conversion XML <-> JSON -->
     <script src="build/third-party/x2js/xml2json.js"></script>
 
-    <!-- threejs: 3D graphics in webbrowser-->
-    <script src="build/third-party/threejs/three.js"></script>
-
-    <!-- Piwik -->
+    <!-- Matomo -->
     <script type="text/javascript">
-      var _paq = _paq || [];
-      _paq.push(['trackPageView']);
-      _paq.push(['enableLinkTracking']);
-      (function () {
-        var u = "https://mars.geo.tu-dresden.de/";
-        _paq.push(['setTrackerUrl', u + 'piwik.php']);
-        _paq.push(['setSiteId', '5']);
-        var d = document, g = d.createElement('script'), s = d.getElementsByTagName('script')[0];
-        g.type = 'text/javascript';
-        g.async = true;
-        g.defer = true;
-        g.src = u + 'piwik.js';
-        s.parentNode.insertBefore(g, s);
-      })();
+        var _paq = window._paq = window._paq || [];
+        _paq.push(['requireCookieConsent']);
+        /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
+        _paq.push(['trackPageView']);
+        _paq.push(['enableLinkTracking']);
+        (function() {
+            var u="https://mars.geo.tu-dresden.de/";
+            _paq.push(['setTrackerUrl', u+'matomo.php']);
+            _paq.push(['setSiteId', '5']);
+            var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+            g.type='text/javascript'; g.defer=true; g.async=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
+        })();
     </script>
+    <!-- End Matomo Code -->
 
 </head>
 
@@ -508,10 +504,12 @@
                                             </p>
                                             <ul>
                                                 <li><b>Usage data</b> — when you visit our site, we will store: the website from which you visited us from, the parts of our site you visit, the date and duration of your visit, your anonymised IP address, information from the device (device type, operating system, screen resolution, language, country you are located in, and web browser type) you used during your visit. We process this usage data for statistical purposes, to improve our site and to recognize and stop any misuse.</li>
-                                                <li><b>Cookies</b> — we use cookies (small data files transferred onto computers or devices by sites) for record-keeping purposes and to enhance functionality on our site. You may deactivate or restrict the transmission of cookies by changing the settings of your web browser. Cookies that are already stored may be deleted at any time.</li>
+                                                <li><b>Cookies</b> — we use cookies (small data files transferred onto computers or devices by sites) for record-keeping purposes and to enhance functionality on our site. You may deactivate the transmission of cookies by changing the settings of your web browser or deactivate the checkbox below. Cookies that are already stored may be deleted at any time.</li>
                                             </ul>
-                                            <p>You can opt out of being tracked by our Matomo Analytics instance below:</p>
-                                            <iframe id="piwik-tracking" style="height:100px; width: 100%; border: 0" src="https://mars.geo.tu-dresden.de/index.php?module=CoreAdminHome&action=optOut&idsite=4&language=en" frameborder="0" scrolling="no"></iframe>
+                                            <p>
+                                                <input type="checkbox" id="optout" />
+                                                <label for="optout"><strong></strong></label>
+                                            </p>
                                         </div>
                                     </div>
                                 </div>
@@ -559,11 +557,19 @@
 </div>
 <div id="loader"></div>
 
+
 <!-- Cookie Info -->
-<div class="collectCookies">
-    This website uses cookies and the analytics software Matomo.
-    <a onclick='showTabContent(event, "#about");' href="#" title="ClimateCharts - Privacy policy">More information</a>
-    <button onclick='setCookieAndHideDiv();'>OK</button>
+<div id="cookieScreen">
+    <div id="cookieForm">
+        <p>This website uses cookies. Some of them are essential for the operation of the site, while others help us to 
+        improve this site and the user experience (tracking cookies). You can decide for yourself whether you want to 
+        allow cookies or not.</p>
+        <p>Please note that if you reject them, you may not be able to use all the functionalities of the site. 
+        You can change your decision at any point under the "About" section. </p>
+        <!--<p><a onclick='showTabContent(event, "#about");' href="#" title="ClimateCharts - Privacy policy">More information</a></p>-->
+        <button class="accept" onclick="setCookieAndHideDiv(true);">Accept all cookies</button>
+        <button class="decline" onclick="setCookieAndHideDiv(false);">Essential cookies only</button>
+    </div>
 </div>
 
 <!-- OWN MODULES -->

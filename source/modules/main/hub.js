@@ -61,6 +61,7 @@ let loadHub = (main) =>
       if (main.mode == "C")
       {
         //set Piwiks CustomDimension: Searched Locations to track Locations in cell mode
+        _paq.push(['requireCookieConsent']);
         _paq.push(['setCustomDimension', 1, coords.lat + ',' + coords.lng + ',1,' + main.modules.timeController.getPeriodStart() + ',' + main.modules.timeController.getPeriodEnd()]);
         _paq.push(['trackPageView']);
         
@@ -74,6 +75,7 @@ let loadHub = (main) =>
       else if (main.mode == "S")
       {
         //set Piwiks CustomDimension: Searched Locations to track Locations in station mode
+        _paq.push(['requireCookieConsent']);
         _paq.push(['setCustomDimension', 1, coords.lat + ',' + coords.lng + ',2,' + main.modules.timeController.getPeriodStart() + ',' + main.modules.timeController.getPeriodEnd()]);
         _paq.push(['trackPageView'])
       }

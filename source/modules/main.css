@@ -414,13 +414,47 @@ button:disabled{
   margin-left: -80px;
 }
 
-.collectCookies{
-    position: fixed; 
-    top: auto !important; 
-    bottom:0px; 
-    padding:10px; 
-    width:100%; 
-    background-color: #ccc; 
-    text-align: center;
-    z-index:999;
+#cookieScreen {
+  position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 99998;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0,0,0,0.75);
+}
+#cookieForm {
+    background-color: #ddd; 
+    text-align: justify;
+    box-sizing: border-box;
+    font-size: 14px;
+    line-height: 20px;
+    font-weight: 400;
+    max-width: 450px;
+    padding: 15px 30px;
+    border-radius: 3px;
+}
+
+#cookieForm .accept, 
+#cookieForm .accept:active
+{
+  width: auto;
+  color: #fff;
+  background-color: #2a9116;
+}
+
+#cookieForm .decline, 
+#cookieForm .decline:active
+{
+  width: auto;
+  color: #fff;
+  background-color: #868686;
+}
+
+#cookieForm button:hover
+{
+  background-color: #337ab7;
 }
