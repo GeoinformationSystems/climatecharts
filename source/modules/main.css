@@ -458,3 +458,27 @@ button:disabled{
 {
   background-color: #337ab7;
 }
+
+#newVersionHint{
+  position: fixed; 
+  top: auto !important; 
+  bottom:0px; 
+  padding:10px; 
+  width:100%;
+  color:white; 
+  background-image: url(https://www.transparenttextures.com/patterns/az-subtle.png), 
+  linear-gradient(to bottom, #407CC9, #043d7b); 
+  text-align: center;
+  z-index:999;
+}
+#newVersionHint button {
+
+  color: #fff;
+  background-color: #337ab7;
+  border-color: transparent;
+
+}
+#newVersionHint button:hover {
+  color:white;
+  border-color: white;
+}

@@ -83,6 +83,11 @@ function getCookie(cname) {
      return "";
  } 
 
+ function hideNewVersionHint(){
+  setCookie('hideNewVersionHint','true',365);
+  $("#newVersionHint").css('display','none');
+ }
+
 
 $(document).ready(function(){
   if( getCookie("mtm_cookie_consent") != "" )
@@ -103,5 +108,9 @@ $(document).ready(function(){
       setCookieAndHideDiv( false );
     }
   });
+
+  if(getCookie("hideNewVersionHint") == "true") {
+    $("#newVersionHint").css('display','none');
+  }
 
 })
