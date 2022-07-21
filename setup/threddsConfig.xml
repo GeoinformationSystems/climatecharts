@@ -2,25 +2,25 @@
 <threddsConfig>
 
   <!-- all options are commented out in standard install - meaning use default values -->
-  <!-- see http://www.unidata.ucar.edu/software/thredds/current/tds/reference/ThreddsConfigXMLFile.html -->
+  <!-- see https://www.unidata.ucar.edu/software/tds/current/reference/ThreddsConfigXMLFile.html -->
   <serverInformation>
-    <name>ClimateCharts Server</name>
+    <name>ClimateCharts TDS Server</name>
     <logoUrl>/thredds/threddsIcon.gif</logoUrl>
-    <logoAltText>Initial TDS Installation</logoAltText>
+    <logoAltText>ClimateCharts TDS</logoAltText>
 
     <abstract>Scientific Data</abstract>
     <keywords>meteorology, atmosphere, climate, earth science</keywords>
     
     <contact>
-      <name>Prof. Dr. Lars Bernard</name>
-      <organization>Technical University Dresden</organization>
+      <name>Support</name>
+      <organization>TU Dresden</organization>
       <email>Lars.Bernard@tu-dresden.de</email>
     </contact>
     <hostInstitution>
-      <name>Chair of Geoinformatics</name>
-      <webSite>https://tu-dresden.de/bu/umwelt/geo/geoinformatik</webSite>
-      <logoUrl>myGroup.gif</logoUrl>
-      <logoAltText>TU Dresden</logoAltText>
+      <name></name>
+      <webSite>https://climatecharts.net/</webSite>
+      <logoUrl></logoUrl>
+      <logoAltText>ClimateCharts</logoAltText>
     </hostInstitution>
   </serverInformation>
 
@@ -82,14 +82,15 @@
    The elements below represent defaults. Only the <enabled> tag is required
    to enable CORS. The default allowed origin is '*', which allows sharing
    to any domain.
+  -->
   <CORS>
-    <enabled>false</enabled>
+    <enabled>true</enabled>
     <maxAge>1728000</maxAge>
     <allowedMethods>GET</allowedMethods>
     <allowedHeaders>Authorization</allowedHeaders>
     <allowedOrigin>*</allowedOrigin>
   </CORS>
-  -->
+
 
   <!--
    The <CatalogServices> element:
@@ -103,7 +104,7 @@
 
   <!--
   Configuring the CDM (netcdf-java library)
-  see http://www.unidata.ucar.edu/software/netcdf-java/reference/RuntimeLoading.html
+  see https://www.unidata.ucar.edu/software/netcdf-java/reference/RuntimeLoading.html
 
   <nj22Config>
     <ioServiceProvider class="edu.univ.ny.stuff.FooFiles"/>
@@ -145,10 +146,14 @@
 
   <!--
   Writing GRIB indexes.
-  <GribIndexing>
-    <setExtendIndex>false</setExtendIndex>
-    <alwaysUseCache>false</alwaysUseCache>
-  </GribIndexing>
+  <GribIndex>
+    <alwaysUse>false</alwaysUse>
+    <neverUse>false</neverUse>
+    <dir>/tomcat_home/content/thredds/cache/grib/</dir>
+    <policy>nestedDirectory</policy>
+    <scour>0 hours</scour>
+    <maxAge>90 days</maxAge>
+  </GribIndex>
   -->
 
   <!--
@@ -167,16 +172,14 @@
   </Aggregation>
   -->
 
-  <!--
-  The Netcdf Subset Service is off by default.
-  -->
-<!--
+  <!-- The Netcdf Subset Service is off by default.  -->
   <NetcdfSubsetService>
-    <allow>true</allow>
+    <allow>false</allow>
     <scour>10 min</scour>
     <maxAge>-1 min</maxAge>
   </NetcdfSubsetService>
-/-->
+
+
   <!--
   <Opendap>
     <ascLimit>50</ascLimit>
@@ -195,16 +198,14 @@
     <maxAge>30 min</maxAge>
   </WCS>
   -->
- <!--
-  
+
+  <!--
   <WMS>
-    <allow>true</allow>
+    <allow>false</allow>
     <allowRemote>false</allowRemote>
     <maxImageWidth>2048</maxImageWidth>
     <maxImageHeight>2048</maxImageHeight>
-  </WMS> 
--->
-<!--
+  </WMS>
   -->
 
   <NCISO>
@@ -212,6 +213,13 @@
     <uddcAllow>true</uddcAllow>
     <isoAllow>true</isoAllow>
   </NCISO>
+  
+
+  <!--
+  <NCSOS>
+    <allow>false</allow>
+  </NCSOS>
+  -->
 
   <!-- CatalogGen service is off by default.
   <CatalogGen>
@@ -254,9 +262,20 @@
   </FeatureCollection>
   -->
 
-<Netcdf4Clibrary>
-  <libraryPath>/home/felix/TDS</libraryPath>	<!-- NetCDF library .jar file path -->
-  <libraryName>netcdf4</libraryName>
-</Netcdf4Clibrary>
-
+  <!--
+    Configure how the NetCDF-4 C library is discovered and used.
+    libraryPath: The directory in which the native library is installed.
+    libraryName: The name of the native library. This will be used to locate the proper .DLL, .SO, or .DYLIB file
+      within the libraryPath directory.
+    useForReading: By default, the native library is only used for writing NetCDF-4 files; a pure-Java layer is
+      responsible for reading them. However, if this property is set to true, then it will be used for reading
+      NetCDF-4 (and HDF5) files as well.
+  -->
+  <!--
+  <Netcdf4Clibrary>
+    <libraryPath>/usr/local/lib</libraryPath>
+    <libraryName>netcdf</libraryName>
+    <useForReading>false</useForReading>
+  </Netcdf4Clibrary>
+  -->
 </threddsConfig>
