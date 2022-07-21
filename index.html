@@ -64,13 +64,13 @@
         /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
         _paq.push(['trackPageView']);
         _paq.push(['enableLinkTracking']);
-        (function() {
+        /*(function() {
             var u="https://mars.geo.tu-dresden.de/";
             _paq.push(['setTrackerUrl', u+'matomo.php']);
             _paq.push(['setSiteId', '5']);
             var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
             g.type='text/javascript'; g.defer=true; g.async=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
-        })();
+        })();*/
     </script>
     <!-- End Matomo Code -->
 
@@ -436,7 +436,7 @@
                                             </p>
                                             <h4>Weather Stations</h4>
                                             <p class="block">
-                                                <a href="http://www.ncdc.noaa.gov/ghcnm/" target="_blank">
+                                                <a href="https://www.ncei.noaa.gov/products/land-based-station/global-historical-climatology-network-monthly" target="_blank">
                                                     <b>Global Historical Climatology Network</b>
                                                 </a>
                                                 <br/>
@@ -581,11 +581,11 @@
     </div>
 </div>
 
-<!-- New version hint -->
+<!-- New version hint 
 <div id="newVersionHint">
     New version of climatecharts.net is out now!
     <button onclick='hideNewVersionHint();'>Got it!</button>
-</div>
+</div>-->
 
 <!-- OWN MODULES -->
 
