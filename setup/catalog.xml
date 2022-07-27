@@ -18,7 +18,7 @@
 	Download-Info:
 	https://catalogue.ceda.ac.uk/uuid/c26a65020a5e4b80b20018f148556681
 	-->
-	<dataset name="CRU Time Series v4.05" ID="cru_v405" >
+	<dataset name="CRU Time Series v4.05" ID="cru" >
 		<documentation type="summary">
 			University of East Anglia Climatic Research Unit; Harris, I.C.; Jones, P.D.; Osborn, T. (2021):  CRU TS4.05: Climatic Research Unit (CRU) Time-Series (TS) version 4.05 
 			of high-resolution gridded data of month-by-month variation in climate (Jan. 1901- Dec. 2020). NERC EDS Centre for Environmental Data Analysis.
@@ -33,18 +33,18 @@
 			<end>2020</end>
 		</timeCoverage>
 
-		<dataset name="Mean Temperature" ID="cru_tmp"
-			 serviceName="all" urlPath="data/CRU_ts_4.05/cru_ts4.05.1901.2020.tmp.dat.nc" dataType="Grid"/>
+		<dataset name="Air Mean Temperature" ID="cru_tmp"
+			 serviceName="all" urlPath="data/CRU/cru_ts4.05.1901.2020.tmp.dat_processed.nc" dataType="Grid"/>
 
 		<dataset name="Precipitation Sum" ID="cru_pre"
-			 serviceName="all" urlPath="data/CRU_ts_4.05/cru_ts4.05.1901.2020.pre.dat.nc" dataType="Grid"/>
+			 serviceName="all" urlPath="data/CRU/cru_ts4.05.1901.2020.pre.dat_processed.nc" dataType="Grid"/>
 	</dataset>
 
 	<!--
 	Download-Info:
 	https://psl.noaa.gov/data/gridded/data.UDel_AirT_Precip.html
 	-->
-	<dataset name="University of Delaware Air Temperature and Precipitation v5.01" ID="will_v501">
+	<dataset name="University of Delaware Air Temperature and Precipitation v5.01" ID="udel">
 		<documentation type="summary">
 			<![CDATA[
 			Cort Willmott &amp; Kenji Matsuura of the University of Delaware have put data together from a large number of stations, both from the GHCN2 (Global Historical Climate Network) and, 
@@ -64,11 +64,11 @@
 			<end>2017</end>
 		</timeCoverage>
 
-		<dataset name="Air Temperature Mean" ID="will_tmp"
-			       serviceName="all" urlPath="data/willmott_monthly_5.01/air.mon.mean.v501.nc" dataType="Grid"/>
+		<dataset name="Air Temperature Mean" ID="udel_tmp"
+			       serviceName="all" urlPath="data/UDEL/air.mon.mean.v501_uncompressed.nc" dataType="Grid"/>
 
-		<dataset name="Precipitation Sum" ID="will_pre"
-			       serviceName="all" urlPath="data/willmott_monthly_5.01/precip.mon.total.v501.nc" dataType="Grid"/>
+		<dataset name="Precipitation Sum" ID="udel_pre"
+			       serviceName="all" urlPath="data/UDEL/precip.mon.total.v501_uncompressed.nc" dataType="Grid"/>
 	</dataset>
 
 	<!--
@@ -100,39 +100,11 @@
 			<end>2019</end>
 		</timeCoverage>
 
-		<dataset name="GHCN CAMS Air Temperature Monthly" ID="ghcn_cams"
-			       serviceName="all" urlPath="data/GHCN_CAMS_2022/air.mon.mean.nc" dataType="Grid"/>
+		<dataset name="GHCN CAMS Air Temperature Monthly" ID="ghcn_cams_tmp"
+			       serviceName="all" urlPath="data/GHCN_CAMS/2022_air.mon.mean.nc" dataType="Grid"/>
 		
-		<dataset name="GPCC v2020 Precipitation Monthly" ID="gpcc"
-			       serviceName="all" urlPath="data/GPCC_2020/precip.mon_v2020_05_subset_1948_2019.nc" dataType="Grid"/>
+		<dataset name="GPCC v2020 Precipitation Monthly" ID="gpcc_pre"
+			       serviceName="all" urlPath="data/GPCC/precip.mon_v2020_05_subset_1948_2019_processed.nc" dataType="Grid"/>
 	</dataset>
-	
-	<!--
-	<dataset name="GHCN CAMS and GPCC v2018" ID="ghcn_gpcc_old">
-
-		<documentation type="summary">
-			GHCN CAMS is a high resolution (0.5x0.5) analyzed global land surface temperatures from 1948 to near present. GHCN Gridded V2 data provided by the NOAA/OAR/ESRL PSL, Boulder, Colorado, USA, from their Web site at https://psl.noaa.gov/ <br />
-			Reference: Fan, Y., and H. van den Dool (2008), A global monthly land surface air temperature analysis for 1948-present, J. Geophys. Res., 113, D01103. 
-			<br />
-			GPCC (Global Precipitation Climatology Centre) monthly precipitation dataset from 1901-present is calculated from global station data. <br />			
-			Reference: Schneider, Udo; Becker, Andreas; Finger, Peter; Meyer-Christoffer, Anja; Ziese, Markus (2018): GPCC Full Data Monthly Product Version 2018 at 0.5°: Monthly Land-Surface Precipitation from Rain-Gauges built on GTS-based and Historical Data. The temporal coverage of the dataset ranges from January 1891 until December 2016.
-		</documentation>
-
-		<documentation type="reference">
-			https://dx.doi.org/10.1029/2007JD008470,https://dx.doi.org/10.5676/DWD_GPCC/FD_M_V2018_050
-		</documentation>
-
-		<timeCoverage>
-			<start>1948</start>
-			<end>2017</end>
-		</timeCoverage>
-
-		<dataset name="GHCN CAMS Air Temperature Monthly" ID="ghcn_cams_old"
-			       serviceName="all" urlPath="data/GHCN_CAMS_2022/air.mon.mean.nc" dataType="Grid"/>
-		
-		<dataset name="GPCC v2020 Precipitation Monthly" ID="gpcc_old"
-			       serviceName="all" urlPath="data/GPCC_2018/precip.mon_v2018_05_subset1948.nc" dataType="Grid"/>
-	</dataset>
-	-->
 
 </catalog>
