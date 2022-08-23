@@ -49,6 +49,7 @@ class ClimateDataController
     this._calcDataList();
     this._calcMonthlyData();
     this._calcExtremeData();
+    this._calcHemisphere(coords);
     this._calcClimateClass();
     this._calcNumYears();
     this._calcRealExtremeData()
@@ -56,7 +57,6 @@ class ClimateDataController
     // Fill meta information
     this._setName(placeName);
     this._setCoords(coords);
-    this._calcHemisphere(coords);
     this._setElevation(elev);
     this._setSource(source);
 
