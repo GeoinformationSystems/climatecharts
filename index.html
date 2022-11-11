@@ -49,37 +49,34 @@
     <link href="build/third-party/leaflet/leaflet.css" rel="stylesheet"/>
 
     <!-- Leaflet Plugin: Turf - line coordinate selection tool -->
-    <script src='https://npmcdn.com/@turf/turf/turf.min.js'></script>
+    <script src='build/third-party/turf/turf.min.js'></script>
 
     <!-- Font Awesome icon set -->
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css">
+    <link rel="stylesheet" href="build/third-party/fonts/FontAwesome/css/all.css">
 
     <!-- x2js: conversion XML <-> JSON -->
     <script src="build/third-party/x2js/xml2json.js"></script>
 
     <!-- Matomo -->
-    <script type="text/javascript">
-        var _paq = window._paq = window._paq || [];
-        _paq.push(['requireCookieConsent']);
-        /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
-        _paq.push(['trackPageView']);
-        _paq.push(['enableLinkTracking']);
-        (function() {
-            var u="https://mars.geo.tu-dresden.de/";
-            _paq.push(['setTrackerUrl', u+'matomo.php']);
-            _paq.push(['setSiteId', '5']);
-            var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
-            g.type='text/javascript'; g.defer=true; g.async=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
-        })();
-    </script>
-    <!-- End Matomo Code -->
+	<script>
+		var _paq = window._paq = window._paq || [];
+		/* tracker methods like "setCustomDimension" should be called before "trackPageView" */
+		_paq.push(['trackPageView']);
+		_paq.push(['enableLinkTracking']);
+		(function() {
+			var u="https://analytics.geo.tu-dresden.de/";
+			_paq.push(['setTrackerUrl', u+'matomo.php']);
+			_paq.push(['setSiteId', '1']);
+			var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+			g.async=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
+		})();
+	</script>
+	<!-- End Matomo Code -->
+
 
 </head>
 
 <body data-spy="scroll" data-target=".user-guide-toc" data-offset="100">
-<!-- Piwik -->
-<noscript><p><img src="https://mars.geo.tu-dresden.de/piwik.php?idsite=5&rec=1" style="border:0" alt=""/></p></noscript>
-
 <div class="container-fluid">
     <div class="row">
         <div class="col-lg-1"></div>
@@ -90,7 +87,7 @@
                         <div class="row">
                             <div class="col-lg-12">
                                 <div class="headline">
-                                    <h2><a href="https://climatecharts.net">ClimateCharts.net</a></h2>
+                                    <h2><a href="https://climatecharts.net"><img style="display:inline-block; margin-right: 0.6em; margin-top:-0.2em;" src="data/logo.png">ClimateCharts.net</a></h2>
                                     <p class="secHeadline">An application to create meteorological charts for places worldwide</p>
                                 </div>
                             </div>
@@ -436,7 +433,7 @@
                                             </p>
                                             <h4>Weather Stations</h4>
                                             <p class="block">
-                                                <a href="http://www.ncdc.noaa.gov/ghcnm/" target="_blank">
+                                                <a href="https://www.ncei.noaa.gov/products/land-based-station/global-historical-climatology-network-monthly" target="_blank">
                                                     <b>Global Historical Climatology Network</b>
                                                 </a>
                                                 <br/>
@@ -464,13 +461,16 @@
                                         <h3>Software</h3>
                                         <p>Frontend libraries:</p>
                                         <ul>
-                                            <li><a href="https://getbootstrap.com/" target="_blank">Bootstrap 3.3.7</a> </li>
-                                            <li><a href="https://d3js.org/" target="_blank">Data Driven Documents (D3)</a> </li>
+                                            <li><a href="https://getbootstrap.com/" target="_blank">Bootstrap 3.3.7</a></li>
+                                            <li><a href="https://d3js.org/" target="_blank">Data Driven Documents (D3)</a></li>
                                             <li><a href="http://bl.ocks.org/jensgrubert/7789216" target="_blank">D3.js Boxplot with Axes and Labels</a></li>
+                                            <li><a href="https://fontawesome.com" target="_blank">Font Awesome 5.15.4</a></li>
+											<li><a href="https://www.glyphicons.com/" target="_blank">Glyphicons</a></li>
                                             <li><a href="https://jquery.com/" target="_blank">jQuery</a> + <a href="https://jqueryui.com/" target="_blank">jQuery UI</a></li>
                                             <li><a href="https://github.com/vadimsva/waitMe" target="_blank">jQuery Plugin: waitMe</a></li>
                                             <li><a href="https://leafletjs.com/" target="_blank">Leaflet</a></li>
                                             <li><a href="https://github.com/exupero/saveSvgAsPng" target="_blank">Save SVG As PNG</a></li>
+											<li><a href="https://turfjs.org/" target="_blank">Turf</a></li>
                                             <li><a href="https://github.com/abdmob/x2js" target="_blank">x2js</a></li>
                                         </ul>
                                         <p>Servers and web services:</p>
@@ -489,7 +489,7 @@
                                     <div class="box">
                                         <div class="info">
                                             <h3>License &amp; Citation</h3>
-                                            <p><a rel="license" href="http://creativecommons.org/licenses/by/4.0/"><img alt="Creative Commons License" style="border-width:0; margin-bottom:10px;" src="https://i.creativecommons.org/l/by/4.0/88x31.png"/></a><br/><span xmlns:dct="http://purl.org/dc/terms/" href="http://purl.org/dc/dcmitype/StillImage" property="dct:title" rel="dct:type">All generated diagrams </span> by <a xmlns:cc="http://creativecommons.org/ns#" href="climatecharts.net" property="cc:attributionName" rel="cc:attributionURL">climatecharts.net</a> are licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>, which guarantees users the freedoms to use, study, share (copy), and adapt the diagrams. </p>
+                                            <p><a rel="license" href="http://creativecommons.org/licenses/by/4.0/"><img alt="Creative Commons License" style="border-width:0; margin-bottom:10px;" src="data/img/cc-by-88x31.png"/></a><br/><span xmlns:dct="http://purl.org/dc/terms/" href="http://purl.org/dc/dcmitype/StillImage" property="dct:title" rel="dct:type">All generated diagrams </span> by <a xmlns:cc="http://creativecommons.org/ns#" href="climatecharts.net" property="cc:attributionName" rel="cc:attributionURL">climatecharts.net</a> are licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>, which guarantees users the freedoms to use, study, share (copy), and adapt the diagrams. </p>
                                             <p><b>In case you are using the diagrams or parts of it within scientific or other publications, we recommend to cite:</b><br />
                                             Laura Zepner, Pierre Karrasch, Felix Wiemann &amp; Lars Bernard (2020) ClimateCharts.net – an interactive climate analysis web platform, International Journal of Digital Earth, 
                                             <a href="https://doi.org/10.1080/17538947.2020.1829112" target"_blank">DOI: 10.1080/17538947.2020.1829112</a>
@@ -581,11 +581,11 @@
     </div>
 </div>
 
-<!-- New version hint -->
+<!-- New version hint 
 <div id="newVersionHint">
     New version of climatecharts.net is out now!
     <button onclick='hideNewVersionHint();'>Got it!</button>
-</div>
+</div>-->
 
 <!-- OWN MODULES -->
 

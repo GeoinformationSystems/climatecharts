@@ -333,7 +333,7 @@ let loadConfig = (main) =>
     climateData:
     {
       decimalPlaces: 1,     // Decimal precision for both temp / prec
-      startWithDataset: "CRU Time Series v4.04",
+      startWithDataset: "CRU Time Series v4.05",
     },
 
     // ========================================================================

@@ -248,10 +248,13 @@ For debugging -- Find Tomcat logs here:
 
   * Bootstrap 3.3.7, http://getbootstrap.com/ - MIT license
   * D3.js, https://d3js.org/ - BSD license
-  * D3 Blockspot, http://bl.ocks.org/jensgrubert/7789216 - no license
-  * font-awesome 4.7.0, https://fontawesome.com - Font Awesome Free
-  * Glyphicon, http://www.glyphicons.com/ - CC BY 3.0
-  * jQuery 1.11.3, https://jquery.com/ - MIT license
+  * D3 Boxplot with Axes and Labels, http://bl.ocks.org/jensgrubert/7789216 - no license
+  * Font Awesome 5.15.4, https://fontawesome.com - Font Awesome Free
+  * Glyphicon, https://www.glyphicons.com/ - CC BY 3.0
+  * jQuery 3.5.1, https://jquery.com/ - MIT license
+  * jQuery UI 1.12.1, https://jqueryui.com/ - CC0 1.0 Universal
+  * jQuery Plugin: waitMe, https://github.com/vadimsva/waitMe - MIT license                                          
   * Leaflet 1.0.3, https://leafletjs.com/ - BSD license
-  * toggle-switch, https://github.com/ghinda/css-toggle-switch - MIT license
+  * Save SVG As PNG, https://github.com/exupero/saveSvgAsPng - MIT license
+  * Turf, https://turfjs.org/" - MIT license
   * x2js, https://github.com/abdmob/x2js - no license

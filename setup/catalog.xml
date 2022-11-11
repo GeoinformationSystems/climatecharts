@@ -4,59 +4,55 @@
          xmlns:xlink="http://www.w3.org/1999/xlink"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://www.unidata.ucar.edu/namespaces/thredds/InvCatalog/v1.0
-           http://www.unidata.ucar.edu/schemas/thredds/InvCatalog.1.0.6.xsd">
+           https://schemas.unidata.ucar.edu/thredds/InvCatalog.1.0.6.xsd">
 
-  <service name="all" base="" serviceType="compound">
-    <!--service name="odap" serviceType="OpenDAP" base="/thredds/dodsC/" />
-    <service name="dap4" serviceType="DAP4" base="/thredds/dap4/" /-->
-    <service name="http" serviceType="HTTPServer" base="/thredds/fileServer/" />
-    <!--service name="wcs" serviceType="WCS" base="/thredds/wcs/" /-->
-    <!--service name="wms" serviceType="WMS" base="/thredds/wms/" /-->
-    <service name="ncss" serviceType="NetcdfSubset" base="/thredds/ncss/" />
+	<service name="all" base="" serviceType="compound">
+		<service name="http" serviceType="HTTPServer" base="/thredds/fileServer/" />
+		<service name="ncss" serviceType="NetcdfSubset" base="/thredds/ncss/" />
+		<service name="ncml" serviceType="NCML" base="/thredds/ncml/"/>
+	</service>
 
-	<!-- Metadata services /-->
-	<service name="ncml" serviceType="NCML" base="/thredds/ncml/"/>
-	<!--service name="uddc" serviceType="UDDC" base="/thredds/uddc/"/>
-	<service name="iso" serviceType="ISO" base="/thredds/iso/"/-->
-  </service>
-
-  <!--service name="dap" base="" serviceType="compound">
-    <service name="odap" serviceType="OpenDAP" base="/thredds/dodsC/" />
-    <service name="dap4" serviceType="DAP4" base="/thredds/dap4/" />
-  </service-->
-
-<!-- the datasetRoot element defines where all the datasets are located. -->
-  <datasetRoot path="data" location="/data" />
-
-	<dataset name="CRU Time Series v3.23" ID="cru_v3.23" urlPath="data/CRU_ts_3.23">
+	<datasetRoot path="data" location="/data/thredds" /> 
+ 
+	<!--
+	Download-Info:
+	https://catalogue.ceda.ac.uk/uuid/c26a65020a5e4b80b20018f148556681
+	-->
+	<dataset name="CRU Time Series v4.05" ID="cru" >
 		<documentation type="summary">
-			University of East Anglia Climatic Research Unit; Harris, I.(.; Jones, P.D. (2015): CRU TS3.23: 			Climatic Research Unit (CRU) Time-Series (TS) Version 3.23 of High Resolution Gridded Data of 				Month-by-month Variation in Climate (Jan. 1901- Dec. 2014). Centre for Environmental Data Analysis, 				09 November 2015. 
+			University of East Anglia Climatic Research Unit; Harris, I.C.; Jones, P.D.; Osborn, T. (2021):  CRU TS4.05: Climatic Research Unit (CRU) Time-Series (TS) version 4.05 
+			of high-resolution gridded data of month-by-month variation in climate (Jan. 1901- Dec. 2020). NERC EDS Centre for Environmental Data Analysis.
 		</documentation>
 
 		<documentation type="reference">
-			dx.doi.org/10.5285/4c7fdfa6-f176-4c58-acee-683d5e9d2ed5
+			https://catalogue.ceda.ac.uk/uuid/c26a65020a5e4b80b20018f148556681
 		</documentation>
 
 		<timeCoverage>
 			<start>1901</start>
-			<end>2014</end>
+			<end>2020</end>
 		</timeCoverage>
 
-			
-		<dataset name="Mean Temperature" ID="cru_tmp"
-			 serviceName="all" urlPath="data/CRU_ts_3.23/cru_ts3.23.1901.2014.tmp.dat.nc" dataType="Grid"/>
+		<dataset name="Air Mean Temperature" ID="cru_tmp"
+			 serviceName="all" urlPath="data/CRU/cru_ts4.05.1901.2020.tmp.dat_processed.nc" dataType="Grid"/>
 
 		<dataset name="Precipitation Sum" ID="cru_pre"
-			 serviceName="all" urlPath="data/CRU_ts_3.23/cru_ts3.23.1901.2014.pre.dat.nc" dataType="Grid"/>
+			 serviceName="all" urlPath="data/CRU/cru_ts4.05.1901.2020.pre.dat_processed.nc" dataType="Grid"/>
 	</dataset>
 
-	<dataset name="University of Delaware Air Temperature and Precipitation v4.01" ID="terr_tmp_pre">
+	<!--
+	Download-Info:
+	https://psl.noaa.gov/data/gridded/data.UDel_AirT_Precip.html
+	-->
+	<dataset name="University of Delaware Air Temperature and Precipitation v5.01" ID="udel">
 		<documentation type="summary">
-			Monthly global gridded high resolution station (land) data for air temperature and precipitation 				from 1901-2014. 
-
-			UDel_AirT_Precip data provided by the NOAA/OAR/ESRL PSD, Boulder, Colorado, USA, from their Web 			site at http://www.esrl.noaa.gov/psd/
-
-			Reference: Willmott, C. J. and K. Matsuura (2001) Terrestrial Air Temperature and Precipitation: 				Monthly and Annual Time Series (1950 - 1999)
+			<![CDATA[
+			Cort Willmott &amp; Kenji Matsuura of the University of Delaware have put data together from a large number of stations, both from the GHCN2 (Global Historical Climate Network) and, 
+			more extensively, from the archive of Legates &amp; Willmott. The result is a monthly climatology of precipitation and air temperature, both at the surface, and a time series of 
+			monthly mean surface air temperatures, and monthly total precipitation. It is land-only in coverage, and complements the ICOADS (International Comprehensive Ocean-Atmosphere Data Set) 
+			data set well. <br />
+			Reference: Willmott, C. J. and K. Matsuura (2001) Terrestrial Air Temperature and Precipitation: Monthly and Annual Time Series (1950 - 1999)
+			]]>
 		</documentation>
 
 		<documentation type="reference">
@@ -64,43 +60,51 @@
 		</documentation>
 
 		<timeCoverage>
-			<start>1901</start>
-			<end>2014</end>
+			<start>1900</start>
+			<end>2017</end>
 		</timeCoverage>
 
-		<dataset name="Air Temperature Mean" ID="will_tmp"
-			       serviceName="all" urlPath="data/willmott_monthly_4.01/air.mon.mean.v401.nc" dataType="Grid"/>
+		<dataset name="Air Temperature Mean" ID="udel_tmp"
+			       serviceName="all" urlPath="data/UDEL/air.mon.mean.v501_uncompressed.nc" dataType="Grid"/>
 
-		<dataset name="Precipitation Sum" ID="will_pre"
-			       serviceName="all" urlPath="data/willmott_monthly_4.01/precip.mon.total.v401.nc" 				dataType="Grid"/>
+		<dataset name="Precipitation Sum" ID="udel_pre"
+			       serviceName="all" urlPath="data/UDEL/precip.mon.total.v501_uncompressed.nc" dataType="Grid"/>
 	</dataset>
 
-
-	<dataset name="GHCN CAMS and GPCC v7" ID="ghcn+gpcc">
+	<!--
+	Download-Info:
+	https://psl.noaa.gov/data/gridded/data.ghcncams.html	Temp: until 06/2022
+	https://opendata.dwd.de/climate_environment/GPCC/html/fulldata-monthly_v2020_doi_download.html	Prec: until 2019, generate subset from 1948 since this is the earliest temp data we get from GHCN CAMS
+	-->
+	<dataset name="GHCN CAMS and GPCC v2020" ID="ghcn_gpcc">
 
 		<documentation type="summary">
-			GHCN CAMS is a high resolution (0.5x0.5) analyzed global land surface temperatures from 1948 to 			near present. GHCN Gridded V2 data provided by the NOAA/OAR/ESRL PSD, Boulder, Colorado, USA, from 				their Web site at http://www.esrl.noaa.gov/psd/ 
-
-			Reference: Fan, Y., and H. van den Dool (2008), A global monthly land surface air temperature 				analysis for 1948-present, J. Geophys. Res., 113, D01103.
-
-			GPCC Global Precipitation Climatology Centre monthly precipitation dataset from 1901-present is 			calculated from global station data.
-
-			Reference: Schneider, Udo; Becker, Andreas; Finger, Peter; Meyer-Christoffer, Anja; Rudolf, Bruno; 				Ziese, Markus (2011): GPCC Full Data Reanalysis Version 6.0 at 0.5°: Monthly Land-Surface 				Precipitation from Rain-Gauges built on GTS-based and Historic Data. 
+			<![CDATA[
+			GHCN CAMS is a high resolution (0.5x0.5) analyzed global land surface temperatures from 1948 to near present. GHCN Gridded V2 data provided by the NOAA/OAR/ESRL PSL, Boulder, Colorado, 
+			USA, from their Web site at https://psl.noaa.gov/ <br />
+			Reference: Fan, Y., and H. van den Dool (2008), A global monthly land surface air temperature analysis for 1948-present, J. Geophys. Res., 113, D01103. <br />
+			<br />
+			GPCC Full Data Monthly Product of monthly global land-surface precipitation is based on the ~85,000 stations world-wide that feature record durations 
+			of 10 years or longer. The data coverage per month varies from ~15,000 (before 6000) to more than 50,000 stations.  <br />			
+			Reference: Schneider, Udo; Becker, Andreas; Finger, Peter; Rustemeier, Elke; Ziese, Markus (2020): GPCC Full Data Monthly Product Version 2020 at 0.5°: Monthly Land-Surface Precipitation 
+			from Rain-Gauges built on GTS-based and Historical Data.
+			]]>
 		</documentation>
 
 		<documentation type="reference">
-			dx.doi.org/10.1029/2007JD008470, dx.doi.org/10.5676/DWD_GPCC/FD_M_V7_050
+			https://dx.doi.org/10.1029/2007JD008470,https://dx.doi.org/10.5676/DWD_GPCC/FD_M_V2020_050
 		</documentation>
 
 		<timeCoverage>
 			<start>1948</start>
-			<end>2013</end>
+			<end>2019</end>
 		</timeCoverage>
 
-		<dataset name="GHCN CAMS Air Temperature Monthly" ID="ghcn_cams"
-			       serviceName="all" urlPath="data/GHCN_CAMS/air.mon.mean.nc" dataType="Grid"/>
-
-		<dataset name="GPCC v7 Precipitation Monthly" ID="gpcp"
-			       serviceName="all" urlPath="data/GPCC/precip.mon.total.v7.nc" dataType="Grid"/>
+		<dataset name="GHCN CAMS Air Temperature Monthly" ID="ghcn_cams_tmp"
+			       serviceName="all" urlPath="data/GHCN_CAMS/2022_air.mon.mean.nc" dataType="Grid"/>
+		
+		<dataset name="GPCC v2020 Precipitation Monthly" ID="gpcc_pre"
+			       serviceName="all" urlPath="data/GPCC/precip.mon_v2020_05_subset_1948_2019_processed.nc" dataType="Grid"/>
 	</dataset>
+
 </catalog>
