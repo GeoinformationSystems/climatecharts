@@ -238,13 +238,17 @@ class ClimateDatasetController {
               {
                 this.displayDatasetMetadata();
               }
-              this.selectByName(this._main.config.climateData.startWithDataset);
               // add to drop down list
               this._main.modules.climateDatasetsInList.add(dataset);
+
+              // select startup dataset after finished loading all datasets
+              if(this._datasets.length == catalog.dataset.length) { 
+                  this.selectByName(this._main.config.climateData.startWithDataset);
+                  this._main.modules.loading.end();
+              }  
             } 
-          ) 
-        }  
-        this._main.modules.loading.end();
+          )
+        }
       }
     )
   }

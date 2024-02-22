@@ -53,7 +53,7 @@ class Loading
     if (this._loadCounter == 0)
     {
       this._loaderDiv.hide();
-      this._loaderDiv.empty()
+      this._loaderDiv.empty();
     }
   }
 
