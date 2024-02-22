@@ -65,13 +65,14 @@ class ServerInterface
     {
       reqUrls.push(""
         + ENDPOINTS.thredds
-        + "/ncss/"
+        + "/ncss/grid/"
         + urls[i]
         + "?var=" +         variables[i]
         + "&latitude=" +    coords.lat
         + "&longitude=" +   coords.lng
         + "&time_start=" +  dates[0]
         + "&time_end=" +    dates[1]
+        + "&accept=xml"
       )
     }
 

@@ -130,8 +130,8 @@ class ClimateDatasetController {
       (tempDataXml, precDataXml, names, elevation) =>    // success callback
       {
         // Load climate data from server in XML and transform to JSON
-        let tempDataOrig = this._x2js.xml2json(tempDataXml[0]).grid;
-        let precDataOrig = this._x2js.xml2json(precDataXml[0]).grid;
+        let tempDataOrig = this._x2js.xml2json(tempDataXml[0]).stationFeatureCollection;
+        let precDataOrig = this._x2js.xml2json(precDataXml[0]).stationFeatureCollection;
 
         // Transform data structure to climateData
         let tempData = this._gridDataToClimateData(tempDataOrig);
@@ -256,7 +256,6 @@ class ClimateDatasetController {
 
   displayDatasetMetadata() 
   {
-    // console.log(this._datasets);
     let infotext = '';
     for (let i = 0 ; i < this._datasets.length; i++)
     {
@@ -332,13 +331,13 @@ class ClimateDatasetController {
 
     // Read incoming data object and transform it into outgoing structure
     let minYear = this._main.modules.timeController.getPeriodStart();
-    for (let dataIdx = 0; dataIdx < inData.point.length; dataIdx++) {
-      let date = new Date(inData.point[dataIdx].data[0].__text);
+    for (let dataIdx = 0; dataIdx < inData.stationFeature.length; dataIdx++) {
+      let date = new Date(inData.stationFeature[dataIdx]._date);
       let monthIdx = date.getMonth();
       let yearIdx = date.getFullYear() - minYear;
-      let unit = inData.point[dataIdx].data[3]._units;
+      let unit = inData.stationFeature[dataIdx].data._units;
       let value = this._main.modules.helpers.roundToDecimalPlace(
-        parseFloat(inData.point[dataIdx].data[3].__text),
+        parseFloat(inData.stationFeature[dataIdx].data.__text),
         this._main.config.climateData.decimalPlaces
       );
 
