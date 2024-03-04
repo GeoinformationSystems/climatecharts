@@ -37,7 +37,7 @@ class ServerInterface
   {
     let url0 = ""
       + ENDPOINTS.thredds
-      + "/catalog.xml";
+      + "/catalog/catalog.xml";
     $.when($.get(url0))
       .done(successCallback)
   }
