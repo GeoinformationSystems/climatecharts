@@ -354,7 +354,9 @@ class ClimateDatasetController {
         value *= CM_TO_MM;
 
       // Put in outgoing array
-      outData[monthIdx][yearIdx] = value;
+      // quick fix for thredds 5.x since data request returns one additional value which exceeds the given time frame
+      if(date.getFullYear() <= this._main.modules.timeController.getPeriodEnd())
+        outData[monthIdx][yearIdx] = value;
     }
     return outData;
   }

@@ -2,25 +2,26 @@
 <threddsConfig>
 
   <!-- all options are commented out in standard install - meaning use default values -->
-  <!-- see https://www.unidata.ucar.edu/software/tds/current/reference/ThreddsConfigXMLFile.html -->
+  <!-- see https://www.unidata.ucar.edu/software/thredds/current/tds/reference/ThreddsConfigXMLFile.html -->
   <serverInformation>
     <name>ClimateCharts TDS Server</name>
-    <logoUrl>/thredds/threddsIcon.gif</logoUrl>
+    <logoUrl>/thredds/threddsIcon.png</logoUrl>
     <logoAltText>ClimateCharts TDS</logoAltText>
 
     <abstract>Scientific Data</abstract>
-    <keywords>meteorology, atmosphere, climate, earth science</keywords>
+    <keywords>meteorology, atmosphere, climate, ocean, earth science</keywords>
     
     <contact>
       <name>Support</name>
       <organization>TU Dresden</organization>
       <email>Lars.Bernard@tu-dresden.de</email>
+      <!--phone></phone-->
     </contact>
     <hostInstitution>
-      <name></name>
+      <name>Chair of Geoinformatics</name>
       <webSite>https://climatecharts.net/</webSite>
       <logoUrl></logoUrl>
-      <logoAltText>ClimateCharts</logoAltText>
+      <logoAltText></logoAltText>
     </hostInstitution>
   </serverInformation>
 
@@ -36,27 +37,40 @@
 
   <!--
    * Setup for generated HTML pages.
-   *
-   * NOTE: URLs may be absolute or relative, relative URLs must be relative
-   * to the webapp URL, i.e., http://server:port/thredds/.
     -->
   <htmlSetup>
     <!--
      * CSS documents used in generated HTML pages.
-     * The CSS document given in the "catalogCssUrl" element is used for all pages
-     * that are HTML catalog views. The CSS document given in the "standardCssUrl"
-     * element is used in all other generated HTML pages.
+     * The CSS document given in the "catalogCssUrl" element is used for HTML catalog views,
+     * "datasetCssUrl" is used for the dataset access HTML view,
+     * and the CSS document given in the "standardCssUrl"element is used in all other generated HTML pages.
+     * The OPeNDAP HTML form is treated special - the only CSS document applied to this page is
+     * defined by the `openDapCssUrl` element.
+     *
+     * NOTE: CSS documents should be placed inside tds.content.root.path/thredds/public
+     *
+
+     <standardCssUrl>standard.css</standardCssUrl>
+     <catalogCssUrl>catalog.css</catalogCssUrl>
+     <datasetCssUrl>dataset.css</datasetCssUrl>
+     <openDapCssUrl>tdsDap.css</openDapCssUrl>
      * -->
-    <standardCssUrl>tds.css</standardCssUrl>
-    <catalogCssUrl>tdsCat.css</catalogCssUrl>
-    <openDapCssUrl>tdsDap.css</openDapCssUrl>
 
     <!--
-     * The Google Analytics Tracking code you would like to use for the
+     * The Google Analytics Tracking ID you would like to use for the
      * webpages associated with THREDDS. This will not track WMS or DAP
      * requests for data, only browsing the catalog.
-    -->
+
     <googleTrackingCode></googleTrackingCode>
+    -->
+
+    <!--
+     * Allow the TDS to generate JSON-LD in Dataset HTML pages following
+     * schema.org Dataset (https://schema.org/Dataset)
+     * The default is false, as this is experimental
+
+    <generateDatasetJsonLD>false</generateDatasetJsonLD>
+    -->
 
   </htmlSetup>
   
@@ -70,27 +84,6 @@
      <logVersionInfo>true</logVersionInfo>
   </TdsUpdateConfig>
   -->
-   
-  <!--
-   The <CORS> element controls Cross-Origin Resource Sharing (CORS).
-   CORS is a way to allow a website (such as THREDDS) to open up access
-   to resources to web pages and applications running on a different domain.
-   One example would be allowing a web-application to use fonts from
-   a separate host. For TDS, this can allow a javascript app running on a
-   different site to access data on a THREDDS server.
-   For more information see: https://en.wikipedia.org/wiki/Cross-origin_resource_sharing
-   The elements below represent defaults. Only the <enabled> tag is required
-   to enable CORS. The default allowed origin is '*', which allows sharing
-   to any domain.
-  -->
-  <CORS>
-    <enabled>true</enabled>
-    <maxAge>1728000</maxAge>
-    <allowedMethods>GET</allowedMethods>
-    <allowedHeaders>Authorization</allowedHeaders>
-    <allowedOrigin>*</allowedOrigin>
-  </CORS>
-
 
   <!--
    The <CatalogServices> element:
@@ -171,14 +164,19 @@
     <typicalDataset>penultimate</typicalDataset>
   </Aggregation>
   -->
-
-  <!-- The Netcdf Subset Service is off by default.  -->
+  
   <NetcdfSubsetService>
-    <allow>false</allow>
-    <scour>10 min</scour>
-    <maxAge>-1 min</maxAge>
+    <scour>15 min</scour>
+    <maxAge>30 min</maxAge>
   </NetcdfSubsetService>
 
+  <!--
+  <JupyterNotebookService>
+    <allow>true</allow>
+    <maxAge>60</maxAge>
+    <maxFiles>100</maxFiles>
+  </JupyterNotebookService>
+  -->
 
   <!--
   <Opendap>
@@ -189,10 +187,10 @@
     -->
   
   <!--
-  The WCS Service is off by default.
+  The WCS Service is on by default.
   Also, off by default (and encouraged) is operating on a remote dataset.
   <WCS>
-    <allow>false</allow>
+    <allow>true</allow>
     <allowRemote>false</allowRemote>
     <scour>15 min</scour>
     <maxAge>30 min</maxAge>
@@ -201,7 +199,7 @@
 
   <!--
   <WMS>
-    <allow>false</allow>
+    <allow>true</allow>
     <allowRemote>false</allowRemote>
     <maxImageWidth>2048</maxImageWidth>
     <maxImageHeight>2048</maxImageHeight>
@@ -213,7 +211,6 @@
     <uddcAllow>true</uddcAllow>
     <isoAllow>true</isoAllow>
   </NCISO>
-  
 
   <!--
   <NCSOS>
@@ -252,17 +249,6 @@
    -->
 
   <!--
-   set FeatureCollection logging
-  <FeatureCollection>
-     <RollingFileAppender>
-       <MaxFileSize>1 MB</MaxFileSize>
-       <MaxBackups>5</MaxBackups>
-       <Level>INFO</Level>
-     </RollingFileAppender>
-  </FeatureCollection>
-  -->
-
-  <!--
     Configure how the NetCDF-4 C library is discovered and used.
     libraryPath: The directory in which the native library is installed.
     libraryName: The name of the native library. This will be used to locate the proper .DLL, .SO, or .DYLIB file
@@ -278,4 +264,5 @@
     <useForReading>false</useForReading>
   </Netcdf4Clibrary>
   -->
+
 </threddsConfig>

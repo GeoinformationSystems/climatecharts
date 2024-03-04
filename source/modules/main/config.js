@@ -15,9 +15,9 @@ let loadConfig = (main) =>
     time :
     {
       minYear:      1750,       // Minimum possible year of climate data
-      maxYear:      2019,       // Maximum possible year of climate data
+      maxYear:      2023,       // Maximum possible year of climate data
       periodLength: 30,         // Number of years in time period (default: 30)
-      periodEnd:    2019,       // Initial end year of the period
+      periodEnd:    2023,       // Initial end year of the period
     },
 
     // ========================================================================
@@ -333,7 +333,7 @@ let loadConfig = (main) =>
     climateData:
     {
       decimalPlaces: 1,     // Decimal precision for both temp / prec
-      startWithDataset: "CRU Time Series v4.05",
+      startWithDataset: "CRU Time Series v4.07",
     },
 
     // ========================================================================

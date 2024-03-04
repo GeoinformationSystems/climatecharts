@@ -6,38 +6,38 @@
          xsi:schemaLocation="http://www.unidata.ucar.edu/namespaces/thredds/InvCatalog/v1.0
            https://schemas.unidata.ucar.edu/thredds/InvCatalog.1.0.6.xsd">
 
-	<service name="all" base="" serviceType="compound">
+	<service name="all" base="" serviceType="Compound">
 		<service name="http" serviceType="HTTPServer" base="/thredds/fileServer/" />
-		<service name="ncss" serviceType="NetcdfSubset" base="/thredds/ncss/" />
+		<service name="ncss" serviceType="NetcdfSubset" base="/thredds/ncss/grid/" />
 		<service name="ncml" serviceType="NCML" base="/thredds/ncml/"/>
 	</service>
 
-	<datasetRoot path="data" location="/data/thredds" /> 
+	<datasetRoot path="data" location="C:\Users\pthiemt\Documents\Dev\thredds" /> 
  
 	<!--
 	Download-Info:
-	https://catalogue.ceda.ac.uk/uuid/c26a65020a5e4b80b20018f148556681
-	-->
-	<dataset name="CRU Time Series v4.05" ID="cru" >
+	https://catalogue.ceda.ac.uk/uuid/5fda109ab71947b6b7724077bf7eb753
+	-->	
+	<dataset name="CRU Time Series v4.07" ID="cru" >
 		<documentation type="summary">
-			University of East Anglia Climatic Research Unit; Harris, I.C.; Jones, P.D.; Osborn, T. (2021):  CRU TS4.05: Climatic Research Unit (CRU) Time-Series (TS) version 4.05 
-			of high-resolution gridded data of month-by-month variation in climate (Jan. 1901- Dec. 2020). NERC EDS Centre for Environmental Data Analysis.
+			University of East Anglia Climatic Research Unit; Harris, I.C.; Jones, P.D.; Osborn, T. (2023): CRU TS4.07: Climatic Research Unit (CRU) Time-Series (TS) version 4.07 
+			of high-resolution gridded data of month-by-month variation in climate (Jan. 1901- Dec. 2022). NERC EDS Centre for Environmental Data Analysis, 22.02.2024.
 		</documentation>
 
 		<documentation type="reference">
-			https://catalogue.ceda.ac.uk/uuid/c26a65020a5e4b80b20018f148556681
+			https://catalogue.ceda.ac.uk/uuid/5fda109ab71947b6b7724077bf7eb753
 		</documentation>
 
 		<timeCoverage>
 			<start>1901</start>
-			<end>2020</end>
+			<end>2022</end>
 		</timeCoverage>
 
 		<dataset name="Air Mean Temperature" ID="cru_tmp"
-			 serviceName="all" urlPath="data/CRU/cru_ts4.05.1901.2020.tmp.dat_processed.nc" dataType="Grid"/>
+			 serviceName="all" urlPath="data/CRU/cru_ts4.07.1901.2022.tmp.dat.nc_processed.nc" dataType="Grid"/>
 
 		<dataset name="Precipitation Sum" ID="cru_pre"
-			 serviceName="all" urlPath="data/CRU/cru_ts4.05.1901.2020.pre.dat_processed.nc" dataType="Grid"/>
+			 serviceName="all" urlPath="data/CRU/cru_ts4.07.1901.2022.pre.dat.nc_processed.nc" dataType="Grid"/>
 	</dataset>
 
 	<!--
@@ -56,7 +56,7 @@
 		</documentation>
 
 		<documentation type="reference">
-			http://climate.geog.udel.edu/~climate/html_pages/README.ghcn_ts2.html
+			http://climate.geog.udel.edu/html_pages/README.ghcn_ts2.html
 		</documentation>
 
 		<timeCoverage>
@@ -65,34 +65,33 @@
 		</timeCoverage>
 
 		<dataset name="Air Temperature Mean" ID="udel_tmp"
-			       serviceName="all" urlPath="data/UDEL/air.mon.mean.v501_uncompressed.nc" dataType="Grid"/>
+			       serviceName="all" urlPath="data/UDEL/air.mon.mean.v501.nc_compression_0.nc" dataType="Grid"/>
 
 		<dataset name="Precipitation Sum" ID="udel_pre"
-			       serviceName="all" urlPath="data/UDEL/precip.mon.total.v501_uncompressed.nc" dataType="Grid"/>
+			       serviceName="all" urlPath="data/UDEL/precip.mon.total.v501.nc_compression_0.nc" dataType="Grid"/>
 	</dataset>
 
 	<!--
 	Download-Info:
-	https://psl.noaa.gov/data/gridded/data.ghcncams.html	Temp: until 06/2022
+	https://psl.noaa.gov/data/gridded/data.ghcncams.html	Temp: until 01/2024
 	https://opendata.dwd.de/climate_environment/GPCC/html/fulldata-monthly_v2020_doi_download.html	Prec: until 2019, generate subset from 1948 since this is the earliest temp data we get from GHCN CAMS
 	-->
-	<dataset name="GHCN CAMS and GPCC v2020" ID="ghcn_gpcc">
-
+	<dataset name="GHCN CAMS and GPCC v2022" ID="ghcn_gpcc">
 		<documentation type="summary">
 			<![CDATA[
 			GHCN CAMS is a high resolution (0.5x0.5) analyzed global land surface temperatures from 1948 to near present. GHCN Gridded V2 data provided by the NOAA/OAR/ESRL PSL, Boulder, Colorado, 
 			USA, from their Web site at https://psl.noaa.gov/ <br />
 			Reference: Fan, Y., and H. van den Dool (2008), A global monthly land surface air temperature analysis for 1948-present, J. Geophys. Res., 113, D01103. <br />
 			<br />
-			GPCC Full Data Monthly Product of monthly global land-surface precipitation is based on the ~85,000 stations world-wide that feature record durations 
-			of 10 years or longer. The data coverage per month varies from ~15,000 (before 6000) to more than 50,000 stations.  <br />			
-			Reference: Schneider, Udo; Becker, Andreas; Finger, Peter; Rustemeier, Elke; Ziese, Markus (2020): GPCC Full Data Monthly Product Version 2020 at 0.5°: Monthly Land-Surface Precipitation 
-			from Rain-Gauges built on GTS-based and Historical Data.
+			GPCC Full Data Monthly Product of monthly global land-surface precipitation is based on the ~86,000 stations world-wide that feature record durations 
+			of 10 years or longer. The data coverage per month varies from ~20,000 (previous version 15,000) to more than 52,000 stations.  <br />			
+			Reference: Schneider, Udo; Hänsel, Stephanie; Finger, Peter; Rustemeier, Elke; Ziese, Markus (2022): GPCC Full Data Monthly Product Version 2022 at 0.5°: 
+			Monthly Land-Surface Precipitation from Rain-Gauges built on GTS-based and Historical Data.
 			]]>
 		</documentation>
 
 		<documentation type="reference">
-			https://dx.doi.org/10.1029/2007JD008470,https://dx.doi.org/10.5676/DWD_GPCC/FD_M_V2020_050
+			https://dx.doi.org/10.1029/2007JD008470,https://dx.doi.org/10.5676/DWD_GPCC/FD_M_V2022_050
 		</documentation>
 
 		<timeCoverage>
@@ -101,10 +100,10 @@
 		</timeCoverage>
 
 		<dataset name="GHCN CAMS Air Temperature Monthly" ID="ghcn_cams_tmp"
-			       serviceName="all" urlPath="data/GHCN_CAMS/2022_air.mon.mean.nc" dataType="Grid"/>
+			       serviceName="all" urlPath="data/GHCN_CAMS/2024_air.mon.mean.nc_compression_0.nc" dataType="Grid"/>
 		
-		<dataset name="GPCC v2020 Precipitation Monthly" ID="gpcc_pre"
-			       serviceName="all" urlPath="data/GPCC/precip.mon_v2020_05_subset_1948_2019_processed.nc" dataType="Grid"/>
+		<dataset name="GPCC v2022 Precipitation Monthly" ID="gpcc_pre"
+			       serviceName="all" urlPath="data/GPCC/precip.mon_v2022_subset_1948_2020.nc_processed.nc" dataType="Grid"/>
 	</dataset>
 
 </catalog>
