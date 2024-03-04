@@ -12,7 +12,7 @@
 		<service name="ncml" serviceType="NCML" base="/thredds/ncml/"/>
 	</service>
 
-	<datasetRoot path="data" location="C:\Users\pthiemt\Documents\Dev\thredds" /> 
+	<datasetRoot path="data" location="/data/thredds" /> 
  
 	<!--
 	Download-Info:
@@ -74,7 +74,7 @@
 	<!--
 	Download-Info:
 	https://psl.noaa.gov/data/gridded/data.ghcncams.html	Temp: until 01/2024
-	https://opendata.dwd.de/climate_environment/GPCC/html/fulldata-monthly_v2020_doi_download.html	Prec: until 2019, generate subset from 1948 since this is the earliest temp data we get from GHCN CAMS
+	https://opendata.dwd.de/climate_environment/GPCC/html/fulldata-monthly_v2020_doi_download.html	Prec: until 2020, generate subset from 1948 since this is the earliest temp data we get from GHCN CAMS
 	-->
 	<dataset name="GHCN CAMS and GPCC v2022" ID="ghcn_gpcc">
 		<documentation type="summary">
@@ -96,7 +96,7 @@
 
 		<timeCoverage>
 			<start>1948</start>
-			<end>2019</end>
+			<end>2020</end>
 		</timeCoverage>
 
 		<dataset name="GHCN CAMS Air Temperature Monthly" ID="ghcn_cams_tmp"
