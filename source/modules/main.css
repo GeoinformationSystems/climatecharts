@@ -12,12 +12,6 @@
     height: 40px;
   }
 
-/*  .ui-slider .ui-slider-handle
-  {
-    height: 50px;
-    width: 20px
-  }*/
-
   body
   {
     background: none !important;;
@@ -34,7 +28,6 @@ body
   position: absolute;
   width: 100%;
   font-family: Verdana, Geneva, sans-serif;
-  /*font-family: Palatino Linotype, Book Antiqua, Palatino, serif;*/
   font-size: 12px;
   background: url("../../data/img/earth.svg") no-repeat center center;
   background-size:cover;
@@ -152,7 +145,6 @@ h4
   margin-top: 10px;
   margin-bottom: 10px;
   margin-right: 10px;
-  /*margin-left: 10px;*/
   padding-top: 10px;
   padding-bottom: 10px;
 }
@@ -250,12 +242,6 @@ button:disabled{
   border: 1px solid #babdb6;
 }
 
-/*.box:hover
-{
-  box-shadow: 0px 0px 6px #babdb6;
-  transition: 0.2s;
-}*/
-
 .box-quiet
 {
   position: relative;
@@ -315,7 +301,6 @@ button:disabled{
   width: 100%;
   color: white;
   top: 40px;
-  /* 	margin-top: 20px; */
   margin-bottom: 44px;
   padding-top: 1px;
   padding-bottom: 5px;
@@ -482,3 +467,56 @@ button:disabled{
   color:white;
   border-color: white;
 }
+
+/* ------------START-------------- */
+/*     Leaflet Marker Cluster      */
+/* ------------------------------- */
+
+.marker-cluster-small {
+	/* background-color: rgba(181, 226, 140, 0.6); */
+  background-color: rgba(138, 203, 193, 0.4);
+	}
+.marker-cluster-small div {
+	/* background-color: rgba(110, 204, 57, 0.6); */
+  background-color: rgba(138, 203, 193, 0.6);
+	}
+
+.marker-cluster-medium {
+	/* background-color: rgba(241, 211, 87, 0.6); */
+  background-color: rgba(0, 172 , 169, 0.4);
+	}
+.marker-cluster-medium div {
+	/* background-color: rgba(240, 194, 12, 0.6); */
+  background-color: rgba(0, 172 , 169, 0.6);
+	}
+
+.marker-cluster-large {
+	/* background-color: rgba(253, 156, 115, 0.6); */
+  background-color: rgba(0, 131 , 141, 0.4);
+	}
+.marker-cluster-large div {
+	/* background-color: rgba(241, 128, 23, 0.6); */
+  background-color: rgba(0, 131 , 141, 0.6);
+	}
+
+.marker-cluster {
+	background-clip: padding-box;
+	border-radius: 20px;
+	}
+.marker-cluster div {
+	width: 30px;
+	height: 30px;
+	margin-left: 5px;
+	margin-top: 5px;
+
+	text-align: center;
+	border-radius: 15px;
+	font: 10px Verdana, Geneva, sans-serif;
+	}
+.marker-cluster span {
+	line-height: 30px;
+	}
+
+/* -------------END--------------- */
+/*     Leaflet Marker Cluster      */
+/* ------------------------------- */

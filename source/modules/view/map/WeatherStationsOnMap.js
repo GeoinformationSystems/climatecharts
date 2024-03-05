@@ -22,6 +22,7 @@ class WeatherStationsOnMap
   {
     this._main = main;
     this._map = this._main.modules.map.getMap();
+    this._markerCluster = this._main.modules.map.getMarkerCluster();
     this._isStation = false;
 
     // ------------------------------------------------------------------------
@@ -84,7 +85,8 @@ class WeatherStationsOnMap
       this._main.config.station.style.default        // style
     );
     stationMarker.setRadius(this.cropRadius(this._realMarkerRadius));
-    stationMarker.addTo(this._map);
+    this._markerCluster.addLayer(stationMarker);
+    //stationMarker.addTo(this._map);
 
     // Establish link model <-> view
     station.marker = stationMarker;

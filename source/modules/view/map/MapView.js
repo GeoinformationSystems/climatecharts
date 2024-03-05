@@ -59,11 +59,12 @@ class MapView
 
     this._profileGroup = L.layerGroup().addTo(this._map);
 
-    // Problem: for some reason this code only loads tiles from the northern
-    // hemisphere. Only after window resize everything loads
-    // Hack: manual resize event :/ -> not nice, but works!
-    // TODO: fix it...
-    this._map._onResize();
+    this._markerCluster = new L.markerClusterGroup({
+      disableClusteringAtZoom: 7,
+      spiderfyOnMaxZoom: false,
+      showCoverageOnHover: false
+    });
+    this._map.addLayer(this._markerCluster);
 
 
     // ------------------------------------------------------------------------
@@ -220,6 +221,11 @@ class MapView
   getMap()
   {
     return this._map
+  }
+
+  getMarkerCluster()
+  {
+    return this._markerCluster
   }
 
   getCoordinateCollection(){

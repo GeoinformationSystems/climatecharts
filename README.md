@@ -255,6 +255,7 @@ For debugging -- Find Tomcat logs here:
   * jQuery UI 1.12.1, https://jqueryui.com/ - CC0 1.0 Universal
   * jQuery Plugin: waitMe, https://github.com/vadimsva/waitMe - MIT license                                          
   * Leaflet 1.0.3, https://leafletjs.com/ - BSD license
+  * Leaflet.markercluster 1.4.1, https://github.com/Leaflet/Leaflet.markercluster - MIT license
   * Save SVG As PNG, https://github.com/exupero/saveSvgAsPng - MIT license
   * Turf, https://turfjs.org/" - MIT license
   * x2js, https://github.com/abdmob/x2js - no license
