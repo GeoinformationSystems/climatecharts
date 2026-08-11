@@ -306,7 +306,7 @@ class DistributionChart extends Chart
       svg.selectAll('.grid')
         .style('fill', 'none')
         .style('stroke', this._chartsMain.colors.grid)
-        .style('stroke-width', this._chartMain.style.gridWidth + ' px')
+        .style('stroke-width', this._chartMain.style.gridWidth)
         .attr('shape-rendering', 'crispEdges');
 
 
@@ -372,7 +372,7 @@ class DistributionChart extends Chart
       svg.selectAll('.axis .domain')
       	.style('fill', 'none')
       	.style('stroke', 'black')
-      	.style('stroke-width', this._chartMain.style.axesWidth + 'px')
+      	.style('stroke-width', this._chartMain.style.axesWidth)
       	.attr('shape-rendering', 'crispEdges');
 
 

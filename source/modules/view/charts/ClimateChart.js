@@ -798,7 +798,7 @@ class ClimateChart extends Chart
     this._chart.selectAll('.axis .domain')
     	.style('fill', 'none')
     	.style('stroke', 'black')
-    	.style('stroke-width', this._chartMain.style.axesWidth + 'px')
+    	.style('stroke-width', this._chartMain.style.axesWidth)
     	.attr('shape-rendering', 'crispEdges');
 
     this._chart.selectAll('.tick')
@@ -887,7 +887,7 @@ class ClimateChart extends Chart
     this._chart.selectAll('.grid')
       .style('fill', 'none')
       .style('stroke', this._chartsMain.colors.grid)
-      .style('stroke-width', this._chartMain.style.gridWidth + ' px')
+      .style('stroke-width', this._chartMain.style.gridWidth)
       .attr('shape-rendering', 'crispEdges')
   }
 
@@ -1175,7 +1175,7 @@ class ClimateChart extends Chart
       )
       .attr('y', 
       this._chartPos.bottom)
-      .attr('text-anchor', 'begin')
+      .attr('text-anchor', 'start')
       .style('font-size', this._chartsMain.fontSizes.huge + 'em')
       .text( ''
         + this._chartMain.prec.caption
@@ -1382,7 +1382,7 @@ class ClimateChart extends Chart
         .style('fill',          a_color)
         .style('opacity',       this._chartMain.style.availabilityOpacity)
         .style('stroke',        this._chartsMain.colors.grid)
-        .style('stroke-width',  cellWidth + ' px');
+        .style('stroke-width',  '1');
 
       index++;
     }
@@ -1448,7 +1448,7 @@ class ClimateChart extends Chart
         .style('fill',          a_color)
         .style('opacity',       this._chartMain.style.availabilityOpacity)
         .style('stroke',        this._chartsMain.colors.grid)
-        .style('stroke-width',  '1px');
+        .style('stroke-width',  '1');
 
         i++;
     }
@@ -1492,7 +1492,7 @@ class ClimateChart extends Chart
         .style('fill',          this._chartMain.availabilitycolors[color])
         .style('opacity',       this._chartMain.style.cellOpacity)
         .style('stroke',        this._chartsMain.colors.grid)
-        .style('stroke-width',  cellWidth + ' px');
+        .style('stroke-width',  '1');
 
       a++;
     }

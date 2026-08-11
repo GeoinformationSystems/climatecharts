@@ -292,7 +292,7 @@ class AvailabilityChart extends Chart {
       .attr('height', (d) => { return d.width })
       .style('fill', (d) => { return d.color })
       .style('stroke', this._chartsMain.colors.grid)
-      .style('stroke-width', this._chartMain.style.gridWidth + ' px')
+      .style('stroke-width', this._chartMain.style.gridWidth)
       .attr('shape-rendering', 'crispEdges');
 
     // Create text containing the actual value
@@ -444,7 +444,7 @@ class AvailabilityChart extends Chart {
         .attr('height', this._chartMain.style.squareWidth)
         .style('fill', colorKeys[color])
         .style('stroke', this._chartsMain.colors.grid)
-        .style('stroke-width', this._chartMain.style.gridWidth + ' px');
+        .style('stroke-width', this._chartMain.style.gridWidth);
 
       index++;
     }
@@ -561,7 +561,7 @@ class AvailabilityChart extends Chart {
       .attr('height', this._chartMain.style.squareWidth)
       .style('fill', this._chartsMain.colors.noData)
       .style('stroke', this._chartsMain.colors.grid)
-      .style('stroke-width', this._chartMain.style.gridWidth + ' px');
+      .style('stroke-width', this._chartMain.style.gridWidth);
 
     // No data legend title
     this._chart.append('text')
