@@ -84,7 +84,7 @@ const ENDPOINTS =
   'thredds':          (RUN_LOCALLY.thredds          ? myURL.local : myURL.server)
     + "/thredds",
   'gazetteer':        (RUN_LOCALLY.gazetteer        ? myURL.local : myURL.server)
-    + "/gazetteer/api",
+    + "/gazetteer",
   'weatherstations':  (RUN_LOCALLY.weatherstations  ? myURL.local : myURL.server)
     + "/weatherstations-api",
 };
